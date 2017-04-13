@@ -1,7 +1,5 @@
 """
 Provides simplified, read-only access to an SBML model.
-1. Create objects
-2. Handle stoichiometry
 """
 import sys
 import os.path
@@ -19,14 +17,19 @@ class SimpleSBML(object):
     :raises IOError: Error encountered reading the SBML document
     """
     self._filename = filename
-    reader = libsbml.SBMLReader()
-    document = reader.readSBML(self._filename)
-    if (document.getNumErrors() > 0):
+    self._reader = libsbml.SBMLReader()
+    self._document = self._reader.readSBML(self._filename)
+    if (self._document.getNumErrors() > 0):
       raise IOError("Errors in SBML document\n%s" 
-          % document.printErrors())
-    self._model = document.getModel()
+          % self._document.printErrors())
+    self._model = self._document.getModel()
     self._reactions = self._getReactions()
     self._parameters = self._getParameters()
+    self._species = self._getSpecies()
+
+  def _getSpecies(self):
+    num = self._model.getNumSpecies()
+    return [self._model.getSpecies(n) for n in range(num)]
 
   def _getReactions(self):
     """
@@ -54,6 +57,8 @@ class SimpleSBML(object):
     """
     :param libsbml.Reaction:
     :return list-of-libsbml.SpeciesReference:
+    To get the species name: SpeciesReference.species
+    To get stoichiometry: SpeciesReference.getStoichiometry
     """
     return [reaction.getReactant(n) for n in range(reaction.getNumReactants())]
 
@@ -72,7 +77,7 @@ class SimpleSBML(object):
     """
     reaction_str = ''
     base_length = len(reaction_str)
-    for reference in getReactants(reaction):
+    for reference in etReactants(reaction):
       if len(reaction_str) > base_length:
         reaction_str += " + " + reference.species
       else:
@@ -110,6 +115,18 @@ class SimpleSBML(object):
         for idx in range(num):
           asts.append(this_ast.getChild(idx))
     return terms
+
+  def isSpecies(self, name):
+    """
+    Determines if the name is a chemical species
+    """
+    return any([s.getId() == name for s in self._species])
+
+  def isParameter(self, name):
+    """
+    Determines if the name is a parameter
+    """
+    return any([p.getId() == name for p in self._parameters])
 
 
 if __name__ == '__main__':
