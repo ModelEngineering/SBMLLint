@@ -6,49 +6,37 @@
     </listOfCompartments>
     <listOfSpecies>
       <species id="x0" compartment="default_compartment" initialConcentration="1" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
-      <species id="L" compartment="default_compartment" initialConcentration="-1.40020672267537e-23" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T2PR" compartment="default_compartment" initialConcentration="-8.89670555996853e-24" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T3P" compartment="default_compartment" initialConcentration="-5.07131405456391e-24" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="R" compartment="default_compartment" initialConcentration="9.31902633715537e-11" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T2R" compartment="default_compartment" initialConcentration="2.84396527093657e-07" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T3" compartment="default_compartment" initialConcentration="1.74778156063724e-07" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T3PR" compartment="default_compartment" initialConcentration="-1.31724174217304e-25" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T4P" compartment="default_compartment" initialConcentration="-1.25541995045825e-25" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T3R" compartment="default_compartment" initialConcentration="4.02535492377576e-09" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T4" compartment="default_compartment" initialConcentration="2.55434946473762e-09" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT2PR" compartment="default_compartment" initialConcentration="-2.10091659014184e-27" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT3P" compartment="default_compartment" initialConcentration="3.26581394361343e-29" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT2R" compartment="default_compartment" initialConcentration="-3.71644402982889e-24" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT3" compartment="default_compartment" initialConcentration="-2.69623035664966e-24" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT3PR" compartment="default_compartment" initialConcentration="4.36575498768898e-33" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT4P" compartment="default_compartment" initialConcentration="-1.08696886962057e-34" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT3R" compartment="default_compartment" initialConcentration="-5.90174205003995e-26" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT4" compartment="default_compartment" initialConcentration="-3.77087834959829e-26" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="Bp" compartment="default_compartment" initialConcentration="6.7598807098595e-07" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T2P" compartment="default_compartment" initialConcentration="-2.22751219578938e-22" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T2" compartment="default_compartment" initialConcentration="7.24463246138508e-06" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T4PR" compartment="default_compartment" initialConcentration="-3.05425206579396e-26" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T4R" compartment="default_compartment" initialConcentration="8.23706878166068e-10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT2P" compartment="default_compartment" initialConcentration="1.62661913549183e-31" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT2" compartment="default_compartment" initialConcentration="-1.01448786680029e-22" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT4PR" compartment="default_compartment" initialConcentration="-8.17250031984886e-39" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT4R" compartment="default_compartment" initialConcentration="-1.27783911173941e-26" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T2pR" compartment="default_compartment" initialConcentration="1.01701317001584e-08" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T2p" compartment="default_compartment" initialConcentration="2.59070893185161e-07" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T3pR" compartment="default_compartment" initialConcentration="4.31843725601147e-10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T3p" compartment="default_compartment" initialConcentration="1.87504111189351e-08" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T4pR" compartment="default_compartment" initialConcentration="9.4259101175287e-11" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="T4p" compartment="default_compartment" initialConcentration="2.92301689945013e-10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT2pR" compartment="default_compartment" initialConcentration="2.73699294999114e-43" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT2p" compartment="default_compartment" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT3pR" compartment="default_compartment" initialConcentration="-2.32139643413142e-27" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT3p" compartment="default_compartment" initialConcentration="-1.06048428075669e-25" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT4pR" compartment="default_compartment" initialConcentration="-1.05274531065226e-27" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="LT4p" compartment="default_compartment" initialConcentration="-3.10664021433642e-27" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="B" compartment="default_compartment" initialConcentration="1.02401192901405e-06" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="Yp" compartment="default_compartment" initialConcentration="6.04535720782567e-06" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="L" compartment="default_compartment" initialConcentration="1.12268678371728e-08" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T2pR" compartment="default_compartment" initialConcentration="9.95697546641135e-09" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T3p" compartment="default_compartment" initialConcentration="2.21921003505024e-08" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="R" compartment="default_compartment" initialConcentration="1.20102887677433e-10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T2R" compartment="default_compartment" initialConcentration="2.78955450306136e-07" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T3" compartment="default_compartment" initialConcentration="2.07235422587469e-07" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T3pR" compartment="default_compartment" initialConcentration="6.5280087774899e-10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T4p" compartment="default_compartment" initialConcentration="5.37630572037734e-10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T3R" compartment="default_compartment" initialConcentration="6.0933628030705e-09" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T4" compartment="default_compartment" initialConcentration="4.70212721222947e-09" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT2pR" compartment="default_compartment" initialConcentration="1.58255575655995e-11" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT3p" compartment="default_compartment" initialConcentration="1.25362157258676e-10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT2R" compartment="default_compartment" initialConcentration="3.01703195671938e-09" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT3" compartment="default_compartment" initialConcentration="2.66028663182679e-09" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT3pR" compartment="default_compartment" initialConcentration="3.46333366063175e-12" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT4p" compartment="default_compartment" initialConcentration="4.7220903571076e-12" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT3R" compartment="default_compartment" initialConcentration="7.17778699389816e-11" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT4" compartment="default_compartment" initialConcentration="5.46276645899431e-11" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="Bp" compartment="default_compartment" initialConcentration="6.75440146556577e-07" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T2p" compartment="default_compartment" initialConcentration="2.54303378432014e-07" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T2" compartment="default_compartment" initialConcentration="7.12536713818453e-06" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T4pR" compartment="default_compartment" initialConcentration="2.19295422359042e-10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="T4R" compartment="default_compartment" initialConcentration="1.91794746435698e-09" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT2p" compartment="default_compartment" initialConcentration="4.08232641633496e-10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT2" compartment="default_compartment" initialConcentration="8.24431540637308e-08" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT4pR" compartment="default_compartment" initialConcentration="1.91074540784786e-12" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="LT4R" compartment="default_compartment" initialConcentration="2.20838452011381e-11" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="B" compartment="default_compartment" initialConcentration="1.02455985344342e-06" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="Y" compartment="default_compartment" initialConcentration="1.39603139126534e-05" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="Yp" compartment="default_compartment" initialConcentration="6.0396860873466e-06" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
       <species id="Z" compartment="default_compartment" initialConcentration="4e-05" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
-      <species id="Y" compartment="default_compartment" initialConcentration="1.39546427921743e-05" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
     <listOfParameters>
       <parameter id="k0" value="0" constant="true"/>
@@ -70,11 +58,10 @@
       <parameter id="k11" value="0" constant="true"/>
       <parameter id="k12" value="16.5" constant="true"/>
       <parameter id="k13" value="34.56" constant="true"/>
-      <parameter id="k_b" value="0.35" constant="true"/>
-      <parameter id="k_y" value="500000" constant="true"/>
       <parameter id="kb" value="800000" constant="true"/>
       <parameter id="ky" value="30000000" constant="true"/>
-      <parameter id="ktuning" value="1" constant="true"/>
+      <parameter id="k_b" value="0.35" constant="true"/>
+      <parameter id="k_y" value="500000" constant="true"/>
       <parameter id="k2a" value="2.42857142857143e-14" constant="true"/>
       <parameter id="k2b" value="70000000" constant="true"/>
       <parameter id="k3a" value="2.42857142857143e-14" constant="true"/>
@@ -129,11 +116,7 @@
       </initialAssignment>
       <initialAssignment symbol="k1b">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <times/>
-            <ci> ktuning </ci>
-            <ci> k5 </ci>
-          </apply>
+          <ci> k5 </ci>
         </math>
       </initialAssignment>
       <initialAssignment symbol="k9">
@@ -211,12 +194,12 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J1_2PR" reversible="true" fast="false">
+      <reaction id="J1_2pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -224,7 +207,7 @@
             <apply>
               <times/>
               <ci> k1c </ci>
-              <ci> T2PR </ci>
+              <ci> T2pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -247,12 +230,12 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J1_3PR" reversible="true" fast="false">
+      <reaction id="J1_3pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -260,7 +243,7 @@
             <apply>
               <times/>
               <ci> k2c </ci>
-              <ci> T3PR </ci>
+              <ci> T3pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -283,12 +266,12 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J1_L2PR" reversible="true" fast="false">
+      <reaction id="J1_L2pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -296,7 +279,7 @@
             <apply>
               <times/>
               <ci> k3c </ci>
-              <ci> LT2PR </ci>
+              <ci> LT2pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -319,12 +302,12 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J1_L3PR" reversible="true" fast="false">
+      <reaction id="J1_L3pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -332,7 +315,7 @@
             <apply>
               <times/>
               <ci> k4c </ci>
-              <ci> LT3PR </ci>
+              <ci> LT3pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -355,13 +338,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J4a_3PR" reversible="true" fast="false">
+      <reaction id="J4a_3pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3pR" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2pR" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -369,7 +352,7 @@
             <apply>
               <times/>
               <ci> k_1 </ci>
-              <ci> T3PR </ci>
+              <ci> T3pR </ci>
               <ci> Bp </ci>
             </apply>
           </math>
@@ -395,13 +378,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J4a_3P" reversible="true" fast="false">
+      <reaction id="J4a_3p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3p" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T2P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2p" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -409,7 +392,7 @@
             <apply>
               <times/>
               <ci> k_1 </ci>
-              <ci> T3P </ci>
+              <ci> T3p </ci>
               <ci> Bp </ci>
             </apply>
           </math>
@@ -435,13 +418,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J4b_4PR" reversible="true" fast="false">
+      <reaction id="J4b_4pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T4PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4pR" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3pR" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -449,7 +432,7 @@
             <apply>
               <times/>
               <ci> k_2 </ci>
-              <ci> T4PR </ci>
+              <ci> T4pR </ci>
               <ci> Bp </ci>
             </apply>
           </math>
@@ -475,13 +458,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J4b_4P" reversible="true" fast="false">
+      <reaction id="J4b_4p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4p" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3p" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -489,7 +472,7 @@
             <apply>
               <times/>
               <ci> k_2 </ci>
-              <ci> T4P </ci>
+              <ci> T4p </ci>
               <ci> Bp </ci>
             </apply>
           </math>
@@ -515,13 +498,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J4c_L3PR" reversible="true" fast="false">
+      <reaction id="J4c_L3pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3pR" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2pR" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -529,7 +512,7 @@
             <apply>
               <times/>
               <ci> k_3 </ci>
-              <ci> LT3PR </ci>
+              <ci> LT3pR </ci>
               <ci> Bp </ci>
             </apply>
           </math>
@@ -555,13 +538,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J4c_L3P" reversible="true" fast="false">
+      <reaction id="J4c_L3p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3p" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT2P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2p" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -569,7 +552,7 @@
             <apply>
               <times/>
               <ci> k_3 </ci>
-              <ci> LT3P </ci>
+              <ci> LT3p </ci>
               <ci> Bp </ci>
             </apply>
           </math>
@@ -595,13 +578,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J4d_L4PR" reversible="true" fast="false">
+      <reaction id="J4d_L4pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT4PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4pR" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3pR" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -609,7 +592,7 @@
             <apply>
               <times/>
               <ci> k_4 </ci>
-              <ci> LT4PR </ci>
+              <ci> LT4pR </ci>
               <ci> Bp </ci>
             </apply>
           </math>
@@ -635,13 +618,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J4d_L4P" reversible="true" fast="false">
+      <reaction id="J4d_L4p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4p" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3p" stoichiometry="1" constant="true"/>
           <speciesReference species="Bp" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -649,7 +632,7 @@
             <apply>
               <times/>
               <ci> k_4 </ci>
-              <ci> LT4P </ci>
+              <ci> LT4p </ci>
               <ci> Bp </ci>
             </apply>
           </math>
@@ -675,12 +658,12 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J2_L2P" reversible="true" fast="false">
+      <reaction id="J2_L2p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT2P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -688,7 +671,7 @@
             <apply>
               <times/>
               <ci> k1a </ci>
-              <ci> LT2PR </ci>
+              <ci> LT2pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -711,12 +694,12 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J2_L3P" reversible="true" fast="false">
+      <reaction id="J2_L3p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -724,7 +707,7 @@
             <apply>
               <times/>
               <ci> k1a </ci>
-              <ci> LT3PR </ci>
+              <ci> LT3pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -747,12 +730,12 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J2_L4P" reversible="true" fast="false">
+      <reaction id="J2_L4p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT4PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -760,7 +743,7 @@
             <apply>
               <times/>
               <ci> k1a </ci>
-              <ci> LT4PR </ci>
+              <ci> LT4pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -783,12 +766,12 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J2_2P" reversible="true" fast="false">
+      <reaction id="J2_2p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T2P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -796,7 +779,7 @@
             <apply>
               <times/>
               <ci> k1a </ci>
-              <ci> T2PR </ci>
+              <ci> T2pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -819,12 +802,12 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J2_3P" reversible="true" fast="false">
+      <reaction id="J2_3p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -832,7 +815,7 @@
             <apply>
               <times/>
               <ci> k1a </ci>
-              <ci> T3PR </ci>
+              <ci> T3pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -855,12 +838,12 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J2_4P" reversible="true" fast="false">
+      <reaction id="J2_4p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T4PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
@@ -868,7 +851,7 @@
             <apply>
               <times/>
               <ci> k1a </ci>
-              <ci> T4PR </ci>
+              <ci> T4pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -891,20 +874,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J3_L2P" reversible="true" fast="false">
+      <reaction id="J3_L2p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT2P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k1b </ci>
-              <ci> LT2P </ci>
+              <ci> LT2p </ci>
               <ci> R </ci>
             </apply>
           </math>
@@ -929,20 +912,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J3_L3P" reversible="true" fast="false">
+      <reaction id="J3_L3p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k1b </ci>
-              <ci> LT3P </ci>
+              <ci> LT3p </ci>
               <ci> R </ci>
             </apply>
           </math>
@@ -967,20 +950,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J3_L4P" reversible="true" fast="false">
+      <reaction id="J3_L4p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT4PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k1b </ci>
-              <ci> LT4P </ci>
+              <ci> LT4p </ci>
               <ci> R </ci>
             </apply>
           </math>
@@ -1005,20 +988,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J3_2P" reversible="true" fast="false">
+      <reaction id="J3_2p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T2P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k1b </ci>
-              <ci> T2P </ci>
+              <ci> T2p </ci>
               <ci> R </ci>
             </apply>
           </math>
@@ -1043,20 +1026,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J3_3P" reversible="true" fast="false">
+      <reaction id="J3_3p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k1b </ci>
-              <ci> T3P </ci>
+              <ci> T3p </ci>
               <ci> R </ci>
             </apply>
           </math>
@@ -1081,20 +1064,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J3_4P" reversible="true" fast="false">
+      <reaction id="J3_4p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="T4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4p" stoichiometry="1" constant="true"/>
           <speciesReference species="R" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="T4PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k1b </ci>
-              <ci> T4P </ci>
+              <ci> T4p </ci>
               <ci> R </ci>
             </apply>
           </math>
@@ -1119,13 +1102,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J5_2PR" reversible="true" fast="false">
+      <reaction id="J5_2pR" reversible="true" fast="false">
         <listOfReactants>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1133,7 +1116,7 @@
               <times/>
               <ci> k5 </ci>
               <ci> L </ci>
-              <ci> T2PR </ci>
+              <ci> T2pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1157,13 +1140,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J5_2P" reversible="true" fast="false">
+      <reaction id="J5_2p" reversible="true" fast="false">
         <listOfReactants>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T2P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2p" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT2P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2p" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1171,7 +1154,7 @@
               <times/>
               <ci> k5 </ci>
               <ci> L </ci>
-              <ci> T2P </ci>
+              <ci> T2p </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1195,13 +1178,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J5_3PR" reversible="true" fast="false">
+      <reaction id="J5_3pR" reversible="true" fast="false">
         <listOfReactants>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1209,7 +1192,7 @@
               <times/>
               <ci> k5 </ci>
               <ci> L </ci>
-              <ci> T3PR </ci>
+              <ci> T3pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1233,13 +1216,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J5_3P" reversible="true" fast="false">
+      <reaction id="J5_3p" reversible="true" fast="false">
         <listOfReactants>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3p" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3p" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1247,7 +1230,7 @@
               <times/>
               <ci> k5 </ci>
               <ci> L </ci>
-              <ci> T3P </ci>
+              <ci> T3p </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1271,13 +1254,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J5_4PR" reversible="true" fast="false">
+      <reaction id="J5_4pR" reversible="true" fast="false">
         <listOfReactants>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T4PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT4PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1285,7 +1268,7 @@
               <times/>
               <ci> k5 </ci>
               <ci> L </ci>
-              <ci> T4PR </ci>
+              <ci> T4pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1309,13 +1292,13 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J5_4P" reversible="true" fast="false">
+      <reaction id="J5_4p" reversible="true" fast="false">
         <listOfReactants>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4p" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="LT4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4p" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1323,7 +1306,7 @@
               <times/>
               <ci> k5 </ci>
               <ci> L </ci>
-              <ci> T4P </ci>
+              <ci> T4p </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1347,20 +1330,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J6_2PR" reversible="true" fast="false">
+      <reaction id="J6_2pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T2PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k_5 </ci>
-              <ci> LT2PR </ci>
+              <ci> LT2pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1383,20 +1366,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J6_2P" reversible="true" fast="false">
+      <reaction id="J6_2p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT2P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT2p" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T2P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T2p" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k_5 </ci>
-              <ci> LT2P </ci>
+              <ci> LT2p </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1419,20 +1402,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J6_3PR" reversible="true" fast="false">
+      <reaction id="J6_3pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T3PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k_5 </ci>
-              <ci> LT3PR </ci>
+              <ci> LT3pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1455,20 +1438,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J6_3P" reversible="true" fast="false">
+      <reaction id="J6_3p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT3p" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T3P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T3p" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k_5 </ci>
-              <ci> LT3P </ci>
+              <ci> LT3p </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1491,20 +1474,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J6_4PR" reversible="true" fast="false">
+      <reaction id="J6_4pR" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT4PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4pR" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T4PR" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4pR" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k_5 </ci>
-              <ci> LT4PR </ci>
+              <ci> LT4pR </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1527,20 +1510,20 @@
           </math>
         </kineticLaw>
       </reaction>
-      <reaction id="J6_4P" reversible="true" fast="false">
+      <reaction id="J6_4p" reversible="true" fast="false">
         <listOfReactants>
-          <speciesReference species="LT4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="LT4p" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="L" stoichiometry="1" constant="true"/>
-          <speciesReference species="T4P" stoichiometry="1" constant="true"/>
+          <speciesReference species="T4p" stoichiometry="1" constant="true"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k_5 </ci>
-              <ci> LT4P </ci>
+              <ci> LT4p </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -1763,43 +1746,6 @@
               <times/>
               <ci> k13 </ci>
               <ci> LT4 </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="J45" reversible="true" fast="false">
-        <listOfReactants>
-          <speciesReference species="Bp" stoichiometry="1" constant="true"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="B" stoichiometry="1" constant="true"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> k_b </ci>
-              <ci> Bp </ci>
-            </apply>
-          </math>
-        </kineticLaw>
-      </reaction>
-      <reaction id="J46" reversible="true" fast="false">
-        <listOfReactants>
-          <speciesReference species="Yp" stoichiometry="1" constant="true"/>
-          <speciesReference species="Z" stoichiometry="1" constant="true"/>
-        </listOfReactants>
-        <listOfProducts>
-          <speciesReference species="Y" stoichiometry="1" constant="true"/>
-          <speciesReference species="Z" stoichiometry="1" constant="true"/>
-        </listOfProducts>
-        <kineticLaw>
-          <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <apply>
-              <times/>
-              <ci> k_y </ci>
-              <ci> Yp </ci>
-              <ci> Z </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -2284,6 +2230,63 @@
           </math>
         </kineticLaw>
       </reaction>
+      <reaction id="J10" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="Bp" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="B" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_b </ci>
+              <ci> Bp </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J11" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="Yp" stoichiometry="1" constant="true"/>
+          <speciesReference species="Z" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Y" stoichiometry="1" constant="true"/>
+          <speciesReference species="Z" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_y </ci>
+              <ci> Yp </ci>
+              <ci> Z </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
     </listOfReactions>
+    <listOfEvents>
+      <event id="_E0" useValuesFromTriggerTime="true">
+        <trigger initialValue="true" persistent="true">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <gt/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <cn type="integer"> 100 </cn>
+            </apply>
+          </math>
+        </trigger>
+        <listOfEventAssignments>
+          <eventAssignment variable="L">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <cn type="e-notation"> 1 <sep/> -7 </cn>
+            </math>
+          </eventAssignment>
+        </listOfEventAssignments>
+      </event>
+    </listOfEvents>
   </model>
 </sbml>
