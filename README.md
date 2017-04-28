@@ -1,5 +1,5 @@
-# SbChecker
-Model checker for the Antimony kinetics modeling language.
+# SBMLlint
+Model checker for [SBML](http://sbml.org/Main_Page) models.
 Performs the following checks:
 
 - Use of parameters or species that are unitialized (and
