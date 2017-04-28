@@ -2,7 +2,7 @@
 Model checker for [SBML](http://sbml.org/Main_Page) models.
 Performs the following checks:
 
-- Use of parameters or species that are unitialized (and
+- Use of parameters or species that are uninitialized (and
 not present on the right hand side of a reaction)
 - Correctly constructed kinetics laws
 - Parameters that are unreferenced
