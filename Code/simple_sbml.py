@@ -24,12 +24,15 @@ class SimpleSBML(object):
           % self._document.printErrors())
     self._model = self._document.getModel()
     self._reactions = self._getReactions()
-    self._parameters = self._getParameters()
-    self._species = self._getSpecies()
+    self._parameters = self._getParameters()  # dict with key=name
+    self._species = self._getSpecies()  # dict with key=name
 
   def _getSpecies(self):
-    num = self._model.getNumSpecies()
-    return [self._model.getSpecies(n) for n in range(num)]
+    speciess = {}
+    for idx in range(self._model.getNumSpecies()):
+      species = self._model.getSpecies(idx)
+      speciess[species.getId()] = species
+    return speciess
 
   def _getReactions(self):
     """
@@ -44,14 +47,17 @@ class SimpleSBML(object):
     :param libsbml.Model:
     :return list-of-reactions
     """
-    return [self._model.getParameter(n) 
-         for n in range(self._model.getNumParameters())]
+    parameters = {}
+    for idx in range(self._model.getNumParameters()):
+      parameter = self._model.getParameter(idx)
+      parameters[parameter.getId()] = parameter
+    return parameters
 
   def getReactions(self):
     return self._reactions
 
   def getParameters(self):
-    return self._parameters
+    return self._parameters.keys()
 
   def getReactants(self, reaction):
     """
@@ -120,13 +126,13 @@ class SimpleSBML(object):
     """
     Determines if the name is a chemical species
     """
-    return any([s.getId() == name for s in self._species])
+    return self._species.has_key(name)
 
   def isParameter(self, name):
     """
     Determines if the name is a parameter
     """
-    return any([p.getId() == name for p in self._parameters])
+    return self._parameters.has_key(name)
 
 
 if __name__ == '__main__':
