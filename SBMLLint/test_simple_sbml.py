@@ -4,7 +4,7 @@ Tests for simple_sbml
 import unittest
 import numpy as np
 from simple_sbml import SimpleSBML
-import libsbml
+import tesbml
 
 
 IGNORE_TEST = False
@@ -27,11 +27,11 @@ class TestSimpleSBML(unittest.TestCase):
       return
     self.assertEqual(len(self.simple.getReactions()), NUM_REACTIONS)
     for reaction in self.simple.getReactions():
-      self.assertTrue(isinstance(reaction, libsbml.Reaction))
+      self.assertTrue(isinstance(reaction, tesbml.Reaction))
       self.assertLessEqual(reaction.getNumReactants(), MAX_REACTANTS)
     self.assertEqual(len(self.simple.getParameters()), NUM_PARAMETERS)
-    for reaction in self.simple.getParameters():
-      self.assertTrue(isinstance(reaction, libsbml.Parameter))
+    for param in self.simple.getParameters():
+      self.assertTrue(isinstance(param, str))
 
 
 if __name__ == '__main__':

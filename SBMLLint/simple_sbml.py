@@ -3,7 +3,7 @@ Provides simplified, read-only access to an SBML model.
 """
 import sys
 import os.path
-import libsbml
+import tesbml
 
 
 class SimpleSBML(object):
@@ -17,7 +17,7 @@ class SimpleSBML(object):
     :raises IOError: Error encountered reading the SBML document
     """
     self._filename = filename
-    self._reader = libsbml.SBMLReader()
+    self._reader = tesbml.SBMLReader()
     self._document = self._reader.readSBML(self._filename)
     if (self._document.getNumErrors() > 0):
       raise IOError("Errors in SBML document\n%s" 
