@@ -15,7 +15,16 @@ to manually verify whether a model is stoichiometrically inconsistent.
 import tesbml
 
 def print_model(model):
+    """Print reactants and products of all reactions in a model.
 
+
+    Args:
+        model (sbml_model): An sbml model to print out
+
+    Returns:
+        None: Just prints out the reactions
+        
+    """
     # print model name
     print(model)
 
@@ -26,7 +35,7 @@ def print_model(model):
         stg = "reaction " + str(reaction_idx) + ": "
 
         reactants_list = [reactant.getSpecies() for reactant in reaction.getListOfReactants()]
-        products_list = [product.getSpecies() for product in reaction.getListOfReactants()]
+        products_list = [product.getSpecies() for product in reaction.getListOfProducts()]
         stg = stg + ' + '.join(reactants_list) + " -> " + ' + '.join(products_list) + ';'
         
         print(stg)
