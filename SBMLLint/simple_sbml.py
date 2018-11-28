@@ -3,7 +3,7 @@ Provides simplified, read-only access to an SBML model.
 """
 import sys
 import os.path
-import libsbml
+import tesbml
 
 
 class SimpleSBML(object):
@@ -17,7 +17,7 @@ class SimpleSBML(object):
     :raises IOError: Error encountered reading the SBML document
     """
     self._filename = filename
-    self._reader = libsbml.SBMLReader()
+    self._reader = tesbml.SBMLReader()
     self._document = self._reader.readSBML(self._filename)
     if (self._document.getNumErrors() > 0):
       raise IOError("Errors in SBML document\n%s" 
@@ -36,7 +36,7 @@ class SimpleSBML(object):
 
   def _getReactions(self):
     """
-    :param libsbml.Model:
+    :param tesbml.Model:
     :return list-of-reactions
     """
     num = self._model.getNumReactions()
@@ -44,7 +44,7 @@ class SimpleSBML(object):
 
   def _getParameters(self):
     """
-    :param libsbml.Model:
+    :param tesbml.Model:
     :return list-of-reactions
     """
     parameters = {}
@@ -61,8 +61,8 @@ class SimpleSBML(object):
 
   def getReactants(self, reaction):
     """
-    :param libsbml.Reaction:
-    :return list-of-libsbml.SpeciesReference:
+    :param tesbml.Reaction:
+    :return list-of-tesbml.SpeciesReference:
     To get the species name: SpeciesReference.species
     To get stoichiometry: SpeciesReference.getStoichiometry
     """
@@ -70,8 +70,8 @@ class SimpleSBML(object):
 
   def getProducts(self, reaction):
     """
-    :param libsbml.Reaction:
-    :return list-of-libsbml.SpeciesReference:
+    :param tesbml.Reaction:
+    :return list-of-tesbml.SpeciesReference:
     """
     return [reaction.getProduct(n) for n in range(reaction.getNumProducts())]
 
@@ -79,7 +79,7 @@ class SimpleSBML(object):
   def getReactionString(cls, reaction):
     """
     Provides a string representation of the reaction
-    :param libsbml.Reaction reaction:
+    :param tesbml.Reaction reaction:
     """
     reaction_str = ''
     base_length = len(reaction_str)
@@ -103,7 +103,7 @@ class SimpleSBML(object):
   def getReactionKineticsTerms(cls, reaction):
     """
     Gets the terms used in the kinetics law for the reaction
-    :param libsbml.Reaction
+    :param tesbml.Reaction
     :return list-of-str: names of the terms
     """
     terms = []

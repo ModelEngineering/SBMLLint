@@ -3,4 +3,4 @@
 # Note that you must have conda (or miniconda) installed to 
 # run this script.
 conda install -c sys-bio tellurium
-pip install python-libsbml
+pip install networkx
