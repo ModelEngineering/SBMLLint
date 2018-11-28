@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 """Doctrings on StoichiometryMatrix.py.
 
-The StoichiometryMatrix class creates a stoichiometry matrix class of a model and tests
-whether it is consistent. The columns of stoichiometry matrix represent reactions
-and the rows represent metabolites. 
+The StoichiometryMatrix class represents a stoichiometry matrix where the columns are reactions
+and the rows are molecules. 
 
-A stoichiometry matrix is 'consistent' if, for a matrix N and a metabolite mass vector m,
-we can find positive vector m such that N.T*m = 0. It is inconsistent if we cannot find
-such a solution. The isConsistent method checks whether the stoichiometry matrix is 
+A stoichiometry matrix N is 'consistent' if we can find positive mass vector m such that 
+N.T*m = 0; otherwise, it is inconsistent.
+The isConsistent method checks whether the stoichiometry matrix is 
 consistent or not. 
 
 Example:
     You should already have an SBML model loaded, which we call 'model'.
 
-    >> import StoichiometryMatrix as ss
-    >> sbml_mat = ss.StoichiometryMatrix(model)
+    >> import stoichiometry_matrix as sm
+    >> sbml_mat = sm.StoichiometryMatrix(model)
     >> sbml_mat.isConsistent()
 
 Notes:
-    * If Tellurium is updated with a new stoichiometry matrix in future, we may simply use it instead
+    * Currently, Tellurium does not handle correctly boundary species. In the future, Tellurium will provide
+    a method getExtendedStoiciometryMatrix that correctly handles boundary species.
 
 """
 
@@ -26,17 +26,19 @@ Notes:
 
 
 import constants as ct
+
 import numpy as np
 import pandas as pd
 from scipy.optimize import linprog
 import tesbml
 
-class StoichiometryMatrix:
-    """Creates a full stoichiometry matrix from a model.
+
+class StoichiometryMatrix(object):
+    """Creates a full stoichiometry matrix from a SBML model that correctly incorporates boundary species.
 
     This class takes one input argument, an SBML model, and creates
     a MassFlowGraph and a FullGraph. The user can check the model's
-    stoichiometric consistency using isStoichiometryConsistent(). 
+    stoichiometric consistency using isConsistent(). 
 
     Attributes:
         model (SBML model): An SBML model. The argument needed to create a ModelGraph object. 
@@ -48,7 +50,9 @@ class StoichiometryMatrix:
     """    
     def __init__(self, model):
         self.model = model
+        self.consistent = None
 
+        # if not isinstance(self.model, tesbml.libsedml.Model):
         if self.model == None:
             raise TypeError("Model doesn't exist")
     
@@ -61,10 +65,10 @@ class StoichiometryMatrix:
         determine stoichiometric inconsistency using linear programming.
         
         Args:
-            No specific arguments. 
+            None. 
 
         Returns:
-            Stoichiometry matrix (pandas Dataframe)    
+            pd.DataFrame    
         """
         
         list_reactions = [reaction.getId() for reaction in self.model.getListOfReactions()]
@@ -107,7 +111,6 @@ class StoichiometryMatrix:
         self.stoichiometry_matrix = full_stoichiometry_matrix   
         return full_stoichiometry_matrix
 
-    
     def isConsistent(self):
         """ Runs linear programmming to determine inconsistency. 
         
@@ -116,31 +119,27 @@ class StoichiometryMatrix:
         inconsistent.
 
         Args:
-            No specific arguments. 
+            None. 
 
         Returns:
             True if consistent, False if not consistent
         """
-
         s_matrix_t = self.stoichiometry_matrix.T
-
         # number of metabolites
         nmet = s_matrix_t.shape[0]
         # number of reactions
         nreac = s_matrix_t.shape[1]
-
+        #
         b = np.zeros(nmet)
         c = np.ones(nreac)
-
         # linear programming. c is constraint (here, zero), 
         # and b is possible values for metabolite vector. 
         res = linprog(c, A_eq=s_matrix_t, b_eq=b, bounds=(1, None))
-
         if res.status == 0:
             self.consistent = True
         else:
             self.consistent = False
-
+        #
         return self.consistent
 
 
