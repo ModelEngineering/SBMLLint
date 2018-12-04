@@ -3,7 +3,10 @@ Provides simplified, read-only access to an SBML model.
 """
 import sys
 import os.path
+import tellurium as te
 import tesbml
+
+INITIAL_PATH ="http://www.ebi.ac.uk/biomodels-main/download?mid=BIOMD"
 
 
 class SimpleSBML(object):
@@ -135,5 +138,22 @@ class SimpleSBML(object):
     return self._parameters.has_key(name)
 
 
-if __name__ == '__main__':
-  main(sys.argv)  
+
+
+def biomodelIterator(initial=1, final=1000):
+  """
+  :return int, libsbml.model: BioModels number, Model
+  """
+  num = initial - 1
+  for _ in range(final-initial+1):
+    num += 1
+    formatted_num = format(num, "010")
+    url = "%s%s" % (INITIAL_PATH, formatted_num)
+    try:
+      rr = te.tellurium.RoadRunner(url)
+    except:
+      break
+    model_stg = rr.getCurrentSBML()
+    reader = tesbml.SBMLReader()
+    document = reader.readSBMLFromString(model_stg)
+    yield num, document.getModel()

@@ -3,8 +3,10 @@ Tests for simple_sbml
 """
 import unittest
 import numpy as np
-from simple_sbml import SimpleSBML
 import tesbml
+import simple_sbml
+from simple_sbml import SimpleSBML
+import tellurium as te
 
 
 IGNORE_TEST = False
@@ -31,6 +33,18 @@ class TestSimpleSBML(unittest.TestCase):
       self.assertLessEqual(reaction.getNumReactants(), MAX_REACTANTS)
     self.assertEqual(len(self.simple.getParameters()), NUM_PARAMETERS)
 
+
+
+class TestFunctions(unittest.TestCase):
+
+  def testBiomodelIterator(self):
+    FINAL = 2
+    generator = simple_sbml.biomodelIterator(final=FINAL)
+    import pdb; pdb.set_trace()
+    for idx, model in generator:
+      import pdb; pdb.set_trace()
+      self.assertGreater(FINAL, idx)
+      self.assertTrue(isinstance(model, te.libsbml.model))
 
 if __name__ == '__main__':
   unittest.main()
