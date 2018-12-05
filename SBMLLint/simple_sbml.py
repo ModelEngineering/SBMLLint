@@ -1,31 +1,41 @@
 """
 Provides simplified, read-only access to an SBML model.
+TODO: Likely incompatibility with tellurium? Need separate way
+to read from file? Isolate error and give to Kyle?
 """
 import sys
 import os.path
+#import tesbml
 import tellurium as te
-import tesbml
+import tellurium.tellurium as tx
 
 INITIAL_PATH ="http://www.ebi.ac.uk/biomodels-main/download?mid=BIOMD"
 
 
+###################### CLASSES #############################
 class SimpleSBML(object):
   """
   Provides access to reactions, species, and parameters.
   """
 
-  def __init__(self, filename):
+  def __init__(self, model_id):
     """
-    :param str filename: File containing the SBML document
+    :param str/libsedml.model model_id: 
+        File containing the SBML document or model
     :raises IOError: Error encountered reading the SBML document
     """
-    self._filename = filename
-    self._reader = tesbml.SBMLReader()
-    self._document = self._reader.readSBML(self._filename)
-    if (self._document.getNumErrors() > 0):
-      raise IOError("Errors in SBML document\n%s" 
-          % self._document.printErrors())
-    self._model = self._document.getModel()
+    if isinstance(model_id, str):
+      self._filename = model_id
+      #reader = tesbml.SBMLReader()
+      reader = tx.libsbml.SBMLReader()
+      document = reader.readSBML(self._filename)
+      if (document.getNumErrors() > 0):
+        raise IOError("Errors in SBML document\n%s" 
+            % document.printErrors())
+      self._model = document.getModel()
+    else:
+      self._filename = None
+      self._model = model_id
     self._reactions = self._getReactions()
     self._parameters = self._getParameters()  # dict with key=name
     self._species = self._getSpecies()  # dict with key=name
@@ -138,10 +148,10 @@ class SimpleSBML(object):
     return self._parameters.has_key(name)
 
 
-
-
+###################### FUNCTIONS #############################
 def biomodelIterator(initial=1, final=1000):
   """
+  Iterates across all biomodels.
   :return int, libsbml.model: BioModels number, Model
   """
   num = initial - 1
@@ -154,6 +164,7 @@ def biomodelIterator(initial=1, final=1000):
     except:
       break
     model_stg = rr.getCurrentSBML()
-    reader = tesbml.SBMLReader()
+    #reader = tesbml.SBMLReader()
+    reader = tx.libsbml.SBMLReader()
     document = reader.readSBMLFromString(model_stg)
     yield num, document.getModel()
