@@ -2,12 +2,16 @@
 Provides simplified, read-only access to an SBML model.
 TODO: Likely incompatibility with tellurium? Need separate way
 to read from file? Isolate error and give to Kyle?
+Create separate iterators that returns models for local files vs.
+downloading curated models.
+Create directory of downloaded files in repo. 
+Create PROJECT_DIR, which is the path for the project and
+BIOMODELS_DIR.
 """
 import sys
 import os.path
-#import tesbml
-import tellurium as te
-import tellurium.tellurium as tx
+import tesbml
+import urllib.request
 
 INITIAL_PATH ="http://www.ebi.ac.uk/biomodels-main/download?mid=BIOMD"
 
@@ -27,7 +31,7 @@ class SimpleSBML(object):
     if isinstance(model_id, str):
       self._filename = model_id
       #reader = tesbml.SBMLReader()
-      reader = tx.libsbml.SBMLReader()
+      reader = tesbml.SBMLReader()
       document = reader.readSBML(self._filename)
       if (document.getNumErrors() > 0):
         raise IOError("Errors in SBML document\n%s" 
@@ -149,6 +153,16 @@ class SimpleSBML(object):
 
 
 ###################### FUNCTIONS #############################
+def readURL(url):
+  """
+  :param str url:
+  :return str: file content
+  """
+  response = urllib.request.urlopen(url)
+  result = response.read()
+  result = result.decode("utf-8")
+  return result
+
 def biomodelIterator(initial=1, final=1000):
   """
   Iterates across all biomodels.
@@ -160,11 +174,9 @@ def biomodelIterator(initial=1, final=1000):
     formatted_num = format(num, "010")
     url = "%s%s" % (INITIAL_PATH, formatted_num)
     try:
-      rr = te.tellurium.RoadRunner(url)
+      model_stg = readURL(url)
     except:
       break
-    model_stg = rr.getCurrentSBML()
-    #reader = tesbml.SBMLReader()
-    reader = tx.libsbml.SBMLReader()
+    reader = tesbml.SBMLReader()
     document = reader.readSBMLFromString(model_stg)
     yield num, document.getModel()

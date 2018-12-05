@@ -22,10 +22,11 @@ MAX_REACTANTS = 10
 class TestSimpleSBML(unittest.TestCase):
 
   def setUp(self):
-    pass
-    #self.simple = SimpleSBML(TEST_FILE)
+    self.simple = SimpleSBML(TEST_FILE)
 
   def testConstructor(self):
+    if IGNORE_TEST:
+      return
     generator = simple_sbml.biomodelIterator(final=1)
     idx, model = [x for x in generator][0]
     simple = SimpleSBML(model)
@@ -42,13 +43,11 @@ class TestSimpleSBML(unittest.TestCase):
 class TestFunctions(unittest.TestCase):
 
   def testBiomodelIterator(self):
-    if IGNORE_TEST:
-      return
     FINAL = 2
     generator = simple_sbml.biomodelIterator(final=FINAL)
     for idx, model in generator:
       self.assertGreaterEqual(FINAL, idx)
-      #self.assertTrue(isinstance(model, tesedml.libsedml.Model))
+      self.assertTrue(isinstance(model, tesbml.libsbml.Model))
 
 if __name__ == '__main__':
   unittest.main()
