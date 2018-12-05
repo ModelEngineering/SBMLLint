@@ -163,9 +163,13 @@ def readURL(url):
   result = result.decode("utf-8")
   return result
 
-def biomodelIterator(initial=1, final=1000):
+def biomodelIterator(initial=1, final=1000, is_model=True):
   """
   Iterates across all biomodels.
+  :param int initial: initial biomodel
+  :param int final: final biomodel
+  :param bool is_model: Returns a model; else returns
+    string of file content
   :return int, libsbml.model: BioModels number, Model
   """
   num = initial - 1
@@ -177,6 +181,10 @@ def biomodelIterator(initial=1, final=1000):
       model_stg = readURL(url)
     except:
       break
-    reader = tesbml.SBMLReader()
-    document = reader.readSBMLFromString(model_stg)
-    yield num, document.getModel()
+    if is_model:
+      reader = tesbml.SBMLReader()
+      document = reader.readSBMLFromString(model_stg)
+      result = document.getModel()
+    else:
+      result = model_str
+    yield num, result
