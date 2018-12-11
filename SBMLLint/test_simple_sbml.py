@@ -30,6 +30,11 @@ class TestSimpleSBML(unittest.TestCase):
       self.assertTrue(isinstance(reaction, tesbml.Reaction))
       self.assertLessEqual(reaction.getNumReactants(), MAX_REACTANTS)
     self.assertEqual(len(self.simple.getParameters()), NUM_PARAMETERS)
+<<<<<<< HEAD
+=======
+    for param in self.simple.getParameters():
+      self.assertTrue(isinstance(param, str))
+>>>>>>> cf0504c2b4c76b628babdc6671b6763ef687386f
 
 
 if __name__ == '__main__':
