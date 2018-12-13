@@ -25,7 +25,7 @@ Notes:
 # Help from https://gist.github.com/lukauskas/d1e30bdccc5b801d341d
 
 
-import constants as ct
+import constants as cn
 
 import numpy as np
 import pandas as pd
@@ -73,7 +73,7 @@ class StoichiometryMatrix(object):
         
         list_reactions = [reaction.getId() for reaction in self.model.getListOfReactions()]
         set_reactions = {reaction.getId() for reaction in self.model.getListOfReactions()}
-        set_species = {species.getId() for species in self.model.getListOfSpecies()}.difference({ct.EMPTYSET})
+        set_species = {species.getId() for species in self.model.getListOfSpecies()}.difference({cn.EMPTYSET})
         list_species = list(set_species)
 
         stoichiometry_matrix = {}
@@ -87,13 +87,13 @@ class StoichiometryMatrix(object):
             list_products = [product.getSpecies() for product in reaction.getListOfProducts()]
 
             reactants = {reactant.getSpecies(): reactant.getStoichiometry() for reactant in reaction.getListOfReactants()}
-            if (reactants == {}) | (reactants.keys() == {ct.EMPTYSET}):
+            if (reactants == {}) | (reactants.keys() == {cn.EMPTYSET}):
                 BDRY_REACTANT_NAME = reaction.getId()+'_bdry_rct'
                 reactants = {BDRY_REACTANT_NAME: 1.0}
                 list_species.append(BDRY_REACTANT_NAME)
 
             products = {product.getSpecies(): product.getStoichiometry() for product in reaction.getListOfProducts()}
-            if (products == {}) | (products.keys() == {ct.EMPTYSET}):
+            if (products == {}) | (products.keys() == {cn.EMPTYSET}):
                 BDRY_PRODUCT_NAME = reaction.getId()+'_bdry_pdt'
                 products = {BDRY_PRODUCT_NAME: 1.0}
                 list_species.append(BDRY_PRODUCT_NAME)
@@ -107,8 +107,11 @@ class StoichiometryMatrix(object):
         full_stoichiometry_matrix = pd.DataFrame(0, index=list_species, columns=list_reactions)
         for key in nonzero_stoichiometry_matrix.keys():
             full_stoichiometry_matrix.iloc[key] = nonzero_stoichiometry_matrix.get(key)
+        
+        # delete remaining nonzero rows; i.e. species in getListOfSpecies but not in actual reactions 
+        result_matrix = full_stoichiometry_matrix.loc[(full_stoichiometry_matrix!=0).any(axis=1)]
 
-        self.stoichiometry_matrix = full_stoichiometry_matrix   
+        self.stoichiometry_matrix = result_matrix   
         return full_stoichiometry_matrix
 
     def isConsistent(self):
