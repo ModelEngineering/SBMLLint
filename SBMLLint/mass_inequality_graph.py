@@ -78,9 +78,9 @@ class MassInequalityGraph():
                 MIG.add_edge(in_nodes[0], out_nodes[0], inequality='=')
                 MIG.add_edge(out_nodes[0], in_nodes[0], inequality='=')      
             elif (len(in_nodes)==1) & (len(out_nodes)>1): 
-                MIG.add_edges_from(itertools.product(in_nodes, out_nodes,), inequality='>')
+                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality='>')
             elif (len(in_nodes)>1) & (len(in_nodes)==1): 
-                MIG.add_edges_from(itertools.product(in_nodes, out_nodes,), inequality='<')
+                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality='<')
 
         self.mass_inequality_graph = MIG
         return MIG
@@ -113,7 +113,7 @@ class MassInequalityGraph():
                 imbalance_pairs = []
                 for ineq in list(set(ineq_list)):
                     imbalance_pairs.append(edge[0] + ineq + edge[1])
-            imbalance_set[edge[0]+'->'+edge[1]] = imbalance_pairs
+                imbalance_set[edge[0]+'->'+edge[1]] = imbalance_pairs
 
         self.imbalance_set = imbalance_set
         return imbalance_set
