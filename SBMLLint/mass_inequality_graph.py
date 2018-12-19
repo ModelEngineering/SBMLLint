@@ -105,15 +105,14 @@ class MassInequalityGraph():
         multi_edge_list = [edge for edge in edge_list if self.mass_inequality_graph.number_of_edges(*edge)>1]
 
         for edge in multi_edge_list:
-            edge_key = self.mass_inequality_graph.new_edge_key(*edge)
             edge_data = self.mass_inequality_graph.get_edge_data(*edge)
-            ineq_list = [edge_data[key][cn.INEQUALITY] for key in edge_data]
+            ineq_set = {edge_data[key][cn.INEQUALITY] for key in edge_data}
             # length>1 means there are inconsistent relatioship between two species
-            if len(set(ineq_list))>1:
+            if len(ineq_set)>1:
                 imbalance_pairs = []
                 for ineq in list(set(ineq_list)):
                     imbalance_pairs.append(edge[0] + ineq + edge[1])
-                imbalance_set[edge[0]+'->'+edge[1]] = imbalance_pairs
+                imbalance_set[edge[0]+'<->'+edge[1]] = imbalance_pairs
 
         self.imbalance_set = imbalance_set
         return imbalance_set
