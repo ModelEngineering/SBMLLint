@@ -10,6 +10,7 @@ Example:
 
     >> import reaction_graph as rg
     >> rg_class = rg.ReactionGraph(model)
+    >> rg_class.buildReactionGraph()
 
 """
 
@@ -32,9 +33,11 @@ class ReactionGraph():
 
     Attributes:
         model (SBML model): An SBML model. The argument needed to create a ModelGraph object. 
-        connected (str): Connectivity status of a model.
+        consistent (bool): True if model is consistent, False if not. 
+        reaction_graph (networkx.DiGraph) : A directed graph between reactants-reaction_name-products
+        inconsistent_set (set) : A set of reactions that are inconsistent; the remaining reactions 
+                                 within the model should be consistent. 
 
-        bipartite_flow_graph: A directed graph between reactants-reactions name-products 
 
     """    
     def __init__(self, model):
@@ -48,7 +51,7 @@ class ReactionGraph():
             raise TypeError("Model doesn't exist")
 
     def buildReactionGraph(self):
-        """Creates a full stoichiometry matrix from a model.
+        """Creates a reaction graph from a model.
         
         We assume each reaction has at least one reactant and one product.
         if either is undefined as EmptySet, we create a new boundary species 
@@ -80,7 +83,7 @@ class ReactionGraph():
         return G
 
     def isConsistent(self):
-        """ Checks if the graph is consistent using StoichiometryMatrix class. 
+        """ Checks if the graph is consistent using the StoichiometryMatrix class. 
 
         Args:
             None. 
@@ -100,9 +103,10 @@ class ReactionGraph():
         This method detects reactions from the cycles in a reaction graph
         under two criteria:
 
-        1. If a cycle has a reaction with different number of
-        reactants and products, choose reactions with same number of
-        reactants/products within the cycle. 
+        1. Fina a cycle. If the cycle has a reaction with different number of
+        reactants and products, choose reactions with the same number of
+        reactants/products within the cycle. For example, if a cycle is
+        A -> B + C // B -> D -> A, we choose 'D->A' as a problematic reaction. 
 
         2. Choose reactions with a self-loop (for example, A -> A + B)
 
