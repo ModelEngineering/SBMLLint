@@ -74,13 +74,15 @@ class MassInequalityGraph():
             in_nodes = [edge[0] for edge in self.reaction_graph.in_edges(reaction)]
             out_nodes = [edge[1] for edge in self.reaction_graph.out_edges(reaction)]
               
-            if (len(in_nodes) == 1) & (len(out_nodes)==1):
-                MIG.add_edge(in_nodes[0], out_nodes[0], inequality='=')
-                MIG.add_edge(out_nodes[0], in_nodes[0], inequality='=')      
+            if (len(in_nodes)==1) & (len(out_nodes)==1):
+                MIG.add_edge(in_nodes[0], out_nodes[0], inequality='=', reaction=reaction)
+                MIG.add_edge(out_nodes[0], in_nodes[0], inequality='=', reaction=reaction)      
             elif (len(in_nodes)==1) & (len(out_nodes)>1): 
-                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality='>')
-            elif (len(in_nodes)>1) & (len(in_nodes)==1): 
-                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality='<')
+                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality='>', \
+                           reaction=reaction)
+            elif (len(in_nodes)>1) & (len(out_nodes)==1): 
+                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality='<', \
+                           reaction=reaction)
 
         self.mass_inequality_graph = MIG
         return MIG
@@ -110,7 +112,7 @@ class MassInequalityGraph():
             # length>1 means there are inconsistent relatioship between two species
             if len(ineq_set)>1:
                 imbalance_pairs = []
-                for ineq in list(set(ineq_list)):
+                for ineq in list(ineq_set):
                     imbalance_pairs.append(edge[0] + ineq + edge[1])
                 imbalance_set[edge[0]+'<->'+edge[1]] = imbalance_pairs
 
