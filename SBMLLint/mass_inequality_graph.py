@@ -66,7 +66,7 @@ class MassInequalityGraph():
             None. 
 
         Returns:
-            networkx.classes.digraph.MultiDiGraph    
+            mass_inequality_graph (networkx.classes.digraph.MultiDiGraph)    
         """
         reaction_list = [reaction.getId() for reaction in self.model.getListOfReactions()]
         MIG = nx.MultiDiGraph()
@@ -88,36 +88,115 @@ class MassInequalityGraph():
         return MIG
 
 
-
-    def findImbalancedReactions(self):
-        """ Find a set of reactions that are inconsistent.
-
-        This method identifies edges that have incompatible inequality attributes.
-        For example, if two species 'A' and 'B' have two edges, each of which 
-        has '=' and '<' respectively, we consider the relationship is mass-imbalanced. 
-
+    def buildMIG2(self):
+        """Creates a MIG2, a maximally ordered graph by equivalence relations
+        
+        Each node of MIG2 is a set whoose elements have equal masses according to 
+        the original mass inequality graph. The edges are created only if the species
+        are strictlly less or great than each other. If unequal species show up within
+        the same node, this reaction violates ordering and will be flagged. 
+       
         Args:
             None. 
 
         Returns:
-           imbalance_set (dictionary): A dictionary with species pairs and inconsistet attributes. 
+            MIG2 (networkx.classes.digraph.MultiDiGraph)    
         """
-        imbalance_set = {}
-        edge_list = list(set(self.mass_inequality_graph.edges(keys=False)))               
-        multi_edge_list = [edge for edge in edge_list if self.mass_inequality_graph.number_of_edges(*edge)>1]
+        reaction_list = [reaction.getId() for reaction in self.model.getListOfReactions()]
+        species_set = set(species.getId() for species in self.model.getListOfSpecies())
+        edge_with_ineq = list(self.mass_inequality_graph.edges(data='inequality'))
 
-        for edge in multi_edge_list:
-            edge_data = self.mass_inequality_graph.get_edge_data(*edge)
-            ineq_set = {edge_data[key][cn.INEQUALITY] for key in edge_data}
-            # length>1 means there are inconsistent relatioship between two species
-            if len(ineq_set)>1:
-                imbalance_pairs = []
-                for ineq in list(ineq_set):
-                    imbalance_pairs.append(edge[0] + ineq + edge[1])
-                imbalance_set[edge[0]+'<->'+edge[1]] = imbalance_pairs
+        # choose reactions without boundary species
+        reduced_edge_with_ineq = {edge for edge in edge_with_ineq if len(set(edge).intersection(species_set)) == 2}
+        equal_edges = {(a,b,c) for a, b, c in reduced_edge_with_ineq if c == '='}
+        unequal_edges = {(a,b,c) for a, b, c in reduced_edge_with_ineq if c != '='}
+        model_species = species_set.intersection(set(self.mass_inequality_graph.nodes))
 
-        self.imbalance_set = imbalance_set
-        return imbalance_set
+        equal_node_list = []
+
+        num_equal_edges = len(equal_edges)
+        remove_edges = equal_edges.copy()
+        for edge in list(equal_edges):
+
+            # take a (random) edge from the remove_edges set
+            is_included = [(edge[0] in node_set) | (edge[1] in node_set) for node_set in equal_node_list]
+            idx_included = [idx for idx, included in enumerate(is_included) if included]
+            idx_not_included = [idx for idx, included in enumerate(is_included) if not included]
+            
+            # if there is no matching set, we create a new one
+            if sum(is_included)==0:
+                equal_node_list.append(frozenset({edge[0], edge[1]}))
+            
+            # if there is exactly one matching subset, we added this element to the set
+            elif sum(is_included)==1:
+                idx = idx_included[0]
+                equal_node_list[idx] = equal_node_list[idx].union(frozenset({edge[0], edge[1]}))
+                
+            # if there are more than one matching subsets, we combine them and add the element
+            else:
+                merged_set = frozenset({edge[0], edge[1]})
+                for idx in idx_included:
+                    merged_set = merged_set.union(equal_node_list[idx])
+                equal_node_list = [equal_node_list[idx] for idx in idx_not_included] + [merged_set]
+            
+            # remove an edge at every step
+            remove_edges.remove(edge) 
+
+        # identify model species that are not included in the equal_node_list. Create them as one-element sets?
+        remaining_species_set = model_species.copy()
+        for equal_node in equal_node_list:
+            remaining_species_set = remaining_species_set.difference(equal_node)
+        equal_node_list = equal_node_list + [frozenset([species]) for species in remaining_species_set]
+
+        # now, create MIG2
+        MIG2 = nx.MultiDiGraph()
+        MIG2.add_nodes_from(equal_node_list)
+
+        for edge in list(unequal_edges):
+            is_icld_rct = [edge[0] in node_set for node_set in equal_node_list]
+            is_icld_pdt = [edge[1] in node_set for node_set in equal_node_list]
+
+            if is_icld_rct.index(True)==is_icld_pdt.index(True):
+                print("Edge ", edge, " is inconsistent. ")
+                print(edge[0], edge[2], edge[1], "and ", edge[0], "=", edge[1])
+                print("")
+            else:
+                print("Edge", edge, " is applied to MIG2")
+                MIG2.add_edge(equal_node_list[is_icld_rct.index(True)], 
+                             equal_node_list[is_icld_pdt.index(True)])
+        self.MIG2 = MIG2
+        return MIG2
+
+
+    # def findImbalancedReactions(self):
+    #     """ Find a set of reactions that are inconsistent.
+
+    #     This method identifies edges that have incompatible inequality attributes.
+    #     For example, if two species 'A' and 'B' have two edges, each of which 
+    #     has '=' and '<' respectively, we consider the relationship is mass-imbalanced. 
+
+    #     Args:
+    #         None. 
+
+    #     Returns:
+    #        imbalance_set (dictionary): A dictionary with species pairs and inconsistet attributes. 
+    #     """
+    #     imbalance_set = {}
+    #     edge_list = list(set(self.mass_inequality_graph.edges(keys=False)))               
+    #     multi_edge_list = [edge for edge in edge_list if self.mass_inequality_graph.number_of_edges(*edge)>1]
+
+    #     for edge in multi_edge_list:
+    #         edge_data = self.mass_inequality_graph.get_edge_data(*edge)
+    #         ineq_set = {edge_data[key][cn.INEQUALITY] for key in edge_data}
+    #         # length>1 means there are inconsistent relatioship between two species
+    #         if len(ineq_set)>1:
+    #             imbalance_pairs = []
+    #             for ineq in list(ineq_set):
+    #                 imbalance_pairs.append(edge[0] + ineq + edge[1])
+    #             imbalance_set[edge[0]+'<->'+edge[1]] = imbalance_pairs
+
+    #     self.imbalance_set = imbalance_set
+    #     return imbalance_set
 
 
 
