@@ -8,10 +8,13 @@ Create directory of downloaded files in repo.
 Create PROJECT_DIR, which is the path for the project and
 BIOMODELS_DIR.
 """
+import libsbml
+import print_model
+import urllib.request
+
 import sys
 import os.path
-import tesbml
-import urllib.request
+
 
 INITIAL_PATH ="http://www.ebi.ac.uk/biomodels-main/download?mid=BIOMD"
 
@@ -30,8 +33,8 @@ class SimpleSBML(object):
     """
     if isinstance(model_id, str):
       self._filename = model_id
-      #reader = tesbml.SBMLReader()
-      reader = tesbml.SBMLReader()
+      #reader = libsbml.SBMLReader()
+      reader = libsbml.SBMLReader()
       document = reader.readSBML(self._filename)
       if (document.getNumErrors() > 0):
         raise IOError("Errors in SBML document\n%s" 
@@ -44,6 +47,22 @@ class SimpleSBML(object):
     self._parameters = self._getParameters()  # dict with key=name
     self._species = self._getSpecies()  # dict with key=name
 
+  def getStr(self):
+    """
+    Prints the model.
+    """
+    for reaction_idx in range(self._model.getNumReactions()):
+      import pdb; pdb.set_trace()
+      reaction = self._model.getReaction(reaction_idx)
+      stg = "reaction " + str(reaction_idx) + ": "
+      reactants_list = [reactant.getSpecies() 
+          for reactant in reaction.getListOfReactants()]
+      products_list = [product.getSpecies() 
+          for product in reaction.getListOfProducts()]
+      stg = stg + ' + '.join(reactants_list)  \
+          + " -> " + ' + '.join(products_list) + ';'
+    return stg
+
   def _getSpecies(self):
     speciess = {}
     for idx in range(self._model.getNumSpecies()):
@@ -53,7 +72,7 @@ class SimpleSBML(object):
 
   def _getReactions(self):
     """
-    :param tesbml.Model:
+    :param libsbml.Model:
     :return list-of-reactions
     """
     num = self._model.getNumReactions()
@@ -61,12 +80,13 @@ class SimpleSBML(object):
 
   def _getParameters(self):
     """
-    :param tesbml.Model:
+    :param libsbml.Model:
     :return list-of-reactions
     """
     parameters = {}
     for idx in range(self._model.getNumParameters()):
       parameter = self._model.getParameter(idx)
+      import pdb; pdb.set_trace()
       parameters[parameter.getId()] = parameter
     return parameters
 
@@ -78,8 +98,8 @@ class SimpleSBML(object):
 
   def getReactants(self, reaction):
     """
-    :param tesbml.Reaction:
-    :return list-of-tesbml.SpeciesReference:
+    :param libsbml.Reaction:
+    :return list-of-libsbml.SpeciesReference:
     To get the species name: SpeciesReference.species
     To get stoichiometry: SpeciesReference.getStoichiometry
     """
@@ -87,8 +107,8 @@ class SimpleSBML(object):
 
   def getProducts(self, reaction):
     """
-    :param tesbml.Reaction:
-    :return list-of-tesbml.SpeciesReference:
+    :param libsbml.Reaction:
+    :return list-of-libsbml.SpeciesReference:
     """
     return [reaction.getProduct(n) for n in range(reaction.getNumProducts())]
 
@@ -96,7 +116,7 @@ class SimpleSBML(object):
   def getReactionString(cls, reaction):
     """
     Provides a string representation of the reaction
-    :param tesbml.Reaction reaction:
+    :param libsbml.Reaction reaction:
     """
     reaction_str = ''
     base_length = len(reaction_str)
@@ -120,7 +140,7 @@ class SimpleSBML(object):
   def getReactionKineticsTerms(cls, reaction):
     """
     Gets the terms used in the kinetics law for the reaction
-    :param tesbml.Reaction
+    :param libsbml.Reaction
     :return list-of-str: names of the terms
     """
     terms = []
@@ -182,7 +202,7 @@ def biomodelIterator(initial=1, final=1000, is_model=True):
     except:
       break
     if is_model:
-      reader = tesbml.SBMLReader()
+      reader = libsbml.SBMLReader()
       document = reader.readSBMLFromString(model_stg)
       result = document.getModel()
     else:

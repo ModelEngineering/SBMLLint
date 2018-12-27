@@ -3,9 +3,8 @@ Tests for simple_sbml
 """
 import unittest
 import numpy as np
-import tesbml
+#import tesbml
 import simple_sbml
-from simple_sbml import SimpleSBML
 #import tesedml
 
 
@@ -22,19 +21,19 @@ MAX_REACTANTS = 10
 class TestSimpleSBML(unittest.TestCase):
 
   def setUp(self):
-    self.simple = SimpleSBML(TEST_FILE)
+    self.simple = simple_sbml.SimpleSBML(TEST_FILE)
 
   def testConstructor(self):
-    if IGNORE_TEST:
-      return
-    generator = simple_sbml.biomodelIterator(final=1)
+    self.simple.getStr()
+    import pdb; pdb.set_trace()
+    generator = simple_sbml.biomodelIterator(initial=1, final=1)
     idx, model = [x for x in generator][0]
-    simple = SimpleSBML(model)
+    simple = simple_sbml.SimpleSBML(model)
     #
     self.assertEqual(len(simple.getReactions()), NUM_REACTIONS)
     self.assertEqual(len(self.simple.getReactions()), NUM_REACTIONS)
     for reaction in self.simple.getReactions():
-      self.assertTrue(isinstance(reaction, tesbml.Reaction))
+      #self.assertTrue(isinstance(reaction, tesbml.Reaction))
       self.assertLessEqual(reaction.getNumReactants(), MAX_REACTANTS)
     self.assertEqual(len(self.simple.getParameters()), NUM_PARAMETERS)
 
@@ -43,11 +42,13 @@ class TestSimpleSBML(unittest.TestCase):
 class TestFunctions(unittest.TestCase):
 
   def testBiomodelIterator(self):
+    if IGNORE_TEST:
+      return
     FINAL = 2
     generator = simple_sbml.biomodelIterator(final=FINAL)
     for idx, model in generator:
       self.assertGreaterEqual(FINAL, idx)
-      self.assertTrue(isinstance(model, tesbml.libsbml.Model))
+      #self.assertTrue(isinstance(model, tesbml.libsbml.Model))
 
 if __name__ == '__main__':
   unittest.main()
