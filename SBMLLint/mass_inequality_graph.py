@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 """Doctrings on mass_inequality_graph.py.
 
+-> High level description: What is the problem? Motivation of this problem 
+(relationship between species in chemical reactions)
+
 The MassInequalityGraph class represents a directed graph class with multiple edges between species. 
 Each reactant is connected to a product, where each edge has a 'inequality' attribute, 
-which is one of '=', '>', and '<'. This represents relative inequality of masses between
+which is either '=', or '<'. This represents relative inequality of masses between
 reactants and products, and helps us identify reactions that are not compatible. 
 
 Example:
@@ -29,25 +32,35 @@ import tesbml
 
 class MassInequalityGraph():
     """Creates a mass inequaltiy graph. 
+    
+    -> Here, more of software organization:
+    Data structure or high level information:
+    -> only use '<', and don't need '>'
+
+
 
     This class takes one input argument, an SBML model, and creates a 
     reaction graph class. From there, it creates another directed graph,
     this time with multiple edges between nodes. There are a few methods that
     identifies mass-inconsistent reactions. 
 
+    -->> don't use this 
     Attributes:
         model (SBML model): An SBML model. The argument needed to create a reaction graph object. 
         reaction_graph (networkx.DiGraph): A reaction graph (directed graph) between reactants and products.
         imbalance_set(set): A set of reactions that are mass-inconsistent. 
+    -->> don't use this
 
     """    
     def __init__(self, model):
         self.model = model
+
+        # -->> don't use name 'class'; for example, instead of rg_class, reaction_graph (despite self.reaction_graph means something else)
         rg_class = rg.ReactionGraph(model)
         rg_class.buildReactionGraph()
         self.reaction_graph = rg_class.reaction_graph
-        self.mass_inequality_graph = None
-        self.imbalance_set = None
+        self.mass_inequality_graph = None # -> add explanation of it
+        self.imbalance_set = None # -> add explanation of it
 
         # if not isinstance(self.model, tesbml.libsedml.Model):
         if self.model == None:
@@ -58,7 +71,7 @@ class MassInequalityGraph():
         
         Each reaction within the reaction graph has at least one reactant and one product.
         Here, we remove each reaction name node and directly connect reactants and products.
-        At the same time, each edge has one of the three inequality attributes: '=', '<', and '>'.
+        At the same time, each edge has one of the two inequality attributes: '=' and '<'.
         Since the same edge between two nodes can have multiple attributes, we create a MultiDiGraph
         which will allow multiple edges between same pair of nodes. 
        
@@ -75,19 +88,21 @@ class MassInequalityGraph():
             out_nodes = [edge[1] for edge in self.reaction_graph.out_edges(reaction)]
               
             if (len(in_nodes)==1) & (len(out_nodes)==1):
-                MIG.add_edge(in_nodes[0], out_nodes[0], inequality='=', reaction=reaction)
-                MIG.add_edge(out_nodes[0], in_nodes[0], inequality='=', reaction=reaction)      
+
+                MIG.add_edge(in_nodes[0], out_nodes[0], inequality=cn.EQUAL, reaction=reaction)
+                MIG.add_edge(out_nodes[0], in_nodes[0], inequality=cn.EQUAL, reaction=reaction)      
             elif (len(in_nodes)==1) & (len(out_nodes)>1): 
-                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality='>', \
+                MIG.add_edges_from(itertools.product(out_nodes, in_nodes), inequality=cn.LESSTHAN, \
                            reaction=reaction)
             elif (len(in_nodes)>1) & (len(out_nodes)==1): 
-                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality='<', \
+                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality=cn.LESSTHAN, \
                            reaction=reaction)
 
         self.mass_inequality_graph = MIG
         return MIG
 
 
+    ### ->> come up with different name for this
     def buildMIG2(self):
         """Creates a MIG2, a maximally ordered graph by equivalence relations
         
@@ -102,14 +117,18 @@ class MassInequalityGraph():
         Returns:
             MIG2 (networkx.classes.digraph.MultiDiGraph)    
         """
+
+        ## -->>> use 
         reaction_list = [reaction.getId() for reaction in self.model.getListOfReactions()]
+        ## -->>> use 'reactions' instead
+
         species_set = set(species.getId() for species in self.model.getListOfSpecies())
         edge_with_ineq = list(self.mass_inequality_graph.edges(data='inequality'))
 
         # choose reactions without boundary species
         reduced_edge_with_ineq = {edge for edge in edge_with_ineq if len(set(edge).intersection(species_set)) == 2}
-        equal_edges = {(a,b,c) for a, b, c in reduced_edge_with_ineq if c == '='}
-        unequal_edges = {(a,b,c) for a, b, c in reduced_edge_with_ineq if c != '='}
+        equal_edges = {(a,b,c) for a, b, c in reduced_edge_with_ineq if c == cn.EQUAL}
+        unequal_edges = {(a,b,c) for a, b, c in reduced_edge_with_ineq if c != cn.EQUAL}
         model_species = species_set.intersection(set(self.mass_inequality_graph.nodes))
 
         equal_node_list = []
@@ -158,7 +177,7 @@ class MassInequalityGraph():
 
             if is_icld_rct.index(True)==is_icld_pdt.index(True):
                 print("Edge ", edge, " is inconsistent. ")
-                print(edge[0], edge[2], edge[1], "and ", edge[0], "=", edge[1])
+                print(edge[0], edge[2], edge[1], "and ", edge[0], cn.EQUAL, edge[1])
                 print("")
             else:
                 print("Edge", edge, " is applied to MIG2")
