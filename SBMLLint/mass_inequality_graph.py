@@ -92,7 +92,7 @@ class MassInequalityGraph():
                 MIG.add_edge(in_nodes[0], out_nodes[0], inequality=cn.EQUAL, reaction=reaction)
                 MIG.add_edge(out_nodes[0], in_nodes[0], inequality=cn.EQUAL, reaction=reaction)      
             elif (len(in_nodes)==1) & (len(out_nodes)>1): 
-                MIG.add_edges_from(itertools.product(out_nodes, in_nodes), inequality=cn.LESSTHAN, \
+                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality=cn.GREATERTHAN, \
                            reaction=reaction)
             elif (len(in_nodes)>1) & (len(out_nodes)==1): 
                 MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality=cn.LESSTHAN, \
