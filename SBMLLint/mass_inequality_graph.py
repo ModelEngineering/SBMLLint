@@ -99,17 +99,14 @@ class MassInequalityGraph():
             if (len(in_nodes)==1) & (len(out_nodes)==1):
                 if (self.model.getReaction(reaction).getReactant(0).getStoichiometry() == 1.0) & \
                     (self.model.getReaction(reaction).getProduct(0).getStoichiometry() == 1.0):
-                    print("ha!:")
                     MIG.add_edge(in_nodes[0], out_nodes[0], inequality=cn.EQUAL, reaction=reaction)
                     MIG.add_edge(out_nodes[0], in_nodes[0], inequality=cn.EQUAL, reaction=reaction)      
             elif (len(in_nodes)==1) & (len(out_nodes)>1): 
                 if self.model.getReaction(reaction).getReactant(0).getStoichiometry() == 1.0:
-                    print("he!:")
                     MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality=cn.GREATERTHAN, \
                            reaction=reaction)
             elif (len(in_nodes)>1) & (len(out_nodes)==1): 
                 if self.model.getReaction(reaction).getProduct(0).getStoichiometry() == 1.0:
-                    print("ho!:")
                     MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality=cn.LESSTHAN, \
                            reaction=reaction)
 
