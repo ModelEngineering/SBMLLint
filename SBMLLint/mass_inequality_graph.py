@@ -6,7 +6,7 @@
 
 The MassInequalityGraph class represents a directed graph class with multiple edges between species. 
 Each reactant is connected to a product, where each edge has a 'inequality' attribute, 
-which is either '=', or '<'. This represents relative inequality of masses between
+which is one of '=', '<', or '>'. This represents relative inequality of masses between
 reactants and products, and helps us identify reactions that are not compatible. 
 
 Example:
@@ -84,18 +84,33 @@ class MassInequalityGraph():
         reaction_list = [reaction.getId() for reaction in self.model.getListOfReactions()]
         MIG = nx.MultiDiGraph()
         for reaction in reaction_list:
+            
+            # skip the iteration if either reactant or product is empty
+            # 'EmptySet' will still be included, such as in model #6, but it will be removed in MESGraph
+            if (self.model.getReaction(reaction).getReactant(0) is None) | \
+                (self.model.getReaction(reaction).getProduct(0) is None):
+                continue
+            
             in_nodes = [edge[0] for edge in self.reaction_graph.in_edges(reaction)]
             out_nodes = [edge[1] for edge in self.reaction_graph.out_edges(reaction)]
-              
+            
+            # first, need to check if number of reactants/products is 1
+            # next, need to confirm the stoichiometry is exactly 1.0
             if (len(in_nodes)==1) & (len(out_nodes)==1):
-
-                MIG.add_edge(in_nodes[0], out_nodes[0], inequality=cn.EQUAL, reaction=reaction)
-                MIG.add_edge(out_nodes[0], in_nodes[0], inequality=cn.EQUAL, reaction=reaction)      
+                if (self.model.getReaction(reaction).getReactant(0).getStoichiometry() == 1.0) & \
+                    (self.model.getReaction(reaction).getProduct(0).getStoichiometry() == 1.0):
+                    print("ha!:")
+                    MIG.add_edge(in_nodes[0], out_nodes[0], inequality=cn.EQUAL, reaction=reaction)
+                    MIG.add_edge(out_nodes[0], in_nodes[0], inequality=cn.EQUAL, reaction=reaction)      
             elif (len(in_nodes)==1) & (len(out_nodes)>1): 
-                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality=cn.GREATERTHAN, \
+                if self.model.getReaction(reaction).getReactant(0).getStoichiometry() == 1.0:
+                    print("he!:")
+                    MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality=cn.GREATERTHAN, \
                            reaction=reaction)
             elif (len(in_nodes)>1) & (len(out_nodes)==1): 
-                MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality=cn.LESSTHAN, \
+                if self.model.getReaction(reaction).getProduct(0).getStoichiometry() == 1.0:
+                    print("ho!:")
+                    MIG.add_edges_from(itertools.product(in_nodes, out_nodes), inequality=cn.LESSTHAN, \
                            reaction=reaction)
 
         self.mass_inequality_graph = MIG
