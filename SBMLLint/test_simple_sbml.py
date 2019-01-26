@@ -10,6 +10,7 @@ import simple_sbml
 
 IGNORE_TEST = True
 TEST_FILE = "chemotaxis.xml"
+TEST_FILE = "BIOMD0000000001.xml"
 NUM_REACTIONS = 111
 NUM_PARAMETERS = 27
 MAX_REACTANTS = 10
@@ -25,7 +26,6 @@ class TestSimpleSBML(unittest.TestCase):
 
   def testConstructor(self):
     self.simple.getStr()
-    import pdb; pdb.set_trace()
     generator = simple_sbml.biomodelIterator(initial=1, final=1)
     idx, model = [x for x in generator][0]
     simple = simple_sbml.SimpleSBML(model)

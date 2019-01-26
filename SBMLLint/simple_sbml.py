@@ -44,8 +44,15 @@ class SimpleSBML(object):
       self._filename = None
       self._model = model_id
     self._reactions = self._getReactions()
+    self.checkType(self._reactions, libsbml.Reaction)
     self._parameters = self._getParameters()  # dict with key=name
     self._species = self._getSpecies()  # dict with key=name
+
+  def checkType(self, collection, sbmlType):
+    trues = [isinstance(v, sbmlType) for v in collection]
+    import pdb; pdb.set_trace()
+    if not all(trues):
+      raise ValueError("Invalid type for %s" % str(sbmlType))
 
   def getStr(self):
     """
@@ -87,7 +94,7 @@ class SimpleSBML(object):
     for idx in range(self._model.getNumParameters()):
       parameter = self._model.getParameter(idx)
       import pdb; pdb.set_trace()
-      parameters[parameter.getId()] = parameter
+      parameter[parameter.getId()] = parameter
     return parameters
 
   def getReactions(self):
