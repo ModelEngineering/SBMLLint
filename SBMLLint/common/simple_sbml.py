@@ -4,6 +4,9 @@ Provides simplified, read-only access to an SBML model.
 import sys
 import os.path
 import tesbml
+import urllib3
+
+INITIAL_PATH ="http://www.ebi.ac.uk/biomodels-main/download?mid=BIOMD"
 
 
 class SimpleSBML(object):
@@ -28,6 +31,9 @@ class SimpleSBML(object):
     self._species = self._getSpecies()  # dict with key=name
 
   def _getSpecies(self):
+    """
+    :return dict: key is species name, value is species object
+    """
     speciess = {}
     for idx in range(self._model.getNumSpecies()):
       species = self._model.getSpecies(idx)
@@ -75,32 +81,30 @@ class SimpleSBML(object):
     """
     return [reaction.getProduct(n) for n in range(reaction.getNumProducts())]
 
-  @classmethod
-  def getReactionString(cls, reaction):
+  def getReactionString(self, reaction):
     """
     Provides a string representation of the reaction
     :param libsbml.Reaction reaction:
     """
     reaction_str = ''
     base_length = len(reaction_str)
-    for reference in etReactants(reaction):
+    for reference in self.getReactants(reaction):
       if len(reaction_str) > base_length:
         reaction_str += " + " + reference.species
       else:
         reaction_str += reference.species
     reaction_str += "-> "
     base_length = len(reaction_str)
-    for reference in getProducts(reaction):
+    for reference in self.getProducts(reaction):
       if len(reaction_str) > base_length:
         reaction_str += " + " + reference.species
       else:
         reaction_str += reference.species
-    kinetics_terms = cls.getReactionKineticsTerms(reaction)
+    kinetics_terms = self.getReactionKineticsTerms(reaction)
     reaction_str += "; " + ", ".join(kinetics_terms)
     return reaction_str
 
-  @classmethod
-  def getReactionKineticsTerms(cls, reaction):
+  def getReactionKineticsTerms(self, reaction):
     """
     Gets the terms used in the kinetics law for the reaction
     :param libsbml.Reaction
@@ -126,14 +130,46 @@ class SimpleSBML(object):
     """
     Determines if the name is a chemical species
     """
-    return self._species.has_key(name)
+    return name in list(self._species.keys())
 
   def isParameter(self, name):
     """
     Determines if the name is a parameter
     """
-    return self._parameters.has_key(name)
+    return name in self._parameters.keys()
 
+###################### FUNCTIONS #############################
+def readURL(url):
+  """
+  :param str url:
+  :return str: file content
+  """
+  http = urllib3.PoolManager()
+  response = http.request('GET', url)
+  return response.data.decode("utf-8") 
 
-if __name__ == '__main__':
-  main(sys.argv)  
+def biomodelIterator(initial=1, final=1000, is_model=True):
+  """
+  Iterates across all biomodels.
+  :param int initial: initial biomodel
+  :param int final: final biomodel
+  :param bool is_model: Returns a model; else returns
+    string of file content
+  :return int, libsbml.model: BioModels number, Model
+  """
+  num = initial - 1
+  for _ in range(final-initial+1):
+    num += 1
+    formatted_num = format(num, "010")
+    url = "%s%s" % (INITIAL_PATH, formatted_num)
+    try:
+      model_stg = readURL(url)
+    except:
+      break
+    if is_model:
+      reader = tesbml.libsbml.SBMLReader()
+      document = reader.readSBMLFromString(model_stg)
+      result = document.getModel()
+    else:
+      result = model_str
+    yield num, result

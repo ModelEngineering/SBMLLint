@@ -2,5 +2,5 @@
 # required to run the demo
 # Note that you must have conda (or miniconda) installed to 
 # run this script.
-conda install -c sys-bio tellurium
-#pip install python-libsbml
+conda install python=3.6.4 urllib3
+conda install -c SBMLTeam python-libsbml
