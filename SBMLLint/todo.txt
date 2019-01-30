@@ -1,8 +1,0 @@
-tests for simple_sbml
-  species and parameters should be dicts
-NameMapper
-Linter
- a) correct kinetics
- b) mass conservation
- c) no unreferenced parameter
- d) no species is unreferenced unless it's a "$" parameter
