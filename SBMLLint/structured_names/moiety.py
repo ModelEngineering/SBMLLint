@@ -11,11 +11,11 @@ import numpy as np
 class Moiety(object):
   moietys = []  # All distinct moietys
 
-  def __init__(self, name)
-    self._name = name
+  def __init__(self, name):
+    self.name = name
 
   @classmethod
-  def make(cls, molecule):
+  def extract(cls, molecule):
     """
     Creates the moietys from a molecule.
     Maintains list of moietys.
@@ -25,17 +25,16 @@ class Moiety(object):
     names = molecule.name.split(cn.MOIETY_SEPARATOR)
     result = [cls(n) for n in names]
     cls.moietys.append(list(set(result)))
+    return result
 
-  @classmethod
-  def addMoietyToMolecule(cls, molecule, moiety):
+  def appendToMolecule(self, molecule):
     """
-    Adds the moiety to a molecule.
+    Adds the moiety to the end of a molecule.
     :param Molecule molecule:
-    :param Moiety moeity:
     :return Molecule:
     """
     new_name = "%s%s%s" % (
-        molecule.name, cn.MOIETY_SEPARATOR, moiety.name)
+        molecule.name, cn.MOIETY_SEPARATOR, self.name)
     return Molecule(new_name)
 
   def isInMolecule(self, molecule):
@@ -52,6 +51,6 @@ class Moiety(object):
     moietys = []
     for molecule in molecules:
       moietys.extend(cls.make(molecule))
-    df = pd.DataFrame(cn.VALUE: moietys)
+    df = pd.DataFrame({cn.VALUE: moietys})
     return pd.DataFrame(df.groupby(cn.VALUE).size())
     

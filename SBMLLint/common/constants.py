@@ -11,4 +11,8 @@ MAX_REACTANTS = 10
 NUM_SPECIES = 32
 
 ############## FUNCTIONAL CONSTANTS ##############
+# DataFrame Columns
+VALUE = "value"
+
+#
 MOIETY_SEPARATOR = "_"
