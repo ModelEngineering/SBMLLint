@@ -50,7 +50,7 @@ class Moiety(object):
     """
     moietys = []
     for molecule in molecules:
-      moietys.extend(cls.make(molecule))
+      moietys.extend([m.name for m in cls.extract(molecule)])
     df = pd.DataFrame({cn.VALUE: moietys})
     return pd.DataFrame(df.groupby(cn.VALUE).size())
     

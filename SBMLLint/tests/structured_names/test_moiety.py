@@ -49,6 +49,12 @@ class TestMolecule(unittest.TestCase):
     molecule = Molecule(MOIETY_NAME1)
     new_molecule = moiety2.appendToMolecule(molecule)
     self.assertEqual(new_molecule.name, Molecule(MOLECULE_NAME).name)
+
+  def testCountMoietys(self):
+    molecule = Molecule(MOLECULE_NAME)
+    df = Moiety.countMoietys([molecule])
+    df2 = Moiety.countMoietys([molecule, molecule])
+    self.assertTrue(df2.equals(df + df))
     
 
 if __name__ == '__main__':
