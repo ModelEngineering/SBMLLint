@@ -5,6 +5,7 @@ import sys
 import os.path
 import tesbml
 import urllib3
+import warnings
 
 INITIAL_PATH ="http://www.ebi.ac.uk/biomodels-main/download?mid=BIOMD"
 
@@ -14,21 +15,28 @@ class SimpleSBML(object):
   Provides access to reactions, species, and parameters.
   """
 
-  def __init__(self, filename):
+  def __init__(self, model_reference):
     """
-    :param str filename: File containing the SBML document
+    :param str or libsbml.model model_reference: 
+        File  or sbml model
     :raises IOError: Error encountered reading the SBML document
     """
-    self._filename = filename
-    self._reader = tesbml.SBMLReader()
-    self._document = self._reader.readSBML(self._filename)
-    if (self._document.getNumErrors() > 0):
-      raise IOError("Errors in SBML document\n%s" 
-          % self._document.printErrors())
-    self._model = self._document.getModel()
-    self._reactions = self._getReactions()
-    self._parameters = self._getParameters()  # dict with key=name
-    self._species = self._getSpecies()  # dict with key=name
+    if isinstance(model_reference, str):
+      self._filename = model_reference
+      self._reader = tesbml.SBMLReader()
+      self._document = self._reader.readSBML(self._filename)
+      if (self._document.getNumErrors() > 0):
+        raise IOError("Errors in SBML document\n%s" 
+            % self._document.printErrors())
+      self._model = self._document.getModel()
+    else:
+      self._filename = None
+      self._reader = None
+      self._document = None
+      self._model = model_reference
+    self.reactions = self._getReactions()
+    self.parameters = self._getParameters()  # dict with key=name
+    self.species = self._getSpecies()  # dict with key=name
 
   def _getSpecies(self):
     """
@@ -60,10 +68,10 @@ class SimpleSBML(object):
     return parameters
 
   def getReactions(self):
-    return self._reactions
+    return self.reactions
 
   def getParameters(self):
-    return self._parameters.keys()
+    return self.parameters.keys()
 
   def getReactants(self, reaction):
     """
@@ -130,13 +138,13 @@ class SimpleSBML(object):
     """
     Determines if the name is a chemical species
     """
-    return name in list(self._species.keys())
+    return name in list(self.species.keys())
 
   def isParameter(self, name):
     """
     Determines if the name is a parameter
     """
-    return name in self._parameters.keys()
+    return name in self.parameters.keys()
 
 ###################### FUNCTIONS #############################
 def readURL(url):
@@ -144,9 +152,16 @@ def readURL(url):
   :param str url:
   :return str: file content
   """
-  http = urllib3.PoolManager()
-  response = http.request('GET', url)
-  return response.data.decode("utf-8") 
+  def do():
+    http = urllib3.PoolManager()
+    response = http.request('GET', url)
+    return response.data.decode("utf-8") 
+ # Catch bogus warnings
+  with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    result = do()
+  return result
+  
 
 def biomodelIterator(initial=1, final=1000, is_model=True):
   """

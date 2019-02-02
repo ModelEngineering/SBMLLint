@@ -3,6 +3,7 @@ Tests for simple_sbml
 """
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import simple_sbml
+from SBMLLint.common import constants as cn
 
 import numpy as np
 import os
@@ -12,12 +13,6 @@ import unittest
 
 IGNORE_TEST = False
 
-DIR = os.path.dirname(__file__)
-TEST_FILE = os.path.join(DIR, "chemotaxis.xml")
-NUM_REACTIONS = 111
-NUM_PARAMETERS = 27
-MAX_REACTANTS = 10
-
 
 #############################
 # Tests
@@ -25,16 +20,16 @@ MAX_REACTANTS = 10
 class TestSimpleSBML(unittest.TestCase):
 
   def setUp(self):
-    self.simple = SimpleSBML(TEST_FILE)
+    self.simple = SimpleSBML(cn.TEST_FILE)
 
   def testConstructor(self):
     if IGNORE_TEST:
       return
-    self.assertEqual(len(self.simple.getReactions()), NUM_REACTIONS)
+    self.assertEqual(len(self.simple.getReactions()), cn.NUM_REACTIONS)
     for reaction in self.simple.getReactions():
       self.assertTrue(isinstance(reaction, tesbml.Reaction))
-      self.assertLessEqual(reaction.getNumReactants(), MAX_REACTANTS)
-    self.assertEqual(len(self.simple.getParameters()), NUM_PARAMETERS)
+      self.assertLessEqual(reaction.getNumReactants(), cn.MAX_REACTANTS)
+    self.assertEqual(len(self.simple.getParameters()), cn.NUM_PARAMETERS)
     for param in self.simple.getParameters():
       self.assertTrue(isinstance(param, str))
 
