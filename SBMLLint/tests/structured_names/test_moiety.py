@@ -1,10 +1,10 @@
 """
-Tests for Molecule
+Tests for Moiety
 """
 from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import simple_sbml
+from SBMLLint.structured_name.moiety import Moiety
 
 import numpy as np
 import os
@@ -13,7 +13,7 @@ import unittest
 
 
 IGNORE_TEST = False
-NAME = "name"
+MOLECULE_NAME = "%s%s%s" % (MOIETY1, cn.MOIETY_SEPARATOR, MOIETY2)
 
 
 #############################

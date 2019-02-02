@@ -5,7 +5,7 @@ from SBMLLint.common.simple_sbml import SimpleSBML
 
 
 class Molecule(object):
-  all = []  # All molecules
+  molecules = []  # All unique molecules
 
   def __init__(self, name, species=None):
     """
@@ -14,14 +14,22 @@ class Molecule(object):
     """
     self.name = name
     self._species = species
+    self.__class__.addMolecule(self)
+
+  @classmethod
+  def addMolecule(cls, molecule):
+    if any([m.name == molecule.name for m in cls.molecules]):
+      pass
+    else:
+      cls.molecules.append(molecule)
 
   @classmethod
   def initialize(cls, simple):
     """
-    Creates all Molecule from a model
+    Creates molecules Molecule from a model
     :param SimpleSBML simple:
     """
-    cls.all = []
+    cls.molecules = []
     for key, value in simple.species.items():
-      cls.all.append(Molecule(key, species=value))
+      Molecule(key, species=value)
 
