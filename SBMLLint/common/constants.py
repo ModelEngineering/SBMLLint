@@ -1,4 +1,5 @@
 """Constants for SBMLLint."""
+from collections import namedtuple
 import os
 
 ############### TESTS #####################
@@ -16,3 +17,23 @@ VALUE = "value"
 
 #
 MOIETY_SEPARATOR = "_"
+
+# Reaction categories
+REACTION_1_1 = "reaction_1_1"
+REACTION_n_1 = "reaction_n_1"
+REACTION_1_n = "reaction_1_n"
+REACTION_n_n = "reaction_n_n"
+ReactionCategory = collections.namedtupel('ReactionCategory',
+    'category predicate')
+REACTION_CATEGORIES = [
+    ReactionCategory(category=REACTION_1_1,
+        predicate=lambda x,y: (x==1) and (y==1)),
+    ReactionCategory(category=REACTION_1_n,
+        predicate=lambda x,y: (x==1) and (y>1)),
+    ReactionCategory(category=REACTION_n_1,
+        predicate=lambda x,y: (x>1) and (y==1)),
+    ReactionCategory(category=REACTION_n_n,
+        predicate=lambda x,y: (x>1) and (y>1)),
+    ]
+  
+  (1, 1): REACTION_1_1,
