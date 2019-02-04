@@ -5,7 +5,7 @@ from SBMLLint.common.molecule import Molecule
 
 
 class Reaction(object):
-  reactions = []
+  reactions = []  # All reactions
 
   def __init__(self, libsbml_reaction):
     self._libsbml_reaction = libsbml_reaction
@@ -16,6 +16,7 @@ class Reaction(object):
         libsbml_reaction.getProduct, 
         libsbml_reaction.getNumProducts)
     self.category = self._getCategory()
+    self.__class__.reactions.append(self)
 
   def _getMolecules(self, func_getOne, func_getNum):
     """
@@ -40,10 +41,11 @@ class Reaction(object):
         if r.predicate(num_reactants, num_products)[0]
     return category
 
+  # TODO: Check for redundant reactions?
   @clasmethod
   def initialize(cls, simple):
     """
     :param SimpleSBML simple:
     """
-    [cls.reactions.append(Reaction(r)) for r in simple.reactions]
+    [Reaction(r) for r in simple.reactions]
   
