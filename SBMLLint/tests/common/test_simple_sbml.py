@@ -67,13 +67,13 @@ class TestSimpleSBML(unittest.TestCase):
 
   def testGetReactionKineticsTerms(self):
     for reaction in self.simple.getReactions():
-      stgs = self.simple.getReactionKineticsTerms(reaction)
+      stgs = SimpleSBML.getReactionKineticsTerms(reaction)
       trues = [isinstance(s, str) for s in stgs]
       self.assertTrue(trues)
 
   def testGetReactionString(self):
     for reaction in self.simple.getReactions():
-      stg = self.simple.getReactionString(reaction)
+      stg = SimpleSBML.getReactionString(reaction)
       parts = stg.split('->')
       self.assertTrue(";" in parts[-1])  # Kinetics is last
 
@@ -101,6 +101,7 @@ class TestFunctions(unittest.TestCase):
   def testBiomodelIterator(self):
     itr = simple_sbml.biomodelIterator(final=5)
     for num, model in itr:
+      import pdb; pdb.set_trace()
       self.assertTrue(isinstance(model.getSpecies(0),
           tesbml.libsbml.Species))
     

@@ -8,6 +8,8 @@ import urllib3
 import warnings
 
 INITIAL_PATH ="http://www.ebi.ac.uk/biomodels-main/download?mid=BIOMD"
+PREFIX_PATH ="http://biomodels.caltech.edu/model/download/MODEL?filename=MODEL"
+SUFFIX_PATH ="_url.xml"
 
 
 class SimpleSBML(object):
@@ -37,6 +39,14 @@ class SimpleSBML(object):
     self.reactions = self._getReactions()
     self.parameters = self._getParameters()  # dict with key=name
     self.species = self._getSpecies()  # dict with key=name
+
+  def _getReactions(self):
+    """
+    :param libsbml.Model:
+    :return list-of-reactions
+    """
+    num = self._model.getNumReactions()
+    return [self._model.getReaction(n) for n in range(num)]
 
   def _getSpecies(self):
     """
@@ -73,7 +83,8 @@ class SimpleSBML(object):
   def getParameters(self):
     return self.parameters.keys()
 
-  def getReactants(self, reaction):
+  @staticmethod
+  def getReactants(reaction):
     """
     :param libsbml.Reaction:
     :return list-of-libsbml.SpeciesReference:
@@ -82,37 +93,40 @@ class SimpleSBML(object):
     """
     return [reaction.getReactant(n) for n in range(reaction.getNumReactants())]
 
-  def getProducts(self, reaction):
+  @staticmethod
+  def getProducts(reaction):
     """
     :param libsbml.Reaction:
     :return list-of-libsbml.SpeciesReference:
     """
     return [reaction.getProduct(n) for n in range(reaction.getNumProducts())]
 
-  def getReactionString(self, reaction):
+  @classmethod
+  def getReactionString(cls, reaction):
     """
     Provides a string representation of the reaction
     :param libsbml.Reaction reaction:
     """
     reaction_str = ''
     base_length = len(reaction_str)
-    for reference in self.getReactants(reaction):
+    for reference in cls.getReactants(reaction):
       if len(reaction_str) > base_length:
         reaction_str += " + " + reference.species
       else:
         reaction_str += reference.species
     reaction_str += "-> "
     base_length = len(reaction_str)
-    for reference in self.getProducts(reaction):
+    for reference in cls.getProducts(reaction):
       if len(reaction_str) > base_length:
         reaction_str += " + " + reference.species
       else:
         reaction_str += reference.species
-    kinetics_terms = self.getReactionKineticsTerms(reaction)
+    kinetics_terms = cls.getReactionKineticsTerms(reaction)
     reaction_str += "; " + ", ".join(kinetics_terms)
     return reaction_str
 
-  def getReactionKineticsTerms(self, reaction):
+  @staticmethod
+  def getReactionKineticsTerms(reaction):
     """
     Gets the terms used in the kinetics law for the reaction
     :param libsbml.Reaction
@@ -187,4 +201,5 @@ def biomodelIterator(initial=1, final=1000, is_model=True):
       result = document.getModel()
     else:
       result = model_str
+    import pdb; pdb.set_trace()
     yield num, result

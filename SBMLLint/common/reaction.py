@@ -2,6 +2,9 @@
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule
+from SBMLLint.common.simple_sbml import SimpleSBML
+
+import numpy as np
 
 
 REACTION_SEPARATOR = "->"
@@ -12,12 +15,8 @@ class Reaction(object):
 
   def __init__(self, libsbml_reaction):
     self._libsbml_reaction = libsbml_reaction
-    self.reactants =  self._getMolecules(
-        libsbml_reaction.getReactant, 
-        libsbml_reaction.getNumReactants)
-    self.products=  self._getMolecules(
-        libsbml_reaction.getProduct, 
-        libsbml_reaction.getNumProducts)
+    self.reactants = self._getMolecules(SimpleSBML.getReactants)
+    self.products = self._getMolecules(SimpleSBML.getProducts)
     self.category = self._getCategory()
     self.identifier = self.makeId()  # Str identifier for reaction
     if not any([self.isEqual(r) for r in Reaction.reactions]):      
@@ -26,18 +25,18 @@ class Reaction(object):
   def __repr__(self):
     return self.identifier
 
-  def _getMolecules(self, func_getOne, func_getNum):
+  def _getMolecules(self, func):
     """
     Constructs molecules for the species returned by function.
-    :param Function func_getOne: a function with an integer argument
-        that returns a species
-    :param Function func_getNum: a function with no argument that
-        returns the total number of species
+    :param Function func: gets libsbml.SpeciesReference
     :return list-Molecule:
     """
-    species = [func_getOne(n) 
-        for n in range(func_getNum())]
-    molecules = [Molecule(s.species, species=s) for s in species]
+    species = func(self._libsbml_reaction)
+    molecules = []
+    for spc in species:
+      new_molecules = [Molecule(spc.species, species=spc) 
+          for _ in range(int(spc.getStoichiometry()))]
+      molecules.extend(new_molecules)
     return molecules
 
   def _getCategory(self):
