@@ -4,6 +4,9 @@ from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule
 
 
+REACTION_SEPARATOR = "->"
+
+
 class Reaction(object):
   reactions = []  # All reactions
 
@@ -16,7 +19,12 @@ class Reaction(object):
         libsbml_reaction.getProduct, 
         libsbml_reaction.getNumProducts)
     self.category = self._getCategory()
-    self.__class__.reactions.append(self)
+    self.identifier = self.makeId()  # Str identifier for reaction
+    if not any([self.isEqual(r) for r in Reaction.reactions]):      
+      self.__class__.reactions.append(self)
+
+  def __repr__(self):
+    return self.identifier
 
   def _getMolecules(self, func_getOne, func_getNum):
     """
@@ -27,9 +35,10 @@ class Reaction(object):
         returns the total number of species
     :return list-Molecule:
     """
-    species = [reaction.func_getOne(n) 
-        for n in range(reaction.func_getNum())]
-    return [Molecule(s.getId(), species=s) for s in species]
+    species = [func_getOne(n) 
+        for n in range(func_getNum())]
+    molecules = [Molecule(s.species, species=s) for s in species]
+    return molecules
 
   def _getCategory(self):
     """
@@ -37,12 +46,38 @@ class Reaction(object):
     """
     num_reactants = len(self.reactants)
     num_products = len(self.products)
-    category = [r.category for r in cn.REACTION_CATEGORIES
-        if r.predicate(num_reactants, num_products)[0]
-    return category
+    for reaction_category in cn.REACTION_CATEGORIES:
+      if reaction_category.predicate(num_reactants, num_products):
+        return reaction_category.category
+    raise ValueError("Reaction category not found.")
 
-  # TODO: Check for redundant reactions?
-  @clasmethod
+  def makeId(self):
+    """
+    Creates an identifier for the reaction to uniquely
+    identifies the reactants and products.
+    :return str:
+    """
+    def joinMoleculeNames(molecules):
+      names = [m.name for m in molecules]
+      names.sort()
+      return ' + '.join(names)
+    #
+    identifier = "%s %s %s" % (
+        joinMoleculeNames(self.reactants),
+        REACTION_SEPARATOR,
+        joinMoleculeNames(self.products),
+        )
+    return identifier
+
+  def isEqual(self, other_reaction):
+    """
+    Checks if two reactions are the same.
+    :param Reaction other_reaction:
+    :return bool:
+    """
+    return self.identifier == other_reaction.identifier
+
+  @classmethod
   def initialize(cls, simple):
     """
     :param SimpleSBML simple:

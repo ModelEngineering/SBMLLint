@@ -16,6 +16,9 @@ class Molecule(object):
     self._species = species
     self.__class__.addMolecule(self)
 
+  def __repr__(self):
+    return self.name
+
   @classmethod
   def addMolecule(cls, molecule):
     if any([m.name == molecule.name for m in cls.molecules]):

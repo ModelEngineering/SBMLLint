@@ -1,5 +1,5 @@
 """Constants for SBMLLint."""
-from collections import namedtuple
+import collections
 import os
 
 ############### TESTS #####################
@@ -23,8 +23,10 @@ REACTION_1_1 = "reaction_1_1"
 REACTION_n_1 = "reaction_n_1"
 REACTION_1_n = "reaction_1_n"
 REACTION_n_n = "reaction_n_n"
-ReactionCategory = collections.namedtupel('ReactionCategory',
+ReactionCategory = collections.namedtuple('ReactionCategory',
     'category predicate')
+# The selected category is the first one that first has
+# a satisfied predicate
 REACTION_CATEGORIES = [
     ReactionCategory(category=REACTION_1_1,
         predicate=lambda x,y: (x==1) and (y==1)),
@@ -35,5 +37,3 @@ REACTION_CATEGORIES = [
     ReactionCategory(category=REACTION_n_n,
         predicate=lambda x,y: (x>1) and (y>1)),
     ]
-  
-  (1, 1): REACTION_1_1,
