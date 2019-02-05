@@ -91,19 +91,20 @@ class TestSimpleSBML(unittest.TestCase):
 class TestFunctions(unittest.TestCase):
 
   def testReadURL(self):
-    num = 1
-    formatted_num = format(num, "010")
-    url = "%s%s" % (simple_sbml.INITIAL_PATH, formatted_num)
-    result = simple_sbml.readURL(url)
-    self.assertGreater(len(result), 0)
-    self.assertTrue("</" in result)
+    pass
 
-  def testBiomodelIterator(self):
-    itr = simple_sbml.biomodelIterator(final=5)
-    for num, model in itr:
-      import pdb; pdb.set_trace()
+  def testModelIterator(self):
+    itr = simple_sbml.modelIterator(final=1)
+    for item in itr:
+      model = item.model
       self.assertTrue(isinstance(model.getSpecies(0),
           tesbml.libsbml.Species))
+    COUNT = 20
+    itr = simple_sbml.modelIterator(final=COUNT)
+    for item in itr:
+      self.assertTrue(isinstance(item.filename, str))
+      self.assertTrue(isinstance(item.model, tesbml.libsbml.Model))
+    self.assertEqual(item.number, COUNT - 1)
     
 
 if __name__ == '__main__':

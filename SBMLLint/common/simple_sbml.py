@@ -1,15 +1,18 @@
 """
 Provides simplified, read-only access to an SBML model.
 """
-import sys
+
+from SBMLLint.common import constants as cn
+import collections
 import os.path
+import sys
 import tesbml
 import urllib3
 import warnings
 
-INITIAL_PATH ="http://www.ebi.ac.uk/biomodels-main/download?mid=BIOMD"
-PREFIX_PATH ="http://biomodels.caltech.edu/model/download/MODEL?filename=MODEL"
-SUFFIX_PATH ="_url.xml"
+
+IteratorItem = collections.namedtuple('IteratorItem',
+    'filename number model')
 
 
 class SimpleSBML(object):
@@ -177,29 +180,27 @@ def readURL(url):
   return result
   
 
-def biomodelIterator(initial=1, final=1000, is_model=True):
+def modelIterator(initial=0, final=1000, data_dir=cn.DATA_DIR):
   """
-  Iterates across all biomodels.
-  :param int initial: initial biomodel
-  :param int final: final biomodel
-  :param bool is_model: Returns a model; else returns
-    string of file content
-  :return int, libsbml.model: BioModels number, Model
+  Iterates across all models in a data directory.
+  :param int initial: initial file to process
+  :param int final: final file to process
+  :param str data_dir: absolute path of the directory containing
+      the xml files
+  :return IteratorItem:
   """
-  num = initial - 1
-  for _ in range(final-initial+1):
+  files = [f for f in os.listdir(data_dir) if f[-4:] == ".xml"]
+  begin_num = max(initial, 0)
+  num = begin_num - 1
+  end_num = min(len(files), final)
+  for filename in files[begin_num:end_num]:
+    path = os.path.join(data_dir, filename)
     num += 1
-    formatted_num = format(num, "010")
-    url = "%s%s" % (INITIAL_PATH, formatted_num)
-    try:
-      model_stg = readURL(url)
-    except:
-      break
-    if is_model:
+    with open(path, 'r') as fd:
+      lines = ''.join(fd.readlines())
       reader = tesbml.libsbml.SBMLReader()
-      document = reader.readSBMLFromString(model_stg)
-      result = document.getModel()
-    else:
-      result = model_str
-    import pdb; pdb.set_trace()
-    yield num, result
+      document = reader.readSBMLFromString(lines)
+      model = document.getModel()
+    iterator_item = IteratorItem(filename=filename,
+        model=model, number=num)
+    yield iterator_item

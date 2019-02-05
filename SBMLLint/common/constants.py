@@ -37,3 +37,9 @@ REACTION_CATEGORIES = [
     ReactionCategory(category=REACTION_n_n,
         predicate=lambda x,y: (x>1) and (y>1)),
     ]
+
+# Directories and files
+# Where data files are stored by default
+DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.dirname(DATA_DIR)
+DATA_DIR = os.path.join(DATA_DIR, "data")
