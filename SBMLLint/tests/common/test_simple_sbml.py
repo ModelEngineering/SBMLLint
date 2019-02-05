@@ -1,7 +1,6 @@
 """
 Tests for simple_sbml
 """
-import tellurium as te
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import simple_sbml
 from SBMLLint.common import constants as cn
@@ -111,10 +110,6 @@ class TestFunctions(unittest.TestCase):
       self.assertTrue(isinstance(item.filename, str))
       self.assertTrue(isinstance(item.model, tesbml.libsbml.Model))
     self.assertEqual(item.number, COUNT - 1)
-
-  def testGetModelFromAntimony(self):
-    model = simple_sbml.getModelFromAntimony(ANTIMONY_STG)
-    self.assertTrue(isinstance(model, tesbml.libsbml.Model))
     
 
 if __name__ == '__main__':

@@ -205,15 +205,3 @@ def modelIterator(initial=0, final=1000, data_dir=cn.DATA_DIR):
     iterator_item = IteratorItem(filename=filename,
         model=model, number=num)
     yield iterator_item
-
-def getModelFromAntimony(antimony_stg):
-  """
-  Constructs an SBML model from the antimony string.
-  :param str antimony_stg:
-  :return libsbml.Model:
-  """
-  rr = te.loada(antimony_stg)
-  model_sbml = rr.getSBML()
-  reader = tesbml.libsbml.SBMLReader()
-  document = reader.readSBMLFromString(model_sbml)
-  return document.getModel()

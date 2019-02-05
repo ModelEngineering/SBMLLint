@@ -2,18 +2,25 @@
 Tests for Reactions
 """
 from SBMLLint.common import constants as cn
+from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common.molecule import Molecule
 from SBMLLint.common.reaction import Reaction, REACTION_SEPARATOR
-from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import simple_sbml
 
 import numpy as np
 import os
-import tesbml
 import unittest
 
 
 IGNORE_TEST = False
+NUM_S1 = 2
+NUM_S2 = 3
+ANTIMONY_STG = '''
+%dS1 -> %dS2; 1
+S1 = 0
+S2 = 0
+''' % (NUM_S1, NUM_S2)
+
 
 def strLen(a_list):
   return sum([len(x.name) for x in a_list])
@@ -37,14 +44,23 @@ class TestMolecule(unittest.TestCase):
   def testConstructor(self):
     if IGNORE_TEST:
       return
-    self.reaction = Reaction(self.reactions[2])
-    self.assertEqual(strLen(self.reaction.reactants),
-        strLen(self.reaction.products))
-    self.assertEqual(self.reaction.category, cn.REACTION_1_n)
+    reaction = Reaction(self.reactions[2])
+    self.assertEqual(strLen(reaction.reactants),
+        strLen(reaction.products))
+    self.assertEqual(reaction.category, cn.REACTION_1_n)
     self.assertGreater(len(Molecule.molecules), 0)
     count = len(Reaction.reactions)
     reaction = Reaction(self.reactions[3])
     self.assertEqual(len(Reaction.reactions), count + 1)
+
+  def testConstructor2(self):
+    if IGNORE_TEST:
+      return
+    model = simple_sbml.getModelFromAntimony(ANTIMONY_STG)
+    simple = SimpleSBML(model)
+    self.assertEqual(strLen(reaction.reactants), NUM_S1)
+    self.assertEqual(strLen(reaction.products), NUM_S2)
+    
 
   def testInitialize(self):
     if IGNORE_TEST:
