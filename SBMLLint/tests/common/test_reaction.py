@@ -53,16 +53,15 @@ class TestMolecule(unittest.TestCase):
     reaction = Reaction(self.reactions[3])
     self.assertEqual(len(Reaction.reactions), count + 1)
 
-  # TODO: Fix test
+  # Test the stoichiometry
   def testConstructor2(self):
-    return
     if IGNORE_TEST:
       return
     simple = SimpleSBML(cn.TEST_FILE2)
-    reaction = simple.reactions[0]
-    import pdb; pdb.set_trace()
-    self.assertEqual(strLen(reaction.reactants), NUM_S1)
-    self.assertEqual(strLen(reaction.products), NUM_S2)
+    libsbml_reaction = simple.reactions[0]
+    reaction = Reaction(libsbml_reaction)
+    self.assertEqual(len(reaction.reactants), NUM_S1)
+    self.assertEqual(len(reaction.products), NUM_S2)
     
 
   def testInitialize(self):

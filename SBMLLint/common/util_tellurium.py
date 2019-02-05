@@ -16,6 +16,7 @@ ANTIMONY_STG = '''
 S1 = 0
 S2 = 0
 ''' % (NUM_S1, NUM_S2)
+XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
 
 
 def getSBMLFromAntimony(antimony_stg):
@@ -32,5 +33,6 @@ def getSBMLFromAntimony(antimony_stg):
 
 def makeSBMLFile(stg=ANTIMONY_STG, path=cn.TEST_FILE2):
   document = getSBMLFromAntimony(stg)
+  document = "%s\n%s" % (XML_HEADER, document)
   with open(path, 'w') as fd:
     fd.writelines(document)
