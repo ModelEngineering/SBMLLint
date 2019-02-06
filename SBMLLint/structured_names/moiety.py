@@ -7,6 +7,8 @@ from SBMLLint.common.simple_sbml import SimpleSBML
 import pandas as pd
 import numpy as np
 
+NULL_STR = ''
+
 
 class Moiety(object):
   moietys = []  # All distinct moietys
@@ -58,12 +60,15 @@ class Moiety(object):
 class MoietyComparator(object):
   """Analysis of moieties of molecules."""
 
-  def __init__(self, molecules1, molecules2):
+  def __init__(self, molecules1, molecules2, 
+      names=["reactants", "products"]):
     """
     :param set-Molecule molecules1:
     :param set-Molecule molecules2:
+    :param list-str names: names to refer to the two sets
     """
     self.list_of_molecules = [molecules1, molecules2]
+    self.names = names
 
   def isSame(self):
     """
@@ -94,3 +99,16 @@ class MoietyComparator(object):
     addDFIndex(df0, df1.index)
     addDFIndex(df1, df0.index)
     return df0 - df1
+
+  def reportDifference(self):
+    """
+    Reports a difference in moieties between the two sets of molecules.
+    :return str: report. null if no difference.
+    """
+    if self.isSame():
+      return NULL_STR
+    df = self.difference()
+    stgs = ["%s lacks:" % s for s in self.names]
+    for idx, row in df.iterrows():
+      
+    
