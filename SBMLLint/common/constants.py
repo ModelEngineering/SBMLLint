@@ -39,7 +39,7 @@ REACTION_CATEGORIES = [
     ReactionCategory(category=REACTION_n_n,
         predicate=lambda x,y: (x>1) and (y>1)),
     ReactionCategory(category=REACTION_BOUNDARY,
-        predicate=lambda x,y: (x==0) or (y==0),
+        predicate=lambda x,y: (x==0) or (y==0))
     ]
 
 # Directories and files
