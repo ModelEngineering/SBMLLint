@@ -24,6 +24,7 @@ REACTION_1_1 = "reaction_1_1"
 REACTION_n_1 = "reaction_n_1"
 REACTION_1_n = "reaction_1_n"
 REACTION_n_n = "reaction_n_n"
+REACTION_BOUNDARY = "reaction_boundary"
 ReactionCategory = collections.namedtuple('ReactionCategory',
     'category predicate')
 # The selected category is the first one that first has
@@ -37,6 +38,8 @@ REACTION_CATEGORIES = [
         predicate=lambda x,y: (x>1) and (y==1)),
     ReactionCategory(category=REACTION_n_n,
         predicate=lambda x,y: (x>1) and (y>1)),
+    ReactionCategory(category=REACTION_BOUNDARY,
+        predicate=lambda x,y: (x==0) or (y==0),
     ]
 
 # Directories and files
