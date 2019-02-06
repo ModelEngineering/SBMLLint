@@ -3,5 +3,6 @@
 # Note that you must have conda (or miniconda) installed to 
 # run this script.
 conda install python=3.6.4 urllib3 networkx
-conda install -c SBMLTeam python-libsbml
+# conda install -c SBMLTeam python-libsbml
 conda install -c anaconda nose 
+pip install tellurium

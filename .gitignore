@@ -9,7 +9,7 @@ __pycache__/
 *.so
 
 # Data directory
-data/
+data/*.xml
 
 # Distribution / packaging
 .Python

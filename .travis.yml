@@ -1,0 +1,21 @@
+language: python
+
+python:
+  - "3.6"
+
+install:
+  - sudo apt-get update
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update --quiet conda
+  - conda info --all
+  - conda env create --quiet --name sbmllint --file environment.yml
+  - source activate microbepy
+  - pip3 install matplotlib numpy pandas urllib3 networkx tellurium nose
+
+script:
+  - cd data; unzip *.zip; cd ..
+  - nosetests SBMLLint/tests

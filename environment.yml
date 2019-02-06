@@ -1,0 +1,12 @@
+name: sbmllint
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy=1.15.4
+  - pandas=0.23.4
+  - python=3.6.7
+  - urllib3
+  - networkx
+  - nose
+prefix: /home//anaconda3/envs/sbmllint
