@@ -27,6 +27,14 @@ REACTION_n_n = "reaction_n_n"
 REACTION_BOUNDARY = "reaction_boundary"
 ReactionCategory = collections.namedtuple('ReactionCategory',
     'category predicate')
+
+# Molecule-Stoichiometry tuple in Reaction 
+MoleculeStoichiometry = collections.namedtuple('MoleculeStoichiometry',
+    'molecule stoichiometry')
+
+# EmptySet in a reaction (ex. curated model 006)
+EMPTYSET = "EmptySet"
+
 # The selected category is the first one that first has
 # a satisfied predicate
 REACTION_CATEGORIES = [
@@ -41,6 +49,7 @@ REACTION_CATEGORIES = [
     ReactionCategory(category=REACTION_BOUNDARY,
         predicate=lambda x,y: (x==0) or (y==0))
     ]
+
 
 # Directories and files
 # Where data files are stored by default
