@@ -2,7 +2,6 @@
 Provides simplified, read-only access to an SBML model.
 """
 
-import tellurium as te  # Must be first
 from SBMLLint.common import constants as cn
 import collections
 import os.path

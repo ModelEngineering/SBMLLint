@@ -14,6 +14,7 @@ install:
   - conda info --all
   - conda env create --quiet --name sbmllint --file environment.yml
   - source activate sbmllint
+  - pip3 install --upgrade pip3
   - pip3 install matplotlib numpy pandas urllib3 networkx tellurium nose
 
 script:
