@@ -110,6 +110,7 @@ class SimpleSBML(object):
     """
     Provides a string representation of the reaction
     :param libsbml.Reaction reaction:
+    :return str:
     """
     reaction_str = ''
     base_length = len(reaction_str)

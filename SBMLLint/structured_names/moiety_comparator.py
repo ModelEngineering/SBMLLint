@@ -1,6 +1,8 @@
 """Provides comparisons of moieties."""
 
 from SBMLLint.common import constants as cn
+from SBMLLint.common.reaction import Reaction
+from SBMLLint.common.simple_SBML import SimpleSBML
 from SBMLLint.structured_names.moiety import Moiety
 
 import pandas as pd
@@ -79,3 +81,25 @@ class MoietyComparator(object):
     stg1 = buildStg(self.names[0], 1)
     stg2 = buildStg(self.names[1], -1)
     return "%s\n%s" % (stg1, stg2)
+
+  @classmethod
+  def analyzeReactions(cls):
+    """
+    Analyzes all reactions to detect moiety imbalances.
+    :return int, str: number of reactions with imbalances,
+        report
+    """
+    num = 0
+    report = NULL_STR
+    for reaction in Reaction.reactions:
+      comparator = cls(reaction.reactants, reaction.products)
+      stg = comparator.reportDifference()
+      if len(stg) > 0:
+        num += 1
+        report = "%s\n*%s\n%s" % (
+            report, 
+            SimpleSBML.getReactionString(reaction._libsbml_reaction),
+            stg
+            )
+    report = "%d reactions have imbalances.\n%s" % (num, report)
+    return report
