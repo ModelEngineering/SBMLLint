@@ -1,4 +1,4 @@
-"""Set of Molecules(SOM). """
+"""Set of Molecules(SOM)."""
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule
@@ -113,8 +113,8 @@ class SOM(object):
         
         for som in cls.soms:
             
-            rct_index = getIndex(reaction1.reactants, som)
-            pdt_index = getIndex(reaction1.products, som)
+            rct_index = getIndex(reaction.reactants, som)
+            pdt_index = getIndex(reaction.products, som)
 
             while (rct_index<len(reaction.reactants)) & (pdt_index<len(reaction.products)):
 
