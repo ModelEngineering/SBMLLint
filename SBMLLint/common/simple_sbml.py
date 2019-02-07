@@ -2,7 +2,6 @@
 Provides simplified, read-only access to an SBML model.
 """
 
-import tellurium as te  # Must be first
 from SBMLLint.common import constants as cn
 import collections
 import os.path
@@ -23,7 +22,7 @@ class SimpleSBML(object):
 
   def __init__(self, model_reference):
     """
-    :param str or libsbml.model model_reference: 
+    :param str or tesbml.libsbml.model model_reference: 
         File  or sbml model
     :raises IOError: Error encountered reading the SBML document
     """
@@ -46,7 +45,7 @@ class SimpleSBML(object):
 
   def _getReactions(self):
     """
-    :param libsbml.Model:
+    :param tesbml.libsbml.Model:
     :return list-of-reactions
     """
     num = self._model.getNumReactions()
@@ -64,7 +63,7 @@ class SimpleSBML(object):
 
   def _getReactions(self):
     """
-    :param libsbml.Model:
+    :param tesbml.libsbml.Model:
     :return list-of-reactions
     """
     num = self._model.getNumReactions()
@@ -72,7 +71,7 @@ class SimpleSBML(object):
 
   def _getParameters(self):
     """
-    :param libsbml.Model:
+    :param tesbml.libsbml.Model:
     :return list-of-reactions
     """
     parameters = {}
@@ -90,7 +89,7 @@ class SimpleSBML(object):
   @staticmethod
   def getReactants(reaction):
     """
-    :param libsbml.Reaction:
+    :param tesbml.libsbml.Reaction:
     :return list-of-libsbml.SpeciesReference:
     To get the species name: SpeciesReference.species
     To get stoichiometry: SpeciesReference.getStoichiometry
@@ -100,8 +99,8 @@ class SimpleSBML(object):
   @staticmethod
   def getProducts(reaction):
     """
-    :param libsbml.Reaction:
-    :return list-of-libsbml.SpeciesReference:
+    :param tesbml.libsbml.Reaction:
+    :return list-of-tesbml.libsbml.SpeciesReference:
     """
     return [reaction.getProduct(n) for n in range(reaction.getNumProducts())]
 
@@ -109,7 +108,7 @@ class SimpleSBML(object):
   def getReactionString(cls, reaction):
     """
     Provides a string representation of the reaction
-    :param libsbml.Reaction reaction:
+    :param tesbml.libsbml.Reaction reaction:
     :return str:
     """
     reaction_str = ''
@@ -134,7 +133,7 @@ class SimpleSBML(object):
   def getReactionKineticsTerms(reaction):
     """
     Gets the terms used in the kinetics law for the reaction
-    :param libsbml.Reaction
+    :param tesbml.libsbml.Reaction
     :return list-of-str: names of the terms
     """
     terms = []
@@ -181,7 +180,6 @@ def readURL(url):
     result = do()
   return result
   
-
 def modelIterator(initial=0, final=1000, data_dir=cn.DATA_DIR):
   """
   Iterates across all models in a data directory.

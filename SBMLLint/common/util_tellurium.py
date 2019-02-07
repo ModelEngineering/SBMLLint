@@ -19,20 +19,18 @@ S2 = 0
 XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
 
 
-def getSBMLFromAntimony(antimony_stg):
+def getSBMLStringFromAntimony(antimony_stg):
   """
   Constructs an SBML model from the antimony string.
   :param str antimony_stg:
   :return str: SBML model in xml format
   """
   rr = te.loada(antimony_stg)
-  model_sbml = rr.getSBML()
-  reader = tesbml.libsbml.SBMLReader()
-  document = reader.readSBMLFromString(model_sbml)
-  return document.toSBML()
+  sbml = rr.getSBML()
+  return sbml
 
 def makeSBMLFile(stg=ANTIMONY_STG, path=cn.TEST_FILE2):
-  document = getSBMLFromAntimony(stg)
-  document = "%s\n%s" % (XML_HEADER, document)
+  sbmlstr = getSBMLStringFromAntimony(stg)
+  xmlstr = "%s\n%s" % (XML_HEADER, sbmlstr)
   with open(path, 'w') as fd:
-    fd.writelines(document)
+    fd.writelines(xmlstr)
