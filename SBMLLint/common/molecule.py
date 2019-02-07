@@ -26,6 +26,20 @@ class Molecule(object):
     else:
       cls.molecules.append(molecule)
 
+
+  @classmethod
+  def getMolecule(cls, name):
+    """
+    Finds and returns molecule with given name
+    Return None if there is no such molecules
+    :param str name:
+    """
+    for molecule in Molecule.molecules:
+      if molecule.name == name:
+        return molecule
+    return None
+
+
   @classmethod
   def initialize(cls, simple):
     """
