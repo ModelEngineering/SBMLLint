@@ -108,8 +108,7 @@ class TestFunctions(unittest.TestCase):
     itr = simple_sbml.modelIterator(final=COUNT)
     for item in itr:
       self.assertTrue(isinstance(item.filename, str))
-      print(tesbml.libsbml.Model)
-      # self.assertTrue(isinstance(item.model, tesbml.libsbml.Model))
+      self.assertTrue('Model' in  str(type(item.model)))
     self.assertEqual(item.number, COUNT - 1)
     
 
