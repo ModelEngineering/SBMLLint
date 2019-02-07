@@ -5,7 +5,7 @@ from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import simple_sbml
-from SBMLLint.structured_names.moiety import Moiety, MoietyComparator
+from SBMLLint.structured_names.moiety import Moiety
 
 import itertools
 import numpy as np
@@ -74,43 +74,6 @@ class TestMoiety(unittest.TestCase):
     df2 = Moiety.countMoietys([molecule, molecule])
     self.assertTrue(df2.equals(df + df))
 
-
-class TestMoietyComparator(unittest.TestCase):
-
-  def setUp(self):
-    self.molecules1 = [Molecule(n) for n in MOLECULE_NAME_SET[:3]]
-    self.molecules2 = [Molecule(n) for n in MOLECULE_NAME_SET[4:]]
-    self.comparator = MoietyComparator(self.molecules1,
-        self.molecules2)
-
-  def testConstructor(self):
-    if IGNORE_TEST:
-      return
-    self.assertEqual(len(self.comparator.list_of_molecules), 2)
-
-  def testIsSame(self):
-    if IGNORE_TEST:
-      return
-    self.assertFalse(self.comparator.isSame())
-    comparator = MoietyComparator(self.molecules1,
-        self.molecules1)
-    self.assertTrue(comparator.isSame())
-
-  def testDifference(self):
-    if IGNORE_TEST:
-      return
-    df = self.comparator.difference()
-    self.assertLess(df.loc[MOIETY_NAME1].tolist()[0], 0)
-  
-  def testReportDifference(self):  
-    stg = self.comparator.reportDifference()
-    self.assertGreater(len(stg), 0)
-    comparator = MoietyComparator(self.molecules1,
-        self.molecules1)
-    stg = comparator.reportDifference()
-    self.assertEqual(len(stg), 0)
-   
-    
 
 if __name__ == '__main__':
   unittest.main()
