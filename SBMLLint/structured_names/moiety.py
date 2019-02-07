@@ -54,7 +54,10 @@ class Moiety(object):
     for molecule in molecules:
       moietys.extend([m.name for m in cls.extract(molecule)])
     df = pd.DataFrame({cn.VALUE: moietys})
-    return pd.DataFrame(df.groupby(cn.VALUE).size())
+    df_result = pd.DataFrame(df.groupby(cn.VALUE).size())
+    df_result = df_result.rename(
+        columns={df_result.columns.tolist()[0]: cn.VALUE})
+    return df_result
 
 
 class MoietyComparator(object):
@@ -67,7 +70,7 @@ class MoietyComparator(object):
     :param set-Molecule molecules2:
     :param list-str names: names to refer to the two sets
     """
-    self.list_of_molecules = [molecules1, molecules2]
+    self.molecule_collections = [molecules1, molecules2]
     self.names = names
 
   def isSame(self):
@@ -76,8 +79,8 @@ class MoietyComparator(object):
     of moieties.
     :return bool:
     """
-    df0 = Moiety.countMoietys(self.list_of_molecules[0])
-    df1 = Moiety.countMoietys(self.list_of_molecules[1])
+    df0 = Moiety.countMoietys(self.molecule_collections[0])
+    df1 = Moiety.countMoietys(self.molecule_collections[1])
     return df0.equals(df1)
 
   def difference(self):
@@ -94,8 +97,8 @@ class MoietyComparator(object):
       for item in missing:
         df.loc[item] = 0
     #
-    df0 = Moiety.countMoietys(self.list_of_molecules[0])
-    df1 = Moiety.countMoietys(self.list_of_molecules[1])
+    df0 = Moiety.countMoietys(self.molecule_collections[0])
+    df1 = Moiety.countMoietys(self.molecule_collections[1])
     addDFIndex(df0, df1.index)
     addDFIndex(df1, df0.index)
     return df0 - df1
@@ -108,7 +111,24 @@ class MoietyComparator(object):
     if self.isSame():
       return NULL_STR
     df = self.difference()
-    stgs = ["%s lacks:" % s for s in self.names]
-    for idx, row in df.iterrows():
+    def buildStg(name, sign):
+      """
+      Constructs the report for the name with the given
+      sign of values in df.
+      :param str name:
+      :param int sign: 1 or -1
+      :return str:
+      """
+      stg = NULL_STR
+      for idx, row in df.iterrows():
+        if sign*row[cn.VALUE] > 0:
+          stg = "%s\n  %s: %2.2f" % (stg, idx, sign*row[cn.VALUE])
+      if not stg == NULL_STR:
+        stg = "Excess moieties in %s%s" % (name, stg)
+      return stg
+    #
+    stg1 = buildStg(self.names[0], 1)
+    stg2 = buildStg(self.names[1], -1)
+    return "%s\n%s" % (stg1, stg2)
       
     

@@ -14,7 +14,7 @@ import tesbml
 import unittest
 
 
-IGNORE_TEST = False
+IGNORE_TEST = True
 MOIETY_NAME1 = "first"
 MOIETY_NAME2 = "second"
 MOIETY_NAME3 = "third"
@@ -22,7 +22,7 @@ NAMES = [MOIETY_NAME1, MOIETY_NAME2, MOIETY_NAME3]
 MOLECULE_NAME = "%s%s%s" % (MOIETY_NAME1, cn.MOIETY_SEPARATOR, 
     MOIETY_NAME2)
 iterator = itertools.product([0,1], [0, 1], [0, 1])
-MOLECULE_NAME_SET = []
+MOLECULE_NAME_SET = []  # A set of names from moiety combinations
 for item in iterator:
   name = ""
   for idx,ele in enumerate(item):
@@ -66,8 +66,11 @@ class TestMoiety(unittest.TestCase):
     self.assertEqual(new_molecule.name, Molecule(MOLECULE_NAME).name)
 
   def testCountMoietys(self):
+    if IGNORE_TEST:
+      return
     molecule = Molecule(MOLECULE_NAME)
     df = Moiety.countMoietys([molecule])
+    self.assertEquals(df.columns.tolist(), [cn.VALUE])
     df2 = Moiety.countMoietys([molecule, molecule])
     self.assertTrue(df2.equals(df + df))
 
@@ -81,18 +84,32 @@ class TestMoietyComparator(unittest.TestCase):
         self.molecules2)
 
   def testConstructor(self):
+    if IGNORE_TEST:
+      return
     self.assertEqual(len(self.comparator.list_of_molecules), 2)
 
   def testIsSame(self):
+    if IGNORE_TEST:
+      return
     self.assertFalse(self.comparator.isSame())
     comparator = MoietyComparator(self.molecules1,
         self.molecules1)
     self.assertTrue(comparator.isSame())
 
   def testDifference(self):
+    if IGNORE_TEST:
+      return
     df = self.comparator.difference()
     self.assertLess(df.loc[MOIETY_NAME1].tolist()[0], 0)
-    
+  
+  def testReportDifference(self):  
+    stg = self.comparator.reportDifference()
+    self.assertGreater(len(stg), 0)
+    comparator = MoietyComparator(self.molecules1,
+        self.molecules1)
+    stg = comparator.reportDifference()
+    self.assertEqual(len(stg), 0)
+   
     
 
 if __name__ == '__main__':
