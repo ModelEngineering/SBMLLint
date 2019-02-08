@@ -3,6 +3,9 @@ Tests for MoietyComparator
 """
 from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule
+from SBMLLint.common.reaction import Reaction
+from SBMLLint.common.simple_sbml import SimpleSBML
+import SBMLLint.common.util_tellurium as util_tellurium
 from SBMLLint.structured_names.moiety_comparator  \
      import MoietyComparator
 
@@ -31,6 +34,8 @@ for item in iterator:
         name = "%s%s%s" % (name, cn.MOIETY_SEPARATOR, NAMES[idx])
   if len(name) > 0:
     MOLECULE_NAME_SET.append(name)
+TEST_FILE4 = "test_file4.xml"
+TEST_FILE3 = "test_file3.antimony"
 
 
 #############################
@@ -70,7 +75,22 @@ class TestMoietyComparator(unittest.TestCase):
         self.molecules1)
     stg = comparator.reportDifference()
     self.assertEqual(len(stg), 0)
-   
+
+  def testAnalyzeReactions1(self):
+    path = os.path.join(cn.TEST_DIR, TEST_FILE3)
+    with open(path, 'r') as fd:
+      lines = fd.readlines()
+    sbml = util_tellurium.getSBMLStringFromAntimony(''.join(lines))
+    simple = SimpleSBML(sbml)
+    import pdb; pdb.set_trace()
+
+  def testAnalyzeReactions2(self):
+    path = os.path.join(cn.TEST_DIR, TEST_FILE4)
+    simple = SimpleSBML(path)
+    Molecule.initialize(simple)
+    Reaction.initialize(simple)
+    stg = MoietyComparator.analyzeReactions()
+    import pdb; pdb.set_trace()
     
 
 if __name__ == '__main__':

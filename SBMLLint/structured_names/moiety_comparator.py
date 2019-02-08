@@ -2,7 +2,7 @@
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.reaction import Reaction
-from SBMLLint.common.simple_SBML import SimpleSBML
+from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.structured_names.moiety import Moiety
 
 import pandas as pd
@@ -73,7 +73,7 @@ class MoietyComparator(object):
       stg = NULL_STR
       for idx, row in df.iterrows():
         if sign*row[cn.VALUE] > 0:
-          stg = "%s\n  %s: %2.2f" % (stg, idx, sign*row[cn.VALUE])
+          stg = "%s  %s: %2.2f\n" % (stg, idx, sign*row[cn.VALUE])
       if not stg == NULL_STR:
         stg = "Excess moieties in %s%s" % (name, stg)
       return stg
@@ -101,5 +101,5 @@ class MoietyComparator(object):
             SimpleSBML.getReactionString(reaction._libsbml_reaction),
             stg
             )
-    report = "%d reactions have imbalances.\n%s" % (num, report)
+    report = "\n%d reactions have imbalances.\n%s" % (num, report)
     return report

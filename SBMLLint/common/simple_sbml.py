@@ -5,6 +5,7 @@ Provides simplified, read-only access to an SBML model.
 from SBMLLint.common import constants as cn
 import collections
 import os.path
+import numpy as np
 import sys
 import tesbml
 import urllib3
@@ -111,22 +112,35 @@ class SimpleSBML(object):
     :param tesbml.libsbml.Reaction reaction:
     :return str:
     """
-    reaction_str = ''
-    base_length = len(reaction_str)
-    for reference in cls.getReactants(reaction):
-      if len(reaction_str) > base_length:
-        reaction_str += " + " + reference.species
+    def makeStoichiometryString(species_reference):
+      num = species_reference.getStoichiometry()
+      if np.isclose(num, 1.0):
+        return ''
       else:
-        reaction_str += reference.species
-    reaction_str += "-> "
-    base_length = len(reaction_str)
-    for reference in cls.getProducts(reaction):
-      if len(reaction_str) > base_length:
-        reaction_str += " + " + reference.species
-      else:
-        reaction_str += reference.species
-    kinetics_terms = cls.getReactionKineticsTerms(reaction)
-    reaction_str += "; " + ", ".join(kinetics_terms)
+        return "%2.2f " % num
+    #
+    def makeTermCollection(species_references):
+      """
+      Formats a set of terms with stoichiometries.
+      :param list-SpeciesReference:
+      :return str:
+      """
+      term_collection = ''
+      for reference in species_references:
+        term = "%s%s" % (makeStoichiometryString(reference),
+          reference.species)
+        if len(term_collection) == 0:
+          term_collection += term
+        else:
+          term_collection += " + " + term
+      return term_collection
+    #
+    reactant_collection = makeTermCollection(cls.getReactants(reaction))
+    product_collection = makeTermCollection(cls.getProducts(reaction))
+    formula_str = reaction.getKineticLaw().formula
+    reaction_str = "%s -> %s; %s" % (reactant_collection,
+        product_collection, formula_str)
+    import pdb; pdb.set_trace()
     return reaction_str
 
   @staticmethod
