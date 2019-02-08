@@ -1,4 +1,6 @@
 Glu + A_P_P_P -> Glu_P + A_P_P; 1
+Glu + A_P_P -> Glu_P + A_P_P; 1
+Glu + A_P_P_P -> A_P_P; 1
 Glu = 0
 A_P_P_P = 0
 A_P_P = 0

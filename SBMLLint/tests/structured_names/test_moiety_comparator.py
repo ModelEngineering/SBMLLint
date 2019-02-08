@@ -38,6 +38,15 @@ TEST_FILE4 = "test_file4.xml"
 TEST_FILE3 = "test_file3.antimony"
 
 
+######################################
+# Auxiliary Functions
+######################################
+def analyze(simple):
+  Molecule.initialize(simple)
+  Reaction.initialize(simple)
+  return MoietyComparator.analyzeReactions()
+  
+
 #############################
 # Tests
 #############################
@@ -76,21 +85,22 @@ class TestMoietyComparator(unittest.TestCase):
     stg = comparator.reportDifference()
     self.assertEqual(len(stg), 0)
 
+
   def testAnalyzeReactions1(self):
     path = os.path.join(cn.TEST_DIR, TEST_FILE3)
     with open(path, 'r') as fd:
       lines = fd.readlines()
     sbml = util_tellurium.getSBMLStringFromAntimony(''.join(lines))
     simple = SimpleSBML(sbml)
+    stg = analyze(simple)
     import pdb; pdb.set_trace()
 
   def testAnalyzeReactions2(self):
     path = os.path.join(cn.TEST_DIR, TEST_FILE4)
     simple = SimpleSBML(path)
-    Molecule.initialize(simple)
-    Reaction.initialize(simple)
-    stg = MoietyComparator.analyzeReactions()
-    import pdb; pdb.set_trace()
+    stg = analyze(simple)
+    self.assertTrue('10' in stg)
+    self.assertGreater(stg.count('\n'),  5)
     
 
 if __name__ == '__main__':

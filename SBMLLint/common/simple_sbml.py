@@ -12,6 +12,10 @@ import urllib3
 import warnings
 
 
+TYPE_MODEL = "type_model"
+TYPE_XML = "type_xml"
+TYPE_FILE = "type_file"
+
 IteratorItem = collections.namedtuple('IteratorItem',
     'filename number model')
 
@@ -28,9 +32,25 @@ class SimpleSBML(object):
     :raises IOError: Error encountered reading the SBML document
     """
     if isinstance(model_reference, str):
+      if "<sbml" in model_reference:
+        model_type = TYPE_XML
+      else:
+        model_type = TYPE_FILE
+    else:
+      model_type = TYPE_MODEL
+    if model_type == TYPE_FILE:
       self._filename = model_reference
       self._reader = tesbml.SBMLReader()
       self._document = self._reader.readSBML(self._filename)
+      if (self._document.getNumErrors() > 0):
+        raise IOError("Errors in SBML document\n%s" 
+            % self._document.printErrors())
+      self._model = self._document.getModel()
+    elif model_type == TYPE_XML:
+      self._filename = None
+      self._reader = tesbml.SBMLReader()
+      self._document = self._reader.readSBMLFromString(
+          model_reference)
       if (self._document.getNumErrors() > 0):
         raise IOError("Errors in SBML document\n%s" 
             % self._document.printErrors())
@@ -106,10 +126,11 @@ class SimpleSBML(object):
     return [reaction.getProduct(n) for n in range(reaction.getNumProducts())]
 
   @classmethod
-  def getReactionString(cls, reaction):
+  def getReactionString(cls, reaction, is_include_kinetics=True):
     """
     Provides a string representation of the reaction
     :param tesbml.libsbml.Reaction reaction:
+    :param bool is_include_kinetics: include the kinetics formula
     :return str:
     """
     def makeStoichiometryString(species_reference):
@@ -137,8 +158,11 @@ class SimpleSBML(object):
     #
     reactant_collection = makeTermCollection(cls.getReactants(reaction))
     product_collection = makeTermCollection(cls.getProducts(reaction))
-    formula_str = reaction.getKineticLaw().formula
-    reaction_str = "%s -> %s; %s" % (reactant_collection,
+    if is_include_kinetics:
+      formula_str = "; " + reaction.getKineticLaw().formula
+    else:
+      formula_str = ''
+    reaction_str = "%s: %s -> %s%s" % (reaction.id, reactant_collection,
         product_collection, formula_str)
     return reaction_str
 

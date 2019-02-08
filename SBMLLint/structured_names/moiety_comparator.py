@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 
 NULL_STR = ''
+INDENT = "  "
 
 
 class MoietyComparator(object):
@@ -62,26 +63,32 @@ class MoietyComparator(object):
     if self.isSame():
       return NULL_STR
     df = self.difference()
-    def buildStg(name, sign):
+    def appendNewline(stg):
+      if len(stg) > 0:
+        return "%s\n" % stg
+      else:
+        return stg
+    #
+    def buildStg(name, sign, indent=INDENT):
       """
       Constructs the report for the name with the given
       sign of values in df.
       :param str name:
       :param int sign: 1 or -1
+      :param str indent: indentation on each line
       :return str:
       """
       stg = NULL_STR
       for idx, row in df.iterrows():
         if sign*row[cn.VALUE] > 0:
-          stg = "%s  %s: %2.2f\n" % (stg, idx, sign*row[cn.VALUE])
+          stg = "%s\n%s%s: %2.2f" % (
+              indent, stg, idx, sign*row[cn.VALUE])
       if not stg == NULL_STR:
         stg = "Excess moieties in %s%s" % (name, stg)
       return stg
     #
-    stg1 = buildStg(self.names[0], 1)
-    if len(stg1) > 0:
-      stg1 = "%s\n" % stg1
-    stg2 = buildStg(self.names[1], -1)
+    stg1 = appendNewline(buildStg(self.names[0], 1))
+    stg2 = appendNewline(buildStg(self.names[1], -1))
     return "%s%s" % (stg1, stg2)
 
   @classmethod
@@ -100,7 +107,8 @@ class MoietyComparator(object):
         num += 1
         report = "%s\n***%s\n%s" % (
             report, 
-            SimpleSBML.getReactionString(reaction._libsbml_reaction),
+            SimpleSBML.getReactionString(reaction._libsbml_reaction,
+                is_include_kinetics=False),
             stg
             )
     report = "\n%d reactions have imbalances.\n%s" % (num, report)
