@@ -79,8 +79,10 @@ class MoietyComparator(object):
       return stg
     #
     stg1 = buildStg(self.names[0], 1)
+    if len(stg1) > 0:
+      stg1 = "%s\n" % stg1
     stg2 = buildStg(self.names[1], -1)
-    return "%s\n%s" % (stg1, stg2)
+    return "%s%s" % (stg1, stg2)
 
   @classmethod
   def analyzeReactions(cls):
@@ -96,7 +98,7 @@ class MoietyComparator(object):
       stg = comparator.reportDifference()
       if len(stg) > 0:
         num += 1
-        report = "%s\n*%s\n%s" % (
+        report = "%s\n***%s\n%s" % (
             report, 
             SimpleSBML.getReactionString(reaction._libsbml_reaction),
             stg

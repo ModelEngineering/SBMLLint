@@ -140,7 +140,6 @@ class SimpleSBML(object):
     formula_str = reaction.getKineticLaw().formula
     reaction_str = "%s -> %s; %s" % (reactant_collection,
         product_collection, formula_str)
-    import pdb; pdb.set_trace()
     return reaction_str
 
   @staticmethod
