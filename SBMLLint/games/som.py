@@ -57,8 +57,6 @@ class SOM(object):
         :return SOM
         """    
         for som in cls.soms:
-            #if molecule in som.molecules:
-            #    return som
             for m in som.molecules:
                 if molecule.name == m.name:
                     return som
@@ -96,7 +94,6 @@ class SOM(object):
         """        
         # flag that will show whether the reaction was reduced
         reduced = False
-        
         # Quit if reaction is not MultiMulti
         if reaction.category != cn.REACTION_n_n:
             return False
