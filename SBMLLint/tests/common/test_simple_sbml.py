@@ -92,6 +92,16 @@ class TestSimpleSBML(unittest.TestCase):
     self.assertTrue(self.simple.isParameter(parameters[0]))
     self.assertFalse(self.simple.isParameter("dummy"))
 
+  def testGetReactionStrings(self):
+    stgs = self.simple.getReactionStrings()
+    self.assertEqual(len(stgs), cn.NUM_REACTIONS)
+    self.assertTrue(isinstance(stgs[0], str))
+
+  def testGetSpeciesNames(self):
+    stgs = self.simple.getSpeciesNames()
+    self.assertEqual(len(stgs), cn.NUM_SPECIES)
+    self.assertTrue(isinstance(stgs[0], str))
+
 
 class TestFunctions(unittest.TestCase):
 
