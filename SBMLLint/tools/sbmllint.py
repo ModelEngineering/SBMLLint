@@ -1,18 +1,21 @@
 """Checks for static errors in a model."""
 
-MODEL_TYPE_FILE = "model_type_file"
-MODEL_TYPE_ANTIMONY = "model_type_antimony"
-MODEL_TYPE_URL = "model_type_url"
-MODEL_TYPE_BIOMODELS = "model_type_biomodels"
+from SBMLLint.common import constants as cn
+from SBMLLint.tools import util
+from SBMLLint.structured_names.moiety_comparator import MoietyComparator
 
 
-def checker(model,
-    model_type=MODEL_TYPE_ANTIMONY,
+def lint(model_reference,
     mass_balance_check="structured_names"):
   """
   Reports on errors found in a model
-  :param object model: reaction network model
-  :param str model_type: type of model used
+  :param str model_reference: file, antimony, xml
   :param str mass_balance_check: how check for mass balance
   """
-  pass
+  util.initialize(model_reference)
+  import pdb; pdb.set_trace()
+  print(MoietyComparator.analyzeReactions())
+
+
+if __name__ == '__main__':
+  lint(cn.TEST_FILE2)
