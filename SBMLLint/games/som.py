@@ -5,17 +5,23 @@ from SBMLLint.common.molecule import Molecule
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.simple_sbml import SimpleSBML
 
+from collections import deque
+
 BRACKET_OPEN = "{"
 BRACKET_CLOSE = "}"
 
 class SOM(object):
     soms = []  # All SOMs. 
-    def __init__(self, molecules):
+    def __init__(self, molecules, reactions=None):
         """
         :param set-Molecule molecules:
+        :param set-Reaction reactions:
         """
         self.molecules = molecules
-        self.reactions = set()
+        if reactions is None:
+            self.reactions = set()
+        else: 
+            self.reactions = reactions
         self.identifier = self.makeId()
         self.__class__.addSOM(self)
 
@@ -29,7 +35,7 @@ class SOM(object):
         :return str:
         """
         def joinMoleculeNames(molecules):
-          names = [mole.name for mole in molecules]
+          names = [m.name for m in molecules]
           names.sort()
           return ', '.join(names)
         #
@@ -42,7 +48,7 @@ class SOM(object):
         
     @classmethod    
     def addSOM(cls, new_som):
-        if any([new_som.molecules.intersection(s.molecules) for s in cls.soms]):
+        if any([new_som.molecules.intersection(som.molecules) for som in cls.soms]):
           pass
         else:
           cls.soms.append(new_som)
@@ -50,23 +56,24 @@ class SOM(object):
     @classmethod
     def findSOM(cls, molecule):
         """
-        Find the SOM that contains molecule
+        Finds the SOM that contains molecule
         and returns SOM
-        :param Molecule molecule
-        :return SOM
+        :param Molecule molecule:
+        :return SOM/None:
         """    
         for som in cls.soms:
-            for m in som.molecules:
-                if molecule.name == m.name:
+            for mole in som.molecules:
+                if mole.name == molecule.name:
                     return som
+        return None
             
     @classmethod
     def merge(cls, reaction):
         """
         Merges two SOMs using a UniUni reaction 
         and updates cls.soms
-        :param Reaction reaction
-        :return SOM merged som
+        :param Reaction reaction:
+        :return SOM:
         """ 
         if reaction.category != cn.REACTION_1_1:
             raise AttributeError("This reaction cannot merge. You need a 1-1 reacton")
@@ -77,78 +84,69 @@ class SOM(object):
         if som1 == som2:
             pass
         else: 
-            som1.molecules = som1.molecules.union(som2.molecules)
-            som1.reactions.add(reaction)
-            som1.identifier = som1.makeId()
+            cls.soms.remove(som1)
             cls.soms.remove(som2)
-            return som1
+            new_som = SOM(som1.molecules.union(som2.molecules),
+                         som1.reactions.union(som2.reactions))
+            return new_som
         
     @classmethod
     def reduce(cls, reaction):
         """
         Reduces reaction using existing cls.soms
-        param Reaction reaction
-        return reduced reaction if reduced
-        return False if reaction is not reducible
+        :param Reaction reaction:
+        :return reaction/False:
         """        
         # flag that will show whether the reaction was reduced
         reduced = False
-        # Quit if reaction is not MultiMulti
-        if reaction.category != cn.REACTION_n_n:
-            return False
-        
-        def getIndex(ms_list, som):
-            for key, ms in enumerate(ms_list):
-                if (ms.molecule in som.molecules) & (ms.stoichiometry != 0):
-                    return key
-            return len(ms_list)        
 
-        def getNamedTuple(tup, stoichiometry):
-            return cn.MoleculeStoichiometry(molecule = tup.molecule,
-                                           stoichiometry = stoichiometry)        
+        if reaction.category != cn.REACTION_n_n:
+            return reduced
         
         for som in cls.soms:
-            
-            rct_index = getIndex(reaction.reactants, som)
-            pdt_index = getIndex(reaction.products, som)
+            reactants_in = deque([mole_tuple for mole_tuple in  
+                            reaction.reactants if 
+                            mole_tuple.molecule in som.molecules])
+            reactants_out = [mole_tuple for mole_tuple in  
+                            reaction.reactants if 
+                            mole_tuple.molecule not in som.molecules]
+            products_in = deque([mole_tuple for mole_tuple in  
+                            reaction.products if 
+                            mole_tuple.molecule in som.molecules])
+            products_out = [mole_tuple for mole_tuple in  
+                            reaction.products if 
+                            mole_tuple.molecule not in som.molecules]
 
-            while (rct_index<len(reaction.reactants)) & (pdt_index<len(reaction.products)):
-
-                reactant = reaction.reactants[rct_index]
-                product = reaction.products[pdt_index]
+            while reactants_in and products_in:
+                reactant = reactants_in[0]
+                product = products_in[0]
 
                 if reactant.stoichiometry > product.stoichiometry:
-                    rct_stoichiometry = reactant.stoichiometry - product.stoichiometry
-                    pdt_stoichiometry = 0.0
+                    reactants_in[0] = cn.MoleculeStoichiometry(reactant.molecule,
+                                                              reactant.stoichiometry - product.stoichiometry)
+                    products_in.popleft()
 
                 elif reactant.stoichiometry < product.stoichiometry:
-                    rct_stoichiometry = 0.0
-                    pdt_stoichiometry = product.stoichiometry - reactant.stoichiometry
-
+                    products_in[0] = cn.MoleculeStoichiometry(product.molecule,
+                                                              product.stoichiometry - reactant.stoichiometry)
+                    reactants_in.popleft()
                 else:
-                    rct_stoichiometry = 0.0
-                    pdt_stoichiometry = 0.0
+                    reactants_in.popleft()
+                    products_in.popleft()
 
-                reaction.reactants[rct_index] = getNamedTuple(reaction.reactants[rct_index], \
-                                                              rct_stoichiometry)
-                reaction.products[pdt_index] = getNamedTuple(reaction.products[pdt_index], \
-                                                             pdt_stoichiometry) 
+            reactants = list(reactants_in) + reactants_out
+            products = list(products_in) + products_out
+            if (len(reaction.reactants) > len(reactants)) | \
+            (len(reaction.products) > len(products)):
                 reduced = True
-
-                rct_index = getIndex(reaction.reactants, som)
-                pdt_index = getIndex(reaction.products, som)
-        
-        if reduced: 
-            # Update reaction 
-            for ms in reaction.reactants:
-                if ms.stoichiometry == 0.0:
-                    reaction.reactants.remove(ms)
-            for ms in reaction.products:
-                if ms.stoichiometry == 0.0:
-                    reaction.products.remove(ms)
-
-            reaction.identifier = reaction.makeId()
-            reaction.category = reaction._getCategory()     
+                reaction.reactants = reactants
+                reaction.products = products
+            
+        if reduced:
+            reaction.identifier = reaction.makeId() 
+            reaction.category = reaction._getCategory() 
             return reaction
         else:
             return reduced
+     
+ 
