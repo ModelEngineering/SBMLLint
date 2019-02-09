@@ -5,7 +5,7 @@ from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.simple_sbml import SimpleSBML
-import SBMLLint.common.util_tellurium as util_tellurium
+from SBMLLint.common import util
 from SBMLLint.structured_names.moiety_comparator  \
      import MoietyComparator
 
@@ -15,7 +15,7 @@ import os
 import unittest
 
 
-IGNORE_TEST = True
+IGNORE_TEST = False
 MOIETY_NAME1 = "first"
 MOIETY_NAME2 = "second"
 MOIETY_NAME3 = "third"
@@ -36,6 +36,11 @@ for item in iterator:
     MOLECULE_NAME_SET.append(name)
 TEST_FILE4 = "test_file4.xml"
 TEST_FILE3 = "test_file3.antimony"
+# Antimony as source
+PATH= os.path.join(cn.TEST_DIR, TEST_FILE3)
+with open(PATH, 'r') as fd:
+  lines = fd.readlines()
+SBML= util.getSBMLStringFromAntimony(''.join(lines))
 
 
 ######################################
@@ -61,7 +66,7 @@ class TestMoietyComparator(unittest.TestCase):
   def testConstructor(self):
     if IGNORE_TEST:
       return
-    self.assertEqual(len(self.comparator.list_of_molecules), 2)
+    self.assertEqual(len(self.comparator.molecule_collections), 2)
 
   def testIsSame(self):
     if IGNORE_TEST:
@@ -78,6 +83,8 @@ class TestMoietyComparator(unittest.TestCase):
     self.assertLess(df.loc[MOIETY_NAME1].tolist()[0], 0)
   
   def testReportDifference(self):  
+    if IGNORE_TEST:
+      return
     stg = self.comparator.reportDifference()
     self.assertGreater(len(stg), 0)
     comparator = MoietyComparator(self.molecules1,
@@ -85,20 +92,18 @@ class TestMoietyComparator(unittest.TestCase):
     stg = comparator.reportDifference()
     self.assertEqual(len(stg), 0)
 
-
   def testAnalyzeReactions1(self):
-    path = os.path.join(cn.TEST_DIR, TEST_FILE3)
-    with open(path, 'r') as fd:
-      lines = fd.readlines()
-    sbml = util_tellurium.getSBMLStringFromAntimony(''.join(lines))
-    simple = SimpleSBML(sbml)
+    if IGNORE_TEST:
+      return
+    simple = SimpleSBML(SBML)
     stg = analyze(simple)
-    import pdb; pdb.set_trace()
 
   def testAnalyzeReactions2(self):
-    path = os.path.join(cn.TEST_DIR, TEST_FILE4)
-    simple = SimpleSBML(path)
+    if IGNORE_TEST:
+      return
+    simple = SimpleSBML(SBML)
     stg = analyze(simple)
+    import pdb; pdb.set_trace()
     self.assertTrue('10' in stg)
     self.assertGreater(stg.count('\n'),  5)
     
