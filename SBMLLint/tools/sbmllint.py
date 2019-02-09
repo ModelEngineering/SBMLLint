@@ -6,6 +6,8 @@ from SBMLLint.common.reaction import Reaction
 from SBMLLint.common import util
 from SBMLLint.structured_names.moiety_comparator import MoietyComparator
 
+import argparse
+
 NUM_S1 = 2
 NUM_S2 = 3
 MOLECULE1 = "S1"
@@ -29,6 +31,12 @@ def lint(model_reference,
   Reaction.initialize(simple)
   print(MoietyComparator.analyzeReactions())
 
+def main():
+  parser = argparse.ArgumentParser(description='SBML XML file.')
+  parser.add_argument('filename', type=str, help='SBML file')
+  args = parser.parse_args()
+  lint(args.filename)
+
 
 if __name__ == '__main__':
-  lint(ANTIMONY_STG)
+  main()
