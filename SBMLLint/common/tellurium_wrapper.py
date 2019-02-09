@@ -4,6 +4,14 @@ import argparse
 import subprocess
 import sys
 
+NUM_S1 = 2
+NUM_S2 = 3
+IGNORE_TEST = False
+ANTIMONY_STG = '''
+%dS1 -> %dS2; 1
+S1 = 0
+S2 = 0
+''' % (NUM_S1, NUM_S2)
 
 class TelluriumWrapper(object):
   """
@@ -32,10 +40,18 @@ class TelluriumWrapper(object):
     """
     sys.stdout.writelines(input_string)
 
+  @staticmethod
+  def _convert(input_string):
+    """
+    Converts from io_wrapper to string
+    """
+    return ''.join([l for l in input_string])
+
   def getSBMLFromAntimony(self, input_string):
     import tellurium as te
-    #
-    rr = te.loada(input_string)
+    # Convert input to string.
+    inputs = self.__class__._convert(input_string)
+    rr = te.loada(inputs)
     sbml = rr.getSBML()
     sys.stdout.writelines(sbml)
 

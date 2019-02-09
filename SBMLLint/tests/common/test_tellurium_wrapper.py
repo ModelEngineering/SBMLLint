@@ -37,7 +37,6 @@ class TestTelluriumWrapper(unittest.TestCase):
     wrapper = TelluriumWrapper()
     wrapper.run("getSBMLFromAntimony", ANTIMONY_STG)
     self.assertEqual(wrapper.return_code, 0)
-    import pdb; pdb.set_trace()
 
 
 if __name__ == '__main__':
