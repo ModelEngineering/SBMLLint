@@ -10,12 +10,11 @@ BRACKET_CLOSE = "}"
 
 class SOM(object):
     soms = []  # All SOMs. 
-    def __init__(self, molecule):
+    def __init__(self, molecules):
         """
-        :param molecules Molecule instances:
-        :param reactions Reaction instances:
+        :param set-Molecule molecules:
         """
-        self.molecules = {molecule}
+        self.molecules = molecules
         self.reactions = set()
         self.identifier = self.makeId()
         self.__class__.addSOM(self)
@@ -30,7 +29,7 @@ class SOM(object):
         :return str:
         """
         def joinMoleculeNames(molecules):
-          names = [m.name for m in molecules]
+          names = [mole.name for mole in molecules]
           names.sort()
           return ', '.join(names)
         #
