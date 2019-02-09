@@ -1,5 +1,5 @@
 from SBMLLint.common import constants as cn
-from SBMLLint.common import util_tellurium
+from SBMLLint.common import util
 import tesbml
 
 
@@ -23,9 +23,13 @@ S2 = 0
 #############################
 class TestFunctions(unittest.TestCase):
 
+  def testGetModel(self):
+    document = util.getSBMLDocument(ANTIMONY_STG)
+    model = document.getModel()
+    self.assertTrue('Reaction' in str(type(model.getReaction(0))))
+
   def testGetModelFromAntimony(self):
-    document = util_tellurium.getSBMLStringFromAntimony(
-        util_tellurium.ANTIMONY_STG)
+    document = util.getSBMLStringFromAntimony(ANTIMONY_STG)
     self.assertTrue(isinstance(document, str))
     reader = tesbml.libsbml.SBMLReader()
     libsbml_document = reader.readSBMLFromString(document)
@@ -37,7 +41,7 @@ class TestFunctions(unittest.TestCase):
        str(type(model.getReaction(0))))
 
   def testMakeSBMLFile(self):
-    util_tellurium.makeSBMLFile()
+    util.makeSBMLFile(ANTIMONY_STG)
     self.assertTrue(os.path.isfile(cn.TEST_FILE2))
 
 
