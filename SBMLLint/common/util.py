@@ -51,9 +51,3 @@ def getSBMLStringFromAntimony(antimony_stg):
   rr = te.loada(antimony_stg)
   sbml = rr.getSBML()
   return sbml
-
-def makeSBMLFile(stg, path=cn.TEST_FILE2):
-  sbmlstr = getSBMLStringFromAntimony(stg)
-  xmlstr = "%s\n%s" % (XML_HEADER, sbmlstr)
-  with open(path, 'w') as fd:
-    fd.writelines(xmlstr)

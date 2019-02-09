@@ -24,9 +24,15 @@ S2 = 0
 class TestFunctions(unittest.TestCase):
 
   def testGetModel(self):
-    document = util.getSBMLDocument(ANTIMONY_STG)
-    model = document.getModel()
-    self.assertTrue('Reaction' in str(type(model.getReaction(0))))
+    def test(document):
+      model = document.getModel()
+      self.assertTrue('Reaction' in str(type(model.getReaction(0))))
+    #
+    test(util.getSBMLDocument(ANTIMONY_STG))
+    test(util.getSBMLDocument(cn.TEST_FILE2))
+    with open(cn.TEST_FILE2, 'r') as fd:
+      lines = '\n'.join(fd.readlines())
+    test(util.getSBMLDocument(lines))
 
   def testGetModelFromAntimony(self):
     document = util.getSBMLStringFromAntimony(ANTIMONY_STG)
@@ -39,10 +45,6 @@ class TestFunctions(unittest.TestCase):
     model = libsbml_document.getModel()
     self.assertTrue('Reaction' in 
        str(type(model.getReaction(0))))
-
-  def testMakeSBMLFile(self):
-    util.makeSBMLFile(ANTIMONY_STG)
-    self.assertTrue(os.path.isfile(cn.TEST_FILE2))
 
 
 if __name__ == '__main__':
