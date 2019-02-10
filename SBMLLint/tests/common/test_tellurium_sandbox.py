@@ -1,5 +1,5 @@
 from SBMLLint.common import constants as cn
-from SBMLLint.common.tellurium_wrapper import TelluriumWrapper
+from SBMLLint.common.tellurium_sandbox import TelluriumSandbox
 
 
 import numpy as np
@@ -25,18 +25,18 @@ S2 = 0
 #############################
 # Tests
 #############################
-class TestTelluriumWrapper(unittest.TestCase):
+class TestTelluriumSandbox(unittest.TestCase):
 
   def testRun(self):
-    wrapper = TelluriumWrapper()
-    wrapper.run("echo", INPUT)
-    self.assertEqual(wrapper.return_code, 0)
-    self.assertEqual(wrapper.output, INPUT)
+    sandbox = TelluriumSandbox()
+    sandbox.run("echo", INPUT)
+    self.assertEqual(sandbox.return_code, 0)
+    self.assertEqual(sandbox.output, INPUT)
 
   def testGetSBMLFromAntimony(self):
-    wrapper = TelluriumWrapper()
-    wrapper.run("getSBMLFromAntimony", ANTIMONY_STG)
-    self.assertEqual(wrapper.return_code, 0)
+    sandbox = TelluriumSandbox()
+    sandbox.run("getSBMLFromAntimony", ANTIMONY_STG)
+    self.assertEqual(sandbox.return_code, 0)
 
 
 if __name__ == '__main__':

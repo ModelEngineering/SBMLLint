@@ -1,4 +1,4 @@
-""" Wraps tellurium methods to run in anothe process.  """
+"""Wraps methods that use Tellurium runs them in another process."""
 
 import argparse
 import subprocess
@@ -13,17 +13,17 @@ S1 = 0
 S2 = 0
 ''' % (NUM_S1, NUM_S2)
 
-class TelluriumWrapper(object):
+class TelluriumSandbox(object):
   """
   Runs python code in a separate process (sandbox).
   Note that there are two instances of this class that are
   created; one in the parent process (which uses the main and run
   methods) and one in the child (which uses the execute method).
   Usage:
-    wrapper.run(method_name, string_argument)
+    sandbox.run(method_name, string_argument)
   Outputs
-    wrapper.return_code - should be 0
-    wrapper.output - string result
+    sandbox.return_code - should be 0
+    sandbox.output - string result
   """
 
   def __init__(self):
@@ -43,7 +43,7 @@ class TelluriumWrapper(object):
   @staticmethod
   def _convert(input_string):
     """
-    Converts from io_wrapper to string
+    Converts from io_sandbox to string
     """
     return ''.join([l for l in input_string])
 
@@ -79,5 +79,5 @@ class TelluriumWrapper(object):
 
 
 if __name__ == '__main__':
-  wrapper = TelluriumWrapper()
-  wrapper.main()
+  sandbox = TelluriumSandbox()
+  sandbox.main()
