@@ -81,10 +81,10 @@ class MoietyComparator(object):
       stg = NULL_STR
       for idx, row in df.iterrows():
         if sign*row[cn.VALUE] > 0:
-          stg = "%s\n%s%s: %2.2f" % (
-              indent, stg, idx, sign*row[cn.VALUE])
+          stg = "%s%s%s: %2.2f\n" % (
+              stg, indent, idx, sign*row[cn.VALUE])
       if not stg == NULL_STR:
-        stg = "Excess moieties in %s%s" % (name, stg)
+        stg = "Excess moieties in %s\n%s" % (name, stg)
       return stg
     #
     stg1 = appendNewline(buildStg(self.names[0], 1))

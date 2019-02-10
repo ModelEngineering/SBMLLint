@@ -15,7 +15,7 @@ import os
 import unittest
 
 
-IGNORE_TEST = False
+IGNORE_TEST = True
 MOIETY_NAME1 = "first"
 MOIETY_NAME2 = "second"
 MOIETY_NAME3 = "third"
@@ -93,10 +93,10 @@ class TestMoietyComparator(unittest.TestCase):
     self.assertEqual(len(stg), 0)
 
   def testAnalyzeReactions1(self):
-    if IGNORE_TEST:
-      return
     simple = SimpleSBML(SBML)
     stg = analyze(simple)
+    print(stg)
+    import pdb; pdb.set_trace()
 
   def testAnalyzeReactions2(self):
     if IGNORE_TEST:

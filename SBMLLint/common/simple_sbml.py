@@ -162,8 +162,9 @@ class SimpleSBML(object):
       formula_str = "; " + reaction.getKineticLaw().formula
     else:
       formula_str = ''
-    reaction_str = "%s: %s -> %s%s" % (reaction.id, reactant_collection,
-        product_collection, formula_str)
+    reaction_str = "%s: %s -> %s" % (reaction.id, reactant_collection,
+        product_collection)
+    reaction_str = reaction_str + formula_str
     return reaction_str
 
   @staticmethod

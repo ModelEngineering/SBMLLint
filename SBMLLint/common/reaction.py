@@ -14,7 +14,8 @@ class Reaction(object):
   reactions = []  # All reactions
 
   def __init__(self, libsbml_reaction):
-    self.identifier = SimpleSBML.getReactionString(libsbml_reaction)
+    self.identifier = SimpleSBML.getReactionString(libsbml_reaction,
+        is_include_kinetics=True)
     self.reactants = self._getMolecules(libsbml_reaction,
         SimpleSBML.getReactants)
     self.products = self._getMolecules(libsbml_reaction,
