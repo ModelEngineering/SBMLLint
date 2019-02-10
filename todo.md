@@ -1,5 +1,5 @@
 # To Do for Structured Names
 
-1. make sbmllint a command line tool
+1. add tests for tools
 1. notebook with sbmllint
-1. ppreactions tool that pretty prints reactions
+1. moieties can have repetition counts

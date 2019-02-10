@@ -26,7 +26,6 @@ def main():
   parser = argparse.ArgumentParser(description='SBML XML file.')
   parser.add_argument('filename', type=str, help='SBML file')
   args = parser.parse_args()
-  import pdb; pdb.set_trace()
   lint(args.filename)
 
 
