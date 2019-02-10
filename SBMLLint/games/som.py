@@ -148,5 +148,14 @@ class SOM(object):
             return reaction
         else:
             return reduced
-     
+            
+    @classmethod
+    def initialize(cls, molecules):
+        """
+        Creates single-set soms
+        :param list-Molecule molecules:
+        """
+        cls.soms = []
+        for mole in molecules:
+            SOM({mole})
  
