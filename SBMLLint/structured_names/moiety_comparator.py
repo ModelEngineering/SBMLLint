@@ -107,8 +107,7 @@ class MoietyComparator(object):
         num += 1
         report = "%s\n***%s\n%s" % (
             report, 
-            SimpleSBML.getReactionString(reaction._libsbml_reaction,
-                is_include_kinetics=False),
+            reaction.identifier,
             stg
             )
     report = "\n%d reactions have imbalances.\n%s" % (num, report)

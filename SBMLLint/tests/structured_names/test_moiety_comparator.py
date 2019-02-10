@@ -103,8 +103,7 @@ class TestMoietyComparator(unittest.TestCase):
       return
     simple = SimpleSBML(SBML)
     stg = analyze(simple)
-    import pdb; pdb.set_trace()
-    self.assertTrue('10' in stg)
+    self.assertTrue('2' in stg)
     self.assertGreater(stg.count('\n'),  5)
     
 

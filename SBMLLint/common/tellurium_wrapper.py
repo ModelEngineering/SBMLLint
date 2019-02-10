@@ -48,6 +48,10 @@ class TelluriumWrapper(object):
     return ''.join([l for l in input_string])
 
   def getSBMLFromAntimony(self, input_string):
+    """
+    This method runs in a different process from the caller
+    and so can import tellurium.
+    """
     import tellurium as te
     # Convert input to string.
     inputs = self.__class__._convert(input_string)

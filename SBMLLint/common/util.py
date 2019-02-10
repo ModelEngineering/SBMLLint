@@ -1,8 +1,8 @@
 """Commonly used utilities."""
 
 from SBMLLint.common import constants as cn
+from SBMLLint.common.tellurium_wrapper import TelluriumWrapper
 
-import tellurium as te
 import tesbml
 
 TYPE_ANTIMONY = "type_antimony"
@@ -48,6 +48,8 @@ def getSBMLStringFromAntimony(antimony_stg):
   :param str antimony_stg:
   :return str: SBML model in xml format
   """
-  rr = te.loada(antimony_stg)
-  sbml = rr.getSBML()
-  return sbml
+  wrapper = TelluriumWrapper()
+  wrapper.run("getSBMLFromAntimony", antimony_stg)
+  if wrapper.return_code != 0:
+    raise ValueError("Bad antimony string: %s" % antimony_stg)
+  return wrapper.output

@@ -14,9 +14,11 @@ class Reaction(object):
   reactions = []  # All reactions
 
   def __init__(self, libsbml_reaction):
-    self._libsbml_reaction = libsbml_reaction
-    self.reactants = self._getMolecules(SimpleSBML.getReactants)
-    self.products = self._getMolecules(SimpleSBML.getProducts)
+    self.identifier = SimpleSBML.getReactionString(libsbml_reaction)
+    self.reactants = self._getMolecules(libsbml_reaction,
+        SimpleSBML.getReactants)
+    self.products = self._getMolecules(libsbml_reaction,
+        SimpleSBML.getProducts)
     self.category = self._getCategory()
     self.identifier = self.makeId()  # Str identifier for reaction
     if not any([self.isEqual(r) for r in Reaction.reactions]):      
@@ -25,13 +27,13 @@ class Reaction(object):
   def __repr__(self):
     return self.identifier
 
-  def _getMolecules(self, func):
+  def _getMolecules(self, libsbml_reaction, func):
     """
     Constructs molecules for the species returned by function.
     :param Function func: gets libsbml.SpeciesReference
     :return list-Molecule:
     """
-    species = func(self._libsbml_reaction)
+    species = func(libsbml_reaction)
     molecules = []
     for spc in species:
       new_molecules = [Molecule(spc.species, species=spc) 
