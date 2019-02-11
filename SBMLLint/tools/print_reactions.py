@@ -6,9 +6,10 @@ from SBMLLint.common.reaction import Reaction
 from SBMLLint.common import util
 
 import argparse
+import sys
 
 
-def pprint(model_reference, **kwargs):
+def prettyPrint(model_reference, file_out=sys.stdout, **kwargs):
   """
   Prints the reactions in a model.
   :param str model_reference: file, xml string, antimony string
@@ -19,7 +20,7 @@ def pprint(model_reference, **kwargs):
   simple = SimpleSBML(model)
   for reaction in simple.reactions:
     stg = SimpleSBML.getReactionString(reaction, **kwargs)
-    print("%s" % stg)
+    file_out.write("%s\n" % stg)
 
 def main():
   parser = argparse.ArgumentParser(description='SBML XML file.')
@@ -29,7 +30,7 @@ def main():
       default = ['True'])
   args = parser.parse_args()
   is_include_kinetics = True if args.kinetics[0][0] == 'T' else False
-  pprint(args.filename, is_include_kinetics=is_include_kinetics)
+  prettyPrint(args.filename, is_include_kinetics=is_include_kinetics)
 
 
 if __name__ == '__main__':
