@@ -20,9 +20,7 @@ def lint(model_reference, file_out=sys.stdout,
   """
   document = util.getSBMLDocument(model_reference)
   model = document.getModel()
-  simple = SimpleSBML(model)
-  Reaction.initialize(simple)
-  result = MoietyComparator.analyzeReactions()
+  result = MoietyComparator.analyzeReactions(model)
   for line in result.split('\n'):
     file_out.write("%s\n" % line)
     

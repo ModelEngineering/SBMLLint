@@ -83,5 +83,6 @@ class Reaction(object):
     """
     :param SimpleSBML simple:
     """
+    cls.reactions = []
     [Reaction(r) for r in simple.reactions]
   

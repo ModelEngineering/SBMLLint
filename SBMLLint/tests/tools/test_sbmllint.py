@@ -30,6 +30,13 @@ class TestFunctions(unittest.TestCase):
       lines = fd.readlines()
     self.assertGreater(len(lines), 0)
 
+  def testLint2(self):
+    with open(TEST_OUT_PATH, 'w') as fd:
+      sbmllint.lint(cn.TEST_FILE2, file_out=fd)
+    with open(TEST_OUT_PATH, 'r') as fd:
+      lines = fd.readlines()
+    self.assertGreater(len(lines), 0)
+
   def testMain(self):
     module_dir = os.path.abspath(os.curdir)
     for ele in ["SBMLLint", "tools"]:

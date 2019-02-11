@@ -14,7 +14,7 @@ import tesbml
 import unittest
 
 
-IGNORE_TEST = True
+IGNORE_TEST = False
 MOIETY_NAME1 = "first"
 MOIETY_NAME2 = "second"
 MOIETY_NAME3 = "third"

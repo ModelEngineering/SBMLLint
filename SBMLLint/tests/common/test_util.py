@@ -28,8 +28,8 @@ class TestFunctions(unittest.TestCase):
       model = document.getModel()
       self.assertTrue('Reaction' in str(type(model.getReaction(0))))
     #
-    test(util.getSBMLDocument(ANTIMONY_STG))
     test(util.getSBMLDocument(cn.TEST_FILE2))
+    test(util.getSBMLDocument(ANTIMONY_STG))
     with open(cn.TEST_FILE2, 'r') as fd:
       lines = '\n'.join(fd.readlines())
     test(util.getSBMLDocument(lines))

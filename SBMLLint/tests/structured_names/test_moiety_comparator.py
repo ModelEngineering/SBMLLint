@@ -15,7 +15,7 @@ import os
 import unittest
 
 
-IGNORE_TEST = True
+IGNORE_TEST = False
 MOIETY_NAME1 = "first"
 MOIETY_NAME2 = "second"
 MOIETY_NAME3 = "third"
@@ -47,9 +47,7 @@ SBML= util.getSBMLStringFromAntimony(''.join(lines))
 # Auxiliary Functions
 ######################################
 def analyze(simple):
-  Molecule.initialize(simple)
-  Reaction.initialize(simple)
-  return MoietyComparator.analyzeReactions()
+  return MoietyComparator.analyzeReactions(simple)
   
 
 #############################
