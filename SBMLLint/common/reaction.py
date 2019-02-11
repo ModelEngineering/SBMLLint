@@ -21,7 +21,6 @@ class Reaction(object):
     self.products = self._getMolecules(libsbml_reaction,
         SimpleSBML.getProducts)
     self.category = self._getCategory()
-    self.identifier = self.makeId()  # Str identifier for reaction
     if not any([self.isEqual(r) for r in Reaction.reactions]):      
       self.__class__.reactions.append(self)
 

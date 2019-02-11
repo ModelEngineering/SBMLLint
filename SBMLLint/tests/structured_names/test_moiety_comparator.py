@@ -92,13 +92,7 @@ class TestMoietyComparator(unittest.TestCase):
     stg = comparator.reportDifference()
     self.assertEqual(len(stg), 0)
 
-  def testAnalyzeReactions1(self):
-    simple = SimpleSBML(SBML)
-    stg = analyze(simple)
-    print(stg)
-    import pdb; pdb.set_trace()
-
-  def testAnalyzeReactions2(self):
+  def testAnalyzeReactions(self):
     if IGNORE_TEST:
       return
     simple = SimpleSBML(SBML)

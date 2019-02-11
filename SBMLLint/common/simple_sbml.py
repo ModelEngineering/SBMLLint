@@ -1,6 +1,4 @@
-"""
-Provides simplified, read-only access to an SBML model.
-"""
+"""Provides stable, simplified, read-only access to an SBML model."""
 
 from SBMLLint.common import constants as cn
 import collections
@@ -22,7 +20,10 @@ IteratorItem = collections.namedtuple('IteratorItem',
 
 class SimpleSBML(object):
   """
-  Provides access to reactions, species, and parameters.
+  This class address stability of the underlying tesbml 
+  (libsbml) library that seems not to survive garbage collection
+  by python (e.g., returning a libsbml object to a caller.) As
+  a result, no libsbml object is maintained by SimpleSBML instances.
   """
 
   def __init__(self, model_reference):
