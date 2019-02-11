@@ -7,20 +7,25 @@ from SBMLLint.common import util
 from SBMLLint.structured_names.moiety_comparator import MoietyComparator
 
 import argparse
+import sys
 
 
-def lint(model_reference,
+def lint(model_reference, file_out=sys.stdout,
     mass_balance_check="structured_names"):
   """
   Reports on errors found in a model
   :param str model_reference: file, antimony, xml
+  :param TextIOWrapper file_out:
   :param str mass_balance_check: how check for mass balance
   """
   document = util.getSBMLDocument(model_reference)
   model = document.getModel()
   simple = SimpleSBML(model)
   Reaction.initialize(simple)
-  print(MoietyComparator.analyzeReactions())
+  result = MoietyComparator.analyzeReactions()
+  for line in result.split('\n'):
+    file_out.write("%s\n" % line)
+    
 
 def main():
   parser = argparse.ArgumentParser(description='SBML XML file.')
