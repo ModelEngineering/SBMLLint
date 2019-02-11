@@ -28,7 +28,7 @@ def strLen(a_list):
 #############################
 # Tests
 #############################
-class TestMolecule(unittest.TestCase):
+class TestReaction(unittest.TestCase):
 
   def setUp(self):
     self.simple = SimpleSBML(cn.TEST_FILE)
