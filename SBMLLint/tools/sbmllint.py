@@ -14,7 +14,7 @@ def lint(model_reference, file_out=sys.stdout,
     mass_balance_check="structured_names"):
   """
   Reports on errors found in a model
-  :param str model_reference: file, antimony, xml
+  :param str model_reference: file, antimony string, xml string
   :param TextIOWrapper file_out:
   :param str mass_balance_check: how check for mass balance
   """

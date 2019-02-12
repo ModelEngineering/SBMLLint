@@ -117,7 +117,7 @@ class MoietyComparator(object):
         num += 1
         report = "%s\n***%s\n%s" % (
             report, 
-            reaction.identifier,
+            reaction.getId(is_include_kinetics=False),
             stg
             )
     report = "\n%d reactions have imbalances.\n%s" % (num, report)

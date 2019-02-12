@@ -20,6 +20,7 @@ VALUE = "value"
 
 #
 MOIETY_SEPARATOR = "_"
+KINETICS_SEPARATOR = ";"
 
 # Reaction categories
 REACTION_1_1 = "reaction_1_1"

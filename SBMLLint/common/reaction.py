@@ -24,8 +24,18 @@ class Reaction(object):
     if not any([self.isEqual(r) for r in Reaction.reactions]):      
       self.__class__.reactions.append(self)
 
+  def getId(self, is_include_kinetics=True):
+    if is_include_kinetics:
+      return self.identifier
+    else:
+      pos = self.identifier.find(cn.KINETICS_SEPARATOR)
+      if pos < 0:
+        return self.identifier
+      else:
+        return self.identifier[:pos]
+
   def __repr__(self):
-    return self.identifier
+    return self.getId()
 
   def _getMolecules(self, libsbml_reaction, func):
     """

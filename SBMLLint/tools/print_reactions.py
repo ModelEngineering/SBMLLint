@@ -13,13 +13,14 @@ def prettyPrint(model_reference, file_out=sys.stdout, **kwargs):
   """
   Prints the reactions in a model.
   :param str model_reference: file, xml string, antimony string
-  :param dict kwargs: arguments to SimpleSBML.getReactionString
+  :param dict kwargs: arguments to Reaction.getId
   """
   document = util.getSBMLDocument(model_reference)
   model = document.getModel()
   simple = SimpleSBML(model)
-  for reaction in simple.reactions:
-    stg = SimpleSBML.getReactionString(reaction, **kwargs)
+  Reaction.initialize(simple)
+  for reaction in Reaction.reactions:
+    stg = reaction.getId(**kwargs)
     file_out.write("%s\n" % stg)
 
 def main():
