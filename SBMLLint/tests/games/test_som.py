@@ -86,7 +86,7 @@ class TestSOM(unittest.TestCase):
 		self.assertGreater(num_reactants, len(reduced_reaction.reactants))
 		self.assertGreater(num_products, len(reduced_reaction.products))
 
-	def testaddSOM(self):
+	def testAddSOM(self):
 		if IGNORE_TEST:
 			return
 		num_soms = len(SOM.soms)
@@ -94,10 +94,13 @@ class TestSOM(unittest.TestCase):
 		som_existing = SOM.soms[0]
 
 		self.assertEqual(num_soms-1, len(SOM.soms))
+		self.assertTrue(som_existing in SOM.soms)
+		self.assertFalse(som_popped in SOM.soms)
 		SOM.addSOM(som_existing)
 		self.assertEqual(num_soms-1, len(SOM.soms))
 		SOM.addSOM(som_popped)
 		self.assertEqual(num_soms, len(SOM.soms))
+		self.assertTrue(som_popped in SOM.soms)
 
 if __name__ == '__main__':
   unittest.main()
