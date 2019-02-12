@@ -25,14 +25,16 @@ class TestFunctions(unittest.TestCase):
 
   def testLint(self):
     with open(TEST_OUT_PATH, 'w') as fd:
-      sbmllint.lint(cn.TEST_FILE4, file_out=fd)
+      num_react, num_bad = sbmllint.lint(cn.TEST_FILE4, file_out=fd)
+    self.assertGreaterEqual(num_react, num_bad)
     with open(TEST_OUT_PATH, 'r') as fd:
       lines = fd.readlines()
     self.assertGreater(len(lines), 0)
 
   def testLint2(self):
     with open(TEST_OUT_PATH, 'w') as fd:
-      sbmllint.lint(cn.TEST_FILE2, file_out=fd)
+      num_react, num_bad = sbmllint.lint(cn.TEST_FILE2, file_out=fd)
+    self.assertGreaterEqual(num_react, num_bad)
     with open(TEST_OUT_PATH, 'r') as fd:
       lines = fd.readlines()
     self.assertGreater(len(lines), 0)

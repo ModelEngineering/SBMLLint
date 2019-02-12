@@ -17,12 +17,16 @@ def lint(model_reference, file_out=sys.stdout,
   :param str model_reference: file, antimony string, xml string
   :param TextIOWrapper file_out:
   :param str mass_balance_check: how check for mass balance
+  :return int, int: total reactions, number non-compliant
   """
   document = util.getSBMLDocument(model_reference)
   model = document.getModel()
-  result = MoietyComparator.analyzeReactions(model)
-  for line in result.split('\n'):
+  num_bad, report = MoietyComparator.analyzeReactions(model)
+  num_reactions = len(Reaction.reactions)
+  file_out.write("%d/%d reactions balance." % (num_bad, num_reactions))
+  for line in report.split('\n'):
     file_out.write("%s\n" % line)
+  return num_reactions, num_bad
     
 
 def main():

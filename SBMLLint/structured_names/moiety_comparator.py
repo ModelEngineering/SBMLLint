@@ -121,4 +121,4 @@ class MoietyComparator(object):
             stg
             )
     report = "\n%d reactions have imbalances.\n%s" % (num, report)
-    return report
+    return num, report

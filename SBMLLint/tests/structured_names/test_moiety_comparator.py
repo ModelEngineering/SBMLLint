@@ -94,7 +94,8 @@ class TestMoietyComparator(unittest.TestCase):
     if IGNORE_TEST:
       return
     simple = SimpleSBML(SBML)
-    stg = analyze(simple)
+    num, stg = analyze(simple)
+    self.assertGreaterEqual(num, 0)
     self.assertTrue('2' in stg)
     self.assertGreater(stg.count('\n'),  5)
     
