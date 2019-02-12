@@ -23,7 +23,8 @@ def lint(model_reference, file_out=sys.stdout,
   model = document.getModel()
   num_bad, report = MoietyComparator.analyzeReactions(model)
   num_reactions = len(Reaction.reactions)
-  file_out.write("%d/%d reactions balance." % (num_bad, num_reactions))
+  file_out.write("%d/%d reactions are impbalanced." 
+      % (num_bad, num_reactions))
   for line in report.split('\n'):
     file_out.write("%s\n" % line)
   return num_reactions, num_bad

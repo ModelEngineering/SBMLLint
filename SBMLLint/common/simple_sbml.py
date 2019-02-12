@@ -160,7 +160,10 @@ class SimpleSBML(object):
     reactant_collection = makeTermCollection(cls.getReactants(reaction))
     product_collection = makeTermCollection(cls.getProducts(reaction))
     if is_include_kinetics:
-      formula_str = "; " + reaction.getKineticLaw().formula
+      if reaction.getKineticLaw() is not None:
+        formula_str = "; " + reaction.getKineticLaw().formula
+      else:
+        formula_str = ''
     else:
       formula_str = ''
     reaction_str = "%s: %s -> %s" % (reaction.id, reactant_collection,
