@@ -136,6 +136,7 @@ class SOM(object):
 
             reactants = list(reactants_in) + reactants_out
             products = list(products_in) + products_out
+            
             if (len(reaction.reactants) > len(reactants)) | \
             (len(reaction.products) > len(products)):
                 reduced = True
@@ -148,7 +149,7 @@ class SOM(object):
             return reaction
         else:
             return reduced
-            
+
     @classmethod
     def initialize(cls, molecules):
         """
