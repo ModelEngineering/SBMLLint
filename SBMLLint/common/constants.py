@@ -7,6 +7,7 @@ TEST_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEST_DIR = os.path.join(TEST_DIR, "tests")
 TEST_FILE = os.path.join(TEST_DIR, "test_file.xml")
 TEST_FILE2 = os.path.join(TEST_DIR, "test2_file.xml")
+TEST_FILE3 = os.path.join(TEST_DIR, "curated_017.xml")
 NUM_REACTIONS = 111
 NUM_PARAMETERS = 27
 MAX_REACTANTS = 10
@@ -27,6 +28,14 @@ REACTION_n_n = "reaction_n_n"
 REACTION_BOUNDARY = "reaction_boundary"
 ReactionCategory = collections.namedtuple('ReactionCategory',
     'category predicate')
+
+# Molecule-Stoichiometry tuple in Reaction 
+MoleculeStoichiometry = collections.namedtuple('MoleculeStoichiometry',
+    'molecule stoichiometry')
+
+# EmptySet in a reaction (ex. curated model 006)
+EMPTYSET = "EmptySet"
+
 # The selected category is the first one that first has
 # a satisfied predicate
 REACTION_CATEGORIES = [
@@ -39,8 +48,9 @@ REACTION_CATEGORIES = [
     ReactionCategory(category=REACTION_n_n,
         predicate=lambda x,y: (x>1) and (y>1)),
     ReactionCategory(category=REACTION_BOUNDARY,
-        predicate=lambda x,y: (x==0) or (y==0)),
+        predicate=lambda x,y: (x==0) or (y==0))
     ]
+
 
 # Directories and files
 # Where data files are stored by default

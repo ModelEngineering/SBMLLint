@@ -13,7 +13,7 @@ class Molecule(object):
     :param libsbml.species species:
     """
     self.name = name
-    self._species = species
+    self._species = species  
     self.__class__.addMolecule(self)
 
   def __repr__(self):
@@ -25,6 +25,20 @@ class Molecule(object):
       pass
     else:
       cls.molecules.append(molecule)
+
+
+  @classmethod
+  def getMolecule(cls, name):
+    """
+    Finds and returns molecule with given name
+    Return None if there is no such molecules
+    :param str name:
+    """
+    for molecule in Molecule.molecules:
+      if molecule.name == name:
+        return molecule
+    return None
+
 
   @classmethod
   def initialize(cls, simple):

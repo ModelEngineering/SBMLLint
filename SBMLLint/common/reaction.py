@@ -32,11 +32,15 @@ class Reaction(object):
     :return list-Molecule:
     """
     species = func(self._libsbml_reaction)
+    ### ->->  molecules 
     molecules = []
     for spc in species:
-      new_molecules = [Molecule(spc.species, species=spc) 
-          for _ in range(int(spc.getStoichiometry()))]
-      molecules.extend(new_molecules)
+      molecule = Molecule.getMolecule(spc.species)
+      if molecule is None:
+        molecule = Molecule(spc.species, species=spc)
+      molecules.append(cn.MoleculeStoichiometry( \
+        molecule = molecule,
+        stoichiometry = spc.getStoichiometry()))
     return molecules
 
   def _getCategory(self):
@@ -57,7 +61,7 @@ class Reaction(object):
     :return str:
     """
     def joinMoleculeNames(molecules):
-      names = [m.name for m in molecules]
+      names = [m.molecule.name for m in molecules]
       names.sort()
       return ' + '.join(names)
     #
