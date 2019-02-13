@@ -84,19 +84,20 @@ class SOM(object):
         :return SOM:
         """ 
         if reaction.category != cn.REACTION_1_1:
-            raise AttributeError("This reaction cannot merge. You need a 1-1 reacton")
+            #raise AttributeError("This reaction cannot merge. You need a 1-1 reacton")
             pass
-        som1 = cls.findSOM(reaction.reactants[0].molecule)
-        som2 = cls.findSOM(reaction.products[0].molecule)
-        
-        if som1 == som2:
-            pass
-        else: 
-            cls.soms.remove(som1)
-            cls.soms.remove(som2)
-            new_som = SOM(som1.molecules.union(som2.molecules),
-                         som1.reactions.union(som2.reactions))
-            return new_som
+        else:
+            som1 = cls.findSOM(reaction.reactants[0].molecule)
+            som2 = cls.findSOM(reaction.products[0].molecule)
+            
+            if som1 == som2:
+                return som1
+            else: 
+                cls.soms.remove(som1)
+                cls.soms.remove(som2)
+                new_som = SOM(som1.molecules.union(som2.molecules),
+                             som1.reactions.union(som2.reactions))
+                return new_som
         
     @classmethod
     def reduce(cls, reaction):

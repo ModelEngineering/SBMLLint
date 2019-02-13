@@ -66,9 +66,17 @@ class TestSOM(unittest.TestCase):
 	def testFindSOM(self):
 		if IGNORE_TEST:
 			return
+		simple = SimpleSBML(cn.TEST_FILE3)
+		Reaction.reactions = []
+		Molecule.molecules = []
+		SOM.soms = []
+		Reaction(simple._model.getReaction(UNIUNI))
+		Reaction(simple._model.getReaction(MULTIMULTI))
+		Reaction(simple._model.getReaction(MULTIUNI))
 		molecule = Molecule.getMolecule(MOLECULE)
+		SOM.initialize(Molecule.molecules)
 		self.assertEqual(list(SOM.findSOM(molecule).molecules)[0], molecule)
-		new_som = SOM.merge(self.uniuni)
+		new_som = SOM.merge(Reaction.reactions[0])
 		new_som_molecules = list(new_som.molecules)
 		self.assertEqual(SOM.findSOM(new_som_molecules[0]), SOM.findSOM(new_som_molecules[1]))
 
