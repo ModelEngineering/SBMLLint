@@ -1,6 +1,6 @@
 # Component Specification
 
-<img src="components.png" width="800"/>
+<img src="components.png" width="300"/>
 
 This document describes the major classes in SBMLLink and the relationships between them.
 
