@@ -40,7 +40,7 @@ def isStructuredName(name):
   return True
 
 def calcStats(initial=1, final=50, out_path=OUTPUT_PATH, 
-    report_interval=50, min_frac=-1):
+    report_interval=50, min_frc=-1):
   def writeDF(dfs):
     df_count = pd.concat(dfs)
     df_count[NUM_BALANCED_REACTIONS] = df_count[NUM_REACTIONS] - df_count[NUM_BAD]
