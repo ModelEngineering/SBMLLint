@@ -19,5 +19,7 @@ install:
   - pip install matplotlib numpy pandas==0.22 urllib3 networkx tellurium nose
 
 script:
-  - cd data; unzip *.zip > t.out; cd ..
+  - cd data
+  - unzip *.zip > t.out
+  - cd ..
   - nosetests SBMLLint/tests
