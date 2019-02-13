@@ -14,6 +14,7 @@ import unittest
 
 IGNORE_TEST = False
 NAME = "name"
+NONAME = 'not_a_name'
 
 
 #############################
@@ -28,6 +29,12 @@ class TestMolecule(unittest.TestCase):
     if IGNORE_TEST:
       return
     self.assertEqual(Molecule(NAME).name, NAME)
+
+  def testGetMolecule(self):
+    if IGNORE_TEST:
+      return
+    self.assertEqual(Molecule.getMolecule(NAME), Molecule.molecules[0])
+    self.assertIsNone(Molecule.getMolecule(NONAME))
 
   def testInitialize(self):
     if IGNORE_TEST:

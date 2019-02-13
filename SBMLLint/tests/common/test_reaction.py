@@ -23,7 +23,7 @@ S2 = 0
 
 
 def strLen(a_list):
-  return sum([len(x.name) for x in a_list])
+  return sum([len(x.molecule.name) for x in a_list])
 
 #############################
 # Tests
@@ -60,8 +60,8 @@ class TestReaction(unittest.TestCase):
     simple = SimpleSBML(cn.TEST_FILE2)
     libsbml_reaction = simple.reactions[0]
     reaction = Reaction(libsbml_reaction)
-    self.assertEqual(len(reaction.reactants), NUM_S1)
-    self.assertEqual(len(reaction.products), NUM_S2)
+    self.assertEqual(reaction.reactants[0].stoichiometry, NUM_S1)
+    self.assertEqual(reaction.products[0].stoichiometry, NUM_S2)
     
 
   def testInitialize(self):

@@ -11,6 +11,7 @@ BRACKET_OPEN = "{"
 BRACKET_CLOSE = "}"
 
 class SOM(object):
+    # ->-> CLASS COMMENT: EXPLAIN SOM'S ARE PARTITIONING THE MOLECULE SPACE
     soms = []  # All SOMs. 
     def __init__(self, molecules, reactions=None):
         """
@@ -48,6 +49,7 @@ class SOM(object):
         
     @classmethod    
     def addSOM(cls, new_som):
+        # ->-> ADD COMMENTS: 
         if any([new_som.molecules.intersection(som.molecules) for som in cls.soms]):
           pass
         else:

@@ -13,7 +13,7 @@ class Molecule(object):
     :param libsbml.species species:
     """
     self.name = name
-    self._species = species
+    self._species = species  
     self.__class__.addMolecule(self)
 
   def __repr__(self):

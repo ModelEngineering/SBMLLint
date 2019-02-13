@@ -32,6 +32,7 @@ class Reaction(object):
     :return list-Molecule:
     """
     species = func(self._libsbml_reaction)
+    ### ->->  molecules 
     molecules = []
     for spc in species:
       molecule = Molecule.getMolecule(spc.species)
