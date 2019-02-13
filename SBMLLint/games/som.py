@@ -11,18 +11,20 @@ BRACKET_OPEN = "{"
 BRACKET_CLOSE = "}"
 
 class SOM(object):
-    # ->-> CLASS COMMENT: EXPLAIN SOM'S ARE PARTITIONING THE MOLECULE SPACE
+    """
+    The SOM (Set Of Molecules) class represents a collection of molecules
+    each of which has equal weight. Consequently, the whole molecule space 
+    can be partitioned into a collection of SOMs. The uni-uni reactions
+    merge multiple SOM instances to create a larger one. 
+    """
     soms = []  # All SOMs. 
-    def __init__(self, molecules, reactions=None):
+    def __init__(self, molecules, reactions=set()):
         """
         :param set-Molecule molecules:
         :param set-Reaction reactions:
         """
         self.molecules = molecules
-        if reactions is None:
-            self.reactions = set()
-        else: 
-            self.reactions = reactions
+        self.reactions = reactions
         self.identifier = self.makeId()
         self.__class__.addSOM(self)
 
@@ -49,7 +51,11 @@ class SOM(object):
         
     @classmethod    
     def addSOM(cls, new_som):
-        # ->-> ADD COMMENTS: 
+        """
+        Adds a new som to SOM.soms
+        and skips if it already exists
+        :param SOM new_som:
+        """
         if any([new_som.molecules.intersection(som.molecules) for som in cls.soms]):
           pass
         else:
