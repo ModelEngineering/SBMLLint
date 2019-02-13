@@ -1,3 +1,5 @@
+<img src="https://travis-ci.org/ModelEngineering/SBMLLint.svg?branch=master" width="100"/>
+
 # SBMLlint
 Model checker for [SBML](http://sbml.org/Main_Page) models.
 Performs the following checks:

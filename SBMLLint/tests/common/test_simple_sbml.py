@@ -110,6 +110,8 @@ class TestFunctions(unittest.TestCase):
       self.assertTrue(isinstance(item.filename, str))
       self.assertTrue(isinstance(item.model, tesbml.libsbml.Model))
       self.assertEqual(item.number, COUNT - 1)
+      #self.assertTrue('Model' in  str(type(item.model)))
+      #self.assertEqual(item.number, COUNT - 1)
     
 
 if __name__ == '__main__':
