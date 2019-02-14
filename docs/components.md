@@ -1,4 +1,4 @@
-# Component Specification
+# Component Specifications
 
 <img src="components.png" width="300"/>
 
