@@ -14,33 +14,45 @@ class Reaction(object):
   reactions = []  # All reactions
 
   def __init__(self, libsbml_reaction):
-    self._libsbml_reaction = libsbml_reaction
-    self.reactants = self._getMolecules(SimpleSBML.getReactants)
-    self.products = self._getMolecules(SimpleSBML.getProducts)
+    self.identifier = SimpleSBML.getReactionString(libsbml_reaction,
+        is_include_kinetics=True)
+    self.reactants = self._getMolecules(libsbml_reaction,
+        SimpleSBML.getReactants)
+    self.products = self._getMolecules(libsbml_reaction,
+        SimpleSBML.getProducts)
     self.category = self._getCategory()
-    self.identifier = self.makeId()  # Str identifier for reaction
     if not any([self.isEqual(r) for r in Reaction.reactions]):      
       self.__class__.reactions.append(self)
 
-  def __repr__(self):
-    return self.identifier
+  def getId(self, is_include_kinetics=True):
+    if is_include_kinetics:
+      return self.identifier
+    else:
+      pos = self.identifier.find(cn.KINETICS_SEPARATOR)
+      if pos < 0:
+        return self.identifier
+      else:
+        return self.identifier[:pos]
 
-  def _getMolecules(self, func):
+  def __repr__(self):
+    return self.getId()
+
+  def _getMolecules(self, libsbml_reaction, func):
     """
     Constructs molecules for the species returned by function.
     :param Function func: gets libsbml.SpeciesReference
-    :return list-Molecule:
+    :return list-MoleculeStoichiometry:
     """
-    species = func(self._libsbml_reaction)
-    ### ->->  molecules 
+    species = func(libsbml_reaction)
     molecules = []
     for spc in species:
       molecule = Molecule.getMolecule(spc.species)
       if molecule is None:
-        molecule = Molecule(spc.species, species=spc)
-      molecules.append(cn.MoleculeStoichiometry( \
-        molecule = molecule,
-        stoichiometry = spc.getStoichiometry()))
+          molecule = Molecule(spc.species, species=spc)
+      molecules.append(cn.MoleculeStoichiometry(
+          molecule = molecule,
+          stoichiometry = spc.getStoichiometry())
+          )
     return molecules
 
   def _getCategory(self):
@@ -85,5 +97,6 @@ class Reaction(object):
     """
     :param SimpleSBML simple:
     """
+    cls.reactions = []
     [Reaction(r) for r in simple.reactions]
   

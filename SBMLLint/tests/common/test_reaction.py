@@ -13,13 +13,6 @@ import unittest
 
 
 IGNORE_TEST = False
-NUM_S1 = 2
-NUM_S2 = 3
-ANTIMONY_STG = '''
-%dS1 -> %dS2; 1
-S1 = 0
-S2 = 0
-''' % (NUM_S1, NUM_S2)
 
 
 def strLen(a_list):
@@ -35,18 +28,23 @@ class TestReaction(unittest.TestCase):
     self.reactions = self.simple.reactions
     Reaction.reactions = []
 
-  def testMakeId(self):
+  def testGetId(self):
     self.reaction = Reaction(self.reactions[2])
-    identifier = self.reaction.makeId()
-    self.assertTrue(REACTION_SEPARATOR in identifier)
-    self.assertGreater(len(identifier), len(REACTION_SEPARATOR))
+    import pdb; pdb.set_trace()
+    identifier1 = self.reaction.getId()
+    self.assertTrue(REACTION_SEPARATOR in identifier1)
+    identifier2 = self.reaction.getId(is_include_kinetics=False)
+    self.assertGreater(len(identifier1), len(identifier2))
+    self.assertFalse(cn.KINETICS_SEPARATOR in identifier2)
 
   def testConstructor(self):
     if IGNORE_TEST:
       return
     reaction = Reaction(self.reactions[2])
-    self.assertEqual(strLen(reaction.reactants),
-        strLen(reaction.products))
+    self.assertTrue(isinstance(reaction.reactants[0],
+        cn.MoleculeStoichiometry))
+    self.assertTrue(isinstance(reaction.products[0],
+        cn.MoleculeStoichiometry))
     self.assertEqual(reaction.category, cn.REACTION_1_n)
     self.assertGreater(len(Molecule.molecules), 0)
     count = len(Reaction.reactions)

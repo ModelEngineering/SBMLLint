@@ -1,63 +1,15 @@
-"""Implements a moiety, part of a molecule."""
+"""Provides comparisons of moieties."""
 
 from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule
+from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.simple_sbml import SimpleSBML
+from SBMLLint.structured_names.moiety import Moiety
 
 import pandas as pd
 import numpy as np
 
 NULL_STR = ''
-
-
-class Moiety(object):
-  moietys = []  # All distinct moietys
-
-  def __init__(self, name):
-    self.name = name
-
-  @classmethod
-  def extract(cls, molecule):
-    """
-    Creates the moietys from a molecule.
-    Maintains list of moietys.
-    :param Molecule molecule:
-    :return list of moietys:
-    """
-    names = molecule.name.split(cn.MOIETY_SEPARATOR)
-    result = [cls(n) for n in names]
-    cls.moietys.append(list(set(result)))
-    return result
-
-  def appendToMolecule(self, molecule):
-    """
-    Adds the moiety to the end of a molecule.
-    :param Molecule molecule:
-    :return Molecule:
-    """
-    new_name = "%s%s%s" % (
-        molecule.name, cn.MOIETY_SEPARATOR, self.name)
-    return Molecule(new_name)
-
-  def isInMolecule(self, molecule):
-    moietys = molecule.name.split(cn.MOIETY_SEPARATOR)
-    return self.name in moietys
-
-  @classmethod
-  def countMoietys(cls, molecules):
-    """
-    Counts the occurrence of moietys in a list of molecules.
-    :param list-Molecule molecules:
-    :return pd.DataFrame: index is moiety, value is count
-    """
-    moietys = []
-    for molecule in molecules:
-      moietys.extend([m.name for m in cls.extract(molecule)])
-    df = pd.DataFrame({cn.VALUE: moietys})
-    df_result = pd.DataFrame(df.groupby(cn.VALUE).size())
-    df_result = df_result.rename(
-        columns={df_result.columns.tolist()[0]: cn.VALUE})
-    return df_result
+INDENT = "  "
 
 
 class MoietyComparator(object):
@@ -111,24 +63,62 @@ class MoietyComparator(object):
     if self.isSame():
       return NULL_STR
     df = self.difference()
-    def buildStg(name, sign):
+    def appendNewline(stg):
+      if len(stg) > 0:
+        return "%s\n" % stg
+      else:
+        return stg
+    #
+    def buildStg(name, sign, indent=INDENT):
       """
       Constructs the report for the name with the given
       sign of values in df.
       :param str name:
       :param int sign: 1 or -1
+      :param str indent: indentation on each line
       :return str:
       """
       stg = NULL_STR
       for idx, row in df.iterrows():
         if sign*row[cn.VALUE] > 0:
-          stg = "%s\n  %s: %2.2f" % (stg, idx, sign*row[cn.VALUE])
+          stg = "%s%s%s: %2.2f\n" % (
+              stg, indent, idx, sign*row[cn.VALUE])
       if not stg == NULL_STR:
-        stg = "Excess moieties in %s%s" % (name, stg)
+        stg = "Excess moieties in %s\n%s" % (name, stg)
       return stg
     #
-    stg1 = buildStg(self.names[0], 1)
-    stg2 = buildStg(self.names[1], -1)
-    return "%s\n%s" % (stg1, stg2)
-      
-    
+    stg1 = appendNewline(buildStg(self.names[0], 1))
+    stg2 = appendNewline(buildStg(self.names[1], -1))
+    return "%s%s" % (stg1, stg2)
+
+  @classmethod
+  def initialize(cls, simple):
+    Reaction.initialize(simple)
+
+  @classmethod
+  def analyzeReactions(cls, model):
+    """
+    Analyzes all reactions to detect moiety imbalances.
+    :param libsbml.Model or SimpleSBML model:
+    :return int, str: number of reactions with imbalances,
+        report
+    """
+    if isinstance(model, SimpleSBML):
+      simple = model
+    else:
+      simple = SimpleSBML(model)
+    cls.initialize(simple)
+    num = 0
+    report = NULL_STR
+    for reaction in Reaction.reactions:
+      comparator = cls(reaction.reactants, reaction.products)
+      stg = comparator.reportDifference()
+      if len(stg) > 0:
+        num += 1
+        report = "%s\n***%s\n%s" % (
+            report, 
+            reaction.getId(is_include_kinetics=False),
+            stg
+            )
+    report = "\n%d reactions have imbalances.\n%s" % (num, report)
+    return num, report
