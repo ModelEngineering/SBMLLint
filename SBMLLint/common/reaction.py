@@ -48,7 +48,7 @@ class Reaction(object):
     for spc in species:
       molecule = Molecule.getMolecule(spc.species)
       if molecule is None:
-          molecule = Molecule(spc.species, species=spc)
+          molecule = Molecule(spc.species)
       molecules.append(cn.MoleculeStoichiometry(
           molecule = molecule,
           stoichiometry = spc.getStoichiometry())

@@ -12,7 +12,7 @@ import tesbml
 import unittest
 
 
-IGNORE_TEST = False
+IGNORE_TEST = True
 NAME = "name"
 NONAME = 'not_a_name'
 
@@ -23,17 +23,21 @@ NONAME = 'not_a_name'
 class TestMolecule(unittest.TestCase):
 
   def setUp(self):
+    Molecule.molecules = []
     self.simple = SimpleSBML(cn.TEST_FILE)
 
   def testConstructor(self):
     if IGNORE_TEST:
       return
-    self.assertEqual(Molecule(NAME).name, NAME)
+    molecules = []
+    molecule = Molecule(NAME, other_molecules=molecules)
+    self.assertEqual(molecule.name, NAME)
+    self.assertEqual(molecules, [molecule])
 
   def testGetMolecule(self):
-    if IGNORE_TEST:
-      return
-    self.assertEqual(Molecule.getMolecule(NAME), Molecule.molecules[0])
+    _ = Molecule(NAME)
+    molecule = Molecule.getMolecule(NAME)
+    self.assertEqual(molecule, Molecule.molecules[0])
     self.assertIsNone(Molecule.getMolecule(NONAME))
 
   def testInitialize(self):

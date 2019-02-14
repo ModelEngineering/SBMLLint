@@ -1,4 +1,4 @@
-"""Provides stable, simplified, read-only access to an SBML model."""
+"""Represents an SBML Model."""
 
 from SBMLLint.common import constants as cn
 import collections

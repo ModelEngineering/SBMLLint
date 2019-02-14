@@ -13,6 +13,8 @@ import unittest
 
 
 IGNORE_TEST = False
+NUM_S1 = 2
+NUM_S2 = 3
 
 
 def strLen(a_list):
@@ -30,7 +32,6 @@ class TestReaction(unittest.TestCase):
 
   def testGetId(self):
     self.reaction = Reaction(self.reactions[2])
-    import pdb; pdb.set_trace()
     identifier1 = self.reaction.getId()
     self.assertTrue(REACTION_SEPARATOR in identifier1)
     identifier2 = self.reaction.getId(is_include_kinetics=False)

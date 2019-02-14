@@ -18,9 +18,11 @@ NUM_SPECIES = 32
 ############## FUNCTIONAL CONSTANTS ##############
 # DataFrame Columns
 VALUE = "value"
+MOIETY = "moiety"
 
 #
 MOIETY_SEPARATOR = "_"
+MOIETY_DOUBLE_SEPARATOR = MOIETY_SEPARATOR + MOIETY_SEPARATOR
 KINETICS_SEPARATOR = ";"
 
 # Reaction categories
@@ -32,8 +34,9 @@ REACTION_BOUNDARY = "reaction_boundary"
 ReactionCategory = collections.namedtuple('ReactionCategory',
     'category predicate')
 
-# Molecule-Stoichiometry tuple in Reaction 
-MoleculeStoichiometry = collections.namedtuple('MoleculeStoichiometry',
+# Molecule Stoichiometry
+MoleculeStoichiometry = collections.namedtuple(
+    'MoleculeStoichiometry',
     'molecule stoichiometry')
 
 # EmptySet in a reaction (ex. curated model 006)

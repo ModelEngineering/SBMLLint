@@ -15,15 +15,24 @@ INDENT = "  "
 class MoietyComparator(object):
   """Analysis of moieties of molecules."""
 
-  def __init__(self, molecules1, molecules2, 
+  def __init__(self, mol_stoichs1, mol_stoichs2, 
       names=["reactants", "products"]):
     """
-    :param set-Molecule molecules1:
-    :param set-Molecule molecules2:
+    :param set-MoleculeStoichiometry mol_stoichs1:
+    :param set-MoleculeStoichiometry mol_stoichs2:
     :param list-str names: names to refer to the two sets
     """
-    self.molecule_collections = [molecules1, molecules2]
+    self.molecule_stoichiometry_collections = [
+        mol_stoichs1, 
+        mol_stoichs2,
+        ]
     self.names = names
+
+  def _makeDFS(self):
+    dfs = []
+    for mol_stoichs in self.molecule_stoichiometry_collections:
+      dfs.append(Moiety.countMoietys(mol_stoichs))
+    return dfs
 
   def isSame(self):
     """
@@ -31,9 +40,8 @@ class MoietyComparator(object):
     of moieties.
     :return bool:
     """
-    df0 = Moiety.countMoietys(self.molecule_collections[0])
-    df1 = Moiety.countMoietys(self.molecule_collections[1])
-    return df0.equals(df1)
+    dfs = self._makeDFS()
+    return dfs[0].equals(dfs[1])
 
   def difference(self):
     """
@@ -49,11 +57,10 @@ class MoietyComparator(object):
       for item in missing:
         df.loc[item] = 0
     #
-    df0 = Moiety.countMoietys(self.molecule_collections[0])
-    df1 = Moiety.countMoietys(self.molecule_collections[1])
-    addDFIndex(df0, df1.index)
-    addDFIndex(df1, df0.index)
-    return df0 - df1
+    dfs = self._makeDFS()
+    addDFIndex(dfs[0], dfs[1].index)
+    addDFIndex(dfs[1], dfs[0].index)
+    return dfs[0] - dfs[1]
 
   def reportDifference(self):
     """

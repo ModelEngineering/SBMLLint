@@ -7,25 +7,19 @@ from SBMLLint.common.simple_sbml import SimpleSBML
 class Molecule(object):
   molecules = []  # All unique molecules
 
-  def __init__(self, name, species=None):
+  def __init__(self, name, other_molecules=None):
     """
     :param str name:
     :param libsbml.species species:
     """
+    if other_molecules is None:
+      other_molecules = self.__class__.molecules
     self.name = name
-    self._species = species  
-    self.__class__.addMolecule(self)
+    if all([name != m.name for m in other_molecules]):
+      other_molecules.append(self)
 
   def __repr__(self):
     return self.name
-
-  @classmethod
-  def addMolecule(cls, molecule):
-    if any([m.name == molecule.name for m in cls.molecules]):
-      pass
-    else:
-      cls.molecules.append(molecule)
-
 
   @classmethod
   def getMolecule(cls, name):
@@ -39,7 +33,6 @@ class Molecule(object):
         return molecule
     return None
 
-
   @classmethod
   def initialize(cls, simple):
     """
@@ -48,5 +41,5 @@ class Molecule(object):
     """
     cls.molecules = []
     for key, value in simple.species.items():
-      Molecule(key, species=value)
+      Molecule(key)
 

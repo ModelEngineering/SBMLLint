@@ -1,4 +1,21 @@
-"""Implements a moiety, part of a molecule."""
+"""
+Implements a moiety, part of a molecule, and a moiety stoichiometry.
+A moiety stoichiometry is a combination of a name and number
+that indicates how many times the moiety occurs. If the number
+is present, moieties in a molecule are 
+separated by a MOIETY_DOUBLE_SEPARATOR;
+otherwise, moieties can be separated by a MOIETY_SEPARATOR.
+
+Examples:
+
+   MOLECULE       LIST OF MOIETY, NUMBER
+    A_P            (A, 1), (P, 1)
+    A__P           (A, 1), (P, 1)
+    A_1__P_1       (A, 1), (P, 1)
+    A_1__P         (A, 1), (P, 1)
+    A_1.0__P_1     (A, 1.0), (P, 1)
+    A_1_P          INVALID
+"""
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule
@@ -9,25 +26,83 @@ import numpy as np
 
 NULL_STR = ''
 
+############## INERNAL FUNCTIONS ##################
 
+def _extractFromMoietyStoichiometryString(moiety_stoich_stg):
+  """
+  Extracts the name and count from a string for a
+  moiety stoichiometry. Examples are:
+     STRING     RESULT
+      P_2        P, 2
+      A          A, 1
+  """
+  result = []
+  pos = moiety_stoich_stg.find(cn.MOIETY_SEPARATOR)
+  if pos < 0:
+    name = moiety_stoich_stg
+    stoich_stg = 1
+  elif pos == 0:
+    raise ValueError(
+        "Invalid format for moiety stoichiometry string: %s"
+        % moiety_stoich_stg)
+  else:
+    name = moiety_stoich_stg[0:pos]
+    stoich_stg = moiety_stoich_stg[pos+1:]
+  try:
+    stoich = float(stoich_stg)
+  except ValueError:
+    raise ValueError(
+        "Invalid number in moiety stoichiometry string: %s"
+        % moiety_stoich_stg)
+  return name, stoich
+
+
+############## CLASSES ##################
 class Moiety(object):
-  moietys = []  # All distinct moietys
 
-  def __init__(self, name):
+  def __init__(self, name, other_moietys=[]):
+    """
+    :param str name:
+    :param list-Moiety other_moeitys:
+    Ensures unique names within other_moietys
+    """
     self.name = name
+    if all([name != m.name for m in other_moietys]):
+      other_moietys.append(self)
+
+  def __repr__(self):
+    return self.name
+
+  def __lt__(self, other):
+    """
+    Enables sorting a list of Moiety
+    """
+    return self.name < other.name
+
+  def isEqual(self, other):
+    return self.name == other.name
 
   @classmethod
   def extract(cls, molecule):
     """
-    Creates the moietys from a molecule.
-    Maintains list of moietys.
+    Creates moieties present in molecule.
+    Handles the following cases:
+      MOLECULE         MOIETIES
+      A_P_P            A, P
+      A__P_2           A, P
     :param Molecule molecule:
-    :return list of moietys:
+    :return list-Moiety: Unique moieties found
     """
-    names = molecule.name.split(cn.MOIETY_SEPARATOR)
-    result = [cls(n) for n in names]
-    cls.moietys.append(list(set(result)))
-    return result
+    # Assume there's a double separator
+    moiety_stoich_stgs = set(molecule.name.split(
+        cn.MOIETY_DOUBLE_SEPARATOR))
+    # See if double separator present
+    if len(moiety_stoich_stgs) <= 1:
+      moiety_stoich_stgs = set(molecule.name.split(cn.MOIETY_SEPARATOR))
+    names = list(set([_extractFromMoietyStoichiometryString(n)[0] 
+        for n in moiety_stoich_stgs]))
+    names.sort()
+    return [Moiety(n) for n in names]
 
   def appendToMolecule(self, molecule):
     """
@@ -40,95 +115,54 @@ class Moiety(object):
     return Molecule(new_name)
 
   def isInMolecule(self, molecule):
+    """
+    :return bool: True if moiety name in molecule
+    """
     moietys = molecule.name.split(cn.MOIETY_SEPARATOR)
     return self.name in moietys
 
+
+class MoietyStoichiometry(object):
+  """A Moiety with its count."""
+
+  def __init__(self, moiety, stoichiometry):
+    self.moiety = moiety
+    self.stoichiometry = stoichiometry
+
+  def __repr__(self):
+    return "%s: %2.2f" % (str(self.moiety), self.stoichiometry)
+
   @classmethod
-  def countMoietys(cls, molecules):
+  def extract(cls, mole_stoich):
     """
-    Counts the occurrence of moietys in a list of molecules.
-    :param list-Molecule molecules:
+    Creates moieties and their stoichiometries.
+    :param MoleculeStoichiometry mole_stoich:
+    :return list-MoietyStoichiometry:
+    """
+    names = set(mole_stoich.molecule.name.split(cn.MOIETY_SEPARATOR))
+    result = []
+    for name in names:
+      num_occurrences = mole_stoich.molecule.name.count(name)
+      stoich = mole_stoich.stoichiometry*num_occurrences
+      new_moiety_stoich = MoietyStoichiometry(name, stoich)
+      result.append(new_moiety_stoich)
+    return result
+
+  @classmethod
+  def countMoietys(cls, mole_stoichs):
+    """
+    Counts the occurrence of moietys in a 
+    list of MoleculeStoichiometry.
+    :param list-MoleculeStoichiometry mole_stoichs:
     :return pd.DataFrame: index is moiety, value is count
     """
-    moietys = []
-    for molecule in molecules:
-      moietys.extend([m.name for m in cls.extract(molecule)])
-    df = pd.DataFrame({cn.VALUE: moietys})
-    df_result = pd.DataFrame(df.groupby(cn.VALUE).size())
+    moiety_stoichs = []
+    for mole_stoich in mole_stoichs:
+      moiety_stoichs.extend(cls.extract(mole_stoich))
+    moietys = list(set([m.molecule.name for m in mole_stoichs]))
+    counts = list(set([m.stoichiometry for m in mole_stoichs]))
+    df = pd.DataFrame({cn.MOIETY: moietys, cn.VALUE: counts})
+    df_result = pd.DataFrame(df.groupby(cn.MOIETY).sum())
     df_result = df_result.rename(
         columns={df_result.columns.tolist()[0]: cn.VALUE})
     return df_result
-
-
-class MoietyComparator(object):
-  """Analysis of moieties of molecules."""
-
-  def __init__(self, molecules1, molecules2, 
-      names=["reactants", "products"]):
-    """
-    :param set-Molecule molecules1:
-    :param set-Molecule molecules2:
-    :param list-str names: names to refer to the two sets
-    """
-    self.molecule_collections = [molecules1, molecules2]
-    self.names = names
-
-  def isSame(self):
-    """
-    Determines if the two molecules have the same type and count
-    of moieties.
-    :return bool:
-    """
-    df0 = Moiety.countMoietys(self.molecule_collections[0])
-    df1 = Moiety.countMoietys(self.molecule_collections[1])
-    return df0.equals(df1)
-
-  def difference(self):
-    """
-    Calculates the moieties present in one set and not in the other.
-    :return pd.DataFrame: row index is moiety,
-        column Value: counts of moieties present in 0 
-        and not in second. Negative values are present in 1 and
-        not in 0.
-    """
-    def addDFIndex(df, index):
-      # Adds missing indices to df
-      missing = set(index).difference(df.index)
-      for item in missing:
-        df.loc[item] = 0
-    #
-    df0 = Moiety.countMoietys(self.molecule_collections[0])
-    df1 = Moiety.countMoietys(self.molecule_collections[1])
-    addDFIndex(df0, df1.index)
-    addDFIndex(df1, df0.index)
-    return df0 - df1
-
-  def reportDifference(self):
-    """
-    Reports a difference in moieties between the two sets of molecules.
-    :return str: report. null if no difference.
-    """
-    if self.isSame():
-      return NULL_STR
-    df = self.difference()
-    def buildStg(name, sign):
-      """
-      Constructs the report for the name with the given
-      sign of values in df.
-      :param str name:
-      :param int sign: 1 or -1
-      :return str:
-      """
-      stg = NULL_STR
-      for idx, row in df.iterrows():
-        if sign*row[cn.VALUE] > 0:
-          stg = "%s\n  %s: %2.2f" % (stg, idx, sign*row[cn.VALUE])
-      if not stg == NULL_STR:
-        stg = "Excess moieties in %s%s" % (name, stg)
-      return stg
-    #
-    stg1 = buildStg(self.names[0], 1)
-    stg2 = buildStg(self.names[1], -1)
-    return "%s\n%s" % (stg1, stg2)
-      
-    
