@@ -1,7 +1,21 @@
-"""Molecule in a chemical reaction."""
+"""
+Molecule in a chemical reaction and MoleculeStoichiometry
+(a molecule with its stoichiometry).
+
+A Molecule is structured as one or more MoietyStoichiometry
+with a separator. MOIETY_DOUBLE_SEPARATOR is used if at least
+one MoietyStoichiometry has a repetition count; otherwise,
+either MOIETY_DOUBLE_SEPARATOR or MOIETY_SEPRATOR can be used.
+
+MOLECULE           MOIETY, STOICHIOMETRY
+ A                  (A, 1)
+ A_P_P_P            (A, 1), (P, 3)
+ A__P__P__P         (A, 1), (P, 3)
+ A__P_3             (A, 1), (P, 3)
+"""
 
 from SBMLLint.common import constants as cn
-from SBMLLint.common.moiety import Moeity, MoietyStoichiometry
+from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
 
 
@@ -22,6 +36,10 @@ class Molecule(object):
   def __repr__(self):
     return self.name
 
+  def isEqual(self, other):
+    return self.name == other.name
+
+  # TODO: Move to SimpleModel
   @classmethod
   def getMolecule(cls, name):
     """
@@ -36,17 +54,11 @@ class Molecule(object):
 
   def extractMoietyStoichiometrys(self):
     """
-    Handles the following cases:
-      MOLECULE         MOIETIES
-      A_P_P            A, P
-      A__P_2           A, P
     :return list-MoietyStoichiometry:
     """
-    molecule = self.convert([])
-    # Assume there's a double separator
-    moiety_stoich_stgs = set(molecule.name.split(
-        cn.MOIETY_DOUBLE_SEPARATOR))
-    return [MoietyStoichiometry.make(ms) for ms in moiety_stoich_stgs]
+    new_name = self._reformat()
+    stgs = set(molecule.name.split(cn.MOIETY_DOUBLE_SEPARATOR))
+    return [MoietyStoichiometry.make(ms) for ms in stgs]
 
   def extractMoietys(self):
     """
@@ -54,41 +66,26 @@ class Molecule(object):
     :return list-Moiety: Unique Moiety in molecule
     """
     moiety_stoichiometrys = self.extractMoietyStoichiometrys()
-    names = list(set([m_s.name for m_s moiety_stoichiometrys]))
+    names = list(set([m_s.name for m_s in moiety_stoichiometrys]))
     names.sort()
     return [Moiety(n) for n in names]
 
-  def convert(self, other_molecules):
+  def _reformat(self):
     """
-    Converts molecule to use MOIETY_DOUBLE_SEPARATOR.
-    :return Molecule:
+    Reformats the molecule name to use MOIETY_DOUBLE_SEPARATOR.
+    :return str:
     """
-    def find(molecule):
-      molecules = [m for m in other_molecules
-          if m.name == molecule.name]
-      if len(molecules) == 1:
-        return molecules[0]
-      elif len(molecules) > 1:
-        raise ValueError("Duplicate names found.")
-      else:
-        return None
-    #
     pos = self.name.find(cn.MOIETY_DOUBLE_SEPARATOR)
     if pos > 0:
-      # Nothing to change; already uses DOUBLE
-      return self
+      new_name = self.name
     else:
       new_name = name.replace(MOIETY_SEPARATOR,
           MOIETY_DOUBLE_SEPARATOR)
-      new_molecule = self.__class__(new_name)
-      if find(self) is not None:
-        other_molecules.remove(self)
-      if find(new_molecule) is None:
-        other_molecules.append(new_molecule)
+    return new_name
 
   def append(self, element):
     """
-    Adds the moiety to the end of a molecule.
+    Appends to the end of a molecule.
     :param MoietyStoichiometry or Molecule element:
     :return Molecule:
     """
@@ -103,7 +100,7 @@ class Molecule(object):
     :return bool: True if moiety name in molecule
     """
     moietys = self.extractMoietys()
-    return any([m.name == self.name for m in moietys])
+    return any([moiety.isEqual(m) for m in moietys])
 
   @classmethod
   def initialize(cls, simple):
@@ -138,7 +135,7 @@ class MoleculeStoichiometry(object):
     return df_result
 
   @classmethod
-  def countMoietysInMolecules(cls, molecule_stoichiometrys):
+  def countMoietysInCollection(cls, molecule_stoichiometrys):
     """
     Counts the occurrence of moietys.
     :param list-MoleculeStoichiometry  molecule_stoichiometrys:

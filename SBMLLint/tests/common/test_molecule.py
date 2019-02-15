@@ -2,7 +2,7 @@
 Tests for Molecule
 """
 from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule
+from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import simple_sbml
 
@@ -13,9 +13,11 @@ import unittest
 
 
 IGNORE_TEST = True
+NUM1 = 2
+MOIETY_NAME1 = "first"
+MOIETY_NAME2 = "second"
 NAME = "name"
-NONAME = 'not_a_name'
-NAMES = [MOIETY_NAME1, MOIETY_NAME2, MOIETY_NAME3]
+BAD_NAME = 'not_a_name'
 MOLECULE_NAME = "%s%s%s" % (MOIETY_NAME1, cn.MOIETY_DOUBLE_SEPARATOR, 
     MOIETY_NAME2)
 
@@ -36,27 +38,43 @@ class TestMolecule(unittest.TestCase):
     molecule = Molecule(NAME, other_molecules=molecules)
     self.assertEqual(molecule.name, NAME)
     self.assertEqual(molecules, [molecule])
+    with self.assertRaises(ValueError):
+      Molecule(BAD_NAME)
 
   def testGetMolecule(self):
     _ = Molecule(NAME)
     molecule = Molecule.getMolecule(NAME)
     self.assertEqual(molecule, Molecule.molecules[0])
-    self.assertIsNone(Molecule.getMolecule(NONAME))
+    self.assertIsNone(Molecule.getMolecule(BAD_NAME))
 
-  def testAppendMoiety(self):
+  def testAppend(self):
     if IGNORE_TEST:
       return
     moiety2 = Moiety(MOIETY_NAME2)
     molecule = Molecule(MOIETY_NAME1)
-    new_molecule = moiety2.appendToMolecule(molecule)
+    new_molecule = molecule.append(moiety2)
     self.assertEqual(new_molecule.name, Molecule(MOLECULE_NAME).name)
 
-  # TODO: Implement
-  def testHasMoietys(self):
+  def testHasMoiety(self):
     if IGNORE_TEST:
       return
+    molecule = Molecule(MOLECULE_NAME)
+    self.assertTrue(molecule.hasMoiety(Moiety(MOIETY_NAME1)))
+    self.assertTrue(molecule.hasMoiety(Moiety(MOIETY_NAME2)))
+
+
+class TestMoleculeStoichiometry(unittest.TestCase):
+
+  def setUp(self):
+    Molecule.molecules = []
+
+  def testConstructor(self):
+    molecule = Molecule(MOLECULE_NAME)
+    m_s = MoleculeStoichiometry(molecule, NUM1)
+    self.assertTrue(m_s.molecule.isEqual(molecule))
+    self.assertEqual(m_s.stoichiometry, NUM1)
   
-  def testExtract(self):
+  def testExtractMoietyStoichiometrys(self):
     if IGNORE_TEST:
       return
     for expected, strings in MOLECULE_STOICHIOMETRY_STGS.items():
