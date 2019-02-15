@@ -10,7 +10,7 @@ Components at the same level do not know about each other.
 
 Below, we describe each component.
 
-- Molecule. A representation for a chemical structure. A molecule has a namethat uniquely identifies the object.
+- Molecule. A representation for a chemical structure. A molecule has a name that uniquely identifies the object.
 
 - Reaction. A representation of the transformation of a set of molecules (reactants) into another set of molecules (products).
 A reaction is uniquely identified by an identifier (a string representation
@@ -22,9 +22,9 @@ of the reaction, including its kinetics law).
 
 - SOM. A set of molecules.
 
-- MoietyComparator. Reports on the differences between two the occurrences of moieties within a set of molecules.
+- MoietyComparator. Reports on the differences between two occurrences of moieties within a set of molecules.
 
-- Arc. Indicates a relationship between two SOMs.
+- Arc. Indicates a mass inequality relationship between two SOMs.
 
 - MESGraph. Used to make inferences about the inequalities of masses of molecules.
 
