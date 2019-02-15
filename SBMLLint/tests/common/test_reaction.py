@@ -3,7 +3,7 @@ Tests for Reactions
 """
 from SBMLLint.common import constants as cn
 from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.common.molecule import Molecule
+from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.reaction import Reaction, REACTION_SEPARATOR
 from SBMLLint.common import simple_sbml
 
@@ -43,9 +43,9 @@ class TestReaction(unittest.TestCase):
       return
     reaction = Reaction(self.reactions[2])
     self.assertTrue(isinstance(reaction.reactants[0],
-        cn.MoleculeStoichiometry))
+        MoleculeStoichiometry))
     self.assertTrue(isinstance(reaction.products[0],
-        cn.MoleculeStoichiometry))
+        MoleculeStoichiometry))
     self.assertEqual(reaction.category, cn.REACTION_1_n)
     self.assertGreater(len(Molecule.molecules), 0)
     count = len(Reaction.reactions)

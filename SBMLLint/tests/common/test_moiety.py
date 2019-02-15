@@ -5,7 +5,7 @@ from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import simple_sbml
-from SBMLLint.structured_names.moiety  \
+from SBMLLint.common.moiety  \
     import Moiety, MoietyStoichiometry, \
     _extractFromMoietyStoichiometryString
 
@@ -73,14 +73,6 @@ class TestMoiety(unittest.TestCase):
     if IGNORE_TEST:
       return
     self.assertEqual(Moiety(MOIETY_NAME1).name, MOIETY_NAME1)
-
-  def testAppendToMolecule(self):
-    if IGNORE_TEST:
-      return
-    moiety2 = Moiety(MOIETY_NAME2)
-    molecule = Molecule(MOIETY_NAME1)
-    new_molecule = moiety2.appendToMolecule(molecule)
-    self.assertEqual(new_molecule.name, Molecule(MOLECULE_NAME).name)
 
   def testExtract(self):
     if IGNORE_TEST:

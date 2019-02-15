@@ -15,6 +15,9 @@ import unittest
 IGNORE_TEST = True
 NAME = "name"
 NONAME = 'not_a_name'
+NAMES = [MOIETY_NAME1, MOIETY_NAME2, MOIETY_NAME3]
+MOLECULE_NAME = "%s%s%s" % (MOIETY_NAME1, cn.MOIETY_DOUBLE_SEPARATOR, 
+    MOIETY_NAME2)
 
 
 #############################
@@ -39,6 +42,14 @@ class TestMolecule(unittest.TestCase):
     molecule = Molecule.getMolecule(NAME)
     self.assertEqual(molecule, Molecule.molecules[0])
     self.assertIsNone(Molecule.getMolecule(NONAME))
+
+  def testAppendMoiety(self):
+    if IGNORE_TEST:
+      return
+    moiety2 = Moiety(MOIETY_NAME2)
+    molecule = Molecule(MOIETY_NAME1)
+    new_molecule = moiety2.appendToMolecule(molecule)
+    self.assertEqual(new_molecule.name, Molecule(MOLECULE_NAME).name)
 
   def testInitialize(self):
     if IGNORE_TEST:

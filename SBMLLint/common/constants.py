@@ -34,11 +34,6 @@ REACTION_BOUNDARY = "reaction_boundary"
 ReactionCategory = collections.namedtuple('ReactionCategory',
     'category predicate')
 
-# Molecule Stoichiometry
-MoleculeStoichiometry = collections.namedtuple(
-    'MoleculeStoichiometry',
-    'molecule stoichiometry')
-
 # EmptySet in a reaction (ex. curated model 006)
 EMPTYSET = "EmptySet"
 

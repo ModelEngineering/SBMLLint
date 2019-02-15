@@ -1,7 +1,7 @@
 """Chemical Reaction."""
 
 from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule
+from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
 
 import numpy as np
@@ -49,7 +49,7 @@ class Reaction(object):
       molecule = Molecule.getMolecule(spc.species)
       if molecule is None:
           molecule = Molecule(spc.species)
-      molecules.append(cn.MoleculeStoichiometry(
+      molecules.append(MoleculeStoichiometry(
           molecule = molecule,
           stoichiometry = spc.getStoichiometry())
           )
