@@ -1,30 +1,25 @@
 """
-Implements a moiety, part of a molecule, and a moiety stoichiometry.
-A moiety stoichiometry is a combination of a name and number
-that indicates how many times the moiety occurs. If the number
-is present, moieties in a molecule are 
-separated by a MOIETY_DOUBLE_SEPARATOR;
-otherwise, moieties can be separated by a MOIETY_SEPARATOR.
+Implements a moiety and a moiety stoichiometry. A moiety
+is a functional group in a molecule.
+A moiety stoichiometry is a combination of a name and an integer
+that indicates the repetitions of the moiety.
+A moiety is separated from its stoichiometry by MOIETY_SEPARATOR.
 
-Examples:
+Examples of 
 
-   MOLECULE       LIST OF MOIETY, NUMBER
-    A_P            (A, 1), (P, 1)
-    A__P           (A, 1), (P, 1)
-    A_1__P_1       (A, 1), (P, 1)
-    A_1__P         (A, 1), (P, 1)
-    A_1_P          INVALID
+   MOIETY STOICHIOMETRY STRING  MOIETY  STOICHIOMETRY
+    A_1                          A      1
+    A                            A      1
+    A_P                          INVALID
 """
 
 from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule
 from SBMLLint.common.simple_sbml import SimpleSBML
 
 import pandas as pd
 import numpy as np
 
 NULL_STR = ''
-
 
 
 ############## CLASSES ##################
@@ -51,13 +46,6 @@ class Moiety(object):
 
   def isEqual(self, other):
     return self.name == other.name
-
-  def isInMolecule(self, molecule):
-    """
-    :return bool: True if moiety name in molecule
-    """
-    moietys = molecule.name.split(cn.MOIETY_SEPARATOR)
-    return self.name in moietys
 
 
 class MoietyStoichiometry(object):
@@ -97,4 +85,4 @@ class MoietyStoichiometry(object):
       raise ValueError(
           "Invalid number in moiety stoichiometry string: %s"
           % moiety_stoich_stg)
-    return cls(name, stoich)
+    return cls(Moiety(name), stoich)

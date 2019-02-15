@@ -97,6 +97,14 @@ class Molecule(object):
         element.name)
     return Molecule(new_name)
 
+  def hasMoiety(self, moiety):
+    """
+    :param Moiety moiety:
+    :return bool: True if moiety name in molecule
+    """
+    moietys = self.extractMoietys()
+    return any([m.name == self.name for m in moietys])
+
   @classmethod
   def initialize(cls, simple):
     """
@@ -126,16 +134,17 @@ class MoleculeStoichiometry(object):
     df_result = pd.DataFrame(df.groupby(cn.MOIETY).sum())
     df_result = df_result.rename(
         columns={df_result.columns.tolist()[0]: cn.VALUE})
+    df_result[cn.VALUE] = self.stoichiometry*df_result[cn.VALUE]
     return df_result
 
   @classmethod
-  def countMoietysInMolecules(cls, molecules):
+  def countMoietysInMolecules(cls, molecule_stoichiometrys):
     """
     Counts the occurrence of moietys.
+    :param list-MoleculeStoichiometry  molecule_stoichiometrys:
     :return pd.DataFrame: cn.VALUE, indexed by moiety.name
     """
     dfs = []
-    for molecule in molecule
-      dfs.append(molecule.countMoietys)
+    for molecule_stoichiometry in molecule_stoichiometrys:
+      dfs.append(molecule_stoichiometry.countMoietys())
     return pd.concat(dfs)
-
