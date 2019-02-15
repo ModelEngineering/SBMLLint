@@ -1,8 +1,6 @@
 # Component Specifications
 
-$ x_2 = \int_0^\infty $
-
-<img src="components.png" width="300"/>
+<img src="components.png" width="200"/>
 
 This document describes the major classes in SBMLLink and the relationships between them.
 
