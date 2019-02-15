@@ -10,7 +10,13 @@ Components at the same level do not know about each other.
 
 Below, we describe each component.
 
+- Moiety. A chemical group within a molecule.
+
+- MoietyStoichiometry. A Moiety with a count of its occurrence.
+
 - Molecule. A representation for a chemical structure. A molecule has a name that uniquely identifies the object.
+
+- MoleculeStoichiometry. A Molecule with its count of occurrence within a collection.
 
 - Reaction. A representation of the transformation of a set of molecules (reactants) into another set of molecules (products).
 A reaction is uniquely identified by an identifier (a string representation
@@ -18,11 +24,9 @@ of the reaction, including its kinetics law).
 
 - SimpleModel. A representation of the SBML model.
 
-- Moiety. A chemical group within a molecule.
-
 - SOM. A set of molecules.
 
-- MoietyComparator. Reports on the differences between two occurrences of moieties within a set of molecules.
+- MoietyComparator. Reports on the differences between two occurrences of moieties within a collection of MoleculeStoichiometry.
 
 - Arc. Indicates a mass inequality relationship between two SOMs.
 
