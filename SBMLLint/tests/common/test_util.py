@@ -46,6 +46,11 @@ class TestFunctions(unittest.TestCase):
     self.assertTrue('Reaction' in 
        str(type(model.getReaction(0))))
 
+  def testIsInt(self):
+    self.assertTrue(util.isInt(1))
+    self.assertFalse(util.isInt(1.5))
+    self.assertFalse(util.isInt('ab'))
+
 
 if __name__ == '__main__':
   unittest.main()

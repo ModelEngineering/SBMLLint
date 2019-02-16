@@ -17,6 +17,10 @@ MOLECULE           MOIETY, STOICHIOMETRY
 from SBMLLint.common import constants as cn
 from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
+from SBMLLint.common import util
+
+import pandas as pd
+import numpy as np
 
 
 class Molecule(object):
@@ -35,6 +39,9 @@ class Molecule(object):
 
   def __repr__(self):
     return self.name
+
+  def __lt__(self, other):
+    return self.name < other.name
 
   def isEqual(self, other):
     return self.name == other.name
@@ -57,8 +64,10 @@ class Molecule(object):
     :return list-MoietyStoichiometry:
     """
     new_name = self._reformat()
-    stgs = set(molecule.name.split(cn.MOIETY_DOUBLE_SEPARATOR))
-    return [MoietyStoichiometry.make(ms) for ms in stgs]
+    stgs = set(new_name.split(cn.MOIETY_DOUBLE_SEPARATOR))
+    result = [MoietyStoichiometry.make(ms) for ms in stgs]
+    result.sort()
+    return result
 
   def extractMoietys(self):
     """
@@ -75,12 +84,19 @@ class Molecule(object):
     Reformats the molecule name to use MOIETY_DOUBLE_SEPARATOR.
     :return str:
     """
+    new_name = None
     pos = self.name.find(cn.MOIETY_DOUBLE_SEPARATOR)
     if pos > 0:
       new_name = self.name
     else:
-      new_name = name.replace(MOIETY_SEPARATOR,
-          MOIETY_DOUBLE_SEPARATOR)
+      # Check to see if there is a single moiety
+      parts = self.name.split(cn.MOIETY_SEPARATOR)
+      if len(parts) == 2:
+        if util.isInt(parts[1]):
+          new_name = self.name
+      if new_name is None:
+        new_name = self.name.replace(cn.MOIETY_SEPARATOR,
+            cn.MOIETY_DOUBLE_SEPARATOR)
     return new_name
 
   def append(self, element):
@@ -116,8 +132,18 @@ class Molecule(object):
 class MoleculeStoichiometry(object):
 
   def __init__(self, molecule, stoichiometry):
+    if not isinstance(molecule, Molecule):
+      raise ValueError("First argument must be a Molecule.")
+    if not isinstance(stoichiometry, int):
+      raise ValueError("Second argument must be an int.")
     self.molecule = molecule
     self.stoichiometry = stoichiometry
+
+  def __repr__(self):
+    return "%s * % 2.2f" % (str(self.molecule), self.stoichiometry)
+
+  def __lt__(self, other):
+    return str(self) < str(other)
 
   def countMoietys(self):
     """
@@ -125,7 +151,7 @@ class MoleculeStoichiometry(object):
     :return pd.DataFrame: index is moiety, value is count
     """
     moiety_stoichs = self.molecule.extractMoietyStoichiometrys()
-    moietys = list([m.name for m in moiety_stoichs])
+    moietys = list([str(m.moiety) for m in moiety_stoichs])
     stoichs = list([m.stoichiometry for m in moiety_stoichs])
     df = pd.DataFrame({cn.MOIETY: moietys, cn.VALUE: stoichs})
     df_result = pd.DataFrame(df.groupby(cn.MOIETY).sum())

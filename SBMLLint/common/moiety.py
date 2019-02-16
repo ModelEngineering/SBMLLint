@@ -16,8 +16,6 @@ Examples of
 from SBMLLint.common import constants as cn
 from SBMLLint.common.simple_sbml import SimpleSBML
 
-import pandas as pd
-import numpy as np
 
 NULL_STR = ''
 
@@ -59,6 +57,13 @@ class MoietyStoichiometry(object):
 
   def __repr__(self):
     return self.name
+
+  def __lt__(self, other):
+    return str(self) < str(other)
+
+  def isEqual(self, other):
+    return self.moiety.isEqual(other.moiety) and  \
+        (self.stoichiometry == other.stoichiometry)
 
   @classmethod
   def make(cls, moiety_stoich_stg):

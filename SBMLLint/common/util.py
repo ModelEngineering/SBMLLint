@@ -53,3 +53,9 @@ def getSBMLStringFromAntimony(antimony_stg):
   if sandbox.return_code != 0:
     raise ValueError("Bad antimony string: %s" % antimony_stg)
   return sandbox.output
+
+def isInt(obj):
+  try:
+    return str(int(obj)) == str(obj)
+  except:
+    return False

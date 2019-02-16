@@ -3,7 +3,8 @@
 from SBMLLint.common import constants as cn
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.structured_names.moiety import Moiety
+from SBMLLint.structured_names.moiety  \
+    import Moiety, MoietyStoichiometry
 
 import pandas as pd
 import numpy as np

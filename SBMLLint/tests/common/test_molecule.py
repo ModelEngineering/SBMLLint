@@ -2,6 +2,7 @@
 Tests for Molecule
 """
 from SBMLLint.common import constants as cn
+from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import simple_sbml
@@ -12,14 +13,22 @@ import tesbml
 import unittest
 
 
-IGNORE_TEST = True
+IGNORE_TEST = False
 NUM1 = 2
+NUM2 = 3
 MOIETY_NAME1 = "first"
 MOIETY_NAME2 = "second"
 NAME = "name"
 BAD_NAME = 'not_a_name'
 MOLECULE_NAME = "%s%s%s" % (MOIETY_NAME1, cn.MOIETY_DOUBLE_SEPARATOR, 
     MOIETY_NAME2)
+MOLECULE_STOICHIOMETRY_STGS = {
+    ((Moiety("A"), 1), (Moiety("P"), 1)): 
+        [Molecule("A_P"), Molecule("A_1__P"), Molecule("A__P")],
+    ((Moiety("AA"), 1), (Moiety("PP"), 1)): 
+        [Molecule("AA_PP"), Molecule("AA_1__PP"), Molecule("AA__PP"),
+        ],
+    }
 
 
 #############################
@@ -66,9 +75,12 @@ class TestMolecule(unittest.TestCase):
 class TestMoleculeStoichiometry(unittest.TestCase):
 
   def setUp(self):
+    self.simple = SimpleSBML(cn.TEST_FILE)
     Molecule.molecules = []
 
   def testConstructor(self):
+    if IGNORE_TEST:
+      return
     molecule = Molecule(MOLECULE_NAME)
     m_s = MoleculeStoichiometry(molecule, NUM1)
     self.assertTrue(m_s.molecule.isEqual(molecule))
@@ -80,21 +92,31 @@ class TestMoleculeStoichiometry(unittest.TestCase):
     for expected, strings in MOLECULE_STOICHIOMETRY_STGS.items():
       moietys = list(set([e[0] for e in expected]))
       moietys.sort()
+      m_ss = [MoietyStoichiometry(m, 1) for m in moietys]
       for stg in strings:
-        result = Moiety.extract(stg)
-        trues = [result[n].isEqual(moietys[n]) 
-            for n, _ in enumerate(result)]
+        result = Molecule.extractMoietyStoichiometrys(stg)
+        trues = [x.isEqual(y) for x, y in zip(result, m_ss)]
         self.assertTrue(all(trues))
 
-  # TODO: Update tests
+  def testExtractMoietyStoichiometrys(self):
+    if IGNORE_TEST:
+      return
+    moiety_stoich = MoietyStoichiometry(Molecule(MOIETY_NAME1),
+        NUM1)
+    mole_stoich = MoleculeStoichiometry(Molecule(str(moiety_stoich), 
+        NUM2))
+
   def testCountMoietys(self):
     if IGNORE_TEST:
       return
-    molecule = Molecule(MOLECULE_NAME)
-    df = MoleculeStoichiometry.countMoietys([molecule])
+    moiety_stoich = MoietyStoichiometry(Molecule(MOIETY_NAME1),
+        NUM1)
+    mole_stoich = MoleculeStoichiometry(Molecule(str(moiety_stoich)), 
+        NUM2)
+    df = mole_stoich.countMoietys()
     self.assertEquals(df.columns.tolist(), [cn.VALUE])
-    df2 = MoietyStoichiometry.countMoietys([molecule, molecule])
-    self.assertTrue(df2.equals(df + df))
+    expected = NUM1 * NUM2
+    trues = [expected ==  n for n in df[cn.VALUE]]
 
   def testInitialize(self):
     if IGNORE_TEST:
