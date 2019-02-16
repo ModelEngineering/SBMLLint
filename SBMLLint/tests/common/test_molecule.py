@@ -19,7 +19,7 @@ NUM2 = 3
 MOIETY_NAME1 = "first"
 MOIETY_NAME2 = "second"
 NAME = "name"
-BAD_NAME = 'not_a_name'
+NO_NAME = 'not_a_name'
 MOLECULE_NAME = "%s%s%s" % (MOIETY_NAME1, cn.MOIETY_DOUBLE_SEPARATOR, 
     MOIETY_NAME2)
 MOLECULE_STOICHIOMETRY_STGS = {
@@ -47,14 +47,14 @@ class TestMolecule(unittest.TestCase):
     molecule = Molecule(NAME, other_molecules=molecules)
     self.assertEqual(molecule.name, NAME)
     self.assertEqual(molecules, [molecule])
-    with self.assertRaises(ValueError):
-      Molecule(BAD_NAME)
 
   def testGetMolecule(self):
+    if IGNORE_TEST:
+      return
     _ = Molecule(NAME)
     molecule = Molecule.getMolecule(NAME)
     self.assertEqual(molecule, Molecule.molecules[0])
-    self.assertIsNone(Molecule.getMolecule(BAD_NAME))
+    self.assertIsNone(Molecule.getMolecule(NO_NAME))
 
   def testAppend(self):
     if IGNORE_TEST:
@@ -63,6 +63,19 @@ class TestMolecule(unittest.TestCase):
     molecule = Molecule(MOIETY_NAME1)
     new_molecule = molecule.append(moiety2)
     self.assertEqual(new_molecule.name, Molecule(MOLECULE_NAME).name)
+
+  def testExtractMoietys(self):
+    if IGNORE_TEST:
+      return
+    m_s1 = MoietyStoichiometry(Moiety(MOIETY_NAME1), NUM1)
+    m_s2 = MoietyStoichiometry(MOIETY_NAME2, NUM2)
+    m_s3 = MoietyStoichiometry(MOIETY_NAME1, NUM2)
+    molecule = Molecule(str(m_s1))
+    molecule = molecule.append(Moiety(str(m_s2)))
+    moietys = molecule.extractMoietys()
+    expected = [Moiety(MOIETY_NAME1), Moiety(MOIETY_NAME2)]
+    for moiety in moietys:
+      self.assertTrue(any([moiety.isEqual(e) for e in expected]))
 
   def testHasMoiety(self):
     if IGNORE_TEST:
@@ -103,8 +116,8 @@ class TestMoleculeStoichiometry(unittest.TestCase):
       return
     moiety_stoich = MoietyStoichiometry(Molecule(MOIETY_NAME1),
         NUM1)
-    mole_stoich = MoleculeStoichiometry(Molecule(str(moiety_stoich), 
-        NUM2))
+    mole_stoich = MoleculeStoichiometry(Molecule(str(moiety_stoich)), 
+        NUM2)
 
   def testCountMoietys(self):
     if IGNORE_TEST:

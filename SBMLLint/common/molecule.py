@@ -75,7 +75,8 @@ class Molecule(object):
     :return list-Moiety: Unique Moiety in molecule
     """
     moiety_stoichiometrys = self.extractMoietyStoichiometrys()
-    names = list(set([m_s.name for m_s in moiety_stoichiometrys]))
+    names = list(set([m_s.moiety.name 
+        for m_s in moiety_stoichiometrys]))
     names.sort()
     return [Moiety(n) for n in names]
 
@@ -106,7 +107,7 @@ class Molecule(object):
     :return Molecule:
     """
     new_name = "%s%s%s" % (
-        molecule.name, cn.MOIETY_DOUBLE_SEPARATOR, 
+        self.name, cn.MOIETY_DOUBLE_SEPARATOR, 
         element.name)
     return Molecule(new_name)
 
