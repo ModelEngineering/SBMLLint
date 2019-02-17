@@ -1,6 +1,6 @@
 from SBMLLint.common import constants as cn
 from SBMLLint.common.runner import Runner
-from SBMLLint.tools import print_reactions
+from SBMLLint.tools import sbmllint
 
 
 import numpy as np
@@ -10,7 +10,7 @@ import unittest
 
 
 IGNORE_TEST = False
-TEST_FILE = "test_print_reactions.txt"
+TEST_FILE = "test_sbmllint.txt"
 TEST_OUT_PATH = os.path.join(cn.TEST_DIR, TEST_FILE)
 
 
@@ -23,21 +23,31 @@ class TestFunctions(unittest.TestCase):
     if os.path.isfile(TEST_OUT_PATH):
       os.remove(TEST_OUT_PATH)
 
-  def testPrettyPrint(self):
+  def testLint(self):
     with open(TEST_OUT_PATH, 'w') as fd:
-      print_reactions.prettyPrint(cn.TEST_FILE, file_out=fd)
+      num_react, num_bad = sbmllint.lint(cn.TEST_FILE4, file_out=fd)
+    self.assertGreaterEqual(num_react, num_bad)
     with open(TEST_OUT_PATH, 'r') as fd:
       lines = fd.readlines()
-    self.assertEqual(len(lines), cn.NUM_REACTIONS)
+    self.assertGreater(len(lines), 0)
+
+  def testLint2(self):
+    with open(TEST_OUT_PATH, 'w') as fd:
+      num_react, num_bad = sbmllint.lint(cn.TEST_FILE2, file_out=fd)
+    self.assertGreaterEqual(num_react, num_bad)
+    with open(TEST_OUT_PATH, 'r') as fd:
+      lines = fd.readlines()
+    self.assertGreater(len(lines), 0)
 
   def testMain(self):
+    return
     module_dir = os.path.abspath(os.curdir)
     for ele in ["SBMLLint", "tools"]:
       module_dir = os.path.join(module_dir, ele)
-    module_path = os.path.join(module_dir, "print_reactions.py")
+    module_path = os.path.join(module_dir, "sbmllint.py")
     runner = Runner(module_path)
-    runner.execute([cn.TEST_FILE], '')
-    self.assertEqual(runner.output.count('\n'), cn.NUM_REACTIONS)
+    runner.execute([cn.TEST_FILE4], '')
+    self.assertGreater(runner.output.count('\n'), 0)
 
 
 if __name__ == '__main__':
