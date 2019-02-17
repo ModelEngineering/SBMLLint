@@ -2,7 +2,7 @@
 Tests for MoietyComparator
 """
 from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule
+from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import util
@@ -40,6 +40,8 @@ TEST_FILE3 = "test_file3.antimony"
 PATH= os.path.join(cn.TEST_DIR, TEST_FILE3)
 with open(PATH, 'r') as fd:
   lines = fd.readlines()
+NUM1 = 2
+NUM2 = 3
 SBML= util.getSBMLStringFromAntimony(''.join(lines))
 
 
@@ -56,15 +58,18 @@ def analyze(simple):
 class TestMoietyComparator(unittest.TestCase):
 
   def setUp(self):
-    self.molecules1 = [Molecule(n) for n in MOLECULE_NAME_SET[:3]]
-    self.molecules2 = [Molecule(n) for n in MOLECULE_NAME_SET[4:]]
+    self.molecules1 = [MoleculeStoichiometry(Molecule(n), NUM1)
+        for n in MOLECULE_NAME_SET[:3]]
+    self.molecules2 = [MoleculeStoichiometry(Molecule(n), NUM2)
+        for n in MOLECULE_NAME_SET[3:]]
     self.comparator = MoietyComparator(self.molecules1,
         self.molecules2)
 
   def testConstructor(self):
     if IGNORE_TEST:
       return
-    self.assertEqual(len(self.comparator.molecule_collections), 2)
+    self.assertEqual(
+        len(self.comparator.molecule_stoichiometry_collections), 2)
 
   def testIsSame(self):
     if IGNORE_TEST:

@@ -51,6 +51,12 @@ class TestFunctions(unittest.TestCase):
     self.assertFalse(util.isInt(1.5))
     self.assertFalse(util.isInt('ab'))
 
+  def testIsFloat(self):
+    self.assertTrue(util.isFloat(1))
+    self.assertTrue(util.isFloat(1.5))
+    self.assertTrue(util.isFloat('1.5'))
+    self.assertFalse(util.isFloat('ab'))
+
 
 if __name__ == '__main__':
   unittest.main()

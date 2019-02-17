@@ -7,6 +7,7 @@ from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import simple_sbml
 
+import itertools
 import numpy as np
 import os
 import tesbml
@@ -18,6 +19,7 @@ NUM1 = 2
 NUM2 = 3
 MOIETY_NAME1 = "first"
 MOIETY_NAME2 = "second"
+MOIETY_NAME3 = "third"
 NAME = "name"
 NO_NAME = 'not_a_name'
 MOLECULE_NAME = "%s%s%s" % (MOIETY_NAME1, cn.MOIETY_DOUBLE_SEPARATOR, 
@@ -29,6 +31,19 @@ MOLECULE_STOICHIOMETRY_STGS = {
         [Molecule("AA_PP"), Molecule("AA_1__PP"), Molecule("AA__PP"),
         ],
     }
+NAMES = [MOIETY_NAME1, MOIETY_NAME2, MOIETY_NAME3]
+iterator = itertools.product([0,1], [0, 1], [0, 1])
+MOLECULE_NAME_SET = []  # A set of names from moiety combinations
+for item in iterator:
+  name = ""
+  for idx,ele in enumerate(item):
+    if ele == 1:
+      if len(name) == 0:
+        name = NAMES[idx]
+      else:
+        name = "%s%s%s" % (name, cn.MOIETY_SEPARATOR, NAMES[idx])
+  if len(name) > 0:
+    MOLECULE_NAME_SET.append(name)
 
 
 #############################
@@ -136,6 +151,13 @@ class TestMoleculeStoichiometry(unittest.TestCase):
       return
     Molecule.initialize(self.simple)
     self.assertEqual(len(Molecule.molecules), cn.NUM_SPECIES)
+
+  def testCountMoietysInCollection(self):
+    m_ss = [MoleculeStoichiometry(Molecule(n), NUM1)
+        for n in MOLECULE_NAME_SET[:3]]
+    df = MoleculeStoichiometry.countMoietysInCollection(m_ss)
+    indexes = df.index.tolist()
+    self.assertEqual(len(indexes), len(set(indexes)))
     
 
 if __name__ == '__main__':

@@ -59,3 +59,10 @@ def isInt(obj):
     return str(int(obj)) == str(obj)
   except:
     return False
+
+def isFloat(obj):
+  try:
+    value = float(obj)
+  except:
+    return False
+  return True

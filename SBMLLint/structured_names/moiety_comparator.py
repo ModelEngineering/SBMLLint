@@ -2,8 +2,9 @@
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.reaction import Reaction
+from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.structured_names.moiety  \
+from SBMLLint.common.moiety  \
     import Moiety, MoietyStoichiometry
 
 import pandas as pd
@@ -23,6 +24,15 @@ class MoietyComparator(object):
     :param set-MoleculeStoichiometry mol_stoichs2:
     :param list-str names: names to refer to the two sets
     """
+    def checkType(objs):
+      trues = [isinstance(o, MoleculeStoichiometry)
+          for o in objs]
+      if all(trues):
+        return
+      raise ValueError("Argument must be collection of type %s"
+          % str(MoleculeStoichiometry))
+    checkType(mol_stoichs1)
+    checkType(mol_stoichs2)
     self.molecule_stoichiometry_collections = [
         mol_stoichs1, 
         mol_stoichs2,
@@ -31,8 +41,9 @@ class MoietyComparator(object):
 
   def _makeDFS(self):
     dfs = []
-    for mol_stoichs in self.molecule_stoichiometry_collections:
-      dfs.append(Moiety.countMoietys(mol_stoichs))
+    for collection in self.molecule_stoichiometry_collections:
+      df = MoleculeStoichiometry.countMoietysInCollection(collection)
+      dfs.append(df)
     return dfs
 
   def isSame(self):

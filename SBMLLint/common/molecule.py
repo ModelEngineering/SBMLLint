@@ -135,7 +135,7 @@ class MoleculeStoichiometry(object):
   def __init__(self, molecule, stoichiometry):
     if not isinstance(molecule, Molecule):
       raise ValueError("First argument must be a Molecule.")
-    if not isinstance(stoichiometry, float):
+    if not util.isFloat(stoichiometry):
       raise ValueError("Second argument must be a float.")
     self.molecule = molecule
     self.stoichiometry = stoichiometry
@@ -171,4 +171,8 @@ class MoleculeStoichiometry(object):
     dfs = []
     for molecule_stoichiometry in molecule_stoichiometrys:
       dfs.append(molecule_stoichiometry.countMoietys())
-    return pd.concat(dfs)
+    df = pd.concat(dfs)
+    df = df.reset_index()
+    col = df.columns[0]
+    df_result = pd.DataFrame(df.groupby(col).sum())
+    return df_result
