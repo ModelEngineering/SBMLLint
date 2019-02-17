@@ -86,11 +86,6 @@ class TestSimpleSBML(unittest.TestCase):
     self.assertTrue(self.simple.isParameter(parameters[0]))
     self.assertFalse(self.simple.isParameter("dummy"))
 
-  def testGetReactionStrings(self):
-    stgs = self.simple.getReactionStrings()
-    self.assertEqual(len(stgs), cn.NUM_REACTIONS)
-    self.assertTrue(isinstance(stgs[0], str))
-
   def testGetSpeciesNames(self):
     stgs = self.simple.getSpeciesNames()
     self.assertEqual(len(stgs), cn.NUM_SPECIES)
@@ -110,10 +105,12 @@ class TestFunctions(unittest.TestCase):
           tesbml.libsbml.Species))
     COUNT = 20
     itr = simple_sbml.modelIterator(final=COUNT)
+    item_number = -1
     for item in itr:
       self.assertTrue(isinstance(item.filename, str))
       self.assertTrue('Model' in  str(type(item.model)))
-    self.assertEqual(item.number, COUNT - 1)
+      item_number = item.number
+    self.assertEqual(item_number, COUNT - 1)
     
 
 if __name__ == '__main__':

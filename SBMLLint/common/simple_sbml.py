@@ -161,12 +161,6 @@ class SimpleSBML(object):
     """
     return name in self.parameters.keys()
 
-  def getReactionStrings(self):
-    """
-    :return list-str: list of string representations of reactions
-    """
-    return [self.__class__.getReactionString(r) for r in self.reactions]
-
   def getSpeciesNames(self):
     """
     :return list-str: list of species names

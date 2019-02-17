@@ -153,7 +153,7 @@ class SOM(object):
                 reaction.products = products
             
         if reduced:
-            reaction.identifier = reaction.makeId() 
+            reaction.identifier = reaction.makeIdentifier()
             reaction.category = reaction._getCategory() 
             return reaction
         else:
