@@ -76,12 +76,6 @@ class TestSimpleSBML(unittest.TestCase):
       trues = [isinstance(s, str) for s in stgs]
       self.assertTrue(trues)
 
-  def testGetReactionString(self):
-    for reaction in self.simple.getReactions():
-      stg = SimpleSBML.getReactionString(reaction)
-      parts = stg.split('->')
-      self.assertTrue(";" in parts[-1])  # Kinetics is last
-
   def testIsSpecies(self):
     species = list(self.simple._getSpecies().keys())
     self.assertTrue(self.simple.isSpecies(species[0]))

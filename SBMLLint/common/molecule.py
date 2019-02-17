@@ -135,8 +135,8 @@ class MoleculeStoichiometry(object):
   def __init__(self, molecule, stoichiometry):
     if not isinstance(molecule, Molecule):
       raise ValueError("First argument must be a Molecule.")
-    if not isinstance(stoichiometry, int):
-      raise ValueError("Second argument must be an int.")
+    if not isinstance(stoichiometry, float):
+      raise ValueError("Second argument must be a float.")
     self.molecule = molecule
     self.stoichiometry = stoichiometry
 

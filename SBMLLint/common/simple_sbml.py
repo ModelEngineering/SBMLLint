@@ -126,51 +126,6 @@ class SimpleSBML(object):
     """
     return [reaction.getProduct(n) for n in range(reaction.getNumProducts())]
 
-  @classmethod
-  def getReactionString(cls, reaction, is_include_kinetics=True):
-    """
-    Provides a string representation of the reaction
-    :param tesbml.libsbml.Reaction reaction:
-    :param bool is_include_kinetics: include the kinetics formula
-    :return str:
-    """
-    def makeStoichiometryString(species_reference):
-      num = species_reference.getStoichiometry()
-      if np.isclose(num, 1.0):
-        return ''
-      else:
-        return "%2.2f " % num
-    #
-    def makeTermCollection(species_references):
-      """
-      Formats a set of terms with stoichiometries.
-      :param list-SpeciesReference:
-      :return str:
-      """
-      term_collection = ''
-      for reference in species_references:
-        term = "%s%s" % (makeStoichiometryString(reference),
-          reference.species)
-        if len(term_collection) == 0:
-          term_collection += term
-        else:
-          term_collection += " + " + term
-      return term_collection
-    #
-    reactant_collection = makeTermCollection(cls.getReactants(reaction))
-    product_collection = makeTermCollection(cls.getProducts(reaction))
-    if is_include_kinetics:
-      if reaction.getKineticLaw() is not None:
-        formula_str = "; " + reaction.getKineticLaw().formula
-      else:
-        formula_str = ''
-    else:
-      formula_str = ''
-    reaction_str = "%s: %s -> %s" % (reaction.id, reactant_collection,
-        product_collection)
-    reaction_str = reaction_str + formula_str
-    return reaction_str
-
   @staticmethod
   def getReactionKineticsTerms(reaction):
     """
