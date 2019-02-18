@@ -7,6 +7,7 @@ from SBMLLint.common import util
 from SBMLLint.structured_names.moiety_comparator import MoietyComparator
 
 import argparse
+import os
 import sys
 
 
@@ -38,6 +39,7 @@ def lint(model_reference, file_out=sys.stdout,
     
 
 def main():
+  print(os.path.abspath(os.curdir))
   parser = argparse.ArgumentParser(description='SBML XML file.')
   parser.add_argument('filename', type=str, help='SBML file')
   args = parser.parse_args()
