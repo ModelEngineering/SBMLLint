@@ -92,11 +92,13 @@ class SOM(object):
             
             if som1 == som2:
                 return som1
-            else: 
+            else:
+                new_molecules = som1.molecules.union(som2.molecules)
+                new_reactions = som1.reactions.union(som2.reactions)
+                new_reactions.add(reaction)
                 cls.soms.remove(som1)
                 cls.soms.remove(som2)
-                new_som = SOM(som1.molecules.union(som2.molecules),
-                             som1.reactions.union(som2.reactions))
+                new_som = SOM(new_molecules, new_reactions)
                 return new_som
         
     @classmethod
