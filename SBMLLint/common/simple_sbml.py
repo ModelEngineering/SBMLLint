@@ -1,4 +1,4 @@
-"""Represents an SBML Model."""
+"""Pythonic representation of an SBML model."""
 
 from SBMLLint.common import constants as cn
 import collections

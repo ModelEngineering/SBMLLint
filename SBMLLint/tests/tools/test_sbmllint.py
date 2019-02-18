@@ -40,6 +40,7 @@ class TestFunctions(unittest.TestCase):
     self.assertGreater(len(lines), 0)
 
   def testMain(self):
+    print(os.path.abspath(os.curdir))
     return  # Having Travis failures with running a process
     module_dir = os.path.abspath(os.curdir)
     for ele in ["SBMLLint", "tools"]:
