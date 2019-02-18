@@ -47,6 +47,9 @@ class TestMESGraph(unittest.TestCase):
 		if IGNORE_TEST:
 			return
 		self.simple = SimpleSBML(cn.TEST_FILE5)
+		Reaction.reactions = []
+		Molecule.molecules = []
+		SOM.soms = []
 		Reaction.initialize(self.simple)
 		SOM.initialize(Molecule.molecules)
 		self.molecules = Molecule.molecules
