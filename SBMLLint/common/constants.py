@@ -10,6 +10,7 @@ TEST_FILE2 = os.path.join(TEST_DIR, "test_file2.xml")
 TEST_FILE3 = os.path.join(TEST_DIR, "curated_017.xml")
 TEST_FILE5 = os.path.join(TEST_DIR, "test_file5.antimony")
 TEST_FILE4 = os.path.join(TEST_DIR, "test_file4.xml")
+TEST_FILE5 = os.path.join(TEST_DIR, "curated_050.xml")
 NUM_REACTIONS = 111
 NUM_PARAMETERS = 27
 MAX_REACTANTS = 10
