@@ -23,22 +23,29 @@ S2 = 0
 #############################
 class TestFunctions(unittest.TestCase):
 
-  def testGetModel(self):
-    def test(document):
+  def testGetXMLString(self):
+    def test(model_str):
+      reader = tesbml.SBMLReader()
+      document = reader.readSBMLFromString(model_str)
+      if (document.getNumErrors() > 0):
+        raise ValueError("Errors in SBML document\n%s" 
+            % model_reference)
       model = document.getModel()
       self.assertTrue('Reaction' in str(type(model.getReaction(0))))
+    def getString(path):
+      with open(path, 'r') as fd:
+        lines = '\n'.join(fd.readlines())
+      return lines
     #
-    test(util.getSBMLDocument(cn.TEST_FILE2))
-    test(util.getSBMLDocument(ANTIMONY_STG))
-    with open(cn.TEST_FILE2, 'r') as fd:
-      lines = '\n'.join(fd.readlines())
-    test(util.getSBMLDocument(lines))
+    for path in [cn.TEST_FILE2, cn.TEST_FILE3]:
+      test(util.getXML(path))
+      test(util.getXML(getString(path)))
 
-  def testGetModelFromAntimony(self):
-    document = util.getSBMLStringFromAntimony(ANTIMONY_STG)
-    self.assertTrue(isinstance(document, str))
+  def testGetXMLFromAntimony(self):
+    xml = util.getXMLFromAntimony(ANTIMONY_STG)
+    self.assertTrue(isinstance(xml, str))
     reader = tesbml.libsbml.SBMLReader()
-    libsbml_document = reader.readSBMLFromString(document)
+    libsbml_document = reader.readSBMLFromString(xml)
     if (libsbml_document.getNumErrors() > 0):
       raise IOError("Errors in SBML document\n%s" 
           % libsbml_document.printErrors())

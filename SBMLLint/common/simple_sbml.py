@@ -1,4 +1,9 @@
-"""Pythonic representation of an SBML model."""
+"""
+Pythonic representation of an SBML model with some extensions.
+- moietys (functional groups within a molecule)
+- molecules (species)
+- reactions
+"""
 
 from SBMLLint.common import constants as cn
 import collections
@@ -10,9 +15,10 @@ import urllib3
 import warnings
 
 
-TYPE_MODEL = "type_model"
-TYPE_XML = "type_xml"
-TYPE_FILE = "type_file"
+TYPE_MODEL = "type_model"  # libsbml model
+TYPE_XML = "type_xml"  # XML string
+TYPE_ANTIMONY = "type_xml"  # Antimony string
+TYPE_FILE = "type_file" # File reference
 
 IteratorItem = collections.namedtuple('IteratorItem',
     'filename number model')
@@ -26,40 +32,46 @@ class SimpleSBML(object):
   a result, no libsbml object is maintained by SimpleSBML instances.
   """
 
-  def __init__(self, model_reference):
+  def __init__(self):
+    """
+    Initializes instance variables
+    """
+    self.moietys = []
+    self.molecules = []
+    self.reactions = []
+
+  def _getSBMLModel(self, model_reference):
     """
     :param str or tesbml.libsbml.model model_reference: 
-        File  or sbml model
+        if the input is a str it may be a file reference or a model string
+            and the file may be an xml file or an antimony file.
+        if it is a model string, it may be an xml string or antimony.
     :raises IOError: Error encountered reading the SBML document
     """
-    if isinstance(model_reference, str):
-      if "<sbml" in model_reference:
-        model_type = TYPE_XML
-      else:
-        model_type = TYPE_FILE
+    # check for a libsbml model
+    if 'Model' in str(type(model_reference)):
+      return model_reference
+    if not isinstance(model_reference, str):
+      raise ValueError("Invalid model_reference: %s" % str(model_reference))
+    # Check for a file path
+    if os.path.isfile(model_reference):
+      with open(model_reference, 'r') as fd:
+        lines = fd.readlines()
+      model_str = ''.join(lines)
     else:
-      model_type = TYPE_MODEL
-    if model_type == TYPE_FILE:
-      self._filename = model_reference
-      self._reader = tesbml.SBMLReader()
-      self._document = self._reader.readSBML(self._filename)
-      if (self._document.getNumErrors() > 0):
-        raise IOError("Errors in SBML document\n%s" 
-            % self._document.printErrors())
-      self._model = self._document.getModel()
-    elif model_type == TYPE_XML:
-      self._filename = None
-      self._reader = tesbml.SBMLReader()
-      self._document = self._reader.readSBMLFromString(
-          model_reference)
-      if (self._document.getNumErrors() > 0):
-        raise IOError("Errors in SBML document\n%s" 
-            % self._document.printErrors())
-      self._model = self._document.getModel()
+      # Must be a string representation of a model
+      model_str = model_reference
+    # Process model_str into a model  
+    if "<sbml" in model_str:
+      # SBML file
+      reader = tesbml.SBMLReader()
+      document = reader.readSBMLFromString(model_str)
+      if (document.getNumErrors() > 0):
+        raise ValueError("Errors in SBML document\n%s" 
+            % model_reference)
+      model = self._document.getModel()
     else:
-      self._filename = None
-      self._reader = None
-      self._document = None
+      # Assume this is an antimony string
       self._model = model_reference
     self.reactions = self._getReactions()
     self.parameters = self._getParameters()  # dict with key=name

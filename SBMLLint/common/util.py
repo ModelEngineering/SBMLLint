@@ -3,46 +3,39 @@
 from SBMLLint.common import constants as cn
 from SBMLLint.common.tellurium_sandbox import TelluriumSandbox
 
-import tesbml
+import os
 
 TYPE_ANTIMONY = "type_antimony"
 TYPE_XML = "type_xml"
 TYPE_FILENAME = "type_filename"
 XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
 
-def getSBMLDocument(model_reference):
+def getXML(model_reference):
   """
-  :param str model_reference:
-     sbml xml string
-     filename
-     antimony source
-  :return tesbml.libsbml.Model:
+  :param str model_reference: 
+      the input may be a file reference or a model string
+          and the file may be an xml file or an antimony file.
+      if it is a model string, it may be an xml string or antimony.
+  :raises IOError: Error encountered reading the SBML document
+  :return str SBML xml"
   Returning an SBML document seems to avoid a segementation
   fault from the interations of tesbml and tellurium.
   """
-  # Determine the type of the model_reference
-  if "<sbml" in model_reference:
-    reference_type = TYPE_XML
-  elif ("->" in model_reference) or (";" in model_reference):
-    reference_type = TYPE_ANTIMONY
+  # Check for a file path
+  if os.path.isfile(model_reference):
+    with open(model_reference, 'r') as fd:
+      lines = fd.readlines()
+    model_str = ''.join(lines)
   else:
-    reference_type = TYPE_FILENAME
-  # Process each type
-  reader = tesbml.SBMLReader()
-  if reference_type == TYPE_FILENAME:
-    document = reader.readSBML(model_reference)
-  elif reference_type == TYPE_XML:
-    document = reader.readSBMLFromString(model_reference)
-  else:
-    sbml = getSBMLStringFromAntimony(model_reference)
-    document = reader.readSBMLFromString(sbml)
-  # Extract the model
-  if (document.getNumErrors() > 0):
-    raise IOError("Errors in SBML document\n%s" 
-        % document.printErrors())
-  return document
+    # Must be a string representation of a model
+    model_str = model_reference
+  # Process model_str into a model  
+  if not "<sbml" in model_str:
+    # Antimony
+    model_str = getXMLFromAntimony(model_str)
+  return model_str
 
-def getSBMLStringFromAntimony(antimony_stg):
+def getXMLFromAntimony(antimony_stg):
   """
   Constructs an SBML model from the antimony string.
   :param str antimony_stg:
