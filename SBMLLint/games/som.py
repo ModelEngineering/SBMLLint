@@ -1,7 +1,7 @@
 """Set of Molecules(SOM)."""
 
 from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule
+from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.simple_sbml import SimpleSBML
 
@@ -131,12 +131,12 @@ class SOM(object):
                 product = products_in[0]
 
                 if reactant.stoichiometry > product.stoichiometry:
-                    reactants_in[0] = cn.MoleculeStoichiometry(reactant.molecule,
+                    reactants_in[0] = MoleculeStoichiometry(reactant.molecule,
                                                               reactant.stoichiometry - product.stoichiometry)
                     products_in.popleft()
 
                 elif reactant.stoichiometry < product.stoichiometry:
-                    products_in[0] = cn.MoleculeStoichiometry(product.molecule,
+                    products_in[0] = MoleculeStoichiometry(product.molecule,
                                                               product.stoichiometry - reactant.stoichiometry)
                     reactants_in.popleft()
                 else:
@@ -153,7 +153,7 @@ class SOM(object):
                 reaction.products = products
             
         if reduced:
-            reaction.identifier = reaction.makeId() 
+            reaction.identifier = reaction.makeIdentifier()
             reaction.category = reaction._getCategory() 
             return reaction
         else:

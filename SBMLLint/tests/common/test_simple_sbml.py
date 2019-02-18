@@ -76,12 +76,6 @@ class TestSimpleSBML(unittest.TestCase):
       trues = [isinstance(s, str) for s in stgs]
       self.assertTrue(trues)
 
-  def testGetReactionString(self):
-    for reaction in self.simple.getReactions():
-      stg = SimpleSBML.getReactionString(reaction)
-      parts = stg.split('->')
-      self.assertTrue(";" in parts[-1])  # Kinetics is last
-
   def testIsSpecies(self):
     species = list(self.simple._getSpecies().keys())
     self.assertTrue(self.simple.isSpecies(species[0]))
@@ -91,6 +85,11 @@ class TestSimpleSBML(unittest.TestCase):
     parameters = list(self.simple._getParameters().keys())
     self.assertTrue(self.simple.isParameter(parameters[0]))
     self.assertFalse(self.simple.isParameter("dummy"))
+
+  def testGetSpeciesNames(self):
+    stgs = self.simple.getSpeciesNames()
+    self.assertEqual(len(stgs), cn.NUM_SPECIES)
+    self.assertTrue(isinstance(stgs[0], str))
 
 
 class TestFunctions(unittest.TestCase):
@@ -106,10 +105,12 @@ class TestFunctions(unittest.TestCase):
           tesbml.libsbml.Species))
     COUNT = 20
     itr = simple_sbml.modelIterator(final=COUNT)
+    item_number = -1
     for item in itr:
       self.assertTrue(isinstance(item.filename, str))
       self.assertTrue('Model' in  str(type(item.model)))
-    self.assertEqual(item.number, COUNT - 1)
+      item_number = item.number
+    self.assertEqual(item_number, COUNT - 1)
     
 
 if __name__ == '__main__':

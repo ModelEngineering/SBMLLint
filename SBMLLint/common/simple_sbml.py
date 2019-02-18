@@ -1,15 +1,18 @@
-"""
-Provides simplified, read-only access to an SBML model.
-"""
+"""Represents an SBML Model."""
 
 from SBMLLint.common import constants as cn
 import collections
 import os.path
+import numpy as np
 import sys
 import tesbml
 import urllib3
 import warnings
 
+
+TYPE_MODEL = "type_model"
+TYPE_XML = "type_xml"
+TYPE_FILE = "type_file"
 
 IteratorItem = collections.namedtuple('IteratorItem',
     'filename number model')
@@ -17,19 +20,38 @@ IteratorItem = collections.namedtuple('IteratorItem',
 
 class SimpleSBML(object):
   """
-  Provides access to reactions, species, and parameters.
+  This class address stability of the underlying tesbml 
+  (libsbml) library that seems not to survive garbage collection
+  by python (e.g., returning a libsbml object to a caller.) As
+  a result, no libsbml object is maintained by SimpleSBML instances.
   """
 
   def __init__(self, model_reference):
     """
-    :param str or libsbml.model model_reference: 
+    :param str or tesbml.libsbml.model model_reference: 
         File  or sbml model
     :raises IOError: Error encountered reading the SBML document
     """
     if isinstance(model_reference, str):
+      if "<sbml" in model_reference:
+        model_type = TYPE_XML
+      else:
+        model_type = TYPE_FILE
+    else:
+      model_type = TYPE_MODEL
+    if model_type == TYPE_FILE:
       self._filename = model_reference
       self._reader = tesbml.SBMLReader()
       self._document = self._reader.readSBML(self._filename)
+      if (self._document.getNumErrors() > 0):
+        raise IOError("Errors in SBML document\n%s" 
+            % self._document.printErrors())
+      self._model = self._document.getModel()
+    elif model_type == TYPE_XML:
+      self._filename = None
+      self._reader = tesbml.SBMLReader()
+      self._document = self._reader.readSBMLFromString(
+          model_reference)
       if (self._document.getNumErrors() > 0):
         raise IOError("Errors in SBML document\n%s" 
             % self._document.printErrors())
@@ -45,7 +67,7 @@ class SimpleSBML(object):
 
   def _getReactions(self):
     """
-    :param libsbml.Model:
+    :param tesbml.libsbml.Model:
     :return list-of-reactions
     """
     num = self._model.getNumReactions()
@@ -63,7 +85,7 @@ class SimpleSBML(object):
 
   def _getReactions(self):
     """
-    :param libsbml.Model:
+    :param tesbml.libsbml.Model:
     :return list-of-reactions
     """
     num = self._model.getNumReactions()
@@ -71,7 +93,7 @@ class SimpleSBML(object):
 
   def _getParameters(self):
     """
-    :param libsbml.Model:
+    :param tesbml.libsbml.Model:
     :return list-of-reactions
     """
     parameters = {}
@@ -89,7 +111,7 @@ class SimpleSBML(object):
   @staticmethod
   def getReactants(reaction):
     """
-    :param libsbml.Reaction:
+    :param tesbml.libsbml.Reaction:
     :return list-of-libsbml.SpeciesReference:
     To get the species name: SpeciesReference.species
     To get stoichiometry: SpeciesReference.getStoichiometry
@@ -99,40 +121,16 @@ class SimpleSBML(object):
   @staticmethod
   def getProducts(reaction):
     """
-    :param libsbml.Reaction:
-    :return list-of-libsbml.SpeciesReference:
+    :param tesbml.libsbml.Reaction:
+    :return list-of-tesbml.libsbml.SpeciesReference:
     """
     return [reaction.getProduct(n) for n in range(reaction.getNumProducts())]
-
-  @classmethod
-  def getReactionString(cls, reaction):
-    """
-    Provides a string representation of the reaction
-    :param libsbml.Reaction reaction:
-    """
-    reaction_str = ''
-    base_length = len(reaction_str)
-    for reference in cls.getReactants(reaction):
-      if len(reaction_str) > base_length:
-        reaction_str += " + " + reference.species
-      else:
-        reaction_str += reference.species
-    reaction_str += "-> "
-    base_length = len(reaction_str)
-    for reference in cls.getProducts(reaction):
-      if len(reaction_str) > base_length:
-        reaction_str += " + " + reference.species
-      else:
-        reaction_str += reference.species
-    kinetics_terms = cls.getReactionKineticsTerms(reaction)
-    reaction_str += "; " + ", ".join(kinetics_terms)
-    return reaction_str
 
   @staticmethod
   def getReactionKineticsTerms(reaction):
     """
     Gets the terms used in the kinetics law for the reaction
-    :param libsbml.Reaction
+    :param tesbml.libsbml.Reaction
     :return list-of-str: names of the terms
     """
     terms = []
@@ -163,6 +161,12 @@ class SimpleSBML(object):
     """
     return name in self.parameters.keys()
 
+  def getSpeciesNames(self):
+    """
+    :return list-str: list of species names
+    """
+    return list(self.species.keys())
+
 ###################### FUNCTIONS #############################
 def readURL(url):
   """
@@ -179,7 +183,6 @@ def readURL(url):
     result = do()
   return result
   
-
 def modelIterator(initial=0, final=1000, data_dir=cn.DATA_DIR):
   """
   Iterates across all models in a data directory.
