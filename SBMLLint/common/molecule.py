@@ -23,18 +23,13 @@ import numpy as np
 
 
 class Molecule(object):
-  molecules = []  # All unique molecules
 
-  def __init__(self, name, other_molecules=None):
+  def __init__(self, name):
     """
     :param str name:
     :param libsbml.species species:
     """
-    if other_molecules is None:
-      other_molecules = self.__class__.molecules
     self.name = name
-    if all([name != m.name for m in other_molecules]):
-      other_molecules.append(self)
 
   def __repr__(self):
     return self.name
@@ -44,19 +39,6 @@ class Molecule(object):
 
   def isEqual(self, other):
     return self.name == other.name
-
-  # TODO: Move to SimpleModel
-  @classmethod
-  def getMolecule(cls, name):
-    """
-    Finds and returns molecule with given name
-    Return None if there is no such molecules
-    :param str name:
-    """
-    for molecule in Molecule.molecules:
-      if molecule.name == name:
-        return molecule
-    return None
 
   def getMoietyStoichiometrys(self):
     """
@@ -68,7 +50,7 @@ class Molecule(object):
     result.sort()
     return result
 
-  def extractMoietys(self):
+  def getMoietys(self):
     """
     Extracts the unique moieties in the molecule.
     :return list-Moiety: Unique Moiety in molecule
@@ -115,18 +97,8 @@ class Molecule(object):
     :param Moiety moiety:
     :return bool: True if moiety name in molecule
     """
-    moietys = self.extractMoietys()
+    moietys = self.getMoietys()
     return any([moiety.isEqual(m) for m in moietys])
-
-  @classmethod
-  def initialize(cls, simple):
-    """
-    Creates molecules Molecule from a model
-    :param SimpleSBML simple:
-    """
-    cls.molecules = []
-    for key, value in simple.species.items():
-      Molecule(key)
 
 
 class MoleculeStoichiometry(object):

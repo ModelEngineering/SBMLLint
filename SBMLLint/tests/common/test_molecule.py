@@ -5,7 +5,6 @@ from SBMLLint.common import constants as cn
 from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.common import simple_sbml
 
 import itertools
 import numpy as np
@@ -53,23 +52,14 @@ class TestMolecule(unittest.TestCase):
 
   def setUp(self):
     Molecule.molecules = []
-    self.simple = SimpleSBML(cn.TEST_FILE)
+    self.simple = SimpleSBML()
+    self.simple = self.simple.initialize(cn.TEST_FILE)
 
   def testConstructor(self):
     if IGNORE_TEST:
       return
-    molecules = []
-    molecule = Molecule(NAME, other_molecules=molecules)
+    molecule = Molecule(NAME)
     self.assertEqual(molecule.name, NAME)
-    self.assertEqual(molecules, [molecule])
-
-  def testGetMolecule(self):
-    if IGNORE_TEST:
-      return
-    _ = Molecule(NAME)
-    molecule = Molecule.getMolecule(NAME)
-    self.assertEqual(molecule, Molecule.molecules[0])
-    self.assertIsNone(Molecule.getMolecule(NO_NAME))
 
   def testAppend(self):
     if IGNORE_TEST:
@@ -79,7 +69,7 @@ class TestMolecule(unittest.TestCase):
     new_molecule = molecule.append(moiety2)
     self.assertEqual(new_molecule.name, Molecule(MOLECULE_NAME).name)
 
-  def testExtractMoietys(self):
+  def testGetMoietys(self):
     if IGNORE_TEST:
       return
     m_s1 = MoietyStoichiometry(Moiety(MOIETY_NAME1), NUM1)
@@ -103,7 +93,8 @@ class TestMolecule(unittest.TestCase):
 class TestMoleculeStoichiometry(unittest.TestCase):
 
   def setUp(self):
-    self.simple = SimpleSBML(cn.TEST_FILE)
+    self.simple = SimpleSBML()
+    self.simple = self.simple.initialize(cn.TEST_FILE)
     Molecule.molecules = []
 
   def testConstructor(self):
@@ -145,12 +136,6 @@ class TestMoleculeStoichiometry(unittest.TestCase):
     self.assertEquals(df.columns.tolist(), [cn.VALUE])
     expected = NUM1 * NUM2
     trues = [expected ==  n for n in df[cn.VALUE]]
-
-  def testInitialize(self):
-    if IGNORE_TEST:
-      return
-    Molecule.initialize(self.simple)
-    self.assertEqual(len(Molecule.molecules), cn.NUM_SPECIES)
 
   def testCountMoietysInCollection(self):
     m_ss = [MoleculeStoichiometry(Molecule(n), NUM1)

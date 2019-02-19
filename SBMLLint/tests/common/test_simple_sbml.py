@@ -2,6 +2,7 @@
 Tests for simple_sbml
 """
 from SBMLLint.common import constants as cn
+from SBMLLint.common.molecule import Molecule
 from SBMLLint.common import simple_sbml
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import util
@@ -13,6 +14,7 @@ import unittest
 
 
 IGNORE_TEST = False
+NO_NAME = "dummy"
 ANTIMONY_STG = '''
 2S1 -> 3S2; 1
 S1 = 0
@@ -27,14 +29,24 @@ class TestSimpleSBML(unittest.TestCase):
 
   def setUp(self):
     self.simple = SimpleSBML()
+    self.simple.initialize(cn.TEST_FILE)
 
   def testInitialize(self):
     if IGNORE_TEST:
       return
-    self.simple.initialize(cn.TEST_FILE)
-    self.assertEqual(len(self.simple.reactions), cn.NUM_REACTIONS)
-    self.assertEqual(len(self.simple.parameters), cn.NUM_PARAMETERS)
-    import pdb; pdb.set_trace()
+    simple = SimpleSBML()
+    simple.initialize(cn.TEST_FILE)
+    self.assertEqual(len(simple.reactions), cn.NUM_REACTIONS)
+    self.assertEqual(len(simple.molecules), len(simple.moietys))
+
+  def testGetMolecule(self):
+    if IGNORE_TEST:
+      return
+    molecule1 = self.simple.molecules[0]
+    name = molecule1.name
+    molecule2 = self.simple.getMolecule(name)
+    self.assertTrue(molecule1.isEqual(molecule2))
+    self.assertIsNone(self.simple.getMolecule(NO_NAME))
 
 
 class TestFunctions(unittest.TestCase):

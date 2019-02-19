@@ -31,7 +31,6 @@ def getMolecules(libsbml_reaction, func):
 
 ################# Classes ###################
 class Reaction(object):
-  reactions = []  # All reactions
 
   def __init__(self, libsbml_reaction):
     self.reactants = self.makeMoleculeStoichiometrys(
@@ -44,8 +43,6 @@ class Reaction(object):
     self.label = libsbml_reaction.getId()
     self.identifier = self.makeIdentifier(is_include_kinetics=True)
     self.category = self._getCategory()
-    if not any([self.isEqual(r) for r in Reaction.reactions]):      
-      self.__class__.reactions.append(self)
     self.kinetics_terms = self.getKineticsTerms(libsbml_reaction)
 
   def makeMoleculeStoichiometrys(self, func_get_one, func_get_num):

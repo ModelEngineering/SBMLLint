@@ -10,7 +10,7 @@ garbage collection).
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.moiety import Moiety
-from SBMLLint.common.molecule import Molecule
+from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common import util
 
@@ -71,8 +71,6 @@ class SimpleSBML(object):
     self.reactions = self._getReactions(model)
     self.molecules = self._getMolecules()
     self.moietys = self._getMoietys()
-    self.parameters = self._getParameters(model)
-    import pdb; pdb.set_trace()
 
   def _getReactions(self, model):
     reactions = []
@@ -98,18 +96,21 @@ class SimpleSBML(object):
           reaction.reactants))
       molecules.extend(MoleculeStoichiometry.getMolecules(
           reaction.products))
-    return list(set(molecules))
+    return util.uniqueify(molecules)
 
-  def _getParameters(self, model):
+  def getMolecule(self, name):
     """
-    :param tesbml.libsbml.Model:
-    :return list-of-reactions
+    Finds and returns molecule with given name
+    Return None if there is no such molecules
+    :param str name:
     """
-    parameters = {}
-    for idx in range(model.getNumParameters()):
-      parameter = model.getParameter(idx)
-      parameters[parameter.getId()] = parameter
-    return parameters
+    molecules = [m for m in self.molecules if m.name == name]
+    if len(molecules) > 1:
+      raise ValueError("Duplicate names in simple.molecules.")
+    elif len(molecules) == 1:
+      return molecules[0]
+    else:
+      return None
 
 ###################### FUNCTIONS #############################
 def readURL(url):

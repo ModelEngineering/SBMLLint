@@ -37,11 +37,11 @@ class TestReaction(unittest.TestCase):
   def testConstructor(self):
     if IGNORE_TEST:
       return
-    self.assertTrue(isinstance(reaction.reactants[0],
+    self.assertTrue(isinstance(self.reaction.reactants[0],
         MoleculeStoichiometry))
-    self.assertTrue(isinstance(reaction.products[0],
+    self.assertTrue(isinstance(self.reaction.products[0],
         MoleculeStoichiometry))
-    self.assertEqual(reaction.category, cn.REACTION_1_n)
+    self.assertEqual(self.reaction.category, cn.REACTION_1_n)
     self.assertGreater(len(Molecule.molecules), 0)
     count = len(self.simple.reactions)
     reaction = self.simple.reactions[3]
@@ -51,16 +51,11 @@ class TestReaction(unittest.TestCase):
   def testConstructor2(self):
     if IGNORE_TEST:
       return
-    simple = SimpleSBML(cn.TEST_FILE2)
-    libsbml_reaction = simple.reactions[0]
-    reaction = Reaction(libsbml_reaction)
+    simple = SimpleSBML()
+    simple.initialize(cn.TEST_FILE2)
+    reaction = simple.reactions[0]
     self.assertEqual(reaction.reactants[0].stoichiometry, NUM_S1)
     self.assertEqual(reaction.products[0].stoichiometry, NUM_S2)
-
-  def testInitialize(self):
-    if IGNORE_TEST:
-      return
-    self.assertEqual(len(self.simple.reactions), cn.NUM_REACTIONS)
 
   def testIsEqual(self):
     if IGNORE_TEST:
@@ -75,11 +70,6 @@ class TestReaction(unittest.TestCase):
     for reaction in self.simple.reactions:
       parts = reaction.identifier.split('->')
       self.assertTrue(";" in parts[-1])  # Kinetics is last
-
-  def testGetReactionKineticsTerms(self):
-    stgs = self.getReactionKineticsTerms(self.reaction)
-    trues = [isinstance(s, str) for s in stgs]
-    self.assertTrue(trues)
 
 
 if __name__ == '__main__':
