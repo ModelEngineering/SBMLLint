@@ -16,7 +16,6 @@ MOLECULE           MOIETY, STOICHIOMETRY
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
-from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import util
 
 import pandas as pd
@@ -59,7 +58,7 @@ class Molecule(object):
         return molecule
     return None
 
-  def extractMoietyStoichiometrys(self):
+  def getMoietyStoichiometrys(self):
     """
     :return list-MoietyStoichiometry:
     """
@@ -74,7 +73,7 @@ class Molecule(object):
     Extracts the unique moieties in the molecule.
     :return list-Moiety: Unique Moiety in molecule
     """
-    moiety_stoichiometrys = self.extractMoietyStoichiometrys()
+    moiety_stoichiometrys = self.getMoietyStoichiometrys()
     names = list(set([m_s.moiety.name 
         for m_s in moiety_stoichiometrys]))
     names.sort()
@@ -151,7 +150,7 @@ class MoleculeStoichiometry(object):
     Counts the occurrence of moietys.
     :return pd.DataFrame: index is moiety, value is count
     """
-    moiety_stoichs = self.molecule.extractMoietyStoichiometrys()
+    moiety_stoichs = self.molecule.getMoietyStoichiometrys()
     moietys = list([str(m.moiety) for m in moiety_stoichs])
     stoichs = list([m.stoichiometry for m in moiety_stoichs])
     df = pd.DataFrame({cn.MOIETY: moietys, cn.VALUE: stoichs})
@@ -176,3 +175,15 @@ class MoleculeStoichiometry(object):
     col = df.columns[0]
     df_result = pd.DataFrame(df.groupby(col).sum())
     return df_result
+
+  @classmethod
+  def getMolecules(cls, molecule_stoichiometrys):
+     """
+     Obtainins the molecules from a collection of
+     MoleculeStoichiometry.
+     :param list-MoleculeStoichiometry molecule_stoichiometrys;
+     :return list-Molecule: unique molecules
+     """
+     molecules = [m_s.molecule for m_s in molecule_stoichiometrys] 
+     # TODO: Fix
+     return util.uniqueify(molecules)

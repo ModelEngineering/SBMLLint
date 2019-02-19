@@ -59,3 +59,27 @@ def isFloat(obj):
   except:
     return False
   return True
+
+def isSBMLModel(obj):
+  """
+  Tests if object is a libsbml model
+  """
+  if 'Model' in str(type(obj)):
+    return True
+  else:
+    return False
+
+def uniqueify(collection):
+  """
+  Prunes the collection so that only unique objects are present.
+  Elements of the collection must have the method "isEqual" that
+  takes as an argument another member of the collection.
+  :param list-obj collection
+  :return list-obj:
+  """
+  result = []
+  for ele in collection:
+    if all([not ele.isEqual(r) for r in result]):
+      result.append(ele)
+  return result
+      

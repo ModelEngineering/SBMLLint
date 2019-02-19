@@ -14,7 +14,6 @@ Examples of
 """
 
 from SBMLLint.common import constants as cn
-from SBMLLint.common.simple_sbml import SimpleSBML
 
 
 NULL_STR = ''
@@ -67,6 +66,15 @@ class MoietyStoichiometry(object):
   def isEqual(self, other):
     return self.moiety.isEqual(other.moiety) and  \
         (self.stoichiometry == other.stoichiometry)
+
+  @classmethod
+  def getMoietys(cls, moiety_stoichiometrys):
+    """
+    Extract moieties from MoietyStoichiometrys
+    """
+    moietys = util.uniqueify([m_s.moiety 
+        for m_s in moiety_stoichiometrys])
+    return moietys
 
   @classmethod
   def make(cls, moiety_stoich_stg):

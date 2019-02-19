@@ -87,7 +87,7 @@ class TestMolecule(unittest.TestCase):
     m_s3 = MoietyStoichiometry(MOIETY_NAME1, NUM2)
     molecule = Molecule(str(m_s1))
     molecule = molecule.append(Moiety(str(m_s2)))
-    moietys = molecule.extractMoietys()
+    moietys = molecule.getMoietys()
     expected = [Moiety(MOIETY_NAME1), Moiety(MOIETY_NAME2)]
     for moiety in moietys:
       self.assertTrue(any([moiety.isEqual(e) for e in expected]))
@@ -122,7 +122,7 @@ class TestMoleculeStoichiometry(unittest.TestCase):
       moietys.sort()
       m_ss = [MoietyStoichiometry(m, 1) for m in moietys]
       for stg in strings:
-        result = Molecule.extractMoietyStoichiometrys(stg)
+        result = Molecule.getMoietyStoichiometrys(stg)
         trues = [x.isEqual(y) for x, y in zip(result, m_ss)]
         self.assertTrue(all(trues))
 
@@ -158,6 +158,9 @@ class TestMoleculeStoichiometry(unittest.TestCase):
     df = MoleculeStoichiometry.countMoietysInCollection(m_ss)
     indexes = df.index.tolist()
     self.assertEqual(len(indexes), len(set(indexes)))
+
+  def testGetMolecules(self):
+    raise ValueError("Not implemented.")
     
 
 if __name__ == '__main__':

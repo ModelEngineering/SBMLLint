@@ -2,8 +2,6 @@
 Tests for Moiety and MoietyStoichiometry
 """
 from SBMLLint.common import constants as cn
-from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.common import simple_sbml
 from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
 
 import itertools
@@ -24,9 +22,6 @@ MOIETY_STOICHIOMETRY_STGS = {
 
 #######################################
 class TestMoiety(unittest.TestCase):
-
-  def setUp(self):
-    self.simple = SimpleSBML(cn.TEST_FILE)
 
   def testConstructor(self):
     if IGNORE_TEST:
@@ -52,6 +47,14 @@ class TestMoietyStoichiometry(unittest.TestCase):
         result = MoietyStoichiometry.make(stg)
         self.assertEqual(result.moiety.name, expected[0])
         self.assertEqual(result.stoichiometry, expected[1])
+
+  def testGetMoietys(self):
+    m_ss = []
+    for stgs in MOIETY_STOICHIOMETRY_STGS.values():
+      m_ss.extend([MoietyStoichiometry.make(s) for s in stgs])
+    moietys = MoietyStoichiometry.getMoietys(m_ss)
+    self.assertEqual(len(MOIETY_STOICHIOMETRY_STGS.keys()),
+        len(moietys))
 
 
 if __name__ == '__main__':

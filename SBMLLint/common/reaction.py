@@ -2,7 +2,6 @@
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
-from SBMLLint.common.simple_sbml import SimpleSBML
 
 import numpy as np
 
@@ -35,18 +34,42 @@ class Reaction(object):
   reactions = []  # All reactions
 
   def __init__(self, libsbml_reaction):
-    self.reactants = getMolecules(libsbml_reaction,
-        SimpleSBML.getReactants)
-    self.products = getMolecules(libsbml_reaction,
-        SimpleSBML.getProducts)
-    self.kinetic_law = libsbml_reaction.getKineticLaw().formula
+    self.reactants = self.makeMoleculeStoichiometrys(
+        libsbml_reaction.getReactant,
+        libsbml_reaction.getNumReactants)
+    self.products = self.makeMoleculeStoichiometrys(
+        libsbml_reaction.getProduct,
+        libsbml_reaction.getNumProducts)
+    self.kinetics_law = libsbml_reaction.getKineticLaw().formula
     self.label = libsbml_reaction.getId()
     self.identifier = self.makeIdentifier(is_include_kinetics=True)
     self.category = self._getCategory()
     if not any([self.isEqual(r) for r in Reaction.reactions]):      
       self.__class__.reactions.append(self)
+    self.kinetics_terms = self.getKineticsTerms(libsbml_reaction)
+
+  def makeMoleculeStoichiometrys(self, func_get_one, func_get_num):
+    """
+    Creates a list of MoleculeStoichiometry
+    :param Function func_get_one: get one element by index
+    :param Function func_get_num: get number of elements
+    :return list-MoleculeStoichiometry:
+    """
+    result = []
+    collection = [func_get_one(n) for n in range(func_get_num())]
+    for s_r in collection:
+      molecule = Molecule(s_r.species)
+      stoich = s_r.getStoichiometry()
+      result.append(MoleculeStoichiometry(molecule, stoich))
+    return result
 
   def getId(self, is_include_kinetics=True):
+    """
+    Constructs an ID that may be a substring
+    of the the full reaction identifier.
+    :param bool is_include_kinetics: Include the kinetics law
+    :return str:
+    """
     if is_include_kinetics:
       return self.identifier
     else:
@@ -87,10 +110,10 @@ class Reaction(object):
     reactant_collection = makeTermCollection(self.reactants)
     product_collection = makeTermCollection(self.products)
     if is_include_kinetics:
-      if self.kinetic_law is None:
+      if self.kinetics_law is None:
         formula_str = ''
       else:
-        formula_str = "; " + self.kinetic_law
+        formula_str = "; " + self.kinetics_law
     else:
       formula_str = ''
     reaction_str = "%s: %s -> %s" % (self.label,
@@ -99,7 +122,7 @@ class Reaction(object):
     return reaction_str
 
   def __repr__(self):
-    return self.getId()
+    return self.identifier
 
   def _getCategory(self):
     """
@@ -127,4 +150,26 @@ class Reaction(object):
     """
     cls.reactions = []
     [Reaction(r) for r in simple.reactions]
+
+  def getKineticsTerms(self, libsbml_reaction):
+    """
+    Gets the terms used in the kinetics law for the reaction
+    :param tesbml.libsbml.Reaction libsbml_reaction:
+    :return list-of-str: names of the terms
+    """
+    terms = []
+    law = libsbml_reaction.getKineticLaw()
+    if law is not None:
+      math = law.getMath()
+      asts = [math]
+      while len(asts) > 0:
+        this_ast = asts.pop()
+        if this_ast.isName():
+          terms.append(this_ast.getName())
+        else:
+          pass
+        num = this_ast.getNumChildren()
+        for idx in range(num):
+          asts.append(this_ast.getChild(idx))
+    return terms
   

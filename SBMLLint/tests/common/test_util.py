@@ -1,3 +1,10 @@
+"""
+Notes
+  1. libsbml (tesbml) is fragile; will segmentation fault if return
+     a model object. Each test must separately construct libsbml
+     objects.
+"""
+
 from SBMLLint.common import constants as cn
 from SBMLLint.common import util
 import tesbml
@@ -24,9 +31,9 @@ S2 = 0
 class TestFunctions(unittest.TestCase):
 
   def testGetXMLString(self):
-    def test(model_str):
+    def test(xml):
       reader = tesbml.SBMLReader()
-      document = reader.readSBMLFromString(model_str)
+      document = reader.readSBMLFromString(xml)
       if (document.getNumErrors() > 0):
         raise ValueError("Errors in SBML document\n%s" 
             % model_reference)
@@ -64,6 +71,36 @@ class TestFunctions(unittest.TestCase):
     self.assertTrue(util.isFloat('1.5'))
     self.assertFalse(util.isFloat('ab'))
 
+  def testIsSBMLModel(self):
+    return
+    self.assertFalse(util.isSBMLModel("dummy"))
+    xml = util.getXML(cn.TEST_FILE2)
+    reader = tesbml.SBMLReader()
+    document = reader.readSBMLFromString(xml)
+    if (document.getNumErrors() > 0):
+      raise ValueError("Errors in SBML document\n%s" 
+          % model_reference)
+    model = document.getModel()
+    self.assertTrue(util.isSBMLModel(model))
+
+  def testUniqueify(self):
+    class Tester():
+    
+      def __init__(self, name):
+        self.name = name
+
+      def __repr__(self):
+        return self.name
+ 
+      def isEqual(self, other):
+        return self.name == other.name
+    #
+    STRING = 'abc'
+    REPEATED_STRING = STRING + STRING   
+    collection = [Tester(s) for s in REPEATED_STRING]
+    result = util.uniqueify(collection)
+    self.assertEqual(len(result), len(STRING))
+    
 
 if __name__ == '__main__':
   unittest.main()
