@@ -3,7 +3,6 @@ Tests for MoietyComparator
 """
 from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
-from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import util
 from SBMLLint.structured_names.moiety_comparator  \
@@ -42,7 +41,7 @@ with open(PATH, 'r') as fd:
   lines = fd.readlines()
 NUM1 = 2
 NUM2 = 3
-SBML= util.getSBMLStringFromAntimony(''.join(lines))
+SBML= util.getXMLFromAntimony(''.join(lines))
 
 
 ######################################
@@ -98,7 +97,8 @@ class TestMoietyComparator(unittest.TestCase):
   def testAnalyzeReactions(self):
     if IGNORE_TEST:
       return
-    simple = SimpleSBML(SBML)
+    simple = SimpleSBML()
+    simple.initialize(SBML)
     num, stg = analyze(simple)
     self.assertGreaterEqual(num, 0)
     self.assertTrue('2' in stg)

@@ -111,25 +111,22 @@ class MoietyComparator(object):
     return "%s%s" % (stg1, stg2)
 
   @classmethod
-  def initialize(cls, simple):
-    Reaction.initialize(simple)
-
-  @classmethod
-  def analyzeReactions(cls, model):
+  def analyzeReactions(cls, model_reference):
     """
     Analyzes all reactions to detect moiety imbalances.
     :param libsbml.Model or SimpleSBML model:
     :return int, str: number of reactions with imbalances,
         report
+    If model_reference is SimpleSBML, it must have been initialized.
     """
-    if isinstance(model, SimpleSBML):
-      simple = model
+    if isinstance(model_reference, SimpleSBML):
+      simple = model_reference
     else:
-      simple = SimpleSBML(model)
-    cls.initialize(simple)
+      simple = SimpleSBML()
+      simple.initialize(model_reference)
     num = 0
     report = NULL_STR
-    for reaction in Reaction.reactions:
+    for reaction in simple.reactions:
       comparator = cls(reaction.reactants, reaction.products)
       stg = comparator.reportDifference()
       if len(stg) > 0:
