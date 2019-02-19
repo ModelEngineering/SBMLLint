@@ -34,9 +34,7 @@ class TestFunctions(unittest.TestCase):
     def test(xml):
       reader = tesbml.SBMLReader()
       document = reader.readSBMLFromString(xml)
-      if (document.getNumErrors() > 0):
-        raise ValueError("Errors in SBML document\n%s" 
-            % model_reference)
+      util.checkSBMLDocument(document)
       model = document.getModel()
       self.assertTrue('Reaction' in str(type(model.getReaction(0))))
     def getString(path):
@@ -53,9 +51,7 @@ class TestFunctions(unittest.TestCase):
     self.assertTrue(isinstance(xml, str))
     reader = tesbml.libsbml.SBMLReader()
     libsbml_document = reader.readSBMLFromString(xml)
-    if (libsbml_document.getNumErrors() > 0):
-      raise IOError("Errors in SBML document\n%s" 
-          % libsbml_document.printErrors())
+    util.checkSBMLDocument(libsbml_document)
     model = libsbml_document.getModel()
     self.assertTrue('Reaction' in 
        str(type(model.getReaction(0))))
@@ -77,9 +73,7 @@ class TestFunctions(unittest.TestCase):
     xml = util.getXML(cn.TEST_FILE2)
     reader = tesbml.SBMLReader()
     document = reader.readSBMLFromString(xml)
-    if (document.getNumErrors() > 0):
-      raise ValueError("Errors in SBML document\n%s" 
-          % model_reference)
+    util.checkSBMLDocument(document)
     model = document.getModel()
     self.assertTrue(util.isSBMLModel(model))
 

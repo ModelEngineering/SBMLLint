@@ -64,7 +64,8 @@ def isSBMLModel(obj):
   """
   Tests if object is a libsbml model
   """
-  if 'Model' in str(type(obj)):
+  cls_stg = str(type(obj))
+  if ('Model' in cls_stg) and ('sbml' in cls_stg):
     return True
   else:
     return False
@@ -82,4 +83,8 @@ def uniqueify(collection):
     if all([not ele.isEqual(r) for r in result]):
       result.append(ele)
   return result
-      
+     
+def checkSBMLDocument(document): 
+  if (document.getNumErrors() > 0):
+    raise ValueError("Errors in SBML document\n%s" 
+        % model_reference)

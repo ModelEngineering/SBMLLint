@@ -2,13 +2,13 @@
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.common.reaction import Reaction
 from SBMLLint.common import util
 from SBMLLint.structured_names.moiety_comparator import MoietyComparator
 
 import argparse
 import os
 import sys
+import tesbml
 
 
 def lint(model_reference, file_out=sys.stdout,
@@ -23,13 +23,18 @@ def lint(model_reference, file_out=sys.stdout,
   :param bool is_report: print result
   :return int, int: total reactions, number non-compliant
   """
-  if "Model" in str(type(model_reference)):
+  if util.isSBMLModel(model_reference):
     model = model_reference
   else:
-    document = util.getSBMLDocument(model_reference)
+    xml = util.getXML(model_reference)
+    reader = tesbml.SBMLReader()
+    document = reader.readSBMLFromString(xml)
+    util.checkSBMLDocument(document)
     model = document.getModel()
-  num_bad, report = MoietyComparator.analyzeReactions(model)
-  num_reactions = len(Reaction.reactions)
+  simple = SimpleSBML()
+  simple.initialize(model)
+  num_bad, report = MoietyComparator.analyzeReactions(simple)
+  num_reactions = len(simple.reactions)
   if is_report:
     file_out.write("%d/%d reactions are impbalanced." 
         % (num_bad, num_reactions))
@@ -39,7 +44,6 @@ def lint(model_reference, file_out=sys.stdout,
     
 
 def main():
-  raise ValueError(os.path.abspath(os.curdir))
   parser = argparse.ArgumentParser(description='SBML XML file.')
   parser.add_argument('filename', type=str, help='SBML file')
   args = parser.parse_args()

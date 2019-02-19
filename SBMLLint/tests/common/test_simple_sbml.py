@@ -65,7 +65,7 @@ class TestFunctions(unittest.TestCase):
     item_number = -1
     for item in itr:
       self.assertTrue(isinstance(item.filename, str))
-      self.assertTrue('Model' in  str(type(item.model)))
+      self.assertTrue(util.isSBMLModel(item.model))
       item_number = item.number
     self.assertEqual(item_number, COUNT - 1)
     

@@ -63,9 +63,7 @@ class SimpleSBML(object):
       xml = util.getXML(model_reference)
       reader = tesbml.SBMLReader()
       document = reader.readSBMLFromString(xml)
-      if (document.getNumErrors() > 0):
-        raise ValueError("Errors in SBML document\n%s" 
-            % model_reference)
+      util.checkSBMLDocument(document)
       model = document.getModel()
     # Do the initializations
     self.reactions = self._getReactions(model)

@@ -2,11 +2,11 @@
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.common.reaction import Reaction
 from SBMLLint.common import util
 
 import argparse
 import sys
+import tesbml
 
 
 def prettyPrint(model_reference, file_out=sys.stdout, **kwargs):
@@ -15,11 +15,14 @@ def prettyPrint(model_reference, file_out=sys.stdout, **kwargs):
   :param str model_reference: file, xml string, antimony string
   :param dict kwargs: arguments to Reaction.getId
   """
-  document = util.getSBMLDocument(model_reference)
+  xml = util.getXML(model_reference)
+  reader = tesbml.SBMLReader()
+  document = reader.readSBMLFromString(xml)
+  util.checkSBMLDocument(document)
   model = document.getModel()
-  simple = SimpleSBML(model)
-  Reaction.initialize(simple)
-  for reaction in Reaction.reactions:
+  simple = SimpleSBML()
+  simple.initialize(model)
+  for reaction in simple.reactions:
     stg = reaction.getId(**kwargs)
     file_out.write("%s\n" % stg)
 
