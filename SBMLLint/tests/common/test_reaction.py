@@ -42,7 +42,7 @@ class TestReaction(unittest.TestCase):
     self.assertTrue(isinstance(self.reaction.products[0],
         MoleculeStoichiometry))
     self.assertEqual(self.reaction.category, cn.REACTION_1_n)
-    self.assertGreater(len(Molecule.molecules), 0)
+    self.assertGreater(len(self.simple.molecules), 0)
     count = len(self.simple.reactions)
     reaction = self.simple.reactions[3]
     self.assertEqual(len(self.simple.reactions), count)

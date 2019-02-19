@@ -157,5 +157,4 @@ class MoleculeStoichiometry(object):
      :return list-Molecule: unique molecules
      """
      molecules = [m_s.molecule for m_s in molecule_stoichiometrys] 
-     # TODO: Fix
      return util.uniqueify(molecules)

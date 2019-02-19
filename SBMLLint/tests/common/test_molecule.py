@@ -133,7 +133,7 @@ class TestMoleculeStoichiometry(unittest.TestCase):
     mole_stoich = MoleculeStoichiometry(Molecule(str(moiety_stoich)), 
         NUM2)
     df = mole_stoich.countMoietys()
-    self.assertEquals(df.columns.tolist(), [cn.VALUE])
+    self.assertEqual(df.columns.tolist(), [cn.VALUE])
     expected = NUM1 * NUM2
     trues = [expected ==  n for n in df[cn.VALUE]]
 
@@ -145,7 +145,13 @@ class TestMoleculeStoichiometry(unittest.TestCase):
     self.assertEqual(len(indexes), len(set(indexes)))
 
   def testGetMolecules(self):
-    raise ValueError("Not implemented.")
+    names = ["a", "b", "c"]
+    full_names = list(names)
+    full_names.extend(names)
+    m_ss = [MoleculeStoichiometry(Molecule(n), NUM1)
+        for n in full_names]
+    molecules = MoleculeStoichiometry.getMolecules(m_ss)
+    self.assertEqual(len(molecules), len(names))
     
 
 if __name__ == '__main__':

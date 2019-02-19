@@ -14,6 +14,7 @@ Examples of
 """
 
 from SBMLLint.common import constants as cn
+from SBMLLint.common import util
 
 
 NULL_STR = ''

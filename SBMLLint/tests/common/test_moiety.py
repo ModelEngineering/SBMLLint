@@ -3,7 +3,7 @@ Tests for Moiety and MoietyStoichiometry
 """
 from SBMLLint.common import constants as cn
 from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
-from SBMLLint.common. import util
+from SBMLLint.common import util
 
 import itertools
 import numpy as np
