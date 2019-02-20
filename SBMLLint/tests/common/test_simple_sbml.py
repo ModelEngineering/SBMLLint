@@ -62,6 +62,12 @@ class TestSimpleSBML(unittest.TestCase):
     self.simple.add(reaction1)
     test()
 
+  def testGetReaction(self):
+    reaction = self.simple.reactions[0]
+    label = reaction.label
+    reaction1 = self.simple.getReaction(label)
+    self.assertTrue(reaction.isEqual(reaction1))
+
 
 class TestFunctions(unittest.TestCase):
 

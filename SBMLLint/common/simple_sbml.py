@@ -77,6 +77,19 @@ class SimpleSBML(object):
       reactions.append(simple_reaction)
     return reactions
 
+  def getReaction(self, label):
+    """
+    :param str label: label for the reaction
+    :return Reaction/None:
+    """
+    reactions = [r for r in self.reactions if r.label == label]
+    if len(reactions) > 1:
+      raise ValueError("Two reactions with the same label: %s" %
+          label)
+    if len(reactions) == 0:
+      return None
+    return reactions[0]
+
   def _getMoietys(self):
     moietys = []
     for molecule in self.molecules:
