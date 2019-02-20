@@ -1,0 +1,11 @@
+Glu + A_P_P_P -> Glu_P + A_P_P; k*Glu*A_P_P_P 
+Glu + A_P_P -> Glu_P + A_P_P; 1
+Glu + A_P_P_P -> A_P_P; 1
+Glu + A_P_P_P -> A_P_P + Fru + A; 1
+Glu = 0
+A_P_P_P = 0
+A_P_P = 0
+Glu_P = 0
+Fru = 0
+A = 0
+k = 1

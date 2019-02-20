@@ -1,9 +1,11 @@
 """
 Tests for simple_sbml
 """
-from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.common import simple_sbml
 from SBMLLint.common import constants as cn
+from SBMLLint.common.molecule import Molecule
+from SBMLLint.common import simple_sbml
+from SBMLLint.common.simple_sbml import SimpleSBML
+from SBMLLint.common import util
 
 import numpy as np
 import os
@@ -12,6 +14,7 @@ import unittest
 
 
 IGNORE_TEST = False
+NO_NAME = "dummy"
 ANTIMONY_STG = '''
 2S1 -> 3S2; 1
 S1 = 0
@@ -25,72 +28,45 @@ S2 = 0
 class TestSimpleSBML(unittest.TestCase):
 
   def setUp(self):
-    self.simple = SimpleSBML(cn.TEST_FILE)
+    self.simple = SimpleSBML()
+    self.simple.initialize(cn.TEST_FILE)
 
-  def testConstructor(self):
+  def testInitialize(self):
     if IGNORE_TEST:
       return
-    self.assertEqual(len(self.simple.getReactions()), cn.NUM_REACTIONS)
-    for reaction in self.simple.getReactions():
-      self.assertTrue(isinstance(reaction, tesbml.Reaction))
-      self.assertLessEqual(reaction.getNumReactants(), cn.MAX_REACTANTS)
-    self.assertEqual(len(self.simple.getParameters()), cn.NUM_PARAMETERS)
-    for param in self.simple.getParameters():
-      self.assertTrue(isinstance(param, str))
+    simple = SimpleSBML()
+    simple.initialize(cn.TEST_FILE)
+    self.assertEqual(len(simple.reactions), cn.NUM_REACTIONS)
+    self.assertEqual(len(simple.molecules), len(simple.moietys))
 
-  def testGetSpecies(self):
-    species = self.simple._getSpecies()
-    trues = [isinstance(s, tesbml.libsbml.Species)
-        for s in species.values()]
-    self.assertTrue(all(trues))
+  def testGetMolecule(self):
+    if IGNORE_TEST:
+      return
+    molecule1 = self.simple.molecules[0]
+    name = molecule1.name
+    molecule2 = self.simple.getMolecule(name)
+    self.assertTrue(molecule1.isEqual(molecule2))
+    self.assertIsNone(self.simple.getMolecule(NO_NAME))
 
-  def testGetReactions(self):
-    reactions = self.simple._getReactions()
-    trues = [isinstance(r, tesbml.libsbml.Reaction)
-        for r in reactions]
-    self.assertTrue(all(trues))
+  def testAdd(self):
+    def test():
+      self.assertEqual(len(self.simple.reactions), 2)
+      for reaction in [reaction0, reaction1]:
+        self.assertTrue(reaction in self.simple.reactions)
+    #
+    reaction0 = self.simple.reactions[0]
+    reaction1 = self.simple.reactions[1]
+    self.simple.reactions = [reaction0]
+    self.simple.add(reaction1)
+    test()
+    self.simple.add(reaction1)
+    test()
 
-  def testGetParameters(self):
-    parameters = self.simple._getParameters()
-    trues = [isinstance(s, tesbml.libsbml.Parameter)
-        for s in parameters.values()]
-    self.assertTrue(all(trues))
-
-  def testGetReactants(self):
-    for reaction in self.simple.getReactions():
-      reactants = self.simple.getReactants(reaction)
-      trues = [isinstance(r, tesbml.libsbml.SpeciesReference)
-          for r in reactants]
-      self.assertTrue(all(trues))
-
-  def testGetProducts(self):
-    for reaction in self.simple.getReactions():
-      products = self.simple.getProducts(reaction)
-      trues = [isinstance(r, tesbml.libsbml.SpeciesReference)
-          for r in products]
-      self.assertTrue(all(trues))
-
-  def testGetReactionKineticsTerms(self):
-    for reaction in self.simple.getReactions():
-      stgs = SimpleSBML.getReactionKineticsTerms(reaction)
-      trues = [isinstance(s, str) for s in stgs]
-      self.assertTrue(trues)
-
-  def testGetReactionString(self):
-    for reaction in self.simple.getReactions():
-      stg = SimpleSBML.getReactionString(reaction)
-      parts = stg.split('->')
-      self.assertTrue(";" in parts[-1])  # Kinetics is last
-
-  def testIsSpecies(self):
-    species = list(self.simple._getSpecies().keys())
-    self.assertTrue(self.simple.isSpecies(species[0]))
-    self.assertFalse(self.simple.isSpecies("dummy"))
-
-  def testIsParameter(self):
-    parameters = list(self.simple._getParameters().keys())
-    self.assertTrue(self.simple.isParameter(parameters[0]))
-    self.assertFalse(self.simple.isParameter("dummy"))
+  def testGetReaction(self):
+    reaction = self.simple.reactions[0]
+    label = reaction.label
+    reaction1 = self.simple.getReaction(label)
+    self.assertTrue(reaction.isEqual(reaction1))
 
 
 class TestFunctions(unittest.TestCase):
@@ -106,10 +82,12 @@ class TestFunctions(unittest.TestCase):
           tesbml.libsbml.Species))
     COUNT = 20
     itr = simple_sbml.modelIterator(final=COUNT)
+    item_number = -1
     for item in itr:
       self.assertTrue(isinstance(item.filename, str))
-      self.assertTrue('Model' in  str(type(item.model)))
-    self.assertEqual(item.number, COUNT - 1)
+      self.assertTrue(util.isSBMLModel(item.model))
+      item_number = item.number
+    self.assertEqual(item_number, COUNT - 1)
     
 
 if __name__ == '__main__':

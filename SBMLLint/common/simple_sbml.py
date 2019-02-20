@@ -1,167 +1,144 @@
 """
-Provides simplified, read-only access to an SBML model.
+Pythonic representation of an SBML model with some extensions.
+- moietys (functional groups within a molecule)
+- molecules (species)
+- reactions
+SimpleSBML extracts all information required from an SBML model to avoid
+saving the libsbml object (since these objects are fragile with python
+garbage collection).
 """
 
 from SBMLLint.common import constants as cn
+from SBMLLint.common.moiety import Moiety
+from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
+from SBMLLint.common.reaction import Reaction
+from SBMLLint.common import util
+
 import collections
 import os.path
+import numpy as np
 import sys
 import tesbml
 import urllib3
 import warnings
 
 
+TYPE_MODEL = "type_model"  # libsbml model
+TYPE_XML = "type_xml"  # XML string
+TYPE_ANTIMONY = "type_xml"  # Antimony string
+TYPE_FILE = "type_file" # File reference
+
+# filename: name of file processed
+# number: index of item
+# model: libsbml.Model
 IteratorItem = collections.namedtuple('IteratorItem',
     'filename number model')
 
 
 class SimpleSBML(object):
   """
-  Provides access to reactions, species, and parameters.
+  This class address stability of the underlying tesbml 
+  (libsbml) library that seems not to survive garbage collection
+  by python (e.g., returning a libsbml object to a caller.) As
+  a result, no libsbml object is maintained by SimpleSBML instances.
   """
 
-  def __init__(self, model_reference):
+  def __init__(self):
     """
-    :param str or libsbml.model model_reference: 
-        File  or sbml model
-    :raises IOError: Error encountered reading the SBML document
+    Initializes instance variables
     """
-    if isinstance(model_reference, str):
-      self._filename = model_reference
-      self._reader = tesbml.SBMLReader()
-      self._document = self._reader.readSBML(self._filename)
-      if (self._document.getNumErrors() > 0):
-        raise IOError("Errors in SBML document\n%s" 
-            % self._document.printErrors())
-      self._model = self._document.getModel()
+    self.moietys = []
+    self.molecules = []
+    self.reactions = []
+
+  def initialize(self, model_reference):
+    """
+    Initializes the instance variables in the model.
+    :param str or libsbml.model: for str may be path or model string
+       and file/str may be xml or antimony.
+    """
+    if util.isSBMLModel(model_reference):
+      model = model_reference
     else:
-      self._filename = None
-      self._reader = None
-      self._document = None
-      self._model = model_reference
-    self.reactions = self._getReactions()
-    self.parameters = self._getParameters()  # dict with key=name
-    self.species = self._getSpecies()  # dict with key=name
+      xml = util.getXML(model_reference)
+      reader = tesbml.SBMLReader()
+      document = reader.readSBMLFromString(xml)
+      util.checkSBMLDocument(document)
+      model = document.getModel()
+    # Do the initializations
+    self.reactions = self._getReactions(model)
+    self.molecules = self._getMolecules()
+    self.moietys = self._getMoietys()
 
-  def _getReactions(self):
-    """
-    :param libsbml.Model:
-    :return list-of-reactions
-    """
-    num = self._model.getNumReactions()
-    return [self._model.getReaction(n) for n in range(num)]
+  def _getReactions(self, model):
+    reactions = []
+    for nn in range(model.getNumReactions()):
+      simple_reaction = Reaction(model.getReaction(nn))
+      reactions.append(simple_reaction)
+    return reactions
 
-  def _getSpecies(self):
+  def getReaction(self, label):
+    """
+    :param str label: label for the reaction
+    :return Reaction/None:
+    """
+    reactions = [r for r in self.reactions if r.label == label]
+    if len(reactions) > 1:
+      raise ValueError("Two reactions with the same label: %s" %
+          label)
+    if len(reactions) == 0:
+      return None
+    return reactions[0]
+
+  def _getMoietys(self):
+    moietys = []
+    for molecule in self.molecules:
+      moietys.extend(([m_s.moiety 
+        for m_s in molecule.getMoietyStoichiometrys()]))
+    return util.uniqueify(moietys)
+
+  def _getMolecules(self):
     """
     :return dict: key is species name, value is species object
     """
-    speciess = {}
-    for idx in range(self._model.getNumSpecies()):
-      species = self._model.getSpecies(idx)
-      speciess[species.getId()] = species
-    return speciess
+    molecules = []
+    for reaction in self.reactions:
+      molecules.extend(MoleculeStoichiometry.getMolecules(
+          reaction.reactants))
+      molecules.extend(MoleculeStoichiometry.getMolecules(
+          reaction.products))
+    return util.uniqueify(molecules)
 
-  def _getReactions(self):
+  def getMolecule(self, name):
     """
-    :param libsbml.Model:
-    :return list-of-reactions
+    Finds and returns molecule with given name
+    Return None if there is no such molecules
+    :param str name:
     """
-    num = self._model.getNumReactions()
-    return [self._model.getReaction(n) for n in range(num)]
+    molecules = [m for m in self.molecules if m.name == name]
+    if len(molecules) > 1:
+      raise ValueError("Duplicate names in simple.molecules.")
+    elif len(molecules) == 1:
+      return molecules[0]
+    else:
+      return None
 
-  def _getParameters(self):
+  def add(self, element):
     """
-    :param libsbml.Model:
-    :return list-of-reactions
+    Adds an element of the type to its list
     """
-    parameters = {}
-    for idx in range(self._model.getNumParameters()):
-      parameter = self._model.getParameter(idx)
-      parameters[parameter.getId()] = parameter
-    return parameters
-
-  def getReactions(self):
-    return self.reactions
-
-  def getParameters(self):
-    return self.parameters.keys()
-
-  @staticmethod
-  def getReactants(reaction):
-    """
-    :param libsbml.Reaction:
-    :return list-of-libsbml.SpeciesReference:
-    To get the species name: SpeciesReference.species
-    To get stoichiometry: SpeciesReference.getStoichiometry
-    """
-    return [reaction.getReactant(n) for n in range(reaction.getNumReactants())]
-
-  @staticmethod
-  def getProducts(reaction):
-    """
-    :param libsbml.Reaction:
-    :return list-of-libsbml.SpeciesReference:
-    """
-    return [reaction.getProduct(n) for n in range(reaction.getNumProducts())]
-
-  @classmethod
-  def getReactionString(cls, reaction):
-    """
-    Provides a string representation of the reaction
-    :param libsbml.Reaction reaction:
-    """
-    reaction_str = ''
-    base_length = len(reaction_str)
-    for reference in cls.getReactants(reaction):
-      if len(reaction_str) > base_length:
-        reaction_str += " + " + reference.species
-      else:
-        reaction_str += reference.species
-    reaction_str += "-> "
-    base_length = len(reaction_str)
-    for reference in cls.getProducts(reaction):
-      if len(reaction_str) > base_length:
-        reaction_str += " + " + reference.species
-      else:
-        reaction_str += reference.species
-    kinetics_terms = cls.getReactionKineticsTerms(reaction)
-    reaction_str += "; " + ", ".join(kinetics_terms)
-    return reaction_str
-
-  @staticmethod
-  def getReactionKineticsTerms(reaction):
-    """
-    Gets the terms used in the kinetics law for the reaction
-    :param libsbml.Reaction
-    :return list-of-str: names of the terms
-    """
-    terms = []
-    law = reaction.getKineticLaw()
-    if law is not None:
-      math = law.getMath()
-      asts = [math]
-      while len(asts) > 0:
-        this_ast = asts.pop()
-        if this_ast.isName():
-          terms.append(this_ast.getName())
-        else:
-          pass
-        num = this_ast.getNumChildren()
-        for idx in range(num):
-          asts.append(this_ast.getChild(idx))
-    return terms
-
-  def isSpecies(self, name):
-    """
-    Determines if the name is a chemical species
-    """
-    return name in list(self.species.keys())
-
-  def isParameter(self, name):
-    """
-    Determines if the name is a parameter
-    """
-    return name in self.parameters.keys()
+    type_list = {
+        Moiety: self.moietys,
+        Molecule: self.molecules,
+        Reaction: self.reactions,
+        }
+    this_list = type_list[element.__class__]
+    appended_list = list(this_list)
+    appended_list.append(element)
+    new_list = util.uniqueify(appended_list)
+    if len(new_list) > len(this_list):
+      this_list.append(element)
+    
 
 ###################### FUNCTIONS #############################
 def readURL(url):
@@ -179,7 +156,6 @@ def readURL(url):
     result = do()
   return result
   
-
 def modelIterator(initial=0, final=1000, data_dir=cn.DATA_DIR):
   """
   Iterates across all models in a data directory.
