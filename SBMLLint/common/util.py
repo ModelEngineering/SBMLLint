@@ -65,7 +65,7 @@ def isSBMLModel(obj):
   Tests if object is a libsbml model
   """
   cls_stg = str(type(obj))
-  if ('Model' in cls_stg) and ('sbml' in cls_stg):
+  if ('Model' in cls_stg) and ('lib' in cls_stg):
     return True
   else:
     return False
