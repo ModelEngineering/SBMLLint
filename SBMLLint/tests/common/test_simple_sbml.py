@@ -48,6 +48,20 @@ class TestSimpleSBML(unittest.TestCase):
     self.assertTrue(molecule1.isEqual(molecule2))
     self.assertIsNone(self.simple.getMolecule(NO_NAME))
 
+  def testAdd(self):
+    def test():
+      self.assertEqual(len(self.simple.reactions), 2)
+      for reaction in [reaction0, reaction1]:
+        self.assertTrue(reaction in self.simple.reactions)
+    #
+    reaction0 = self.simple.reactions[0]
+    reaction1 = self.simple.reactions[1]
+    self.simple.reactions = [reaction0]
+    self.simple.add(reaction1)
+    test()
+    self.simple.add(reaction1)
+    test()
+
 
 class TestFunctions(unittest.TestCase):
 

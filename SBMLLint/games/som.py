@@ -74,7 +74,7 @@ class SOM(object):
                 if mole.name == molecule.name:
                     return som
         return None
-            
+
     @classmethod
     def merge(cls, reaction):
         """
@@ -84,8 +84,7 @@ class SOM(object):
         :return SOM:
         """ 
         if reaction.category != cn.REACTION_1_1:
-            #raise AttributeError("This reaction cannot merge. You need a 1-1 reacton")
-            pass
+            raise ValueError("Reaction must have category 1-1. Cannot do merge.")
         else:
             som1 = cls.findSOM(reaction.reactants[0].molecule)
             som2 = cls.findSOM(reaction.products[0].molecule)

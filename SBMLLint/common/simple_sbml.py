@@ -110,6 +110,23 @@ class SimpleSBML(object):
     else:
       return None
 
+  def add(self, element):
+    """
+    Adds an element of the type to its list
+    """
+    type_list = {
+        Moiety: self.moietys,
+        Molecule: self.molecules,
+        Reaction: self.reactions,
+        }
+    this_list = type_list[element.__class__]
+    appended_list = list(this_list)
+    appended_list.append(element)
+    new_list = util.uniqueify(appended_list)
+    if len(new_list) > len(this_list):
+      this_list.append(element)
+    
+
 ###################### FUNCTIONS #############################
 def readURL(url):
   """

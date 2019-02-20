@@ -169,4 +169,8 @@ class Reaction(object):
         for idx in range(num):
           asts.append(this_ast.getChild(idx))
     return terms
+
+  @classmethod
+  def find(cls, reactions, category=cn.REACTION_1_1):
+    return [r for r in reactions if r.category == category]
   

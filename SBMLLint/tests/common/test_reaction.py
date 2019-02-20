@@ -71,6 +71,14 @@ class TestReaction(unittest.TestCase):
       parts = reaction.identifier.split('->')
       self.assertTrue(";" in parts[-1])  # Kinetics is last
 
+  def testFindReactions(self):
+    if IGNORE_TEST:
+      return
+    reactions = Reaction.find(self.reactions,
+        category=cn.REACTION_1_n)
+    trues = [r.category == cn.REACTION_1_n for r in reactions]
+    self.assertTrue(all(trues))
+
 
 if __name__ == '__main__':
   unittest.main()

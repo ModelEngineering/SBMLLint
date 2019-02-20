@@ -31,14 +31,18 @@ class TestSOM(unittest.TestCase):
 	def setUp(self):
 		if IGNORE_TEST:
 			return
-		self.simple = SimpleSBML(cn.TEST_FILE3)
-		Reaction(self.simple._model.getReaction(UNIUNI))
-		Reaction(self.simple._model.getReaction(MULTIMULTI))
-		Reaction(self.simple._model.getReaction(MULTIUNI))
-		self.uniuni = Reaction.reactions[0]
-		self.multimulti = Reaction.reactions[1]
-		self.multiuni = Reaction.reactions[2]
-		self.molecules = Molecule.molecules
+		self.simple = SimpleSBML()
+		self.simple.initialize(cn.TEST_FILE3)
+                self.simple.add(Reaction(
+		    self.simple._model.getReaction(UNIUNI)))
+                self.simple.add(Reaction(
+		    self.simple._model.getReaction(MULTIMULTI)))
+                self.simple.add(Reaction
+		    self.simple._model.getReaction(MULTIUNI)))
+		self.uniuni = self.simple.reactions[0]
+		self.multimulti = self.simple.reactions[1]
+		self.multiuni = self.simple.reactions[2]
+		self.molecules = self.simple.molecules
 		SOM.initialize(self.molecules)
 		self.soms = SOM.soms
 
@@ -46,37 +50,41 @@ class TestSOM(unittest.TestCase):
 		if IGNORE_TEST:
 			return
 		SOM.initialize(self.molecules)
-		self.assertEqual(len(SOM.soms), len(Molecule.molecules))
+		self.assertEqual(len(SOM.soms), len(self.simple.molecules))
 
 	def testMakeId(self):
 		if IGNORE_TEST:
 			return
 		self.assertEqual(len(self.soms), len(self.molecules))
 		som = self.soms[0]
-		self.assertTrue(som.molecules.intersection(Molecule.molecules))
+		self.assertTrue(som.molecules.intersection(self.simple.molecules))
 		molecule = list(re.findall(NAMEFILTER, som.identifier))[0]
-		self.assertEqual(list(som.molecules)[0], Molecule.getMolecule(molecule))
+		self.assertEqual(list(som.molecules)[0], self.simple.getMolecule(molecule))
 
 	def testMerge(self):
 		if IGNORE_TEST:
 			return
 		SOM.merge(self.uniuni)
-		self.assertGreater(len(Molecule.molecules), len(SOM.soms))
+		self.assertGreater(len(self.simple.molecules), len(SOM.soms))
 
 	def testFindSOM(self):
 		if IGNORE_TEST:
 			return
-		simple = SimpleSBML(cn.TEST_FILE3)
-		Reaction.reactions = []
-		Molecule.molecules = []
+		simple = SimpleSBML()
+		simple.initialize(cn.TEST_FILE3)
 		SOM.soms = []
-		Reaction(simple._model.getReaction(UNIUNI))
-		Reaction(simple._model.getReaction(MULTIMULTI))
-		Reaction(simple._model.getReaction(MULTIUNI))
-		molecule = Molecule.getMolecule(MOLECULE)
-		SOM.initialize(Molecule.molecules)
+                self.simple.add(Reaction(
+		    self.simple._model.getReaction(UNIUNI))
+                self.simple.add(Reaction(
+		    self.simple._model.getReaction(MULTIMULTI))
+                self.simple.add(Reaction(
+		    self.simple._model.getReaction(MULTIUNI))
+		molecule = simple.getMolecule(MOLECULE)
+		SOM.initialize(simple.molecules)
 		self.assertEqual(list(SOM.findSOM(molecule).molecules)[0], molecule)
-		new_som = SOM.merge(Reaction.reactions[0])
+		reactions = Reaction.find(simple.reactions,
+                     category=cn.REACTION_1_1)
+		new_som = SOM.merge(reactions[0])
 		new_som_molecules = list(new_som.molecules)
 		self.assertEqual(SOM.findSOM(new_som_molecules[0]), SOM.findSOM(new_som_molecules[1]))
 
@@ -88,6 +96,7 @@ class TestSOM(unittest.TestCase):
 		self.assertFalse(SOM.reduce(self.multiuni))
 		num_reactants = len(self.multimulti.reactants)
 		num_products = len(self.multimulti.products)
+		reduced_reaction = SOM.reduce(self.multimulti)
 		reduced_reaction = SOM.reduce(self.multimulti)
 		self.assertIsInstance(reduced_reaction, Reaction)
 		self.assertEqual(reduced_reaction.category, cn.REACTION_n_n)
