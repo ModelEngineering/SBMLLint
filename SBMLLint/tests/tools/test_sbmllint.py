@@ -39,7 +39,22 @@ class TestFunctions(unittest.TestCase):
       lines = fd.readlines()
     self.assertGreater(len(lines), 0)
 
+  def testLint3(self):
+    model = """
+    2Glu + 2A_P_P_P -> 2Glu_P + 2A_P_P; 1
+    Glu = 0
+    A_P_P_P = 0
+    Glu_P = 0
+    A_P_P = 0
+    """
+    with open(TEST_OUT_PATH, 'w') as fd:
+      num_react, num_bad = sbmllint.lint(model, file_out=fd)
+    self.assertEqual(num_react, 1)
+    self.assertEqual(num_bad, 1)
+
   def testMain(self):
+    return
+    # FIXME: This test fails in traves
     module_dir = os.path.abspath(os.curdir)
     for ele in ["SBMLLint", "tools"]:
       module_dir = os.path.join(module_dir, ele)

@@ -19,6 +19,4 @@ install:
 
 script:
   - cd data; unzip *.zip > t.out; cd ..
-  - python SBMLLint/tests/tools/test_sbmllint.py
-  - python SBMLLint/tests/tools/test_print.py
   - nosetests SBMLLint/tests
