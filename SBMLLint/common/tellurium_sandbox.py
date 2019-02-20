@@ -43,7 +43,7 @@ class TelluriumSandbox(object):
   @staticmethod
   def _convert(input_string):
     """
-    Converts from io_sandbox to string
+    Converts from io_wrapper to string
     """
     return ''.join([l for l in input_string])
 
