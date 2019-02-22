@@ -9,6 +9,8 @@ from SBMLLint.common.simple_sbml import SimpleSBML
 import itertools
 import networkx as nx
 
+REACTION = "reaction"
+LESSTHAN = "<"
 
 class MESGraph(nx.DiGraph):
   """
@@ -21,18 +23,29 @@ class MESGraph(nx.DiGraph):
   Type II Error implies there is cyclism between molecules, such as
   A < B < C < ... < A, which is physically impossible.
   """
-  # all = []
 
-  def __init__(self, soms=None):
+  def __init__(self, simple=None):
     """
     :param list-SOM soms:
     """
     super(MESGraph, self).__init__()
-    self.add_nodes_from(soms)
+    self.soms = self.initializeSOMs(simple)
+    self.add_nodes_from(self.soms)
     self.identifier = self.makeId()
 
   def __repr__(self):
     return self.identifier
+
+  def initializeSOMs(self, simple):
+    """
+    Create a list of one-molecule SOMs
+    :param SimpleSBML simple:
+    :return list-SOM:
+    """
+    soms = []
+    for molecule in simple.molecules:
+      soms.append(SOM({molecule}))
+    return soms
 
   def makeId(self):
     """
@@ -50,22 +63,36 @@ class MESGraph(nx.DiGraph):
     # Return the identifier
     return identifier
 
+  def getNode(self, molecule):
+    """
+    Find a node(SOM) containing the given molecule.
+    If no such SOM exists, return False
+    :param Molecule molecule:
+    :return SOM/False:
+    """
+    for som in list(self.nodes):
+      for mole in som.molecules:
+        if mole.name == molecule.name:
+          return som
+    return False
+
   def processUniUniReaction(self, reaction):
     """
-    Process a 1-1 reaction to update nodes.
-    Uses SOM.merge(reaction) method.
+    Process a 1-1 reaction to merge nodes.
+    If no need to merge, return None.
     :param Reaction reactions:
-    :return SOM/None:
     """
     if reaction.category != cn.REACTION_1_1:
-        pass
+      pass
     else:
-      reactant_som = SOM.findSOM(reaction.reactants[0].molecule)
-      product_som = SOM.findSOM(reaction.products[0].molecule)
+      reactant_som = self.getNode(reaction.reactants[0].molecule)
+      product_som = self.getNode(reaction.products[0].molecule)
       if reactant_som == product_som:
-        pass
+        return None
       else:
-        new_som = SOM.merge(reaction)
+        new_som = reactant_som.merge(product_som)
+        new_som.reactions.add(reaction)
+        # TODO: if there are edges, need to also check them
         self.remove_node(reactant_som)
         self.remove_node(product_som)
         self.add_node(new_som)
@@ -80,7 +107,7 @@ class MESGraph(nx.DiGraph):
     addArc(source=products, destination=reactant).
     :param Reaction reaction:
     """
-    if (reaction.category != cn.REACTION_1_n):
+    if reaction.category != cn.REACTION_1_n:
       pass
     else:
       destination = [reaction.reactants[0].molecule]
@@ -96,7 +123,7 @@ class MESGraph(nx.DiGraph):
     addArc(source=reactants, destination=product).
     :param Reaction reaction:
     """
-    if (reaction.category != cn.REACTION_n_1):
+    if reaction.category != cn.REACTION_n_1:
       pass
     else:
       destination = [reaction.products[0].molecule]
@@ -104,17 +131,26 @@ class MESGraph(nx.DiGraph):
       self.addArc(source, destination, reaction)
       self.identifier = self.makeId()
 
-  def addArc(self, source, destination, reaction):
+  def addArc(self, source, destination, reaction=None):
     """
-    Check Type I Error and Add arcs
-    using two list of molecules (source/destination).
+    Add arcs (edges) using two molecule lists (source/destination).
     :param list-Molecule source:
     :param list-Molecule destination:
     """
     arcs = itertools.product(source, destination)
     for arc in arcs:
       if not self.checkTypeOneError(arc, reaction):
-        self.add_edge(SOM.findSOM(arc[0]), SOM.findSOM(arc[1]), reaction=reaction)
+        arc_source = self.getNode(arc[0])
+        arc_destination = self.getNode(arc[1])
+        # if there is already a preious reaction,
+        if self.has_edge(arc_source, arc_destination):
+          reaction_label = self.get_edge_data(arc_source, arc_destination)[REACTION]
+          # if reaction.label is not already included in the attribute,
+          if reaction.label not in set(reaction_label):
+            reaction_label = reaction_label + [reaction.label]
+        else:
+          reaction_label = [reaction.label]
+        self.add_edge(arc_source, arc_destination, reaction=reaction_label)
       else:
         continue
 
@@ -128,16 +164,15 @@ class MESGraph(nx.DiGraph):
     :param Reaction inequality_reaction:
     :return bool:
     """
-    som1 = SOM.findSOM(arc[0])
-    som2 = SOM.findSOM(arc[1])
+    som1 = self.getNode(arc[0])
+    som2 = self.getNode(arc[1])
     if som1 == som2:
       print("We have Type I Error...")
       print(arc[0], " and ", arc[1], " have the same weight by")
       for equality_reaction in list(som1.reactions):
-          print(equality_reaction)
-      ##
-      print("\nHowever, reaction \"", inequality_reaction,
-         "\" implies ", arc[0], " < ", arc[1])
+        print(equality_reaction)
+      print("\nHowever, reaction \"", inequality_reaction, 
+            "\" implies ", arc[0], LESSTHAN, arc[1])
       print()
       return True
     else:

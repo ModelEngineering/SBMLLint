@@ -17,7 +17,7 @@ class SOM(object):
   can be partitioned into a collection of SOMs. The uni-uni reactions
   merge multiple SOM instances to create a larger one. 
   """
-  soms = []  # All SOMs. 
+  #soms = []  # All SOMs. 
   def __init__(self, molecules, reactions=set()):
     """
     :param set-Molecule molecules:
@@ -26,7 +26,7 @@ class SOM(object):
     self.molecules = molecules
     self.reactions = reactions
     self.identifier = self.makeId()
-    self.__class__.addSOM(self)
+    #self.__class__.addSOM(self)
 
   def __repr__(self):
     return self.identifier        
@@ -49,56 +49,44 @@ class SOM(object):
         )
     return identifier
       
-  @classmethod    
-  def addSOM(cls, new_som):
-    """
-    Adds a new som to SOM.soms
-    and skips if it already exists
-    :param SOM new_som:
-    """
-    if any([new_som.molecules.intersection(som.molecules) for som in cls.soms]):
-      pass
-    else:
-      cls.soms.append(new_som)
+  # @classmethod    
+  # def addSOM(cls, new_som):
+  #   """
+  #   Adds a new som to SOM.soms
+  #   and skips if it already exists
+  #   :param SOM new_som:
+  #   """
+  #   if any([new_som.molecules.intersection(som.molecules) for som in cls.soms]):
+  #     pass
+  #   else:
+  #     cls.soms.append(new_som)
   
-  @classmethod
-  def findSOM(cls, molecule):
-    """
-    Finds the SOM that contains molecule
-    and returns SOM
-    :param Molecule molecule:
-    :return SOM/None:
-    """    
-    for som in cls.soms:
-      for mole in som.molecules:
-        if mole.name == molecule.name:
-          return som
-    return None
+  # @classmethod
+  # def findSOM(cls, molecule):
+  #   """
+  #   Finds the SOM that contains molecule
+  #   and returns SOM
+  #   :param Molecule molecule:
+  #   :return SOM/None:
+  #   """    
+  #   for som in cls.soms:
+  #     for mole in som.molecules:
+  #       if mole.name == molecule.name:
+  #         return som
+  #   return None
 
-  @classmethod
-  def merge(cls, reaction):
+  def merge(self, som):
     """
-    Merges two SOMs using a UniUni reaction 
-    and updates cls.soms
-    :param Reaction reaction:
+    Creates and returns a new SOM instance
+    that has the union of molecules and reactions
+    :param SOM som:
     :return SOM:
-    """ 
-    if reaction.category != cn.REACTION_1_1:
-      raise ValueError("Reaction must have category 1-1. Cannot do merge.")
-    else:
-      som1 = cls.findSOM(reaction.reactants[0].molecule)
-      som2 = cls.findSOM(reaction.products[0].molecule)
-      if som1 == som2:
-        return som1
-      else:
-        new_molecules = som1.molecules.union(som2.molecules)
-        new_reactions = som1.reactions.union(som2.reactions)
-        new_reactions.add(reaction)
-        cls.soms.remove(som1)
-        cls.soms.remove(som2)
-        new_som = SOM(new_molecules, new_reactions)
-        return new_som
-      
+    """
+    new_molecules = self.molecules.union(som.molecules)
+    new_reactions = self.reactions.union(som.reactions)
+    new_som = SOM(molecules=new_molecules, reactions=new_reactions)
+    return new_som
+
   @classmethod
   def reduce(cls, reaction):
     """
@@ -155,13 +143,13 @@ class SOM(object):
     else:
       return reduced
 
-  @classmethod
-  def initialize(cls, molecules):
-      """
-      Creates single-set soms
-      :param list-Molecule molecules:
-      """
-      cls.soms = []
-      for mole in molecules:
-          SOM({mole})
+  # @classmethod
+  # def initialize(cls, molecules):
+  #     """
+  #     Creates single-set soms
+  #     :param list-Molecule molecules:
+  #     """
+  #     cls.soms = []
+  #     for mole in molecules:
+  #         SOM({mole})
  
