@@ -25,16 +25,18 @@ class TestFunctions(unittest.TestCase):
 
   def testLint(self):
     with open(TEST_OUT_PATH, 'w') as fd:
-      num_react, num_bad = sbmllint.lint(cn.TEST_FILE4, file_out=fd)
-    self.assertGreaterEqual(num_react, num_bad)
+      result = sbmllint.lint(cn.TEST_FILE4, file_out=fd)
+    self.assertGreaterEqual(
+        result.num_reactions, result.num_imbalances)
     with open(TEST_OUT_PATH, 'r') as fd:
       lines = fd.readlines()
     self.assertGreater(len(lines), 0)
 
   def testLint2(self):
     with open(TEST_OUT_PATH, 'w') as fd:
-      num_react, num_bad = sbmllint.lint(cn.TEST_FILE2, file_out=fd)
-    self.assertGreaterEqual(num_react, num_bad)
+      result = sbmllint.lint(cn.TEST_FILE2, file_out=fd)
+    self.assertGreaterEqual(
+        result.num_reactions, result.num_imbalances)
     with open(TEST_OUT_PATH, 'r') as fd:
       lines = fd.readlines()
     self.assertGreater(len(lines), 0)
@@ -48,9 +50,9 @@ class TestFunctions(unittest.TestCase):
     A_P_P = 0
     """
     with open(TEST_OUT_PATH, 'w') as fd:
-      num_react, num_bad = sbmllint.lint(model, file_out=fd)
-    self.assertEqual(num_react, 1)
-    self.assertEqual(num_bad, 1)
+      result = sbmllint.lint(model, file_out=fd)
+    self.assertEqual(result.num_reactions, 1)
+    self.assertEqual(result.num_imbalances, 1)
 
   def testMain(self):
     return

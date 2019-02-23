@@ -137,6 +137,27 @@ class TestMoleculeStoichiometry(unittest.TestCase):
     expected = NUM1 * NUM2
     trues = [expected ==  n for n in df[cn.VALUE]]
 
+  def testCountMoietys2(self):
+    """Glu + A_P_P_P -> Glu_P + A_P_P"""
+    if IGNORE_TEST:
+      return
+    m_ss1 = [
+        MoleculeStoichiometry(Molecule("Glu"), 1),
+        MoleculeStoichiometry(Molecule("A_P_P_P"), 1),
+        MoleculeStoichiometry(Molecule("A__P_3"), 1),
+        ]
+    m_ss2 = [
+        MoleculeStoichiometry(Molecule("Glu_P"), 1),
+        MoleculeStoichiometry(Molecule("A_P_P"), 1),
+        ]
+    dfs1 = []
+    for m_s in m_ss1:
+      dfs1.append(m_s.countMoietys())
+    dfs2 = []
+    for m_s in m_ss2:
+      dfs2.append(m_s.countMoietys())
+    import pdb; pdb.set_trace()
+
   def testCountMoietysInCollection(self):
     m_ss = [MoleculeStoichiometry(Molecule(n), NUM1)
         for n in MOLECULE_NAME_SET[:3]]

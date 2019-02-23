@@ -33,14 +33,11 @@ def lint(model_reference, file_out=sys.stdout,
     model = document.getModel()
   simple = SimpleSBML()
   simple.initialize(model)
-  num_bad, report = MoietyComparator.analyzeReactions(simple)
-  num_reactions = len(simple.reactions)
+  result = MoietyComparator.analyzeReactions(simple)
   if is_report:
-    file_out.write("%d/%d reactions are impbalanced." 
-        % (num_bad, num_reactions))
-    for line in report.split('\n'):
+    for line in result.report.split('\n'):
         file_out.write("%s\n" % line)
-  return num_reactions, num_bad
+  return result
     
 
 def main():

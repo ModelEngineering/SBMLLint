@@ -7,11 +7,16 @@ from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common.moiety  \
     import Moiety, MoietyStoichiometry
 
+import collections
 import pandas as pd
 import numpy as np
 
 NULL_STR = ''
 INDENT = "  "
+
+
+MoietyComparatorResult = collections.namedtuple('MoietyComparatorResult',
+    'num_reactions num_imbalances report')
 
 
 class MoietyComparator(object):
@@ -115,8 +120,7 @@ class MoietyComparator(object):
     """
     Analyzes all reactions to detect moiety imbalances.
     :param libsbml.Model or SimpleSBML model:
-    :return int, str: number of reactions with imbalances,
-        report
+    :return MoietyComparatorResult:
     If model_reference is SimpleSBML, it must have been initialized.
     """
     if isinstance(model_reference, SimpleSBML):
@@ -124,17 +128,23 @@ class MoietyComparator(object):
     else:
       simple = SimpleSBML()
       simple.initialize(model_reference)
-    num = 0
+    num_imbalances = 0
     report = NULL_STR
     for reaction in simple.reactions:
       comparator = cls(reaction.reactants, reaction.products)
       stg = comparator.reportDifference()
       if len(stg) > 0:
-        num += 1
+        num_imbalances += 1
         report = "%s\n***%s\n%s" % (
             report, 
             reaction.getId(is_include_kinetics=False),
             stg
             )
-    report = "\n%d reactions have imbalances.\n%s" % (num, report)
-    return num, report
+    num_reactions = len(simple.reactions)
+    report = "\n%d of %d reactions have imbalances.\n%s" % (
+        num_imbalances, num_reactions, report)
+    result = MoietyComparatorResult(
+        num_reactions=num_reactions,
+        num_imbalances=num_imbalances,
+        report=report)
+    return result
