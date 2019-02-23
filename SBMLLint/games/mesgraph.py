@@ -32,6 +32,8 @@ class MESGraph(nx.DiGraph):
     self.soms = self.initializeSOMs(simple)
     self.add_nodes_from(self.soms)
     self.identifier = self.makeId()
+    self.type_one_error = False
+    self.type_two_error = False
 
   def __repr__(self):
     return self.identifier
@@ -43,8 +45,12 @@ class MESGraph(nx.DiGraph):
     :return list-SOM:
     """
     soms = []
-    for molecule in simple.molecules:
-      soms.append(SOM({molecule}))
+    if type(simple) == SimpleSBML:
+      for molecule in simple.molecules:
+        if molecule.name == cn.EMPTYSET:
+          continue
+        else:
+          soms.append(SOM({molecule}))
     return soms
 
   def makeId(self):
@@ -131,7 +137,7 @@ class MESGraph(nx.DiGraph):
       self.addArc(source, destination, reaction)
       self.identifier = self.makeId()
 
-  def addArc(self, source, destination, reaction=None):
+  def addArc(self, source, destination, reaction):
     """
     Add arcs (edges) using two molecule lists (source/destination).
     :param list-Molecule source:
@@ -167,18 +173,49 @@ class MESGraph(nx.DiGraph):
     som1 = self.getNode(arc[0])
     som2 = self.getNode(arc[1])
     if som1 == som2:
-      print("We have Type I Error...")
+      print("We have a Type I Error...")
       print(arc[0], " and ", arc[1], " have the same weight by")
       for equality_reaction in list(som1.reactions):
         print(equality_reaction)
       print("\nHowever, reaction \"", inequality_reaction, 
             "\" implies ", arc[0], LESSTHAN, arc[1])
+      print("We cannot add the arc: ", arc[0], cn.ARC_ARROW, arc[1])
       print()
+      if not self.type_one_error:
+        self.type_one_error = True
       return True
     else:
       return False
 
-  def analyze(self, reactions):
+  def checkTypeTwoError(self):
+    """
+    Check Type II Error (cycles) of a MESGraph.
+    If there is at least one cycle, 
+    report an error message, related reactions
+    and return True.
+    If there is no cycle, return False. 
+    :return bool:
+    """
+    graph = nx.DiGraph()
+    graph.add_edges_from(self.edges)
+    cycles = list(nx.simple_cycles(graph))
+    if len(cycles) == 0:
+      print("No cycles! No Type II Error!")
+      return False
+    else:
+      print("We have a Type II Error...\n")
+      for cycle in cycles:
+        cycle_nodes = []
+        for node in cycle:
+          cycle_nodes.append(node)
+        for node in cycle_nodes:
+          print(node, LESSTHAN, end=" ")
+        print(cycle_nodes[0])
+      if not self.type_two_error:
+        self.type_two_error = True
+      return True
+
+  def analyze(self, reactions, error_details=True):
     """
     Sort list of reactions and process them.
     Add arcs or sending error messages using
@@ -197,5 +234,6 @@ class MESGraph(nx.DiGraph):
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
         func(reaction)
+    self.checkTypeTwoError()
     #
     return self

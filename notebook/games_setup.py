@@ -3,6 +3,7 @@ import itertools
 import matplotlib.pyplot as plt
 import networkx as nx
 import os
+import re
 import tellurium as te
 import tesbml
 import os, sys
@@ -20,7 +21,7 @@ from SBMLLint.games import print_model as pm
 cwd = os.getcwd()
 print("Current Directory:", cwd)
 
-def load_file(num):
+def load_file_from_games(num):
 
   format_num = format(num, '03d')
   file = os.path.join(os.getcwd(), os.pardir, 'SBMLLint/games/data/curated_' + format_num + '.xml')
@@ -28,3 +29,10 @@ def load_file(num):
   simple.initialize(file)
   return simple
 
+def load_file_from_curated_data(num):
+
+  format_num = format(num, '03d')
+  file = os.path.join(os.getcwd(), os.pardir, os.pardir, 'curated_data/curated_' + format_num + '.xml')
+  simple = SimpleSBML()
+  simple.initialize(file)
+  return simple
