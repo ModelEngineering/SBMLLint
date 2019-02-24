@@ -52,7 +52,7 @@ class TestFunctions(unittest.TestCase):
     with open(TEST_OUT_PATH, 'w') as fd:
       result = sbmllint.lint(model, file_out=fd)
     self.assertEqual(result.num_reactions, 1)
-    self.assertEqual(result.num_imbalances, 1)
+    self.assertEqual(result.num_imbalances, 0)
 
   def testMain(self):
     return
