@@ -99,10 +99,11 @@ class TestMoietyComparator(unittest.TestCase):
       return
     simple = SimpleSBML()
     simple.initialize(SBML)
-    num, stg = analyze(simple)
-    self.assertGreaterEqual(num, 0)
-    self.assertTrue('2' in stg)
-    self.assertGreater(stg.count('\n'),  5)
+    result = analyze(simple)
+    self.assertGreaterEqual(result.num_reactions, 0)
+    self.assertGreaterEqual(result.num_imbalances, 0)
+    self.assertTrue('2' in result.report)
+    self.assertGreater(result.report.count('\n'),  5)
     
 
 if __name__ == '__main__':

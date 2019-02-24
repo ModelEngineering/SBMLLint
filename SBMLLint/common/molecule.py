@@ -45,7 +45,7 @@ class Molecule(object):
     :return list-MoietyStoichiometry:
     """
     new_name = self._reformat()
-    stgs = set(new_name.split(cn.MOIETY_DOUBLE_SEPARATOR))
+    stgs = new_name.split(cn.MOIETY_DOUBLE_SEPARATOR)
     result = [MoietyStoichiometry.make(ms) for ms in stgs]
     result.sort()
     return result
