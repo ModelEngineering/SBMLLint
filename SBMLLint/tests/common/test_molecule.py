@@ -138,27 +138,20 @@ class TestMoleculeStoichiometry(unittest.TestCase):
     trues = [expected ==  n for n in df[cn.VALUE]]
 
   def testCountMoietys2(self):
-    """Glu + A_P_P_P -> Glu_P + A_P_P"""
     if IGNORE_TEST:
       return
-    m_ss1 = [
-        MoleculeStoichiometry(Molecule("Glu"), 1),
+    m_ss = [
         MoleculeStoichiometry(Molecule("A_P_P_P"), 1),
         MoleculeStoichiometry(Molecule("A__P_3"), 1),
         ]
-    m_ss2 = [
-        MoleculeStoichiometry(Molecule("Glu_P"), 1),
-        MoleculeStoichiometry(Molecule("A_P_P"), 1),
-        ]
-    dfs1 = []
-    for m_s in m_ss1:
-      dfs1.append(m_s.countMoietys())
-    dfs2 = []
-    for m_s in m_ss2:
-      dfs2.append(m_s.countMoietys())
-    import pdb; pdb.set_trace()
+    dfs = []
+    for m_s in m_ss:
+      dfs.append(m_s.countMoietys())
+    self.assertTrue(dfs[0].equals(dfs[1]))
 
   def testCountMoietysInCollection(self):
+    if IGNORE_TEST:
+      return
     m_ss = [MoleculeStoichiometry(Molecule(n), NUM1)
         for n in MOLECULE_NAME_SET[:3]]
     df = MoleculeStoichiometry.countMoietysInCollection(m_ss)
@@ -166,6 +159,8 @@ class TestMoleculeStoichiometry(unittest.TestCase):
     self.assertEqual(len(indexes), len(set(indexes)))
 
   def testGetMolecules(self):
+    if IGNORE_TEST:
+      return
     names = ["a", "b", "c"]
     full_names = list(names)
     full_names.extend(names)
