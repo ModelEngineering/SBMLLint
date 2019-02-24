@@ -68,6 +68,48 @@ class TestMESGraph(unittest.TestCase):
       if key < len(SOM.soms)-1:
         identifier = identifier + ";"
     self.assertEqual(identifier, self.mesgraph.identifier)
+
+  # from som.py
+  # def testFindSOM(self):
+  #   if IGNORE_TEST:
+  #     return
+  #   simple = SimpleSBML()
+  #   simple.initialize(cn.TEST_FILE3)
+  #   SOM.soms = []
+  #   molecule = simple.getMolecule(MOLECULE)
+  #   SOM.initialize(simple.molecules)
+  #   self.assertEqual(list(SOM.findSOM(molecule).molecules)[0], molecule)
+  #   reactions = Reaction.find(simple.reactions,
+  #   category=cn.REACTION_1_1)
+  #   new_som = SOM.merge(reactions[0])
+  #   new_som_molecules = list(new_som.molecules)
+  #   self.assertEqual(SOM.findSOM(new_som_molecules[0]), SOM.findSOM(new_som_molecules[1]))
+
+
+  # def testReduce(self):
+  #   if IGNORE_TEST:
+  #     return
+  #   SOM.merge(self.uniuni)
+  #   self.assertFalse(SOM.reduce(self.uniuni))
+  #   self.assertFalse(SOM.reduce(self.multiuni))
+  #   num_reactants = len(self.multimulti.reactants)
+  #   num_products = len(self.multimulti.products)
+  #   reduced_reaction = SOM.reduce(self.multimulti)
+  #   self.assertIsInstance(reduced_reaction, Reaction)
+  #   self.assertEqual(reduced_reaction.category, cn.REACTION_n_n)
+  #   self.assertGreater(num_reactants, len(reduced_reaction.reactants))
+  #   self.assertGreater(num_products, len(reduced_reaction.products))
+
+
+
+  # def _addReactions(self):
+  #   self.simple.add(Reaction(
+  #       self.simple._model.getReaction(UNIUNI)))
+  #   self.simple.add(Reaction(
+  #       self.simple._model.getReaction(MULTIMULTI)))
+  #   self.simple.add(Reaction(
+  #       self.simple._model.getReaction(MULTIUNI)))
+
   
   def testProcessUniUniReaction(self):
     if IGNORE_TEST:

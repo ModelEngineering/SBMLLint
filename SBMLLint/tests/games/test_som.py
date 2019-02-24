@@ -16,10 +16,7 @@ import unittest
 
 
 IGNORE_TEST = False
-UNIUNI = 'R12'
-MULTIMULTI = 'R1'
-MULTIUNI = 'R13'
-MOLECULE = 'halfglucose'
+NUM_MERGED_SOMS = 2
 NAMEFILTER = "[0-9a-zA-Z]+"
 
 
@@ -31,85 +28,36 @@ class TestSOM(unittest.TestCase):
   def setUp(self):
     self.simple = SimpleSBML()
     self.simple.initialize(cn.TEST_FILE3)
-    self.uniuni = self.simple.getReaction(UNIUNI)
-    self.multimulti = self.simple.getReaction(MULTIMULTI)
-    self.multiuni = self.simple.getReaction(MULTIUNI)
     self.molecules = self.simple.molecules
-    SOM.initialize(self.molecules)
-    self.soms = SOM.soms
-
-  def _addReactions(self):
-    self.simple.add(Reaction(
-        self.simple._model.getReaction(UNIUNI)))
-    self.simple.add(Reaction(
-        self.simple._model.getReaction(MULTIMULTI)))
-    self.simple.add(Reaction(
-        self.simple._model.getReaction(MULTIUNI)))
-
-  def testInitialize(self):
-    if IGNORE_TEST:
-      return
-    SOM.initialize(self.molecules)
-    self.assertEqual(len(SOM.soms), len(self.simple.molecules))
+    self.soms = []
+    for mole in self.molecules:
+      self.soms.append(SOM({mole}))
   
-  def testMakeId(self):
+  def testConstructor(self):
     if IGNORE_TEST:
       return
     self.assertEqual(len(self.soms), len(self.molecules))
+    self.assertEqual(self.soms[0].molecules, {self.molecules[0]})
+    
+  def testMakeId(self):
+    if IGNORE_TEST:
+      return
     som = self.soms[0]
-    self.assertTrue(som.molecules.intersection(self.simple.molecules))
+    self.assertTrue(som.molecules.intersection(self.molecules))
     molecule = list(re.findall(NAMEFILTER, som.identifier))[0]
     self.assertEqual(list(som.molecules)[0], self.simple.getMolecule(molecule))
   
   def testMerge(self):
     if IGNORE_TEST:
       return
-    SOM.merge(self.uniuni)
-    self.assertGreater(len(self.simple.molecules), len(SOM.soms))
-
-  def testFindSOM(self):
-    if IGNORE_TEST:
-      return
-    simple = SimpleSBML()
-    simple.initialize(cn.TEST_FILE3)
-    SOM.soms = []
-    molecule = simple.getMolecule(MOLECULE)
-    SOM.initialize(simple.molecules)
-    self.assertEqual(list(SOM.findSOM(molecule).molecules)[0], molecule)
-    reactions = Reaction.find(simple.reactions,
-    category=cn.REACTION_1_1)
-    new_som = SOM.merge(reactions[0])
-    new_som_molecules = list(new_som.molecules)
-    self.assertEqual(SOM.findSOM(new_som_molecules[0]), SOM.findSOM(new_som_molecules[1]))
-
-  def testReduce(self):
-    if IGNORE_TEST:
-      return
-    SOM.merge(self.uniuni)
-    self.assertFalse(SOM.reduce(self.uniuni))
-    self.assertFalse(SOM.reduce(self.multiuni))
-    num_reactants = len(self.multimulti.reactants)
-    num_products = len(self.multimulti.products)
-    reduced_reaction = SOM.reduce(self.multimulti)
-    self.assertIsInstance(reduced_reaction, Reaction)
-    self.assertEqual(reduced_reaction.category, cn.REACTION_n_n)
-    self.assertGreater(num_reactants, len(reduced_reaction.reactants))
-    self.assertGreater(num_products, len(reduced_reaction.products))
-
-  def testAddSOM(self):
-    if IGNORE_TEST:
-      return
-    num_soms = len(SOM.soms)
-    som_popped = SOM.soms.pop()
-    som_existing = SOM.soms[0]
-    self.assertEqual(num_soms-1, len(SOM.soms))
-    self.assertTrue(som_existing in SOM.soms)
-    self.assertFalse(som_popped in SOM.soms)
-    SOM.addSOM(som_existing)
-    self.assertEqual(num_soms-1, len(SOM.soms))
-    SOM.addSOM(som_popped)
-    self.assertEqual(num_soms, len(SOM.soms))
-    self.assertTrue(som_popped in SOM.soms)
+    som1 = self.soms[0]
+    som2 = self.soms[1]
+    molecule1 = list(som1.molecules)[0]
+    molecule2 = list(som2.molecules)[0]
+    new_som = som1.merge(som2)
+    self.assertEqual(len(new_som.molecules), NUM_MERGED_SOMS)
+    self.assertTrue(molecule1 in new_som.molecules)
+    self.assertTrue(molecule2 in new_som.molecules)
 
 if __name__ == '__main__':
   unittest.main()

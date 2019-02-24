@@ -210,7 +210,23 @@ class MESGraph(nx.DiGraph):
           cycle_nodes.append(node)
         for node in cycle_nodes:
           print(node, LESSTHAN, end=" ")
-        print(cycle_nodes[0])
+        print(cycle_nodes[0], "\n")
+        #
+        for node_idx in range(0, len(cycle_nodes)-1):
+          arc_source = cycle_nodes[node_idx]
+          arc_destination = cycle_nodes[node_idx+1]
+          print(arc_source, cn.ARC_ARROW, arc_destination, " by")
+          reaction_label = self.get_edge_data(arc_source, arc_destination)[REACTION]
+          for r_label in reaction_label:
+            print(r_label + "\n")
+        # last arc which completes the cycle
+        arc_source = cycle_nodes[len(cycle_nodes)-1]
+        arc_destination = cycle_nodes[0]
+        print(arc_source, cn.ARC_ARROW, arc_destination, " by")
+        reaction_label = self.get_edge_data(arc_source, arc_destination)[REACTION]
+        for r_label in reaction_label:
+          print(r_label + "\n")
+      #
       if not self.type_two_error:
         self.type_two_error = True
       return True
