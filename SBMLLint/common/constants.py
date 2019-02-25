@@ -7,10 +7,12 @@ TEST_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEST_DIR = os.path.join(TEST_DIR, "tests")
 TEST_FILE = os.path.join(TEST_DIR, "test_file.xml")
 TEST_FILE2 = os.path.join(TEST_DIR, "test_file2.xml")
-TEST_FILE3 = os.path.join(TEST_DIR, "curated_017.xml")
+# test_file3: originally curated_017
+TEST_FILE3 = os.path.join(TEST_DIR, "test_file3.xml")
 TEST_FILE5 = os.path.join(TEST_DIR, "test_file5.antimony")
 TEST_FILE4 = os.path.join(TEST_DIR, "test_file4.xml")
-TEST_FILE5 = os.path.join(TEST_DIR, "curated_050.xml")
+# test_file6: originally curated_050
+TEST_FILE6 = os.path.join(TEST_DIR, "test_file6.xml")
 NUM_REACTIONS = 111
 NUM_PARAMETERS = 27
 MAX_REACTANTS = 10
@@ -38,6 +40,9 @@ ReactionCategory = collections.namedtuple('ReactionCategory',
 
 # EmptySet in a reaction (ex. curated model 006)
 EMPTYSET = "EmptySet"
+
+# Reaction attributes for each arc in MESGraph
+REACTION = "reaction"
 
 # The selected category is the first one that first has
 # a satisfied predicate

@@ -9,7 +9,6 @@ from SBMLLint.common.simple_sbml import SimpleSBML
 import itertools
 import networkx as nx
 
-REACTION = "reaction"
 LESSTHAN = "<"
 
 class MESGraph(nx.DiGraph):
@@ -150,7 +149,7 @@ class MESGraph(nx.DiGraph):
         arc_destination = self.getNode(arc[1])
         # if there is already a preious reaction,
         if self.has_edge(arc_source, arc_destination):
-          reaction_label = self.get_edge_data(arc_source, arc_destination)[REACTION]
+          reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
           # if reaction.label is not already included in the attribute,
           if reaction.label not in set(reaction_label):
             reaction_label = reaction_label + [reaction.label]
@@ -216,14 +215,14 @@ class MESGraph(nx.DiGraph):
           arc_source = cycle_nodes[node_idx]
           arc_destination = cycle_nodes[node_idx+1]
           print(arc_source, cn.ARC_ARROW, arc_destination, " by")
-          reaction_label = self.get_edge_data(arc_source, arc_destination)[REACTION]
+          reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
           for r_label in reaction_label:
             print(r_label + "\n")
         # last arc which completes the cycle
         arc_source = cycle_nodes[len(cycle_nodes)-1]
         arc_destination = cycle_nodes[0]
         print(arc_source, cn.ARC_ARROW, arc_destination, " by")
-        reaction_label = self.get_edge_data(arc_source, arc_destination)[REACTION]
+        reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
         for r_label in reaction_label:
           print(r_label + "\n")
       #
