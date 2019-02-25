@@ -25,7 +25,7 @@ class MESGraph(nx.DiGraph):
 
   def __init__(self, simple=None):
     """
-    :param list-SOM soms:
+    :param SimpleSBML simple:
     """
     super(MESGraph, self).__init__()
     self.soms = self.initializeSOMs(simple)
