@@ -27,6 +27,7 @@ UNIMULTI = 2
 MULTIUNI = 13
 INEQUAL1 = 14
 INEQUAL2 = 15
+# Constants for simple
 AA = "AA"
 CN = "Cn"
 DFG = "DFG"
@@ -36,6 +37,10 @@ FRU = "Fru"
 GLY = "Gly"
 MEL = "Mel"
 MG = "MG"
+# Constants for simple2
+REACTION1 = "Reaction2"
+REACTION2 = "Reaction4"
+
 
 #############################
 # Tests
@@ -43,9 +48,12 @@ MG = "MG"
 class TestMESGraph(unittest.TestCase):
 
   def setUp(self):
+    # SimpleSBML with type I error
     self.simple = SimpleSBML()
     self.simple.initialize(cn.TEST_FILE6)
-    self.molecules = self.simple.molecules
+    # SimpleSBML with type II error
+    self.simple2 = SimpleSBML()
+    self.simple2.initialize(cn.TEST_FILE7)
     self.mesgraph = MESGraph(self.simple)
   
   def testConstructor(self):
@@ -146,6 +154,20 @@ class TestMESGraph(unittest.TestCase):
     mg = self.simple.getMolecule(MG)
     self.assertTrue(self.mesgraph.checkTypeOneError((aa, cn), inequality_reaction1))
     self.assertFalse(self.mesgraph.checkTypeOneError((mg, aa), inequality_reaction2))
+    self.assertTrue(self.mesgraph.type_one_error)
+    self.assertFalse(self.mesgraph.type_two_error)
+
+  def testCheckTypeTwoError(self):
+    # TODO: need to fix according to stoichiometry; 
+    # Need to use another model once Reaction class is fixed
+    if IGNORE_TEST:
+      return
+    mesgraph2 = MESGraph(self.simple2)
+    mesgraph2.processMultiUniReaction(self.simple2.getReaction(REACTION1))
+    mesgraph2.processUniMultiReaction(self.simple2.getReaction(REACTION2))
+    self.assertTrue(mesgraph2.checkTypeTwoError())
+    self.assertFalse(mesgraph2.type_one_error)
+    self.assertTrue(mesgraph2.type_two_error)
 
   # # def testReduce(self):
   # #   if IGNORE_TEST:
@@ -169,13 +191,20 @@ class TestMESGraph(unittest.TestCase):
   # #   self.simple.add(Reaction(
   # #       self.simple._model.getReaction(MULTIUNI)))
 
-  # def testAnalyze(self):
-  #   if IGNORE_TEST:
-  #     return
-  #   self.mesgraph = MESGraph(SOM.soms)
-  #   self.mesgraph.analyze(self.simple.reactions)
-  #   self.assertEqual(len(self.mesgraph.nodes), FINAL_NODES)
-  #   self.assertEqual(len(self.mesgraph.edges), FINAL_EDGES)
+  def testAnalyze(self):
+    if IGNORE_TEST:
+      return
+    mesgraph1 = MESGraph(self.simple)
+    mesgraph1.analyze(self.simple.reactions)
+    self.assertEqual(len(mesgraph1.nodes), FINAL_NODES)
+    self.assertEqual(len(mesgraph1.edges), FINAL_EDGES)
+    self.assertTrue(mesgraph1.type_one_error)
+    self.assertFalse(mesgraph1.type_two_error)
+    #
+    mesgraph2 = MESGraph(self.simple2)
+    mesgraph2.analyze(self.simple2.reactions)
+    self.assertFalse(mesgraph2.type_one_error)
+    self.assertTrue(mesgraph2.type_two_error)
 
 if __name__ == '__main__':
   unittest.main()
