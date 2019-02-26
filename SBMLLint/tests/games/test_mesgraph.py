@@ -38,8 +38,9 @@ GLY = "Gly"
 MEL = "Mel"
 MG = "MG"
 # Constants for simple2
-REACTION1 = "Reaction2"
-REACTION2 = "Reaction4"
+REACTION1 = "SHMTr"
+REACTION2 = "MTHFR"
+REACTION3 = "MTR"
 
 
 #############################
@@ -163,33 +164,12 @@ class TestMESGraph(unittest.TestCase):
     if IGNORE_TEST:
       return
     mesgraph2 = MESGraph(self.simple2)
-    mesgraph2.processMultiUniReaction(self.simple2.getReaction(REACTION1))
-    mesgraph2.processUniMultiReaction(self.simple2.getReaction(REACTION2))
+    mesgraph2.processUniUniReaction(self.simple2.getReaction(REACTION1))
+    mesgraph2.processMultiUniReaction(self.simple2.getReaction(REACTION2))
+    mesgraph2.processMultiUniReaction(self.simple2.getReaction(REACTION3))
     self.assertTrue(mesgraph2.checkTypeTwoError())
     self.assertFalse(mesgraph2.type_one_error)
     self.assertTrue(mesgraph2.type_two_error)
-
-  # # def testReduce(self):
-  # #   if IGNORE_TEST:
-  # #     return
-  # #   SOM.merge(self.uniuni)
-  # #   self.assertFalse(SOM.reduce(self.uniuni))
-  # #   self.assertFalse(SOM.reduce(self.multiuni))
-  # #   num_reactants = len(self.multimulti.reactants)
-  # #   num_products = len(self.multimulti.products)
-  # #   reduced_reaction = SOM.reduce(self.multimulti)
-  # #   self.assertIsInstance(reduced_reaction, Reaction)
-  # #   self.assertEqual(reduced_reaction.category, cn.REACTION_n_n)
-  # #   self.assertGreater(num_reactants, len(reduced_reaction.reactants))
-  # #   self.assertGreater(num_products, len(reduced_reaction.products))
-
-  # # def _addReactions(self):
-  # #   self.simple.add(Reaction(
-  # #       self.simple._model.getReaction(UNIUNI)))
-  # #   self.simple.add(Reaction(
-  # #       self.simple._model.getReaction(MULTIMULTI)))
-  # #   self.simple.add(Reaction(
-  # #       self.simple._model.getReaction(MULTIUNI)))
 
   def testAnalyze(self):
     if IGNORE_TEST:
@@ -203,7 +183,7 @@ class TestMESGraph(unittest.TestCase):
     #
     mesgraph2 = MESGraph(self.simple2)
     mesgraph2.analyze(self.simple2.reactions)
-    self.assertFalse(mesgraph2.type_one_error)
+    self.assertTrue(mesgraph2.type_one_error)
     self.assertTrue(mesgraph2.type_two_error)
 
 if __name__ == '__main__':

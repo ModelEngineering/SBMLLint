@@ -13,7 +13,7 @@ TEST_FILE5 = os.path.join(TEST_DIR, "test_file5.antimony")
 TEST_FILE4 = os.path.join(TEST_DIR, "test_file4.xml")
 # test_file6: originally curated_050
 TEST_FILE6 = os.path.join(TEST_DIR, "test_file6.xml")
-# test_file7: originally curated_040
+# test_file7: originally curated_018
 TEST_FILE7 = os.path.join(TEST_DIR, "test_file7.xml")
 # test_file8: originally curated_004
 TEST_FILE8 = os.path.join(TEST_DIR, "test_file8.xml")
