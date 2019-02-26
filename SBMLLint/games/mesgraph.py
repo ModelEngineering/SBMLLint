@@ -11,6 +11,7 @@ import networkx as nx
 
 LESSTHAN = "<"
 
+
 class MESGraph(nx.DiGraph):
   """
   The MESGraph class represents a collection of SOMs as nodes
