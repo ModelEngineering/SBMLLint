@@ -19,7 +19,8 @@ Because of this huge growth in the complexity, software engineers developed soph
 The second algorithm, ``games`` (Graphical Analysis with Mass Equality Sets) does not impose any requirements on the structure of the molecule names. However, ``games`` checks for a weaker condition called *stoichiometric inconsistency*. A collection of reactions is stoichiometrically inconsistent if the set of reactions infers that a molecule has more than one relative mass. To illustrate this, consider two reactions ``A -> B + C`` and ``C -> A``. The first reaction implies that the mass of ``A`` is greater than the mass of ``C``. But the second reaction implies that ``A`` and ``C`` have the same mass.
 
 ## Example
-The following is an example of using the ``structured_names`` algorithm to check for mass balance.
+The following is an example of using the ``structured_names`` algorithm to check for mass balance in a Jupyter Notebook.
+``SBMLLint`` can also be run from the command line, taking as input a file with either SBML or Antimony. 
 
 <img src="structured_names_example.png" width="800"/>
 
