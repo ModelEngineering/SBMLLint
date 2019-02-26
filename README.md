@@ -12,19 +12,19 @@ Because of this huge growth in the complexity, software engineers developed soph
 
 ## The Tool
 
-``SBMLLint`` is a tool that lints reactions. The initial focus is detecting mass balance errors. The tool takes a model expressed in either SBML (Systems Biology Markup Language, a standard format for biochemical models) or the Antimony language as input.
+``SBMLLint`` is a tool that lints reactions. The initial focus is detecting mass balance errors. The tool takes as input a model expressed in either SBML ([Systems Biology Markup Language](http://sbml.org/Main_Page), a standard format for biochemical models) or the [Antimony language](http://antimony.sourceforge.net/) (a human readable representation of chemical reaction models).
 
 ``SBMLLint`` implements two algorithms for linting reactions. The first, ``structured_names``, requires the modeller to give the tool hints by naming molecules in terms of their underlying moieties (sub-parts). For example, ``ATP`` would be written as ``A_P_P_P`` to indicate that there is one adenosine molecule and three phosphate molecules. Similarly, ``GluP`` would be written as ``Glu_P``. Thus, the above reaction is written as ``Glu + A_P_P_P -> Glu_P + A_P_P``. ``structured_names`` checks that the count of each moiety in the reactants is the same as the count of each moiety in the products. Although ``structured_names`` places a burden on the modeller, we note that about 20% of the models in the [BioModels](http://www.ebi.ac.uk/biomodels/) repository already use names structured in the manner required by this tool. 
 
 The second algorithm, ``games`` (Graphical Analysis with Mass Equality Sets) does not impose any requirements on the structure of the molecule names. However, ``games`` checks for a weaker condition called *stoichiometric inconsistency*. A collection of reactions is stoichiometrically inconsistent if the set of reactions infers that a molecule has more than one relative mass. To illustrate this, consider two reactions ``A -> B + C`` and ``C -> A``. The first reaction implies that the mass of ``A`` is greater than the mass of ``C``. But the second reaction implies that ``A`` and ``C`` have the same mass.
 
 ## Example
-The following is an example of using the structured names algorithm to check for mass balance.
+The following is an example of using the ``structured_names`` algorithm to check for mass balance.
 
 <img src="structured_names_example.png" width="800"/>
 
 ## Installation
-``SBMLLint`` is currently under development and so is not availabe for installation. An installable version is expected by April, 2019.
+``SBMLLint`` is currently under development and so is not availabe for installation. An alpha version is expected by April, 2019.
 
 ## Future Directions
 
