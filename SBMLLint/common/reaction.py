@@ -125,6 +125,8 @@ class Reaction(object):
     """
     :return str: reaction category
     """
+    # num_reactants = len([r.molecule for r in self.reactants if r.molecule.name!=cn.EMPTYSET])
+    # num_products = len([r.molecule for r in self.products if r.molecule.name!=cn.EMPTYSET])
     num_reactants = sum([r.stoichiometry for r in self.reactants if r.molecule.name!=cn.EMPTYSET])
     num_products = sum([p.stoichiometry for p in self.products if p.molecule.name!=cn.EMPTYSET])
     for reaction_category in cn.REACTION_CATEGORIES:
