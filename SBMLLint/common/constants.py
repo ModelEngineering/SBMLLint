@@ -57,11 +57,15 @@ REACTION_CATEGORIES = [
     ReactionCategory(category=REACTION_1_1,
         predicate=lambda x,y,z,w: (x==1) and (y==1) and (z==w)),
     ReactionCategory(category=REACTION_1_n,
-        predicate=lambda x,y,z,w: ((x==1) and (y>1) and (z==1.00)) or ((x==1) and (y==1) and (z<w))),
+        predicate=lambda x,y,z,w: ((x==1) and (y>1) and (z==1.00)) \
+                               or ((x==1) and (y==1) and (z<w))),
     ReactionCategory(category=REACTION_n_1,
-        predicate=lambda x,y,z,w: ((x>1) and (y==1) and (w==1.00)) or ((x==1) and (y==1) and (z>w))),
+        predicate=lambda x,y,z,w: ((x>1) and (y==1) and (w==1.00)) \
+                               or ((x==1) and (y==1) and (z>w))),
     ReactionCategory(category=REACTION_n_n,
-        predicate=lambda x,y,z,w: ((x>1) and (y>1)) or ((x==1) and (y>1) and (z!=1.00)) or ((x>1) and (y==1) and (w!=1.00))),
+        predicate=lambda x,y,z,w: ((x>1) and (y>1)) 
+                               or ((x==1) and (y>1) and (z!=1.00)) \
+                               or ((x>1) and (y==1) and (w!=1.00))),
     ReactionCategory(category=REACTION_BOUNDARY,
         predicate=lambda x,y,z,w: (x==0) or (y==0) or (z==0) or (w==0)),
     ]
