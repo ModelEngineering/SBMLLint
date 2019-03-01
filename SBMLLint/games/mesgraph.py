@@ -82,7 +82,7 @@ class MESGraph(nx.DiGraph):
           return som
     return False
 
-  def processUniUniReaction(self, reaction):
+  def processUniUniReaction(self, reaction, error_details=True):
     """
     Process a 1-1 reaction to merge nodes.
     If no need to merge, return None.
@@ -105,7 +105,7 @@ class MESGraph(nx.DiGraph):
         self.identifier = self.makeId()
         return new_som
 
-  def processUniMultiReaction(self, reaction):
+  def processUniMultiReaction(self, reaction, error_details=True):
     """
     Process a 1-n reaction to add arcs.
     Since the mass of reactant is greater than
@@ -118,10 +118,10 @@ class MESGraph(nx.DiGraph):
     else:
       destination = [reaction.reactants[0].molecule]
       source = [product.molecule for product in reaction.products]
-      self.addArc(source, destination, reaction)
+      self.addArc(source, destination, reaction, error_details)
       self.identifier = self.makeId()
 
-  def processMultiUniReaction(self, reaction):
+  def processMultiUniReaction(self, reaction, error_details=True):
     """
     Process a n-1 reaction to add arcs.
     Since the mass of product is greater than
@@ -134,10 +134,10 @@ class MESGraph(nx.DiGraph):
     else:
       destination = [reaction.products[0].molecule]
       source = [reactant.molecule for reactant in reaction.reactants]
-      self.addArc(source, destination, reaction)
+      self.addArc(source, destination, reaction, error_details)
       self.identifier = self.makeId()
 
-  def addArc(self, source, destination, reaction):
+  def addArc(self, source, destination, reaction, error_details=True):
     """
     Add arcs (edges) using two molecule lists (source/destination).
     :param list-Molecule source:
@@ -145,7 +145,7 @@ class MESGraph(nx.DiGraph):
     """
     arcs = itertools.product(source, destination)
     for arc in arcs:
-      if not self.checkTypeOneError(arc, reaction):
+      if not self.checkTypeOneError(arc, reaction, error_details):
         arc_source = self.getNode(arc[0])
         arc_destination = self.getNode(arc[1])
         # if there is already a preious reaction,
@@ -160,7 +160,7 @@ class MESGraph(nx.DiGraph):
       else:
         continue
 
-  def checkTypeOneError(self, arc, inequality_reaction=None):
+  def checkTypeOneError(self, arc, inequality_reaction=None, error_details=True):
     """
     Check Type I Error of an arc.
     If both source and destination are found
@@ -173,21 +173,22 @@ class MESGraph(nx.DiGraph):
     som1 = self.getNode(arc[0])
     som2 = self.getNode(arc[1])
     if som1 == som2:
-      print("We have a Type I Error...")
-      print(arc[0], " and ", arc[1], " have the same weight by")
-      for equality_reaction in list(som1.reactions):
-        print(equality_reaction)
-      print("\nHowever, reaction \"", inequality_reaction, 
-            "\" implies ", arc[0], LESSTHAN, arc[1])
-      print("We cannot add the arc: ", arc[0], cn.ARC_ARROW, arc[1])
-      print()
+      if error_details:
+        print("We have a Type I Error...")
+        print(arc[0], " and ", arc[1], " have the same weight by")
+        for equality_reaction in list(som1.reactions):
+          print(equality_reaction)
+        print("\nHowever, reaction \"", inequality_reaction, 
+              "\" implies ", arc[0], LESSTHAN, arc[1])
+        print("We cannot add the arc: ", arc[0], cn.ARC_ARROW, arc[1])
+        print()
       if not self.type_one_error:
         self.type_one_error = True
       return True
     else:
       return False
 
-  def checkTypeTwoError(self):
+  def checkTypeTwoError(self, error_details=True):
     """
     Check Type II Error (cycles) of a MESGraph.
     If there is at least one cycle, 
@@ -200,36 +201,36 @@ class MESGraph(nx.DiGraph):
     graph.add_edges_from(self.edges)
     cycles = list(nx.simple_cycles(graph))
     if len(cycles) == 0:
-      print("No cycles! No Type II Error!")
       return False
     else:
-      print("We have a Type II Error...\n")
-      for cycle in cycles:
-        cycle_nodes = []
-        for node in cycle:
-          cycle_nodes.append(node)
-        for node in cycle_nodes:
-          print(node, LESSTHAN, end=" ")
-        print(cycle_nodes[0], "\n")
-        #
-        for node_idx in range(0, len(cycle_nodes)-1):
-          arc_source = cycle_nodes[node_idx]
-          arc_destination = cycle_nodes[node_idx+1]
-          print(arc_source, cn.ARC_ARROW, arc_destination, " by")
+      if error_details:
+        print("We have a Type II Error...\n")
+        for cycle in cycles:
+          cycle_nodes = []
+          for node in cycle:
+            cycle_nodes.append(node)
+          for node in cycle_nodes:
+            print(node, LESSTHAN, end=" ")
+          print(cycle_nodes[0], "\n")
+          #
+          for node_idx in range(0, len(cycle_nodes)-1):
+            arc_source = cycle_nodes[node_idx]
+            arc_destination = cycle_nodes[node_idx+1]
+            print(arc_source, LESSTHAN, arc_destination, " by")
+            reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
+            for r_label in reaction_label:
+              print(r_label + "\n")
+          # last arc which completes the cycle
+          arc_source = cycle_nodes[len(cycle_nodes)-1]
+          arc_destination = cycle_nodes[0]
+          print(arc_source, LESSTHAN, arc_destination, " by")
           reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
           for r_label in reaction_label:
             print(r_label + "\n")
-        # last arc which completes the cycle
-        arc_source = cycle_nodes[len(cycle_nodes)-1]
-        arc_destination = cycle_nodes[0]
-        print(arc_source, cn.ARC_ARROW, arc_destination, " by")
-        reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
-        for r_label in reaction_label:
-          print(r_label + "\n")
-      #
-      if not self.type_two_error:
-        self.type_two_error = True
-      return True
+        #
+        if not self.type_two_error:
+          self.type_two_error = True
+        return True
 
   def analyze(self, reactions, error_details=True):
     """
@@ -249,7 +250,7 @@ class MESGraph(nx.DiGraph):
     for category in reaction_dic.keys():
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
-        func(reaction)
-    self.checkTypeTwoError()
+        func(reaction, error_details)
+    self.checkTypeTwoError(error_details)
     #
     return self
