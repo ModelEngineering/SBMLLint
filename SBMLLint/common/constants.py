@@ -53,6 +53,10 @@ REACTION = "reaction"
 
 # The selected category is the first one that first has
 # a satisfied predicate
+# Arguments:
+# x: number of reactants, y: number of products
+# z: sum of reactants stoichiometry
+# w: sum of products stoichiometry
 REACTION_CATEGORIES = [
     ReactionCategory(category=REACTION_1_1,
         predicate=lambda x,y,z,w: (x==1) and (y==1) and (z==w)),
