@@ -193,8 +193,8 @@ class MESGraph(nx.DiGraph):
         reaction_label = [reaction.label]    
       subg.add_edge(node1, node2, reaction=reaction_label)
     path = [short_p for short_p in nx.shortest_path(subg, 
-                                                    source=mole1, 
-                                                    target=mole2)]
+                                                    source=molecule1, 
+                                                    target=molecule2)]
     som_path = []
     for idx in range(len(path)-1):
       edge_reactions = subg.get_edge_data(path[idx], path[idx+1])[cn.REACTION]
@@ -324,7 +324,25 @@ class MESGraph(nx.DiGraph):
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
         func(reaction)
-    print("Type I Errors:", self.type_one_errors)
+    if error_details:
+      # print("Type I Errors:", self.type_one_errors)
+      for error_path in self.type_one_errors:
+        #print(error_path.node1 + " and " + error_path.node2 + " have same weight.")
+        node1 = self.simple.getMolecule(error_path.node1)
+        node2 = self.simple.getMolecule(error_path.node2)
+        som = self.getNode(node1)
+        som_path = self.getSOMPath(som, node1, node2)
+        for pat in som_path:
+          print(pat.node1 + " = " + pat.node2 + " by reaction(s):")
+          for r in pat.reactions:
+            som_reaction = self.simple.getReaction(r)
+            print(som_reaction.makeIdentifier(is_include_kinetics=False))
+        print("\nHowever, the following reaction(s)") 
+        for arc_reaction in error_path.reactions:
+          print(self.simple.getReaction(arc_reaction).makeIdentifier(is_include_kinetics=False)) 
+        print("imply " + node1.name, cn.LESSTHAN, node2.name)
+        print("------------------------------------")
+
     self.checkTypeTwoError(error_details)
     #
     return self
