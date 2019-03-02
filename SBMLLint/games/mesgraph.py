@@ -6,11 +6,13 @@ from SBMLLint.common.reaction import Reaction
 from SBMLLint.games.som import SOM
 from SBMLLint.common.simple_sbml import SimpleSBML
 
+import collections
 import itertools
 import networkx as nx
 
 LESSTHAN = "<"
-
+PathNodesReactions = collections.namedtuple('PathNodesReactions',
+    'node1 node2 reactions')
 
 class MESGraph(nx.DiGraph):
   """
@@ -29,11 +31,14 @@ class MESGraph(nx.DiGraph):
     :param SimpleSBML simple:
     """
     super(MESGraph, self).__init__()
+    self.simple = simple
     self.soms = self.initializeSOMs(simple)
     self.add_nodes_from(self.soms)
     self.identifier = self.makeId()
     self.type_one_error = False
     self.type_two_error = False
+    self.num_type_one_error = 0
+    self.num_type_two_error = 0
 
   def __repr__(self):
     return self.identifier
@@ -160,6 +165,43 @@ class MESGraph(nx.DiGraph):
       else:
         continue
 
+  def getSOMPath(self, som, mole1, mole2):
+    """
+    Create an undirected graph between
+    two molecules within a SOM
+    and find the shortest path
+    :param SOM som:
+    :param str mole1:
+    :param str mole2:
+    :return PathNodesReactions result_data:
+    """   
+    molecule1 = self.simple.getMolecule(mole1).name
+    moelcule2 = self.simple.getMolecule(mole2).name
+    # construct undirected graph
+    subg = nx.Graph()
+    # here, every reaction is 1-1 reaction
+    for reaction in list(som.reactions):
+      node1 = reaction.reactants[0].molecule.name
+      node2 = reaction.products[0].molecule.name
+      if subg.has_edge(node1, node2):
+        reaction_label = subg.get_edge_data(node1, node2)[cn.REACTION]
+        # if reaction.label is not already included in the attribute,
+        if reaction.label not in set(reaction_label):
+          reaction_label = reaction_label + [reaction.label]
+      else:
+        reaction_label = [reaction.label]    
+      subg.add_edge(node1, node2, reaction=reaction_label)
+    path = [p for p in nx.shortest_path(subg, 
+                                        source=mole1, 
+                                        target=mole2)]
+    som_path = []
+    for idx in range(len(path)-1):
+      edge_reactions = subg.get_edge_data(path[idx], path[idx+1])[cn.REACTION]
+      som_path.append(PathNodesReactions(node1=path[idx], 
+                                            node2=path[idx+1],
+                                            reactions=edge_reactions))
+    return som_path
+
   def checkTypeOneError(self, arc, inequality_reaction=None, error_details=True):
     """
     Check Type I Error of an arc.
@@ -175,12 +217,19 @@ class MESGraph(nx.DiGraph):
     if som1 == som2:
       if error_details:
         print("We have a Type I Error...")
-        print(arc[0], " and ", arc[1], " have the same weight by")
-        for equality_reaction in list(som1.reactions):
-          print(equality_reaction)
-        print("\nHowever, reaction \"", inequality_reaction, 
-              "\" implies ", arc[0], LESSTHAN, arc[1])
-        print("We cannot add the arc: ", arc[0], cn.ARC_ARROW, arc[1])
+        print(arc[0], " and ", arc[1], " have the same weight.")
+        som_path = self.getSOMPath(som1, arc[0].name, arc[1].name)
+        for pat in som_path:
+          print(pat.node1 + " = " + pat.node2 + " from ", end="")
+          for r in pat.reactions:
+            reaction = self.simple.getReaction(r)
+            print(reaction.makeIdentifier(is_include_kinetics=False))
+        # for equality_reaction in list(som1.reactions):
+        #   print(equality_reaction.makeIdentifier(is_include_kinetics=False))
+        print("\nHowever, the following reaction") 
+        print(inequality_reaction.makeIdentifier(is_include_kinetics=False)) 
+        print("implies ", arc[0], LESSTHAN, arc[1])
+        # print("We cannot add the arc: ", arc[0], cn.ARC_ARROW, arc[1])
         print()
       if not self.type_one_error:
         self.type_one_error = True
