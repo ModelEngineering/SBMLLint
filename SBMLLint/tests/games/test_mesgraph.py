@@ -155,7 +155,7 @@ class TestMESGraph(unittest.TestCase):
     mg = self.simple.getMolecule(MG)
     self.assertTrue(self.mesgraph.checkTypeOneError((aa, cn), inequality_reaction1))
     self.assertFalse(self.mesgraph.checkTypeOneError((mg, aa), inequality_reaction2))
-    self.assertTrue(self.mesgraph.type_one_error)
+    self.assertTrue(len(self.mesgraph.type_one_errors)>0)
     self.assertFalse(self.mesgraph.type_two_error)
 
   def testCheckTypeTwoError(self):
@@ -168,7 +168,7 @@ class TestMESGraph(unittest.TestCase):
     mesgraph2.processMultiUniReaction(self.simple2.getReaction(REACTION2))
     mesgraph2.processMultiUniReaction(self.simple2.getReaction(REACTION3))
     self.assertTrue(mesgraph2.checkTypeTwoError())
-    self.assertFalse(mesgraph2.type_one_error)
+    self.assertFalse(len(mesgraph2.type_one_errors)>0)
     self.assertTrue(mesgraph2.type_two_error)
 
   def testAnalyze(self):
@@ -178,12 +178,12 @@ class TestMESGraph(unittest.TestCase):
     mesgraph1.analyze(self.simple.reactions)
     self.assertEqual(len(mesgraph1.nodes), FINAL_NODES)
     self.assertEqual(len(mesgraph1.edges), FINAL_EDGES)
-    self.assertTrue(mesgraph1.type_one_error)
+    self.assertTrue(len(mesgraph1.type_one_errors)>0)
     self.assertFalse(mesgraph1.type_two_error)
     #
     mesgraph2 = MESGraph(self.simple2)
     mesgraph2.analyze(self.simple2.reactions)
-    self.assertTrue(mesgraph2.type_one_error)
+    self.assertTrue(len(mesgraph2.type_one_errors)>0)
     self.assertTrue(mesgraph2.type_two_error)
 
 if __name__ == '__main__':

@@ -10,9 +10,10 @@ import collections
 import itertools
 import networkx as nx
 
-LESSTHAN = "<"
-PathNodesReactions = collections.namedtuple('PathNodesReactions',
-    'node1 node2 reactions')
+
+PathComponents = collections.namedtuple('PathComponents',
+                                        'node1 node2 reactions')
+
 
 class MESGraph(nx.DiGraph):
   """
@@ -37,8 +38,8 @@ class MESGraph(nx.DiGraph):
     self.identifier = self.makeId()
     self.type_one_error = False
     self.type_two_error = False
-    self.num_type_one_error = 0
-    self.num_type_two_error = 0
+    self.type_one_errors = []
+    self.type_two_errors = []
 
   def __repr__(self):
     return self.identifier
@@ -87,7 +88,7 @@ class MESGraph(nx.DiGraph):
           return som
     return False
 
-  def processUniUniReaction(self, reaction, error_details=True):
+  def processUniUniReaction(self, reaction):
     """
     Process a 1-1 reaction to merge nodes.
     If no need to merge, return None.
@@ -110,7 +111,7 @@ class MESGraph(nx.DiGraph):
         self.identifier = self.makeId()
         return new_som
 
-  def processUniMultiReaction(self, reaction, error_details=True):
+  def processUniMultiReaction(self, reaction):
     """
     Process a 1-n reaction to add arcs.
     Since the mass of reactant is greater than
@@ -123,10 +124,10 @@ class MESGraph(nx.DiGraph):
     else:
       destination = [reaction.reactants[0].molecule]
       source = [product.molecule for product in reaction.products]
-      self.addArc(source, destination, reaction, error_details)
+      self.addArc(source, destination, reaction)
       self.identifier = self.makeId()
 
-  def processMultiUniReaction(self, reaction, error_details=True):
+  def processMultiUniReaction(self, reaction):
     """
     Process a n-1 reaction to add arcs.
     Since the mass of product is greater than
@@ -139,10 +140,10 @@ class MESGraph(nx.DiGraph):
     else:
       destination = [reaction.products[0].molecule]
       source = [reactant.molecule for reactant in reaction.reactants]
-      self.addArc(source, destination, reaction, error_details)
+      self.addArc(source, destination, reaction)
       self.identifier = self.makeId()
 
-  def addArc(self, source, destination, reaction, error_details=True):
+  def addArc(self, source, destination, reaction):
     """
     Add arcs (edges) using two molecule lists (source/destination).
     :param list-Molecule source:
@@ -150,7 +151,7 @@ class MESGraph(nx.DiGraph):
     """
     arcs = itertools.product(source, destination)
     for arc in arcs:
-      if not self.checkTypeOneError(arc, reaction, error_details):
+      if not self.checkTypeOneError(arc, reaction):
         arc_source = self.getNode(arc[0])
         arc_destination = self.getNode(arc[1])
         # if there is already a preious reaction,
@@ -171,12 +172,12 @@ class MESGraph(nx.DiGraph):
     two molecules within a SOM
     and find the shortest path
     :param SOM som:
-    :param str mole1:
-    :param str mole2:
-    :return PathNodesReactions result_data:
+    :param Molecule mole1:
+    :param Molecule mole2:
+    :return PathComponents som_path:
     """   
-    molecule1 = self.simple.getMolecule(mole1).name
-    moelcule2 = self.simple.getMolecule(mole2).name
+    molecule1 = mole1.name
+    molecule2 = mole2.name
     # construct undirected graph
     subg = nx.Graph()
     # here, every reaction is 1-1 reaction
@@ -191,18 +192,44 @@ class MESGraph(nx.DiGraph):
       else:
         reaction_label = [reaction.label]    
       subg.add_edge(node1, node2, reaction=reaction_label)
-    path = [p for p in nx.shortest_path(subg, 
-                                        source=mole1, 
-                                        target=mole2)]
+    path = [short_p for short_p in nx.shortest_path(subg, 
+                                                    source=mole1, 
+                                                    target=mole2)]
     som_path = []
     for idx in range(len(path)-1):
       edge_reactions = subg.get_edge_data(path[idx], path[idx+1])[cn.REACTION]
-      som_path.append(PathNodesReactions(node1=path[idx], 
-                                            node2=path[idx+1],
-                                            reactions=edge_reactions))
+      som_path.append(PathComponents(node1=path[idx], 
+                                     node2=path[idx+1],
+                                     reactions=edge_reactions))
     return som_path
 
-  def checkTypeOneError(self, arc, inequality_reaction=None, error_details=True):
+  def addTypeOneError(self, mole1, mole2, reaction):
+    """
+    Add Type I Error components.
+    All components of resulting PathComponents are str
+    :param Molecule mole1:
+    :param Molecule mole2:
+    :param Reaction reaction:
+    :return bool flag:
+    """
+    flag = False
+    for component in self.type_one_errors:
+      if (component.node1==mole1.name) and (component.node2==mole2.name):
+        new_component = PathComponents(node1=mole1.name, 
+                                       node2=mole2.name,
+                                       reactions=component.reactions+[reaction.label])
+        self.type_one_errors.remove(component)
+        self.type_one_errors.append(new_component)
+        flag = True
+        break
+    if not flag:
+      self.type_one_errors.append(PathComponents(node1=mole1.name, 
+                                                 node2=mole2.name,
+                                                 reactions=[reaction.label]))
+      flag = True
+    return flag
+
+  def checkTypeOneError(self, arc, inequality_reaction=None):
     """
     Check Type I Error of an arc.
     If both source and destination are found
@@ -215,24 +242,21 @@ class MESGraph(nx.DiGraph):
     som1 = self.getNode(arc[0])
     som2 = self.getNode(arc[1])
     if som1 == som2:
-      if error_details:
-        print("We have a Type I Error...")
-        print(arc[0], " and ", arc[1], " have the same weight.")
-        som_path = self.getSOMPath(som1, arc[0].name, arc[1].name)
-        for pat in som_path:
-          print(pat.node1 + " = " + pat.node2 + " from ", end="")
-          for r in pat.reactions:
-            reaction = self.simple.getReaction(r)
-            print(reaction.makeIdentifier(is_include_kinetics=False))
-        # for equality_reaction in list(som1.reactions):
-        #   print(equality_reaction.makeIdentifier(is_include_kinetics=False))
-        print("\nHowever, the following reaction") 
-        print(inequality_reaction.makeIdentifier(is_include_kinetics=False)) 
-        print("implies ", arc[0], LESSTHAN, arc[1])
-        # print("We cannot add the arc: ", arc[0], cn.ARC_ARROW, arc[1])
-        print()
-      if not self.type_one_error:
-        self.type_one_error = True
+      # if error_details:
+      #   print("We have a Type I Error...")
+      #   print(arc[0], " and ", arc[1], " have the same weight.")
+      #   som_path = self.getSOMPath(som1, arc[0], arc[1])
+      #   for pat in som_path:
+      #     print(pat.node1 + " = " + pat.node2 + " from ", end="")
+      #     for r in pat.reactions:
+      #       reaction = self.simple.getReaction(r)
+      #       print(reaction.makeIdentifier(is_include_kinetics=False))
+      #   print("\nHowever, the following reaction") 
+      #   print(inequality_reaction.makeIdentifier(is_include_kinetics=False)) 
+      #   print("implies ", arc[0], cn.LESSTHAN, arc[1])
+      #   print()
+      # add type I error to self.type_one_errors
+      self.addTypeOneError(arc[0], arc[1], inequality_reaction)
       return True
     else:
       return False
@@ -259,20 +283,20 @@ class MESGraph(nx.DiGraph):
           for node in cycle:
             cycle_nodes.append(node)
           for node in cycle_nodes:
-            print(node, LESSTHAN, end=" ")
+            print(node, cn.LESSTHAN, end=" ")
           print(cycle_nodes[0], "\n")
           #
           for node_idx in range(0, len(cycle_nodes)-1):
             arc_source = cycle_nodes[node_idx]
             arc_destination = cycle_nodes[node_idx+1]
-            print(arc_source, LESSTHAN, arc_destination, " by")
+            print(arc_source, cn.LESSTHAN, arc_destination, " by")
             reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
             for r_label in reaction_label:
               print(r_label + "\n")
           # last arc which completes the cycle
           arc_source = cycle_nodes[len(cycle_nodes)-1]
           arc_destination = cycle_nodes[0]
-          print(arc_source, LESSTHAN, arc_destination, " by")
+          print(arc_source, cn.LESSTHAN, arc_destination, " by")
           reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
           for r_label in reaction_label:
             print(r_label + "\n")
@@ -299,7 +323,8 @@ class MESGraph(nx.DiGraph):
     for category in reaction_dic.keys():
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
-        func(reaction, error_details)
+        func(reaction)
+    print("Type I Errors:", self.type_one_errors)
     self.checkTypeTwoError(error_details)
     #
     return self
