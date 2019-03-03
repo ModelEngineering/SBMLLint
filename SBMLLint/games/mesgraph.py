@@ -379,6 +379,9 @@ class MESGraph(nx.DiGraph):
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
         func(reaction)
+    #
+    self.checkTypeTwoError()    
+    #
     if error_details:
       # print("Type I Errors:", self.type_one_errors)
       for error_path in self.type_one_errors:
@@ -397,7 +400,36 @@ class MESGraph(nx.DiGraph):
         print("imply " + node1.name, cn.LESSTHAN, node2.name)
         print("------------------------------------")
       print("************************************")
+      #
+      # print("We Do have type II Errors", self.type_two_errors)
+      for cycle in self.type_two_errors:
+        for idx, path_comp in enumerate(cycle):
+          nodes1 = collections.deque(path_comp.node1)
+          nodes2 = collections.deque(path_comp.node2)
+          reactions = collections.deque(path_comp.reactions)
+          if len(nodes1)>1:
+            for node_idx in range(len(nodes1)-1):
+              som = self.getNode(self.simple.getMolecule(nodes1[node_idx]))
+              som_path = self.getSOMPath(som, 
+                                         self.simple.getMolecule(nodes1[node_idx]), 
+                                         self.simple.getMolecule(nodes1[node_idx+1]))
+              for pat in som_path:
+                print("\n" + pat.node1 + " = " + pat.node2 + " by reaction(s):")
+                for r in pat.reactions:
+                  som_reaction = self.simple.getReaction(r)
+                  print(som_reaction.makeIdentifier(is_include_kinetics=False))
 
-    self.checkTypeTwoError()
+
+
+
+          while nodes1:
+            print()
+            print(nodes1[0] + " < " + nodes2[0] + " by reaction:")
+            arc_reaction = self.simple.getReaction(reactions[0])
+            print(arc_reaction.makeIdentifier(is_include_kinetics=False))
+            nodes1.popleft()
+            nodes2.popleft()
+            reactions.popleft()
+        print("------------------------------------")
     #
     return self
