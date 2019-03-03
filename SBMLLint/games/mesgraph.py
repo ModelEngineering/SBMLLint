@@ -402,11 +402,13 @@ class MESGraph(nx.DiGraph):
           else:
             next_nodes1 = collections.deque(cycle[0].node1)
           reactions = collections.deque(path_comp.reactions)
+          # print SOM path between node elements
           if len(nodes1)>1:
             for node_idx in range(len(nodes1)-1):
               self.printSOMPath(nodes1[node_idx], nodes1[node_idx+1])
-
-
+          if not set(nodes2).intersection(set(next_nodes1)):
+            self.printSOMPath(nodes2[0], next_nodes1[0])
+         #
           while nodes1:
             print()
             print(nodes1[0] + " < " + nodes2[0] + " by reaction:")
