@@ -203,6 +203,30 @@ class MESGraph(nx.DiGraph):
                                      reactions=edge_reactions))
     return som_path
 
+  def printSOMPath(self, molecule_name1, molecule_name2):
+    """
+    Print out shortest SOM path between two molecules.
+    Arguments are str and both molecules sholud be in the 
+    same SOM.
+    :param str molecule_name1:
+    :param str molecule_name2:
+    :return bool
+    """
+    som1 = self.getNode(self.simple.getMolecule(molecule_name1))
+    som2 = self.getNode(self.simple.getMolecule(molecule_name2))
+    if som1 != som2:
+      return False
+    else:
+      som_path = self.getSOMPath(som1, 
+                                 self.simple.getMolecule(molecule_name1), 
+                                 self.simple.getMolecule(molecule_name2))
+      for pat in som_path:
+        print("\n" + pat.node1, cn.EQUAL, pat.node2 + " by reaction(s):")
+        for r in pat.reactions:
+          som_reaction = self.simple.getReaction(r)
+          print(som_reaction.makeIdentifier(is_include_kinetics=False))
+      return True
+
   def addTypeOneError(self, mole1, mole2, reaction):
     """
     Add Type I Error components to self.type_one_errors
@@ -331,31 +355,6 @@ class MESGraph(nx.DiGraph):
     else:
       for cycle in cycles:
         self.addTypeTwoError(cycle)
-      # if error_details:
-      #   print("We have a Type II Error...\n")
-      #   for cycle in cycles:
-      #     cycle_nodes = []
-      #     for node in cycle:
-      #       cycle_nodes.append(node)
-      #     for node in cycle_nodes:
-      #       print(node, cn.LESSTHAN, end=" ")
-      #     print(cycle_nodes[0], "\n")
-      #     #
-      #     for node_idx in range(0, len(cycle_nodes)-1):
-      #       arc_source = cycle_nodes[node_idx]
-      #       arc_destination = cycle_nodes[node_idx+1]
-      #       print(arc_source, cn.LESSTHAN, arc_destination, " by")
-      #       reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
-      #       for r_label in reaction_label:
-      #         print(r_label + "\n")
-      #     # last arc which completes the cycle
-      #     arc_source = cycle_nodes[len(cycle_nodes)-1]
-      #     arc_destination = cycle_nodes[0]
-      #     print(arc_source, cn.LESSTHAN, arc_destination, " by")
-      #     reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
-      #     for r_label in reaction_label:
-      #       print(r_label + "\n")
-        #
         if not self.type_two_error:
           self.type_two_error = True
       return True
@@ -385,19 +384,11 @@ class MESGraph(nx.DiGraph):
     if error_details:
       # print("Type I Errors:", self.type_one_errors)
       for error_path in self.type_one_errors:
-        node1 = self.simple.getMolecule(error_path.node1)
-        node2 = self.simple.getMolecule(error_path.node2)
-        som = self.getNode(node1)
-        som_path = self.getSOMPath(som, node1, node2)
-        for pat in som_path:
-          print(pat.node1 + " = " + pat.node2 + " by reaction(s):")
-          for r in pat.reactions:
-            som_reaction = self.simple.getReaction(r)
-            print(som_reaction.makeIdentifier(is_include_kinetics=False))
+        self.printSOMPath(error_path.node1, error_path.node2)
         print("\nHowever, the following reaction(s)") 
         for arc_reaction in error_path.reactions:
           print(self.simple.getReaction(arc_reaction).makeIdentifier(is_include_kinetics=False)) 
-        print("imply " + node1.name, cn.LESSTHAN, node2.name)
+        print("imply " + error_path.node1, cn.LESSTHAN,  error_path.node2)
         print("------------------------------------")
       print("************************************")
       #
@@ -406,20 +397,14 @@ class MESGraph(nx.DiGraph):
         for idx, path_comp in enumerate(cycle):
           nodes1 = collections.deque(path_comp.node1)
           nodes2 = collections.deque(path_comp.node2)
+          if idx < len(cycle)-1:
+            next_nodes1 = collections.deque(cycle[idx+1].node1)
+          else:
+            next_nodes1 = collections.deque(cycle[0].node1)
           reactions = collections.deque(path_comp.reactions)
           if len(nodes1)>1:
             for node_idx in range(len(nodes1)-1):
-              som = self.getNode(self.simple.getMolecule(nodes1[node_idx]))
-              som_path = self.getSOMPath(som, 
-                                         self.simple.getMolecule(nodes1[node_idx]), 
-                                         self.simple.getMolecule(nodes1[node_idx+1]))
-              for pat in som_path:
-                print("\n" + pat.node1 + " = " + pat.node2 + " by reaction(s):")
-                for r in pat.reactions:
-                  som_reaction = self.simple.getReaction(r)
-                  print(som_reaction.makeIdentifier(is_include_kinetics=False))
-
-
+              self.printSOMPath(nodes1[node_idx], nodes1[node_idx+1])
 
 
           while nodes1:
