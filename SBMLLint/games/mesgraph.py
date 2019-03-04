@@ -11,10 +11,6 @@ import itertools
 import networkx as nx
 
 
-PathComponents = collections.namedtuple('PathComponents',
-                                        'node1 node2 reactions')
-
-
 class MESGraph(nx.DiGraph):
   """
   The MESGraph class represents a collection of SOMs as nodes
@@ -198,7 +194,7 @@ class MESGraph(nx.DiGraph):
     som_path = []
     for idx in range(len(path)-1):
       edge_reactions = subg.get_edge_data(path[idx], path[idx+1])[cn.REACTION]
-      som_path.append(PathComponents(node1=path[idx], 
+      som_path.append(cn.PathComponents(node1=path[idx], 
                                      node2=path[idx+1],
                                      reactions=edge_reactions))
     return som_path
@@ -243,7 +239,7 @@ class MESGraph(nx.DiGraph):
     flag = False
     for component in self.type_one_errors:
       if (component.node1==mole1.name) and (component.node2==mole2.name):
-        new_component = PathComponents(node1=mole1.name, 
+        new_component = cn.PathComponents(node1=mole1.name, 
                                        node2=mole2.name,
                                        reactions=component.reactions+[reaction.label])
         self.type_one_errors.remove(component)
@@ -251,7 +247,7 @@ class MESGraph(nx.DiGraph):
         flag = True
         break
     if not flag:
-      self.type_one_errors.append(PathComponents(node1=mole1.name, 
+      self.type_one_errors.append(cn.PathComponents(node1=mole1.name, 
                                                  node2=mole2.name,
                                                  reactions=[reaction.label]))
       flag = True
@@ -311,7 +307,7 @@ class MESGraph(nx.DiGraph):
           nodes1.append(node1)
           nodes2.append(node2)
           reaction_labels.append(reaction.label)
-      error_cycle.append(PathComponents(node1=nodes1, 
+      error_cycle.append(cn.PathComponents(node1=nodes1, 
                                         node2=nodes2,
                                         reactions=reaction_labels))
     som1 = cycle[-1]
@@ -337,7 +333,7 @@ class MESGraph(nx.DiGraph):
         nodes1.append(node1)
         nodes2.append(node2)
         reaction_labels.append(reaction.label)
-    error_cycle.append(PathComponents(node1=nodes1, 
+    error_cycle.append(cn.PathComponents(node1=nodes1, 
                                         node2=nodes2,
                                         reactions=reaction_labels))
     self.type_two_errors.append(error_cycle)  

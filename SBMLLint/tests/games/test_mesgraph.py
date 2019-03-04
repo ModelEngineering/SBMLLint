@@ -142,10 +142,25 @@ class TestMESGraph(unittest.TestCase):
     self.assertEqual(reaction_label1, reaction_label2)
   
   def testGetSOMPath(self):
-    pass
+    if IGNORE_TEST:
+      return
+    uniuni_reaction = self.simple.reactions[UNIUNI0]
+    self.mesgraph.processUniUniReaction(uniuni_reaction)
+    dfg = self.simple.getMolecule(DFG)
+    e1 = self.simple.getMolecule(E1)
+    som = self.mesgraph.getNode(dfg)
+    som_path = self.mesgraph.getSOMPath(som, e1, dfg)
+    self.assertEqual(type(som_path[0]), cn.PathComponents)
+    self.assertEqual(som_path[0].reactions, [uniuni_reaction.label])
+    self.assertEqual(len(som_path), 1)
 
   def testPrintSOMPath(self):
-    
+    if IGNORE_TEST:
+      return
+    uniuni_reaction = self.simple.reactions[UNIUNI0]
+    self.mesgraph.processUniUniReaction(uniuni_reaction)
+    self.assertTrue(self.mesgraph.printSOMPath(DFG, E1))
+    self.assertFalse(self.mesgraph.printSOMPath(GLY, MEL))
 
   def testCheckTypeOneError(self):
     if IGNORE_TEST:
