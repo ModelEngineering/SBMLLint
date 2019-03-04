@@ -217,14 +217,18 @@ class MESGraph(nx.DiGraph):
     if som1 != som2:
       return False
     else:
-      som_path = self.getSOMPath(som1, 
-                                 self.simple.getMolecule(molecule_name1), 
-                                 self.simple.getMolecule(molecule_name2))
-      for pat in som_path:
-        print("\n" + pat.node1, cn.EQUAL, pat.node2 + " by reaction(s):")
-        for r in pat.reactions:
-          som_reaction = self.simple.getReaction(r)
-          print(som_reaction.makeIdentifier(is_include_kinetics=False))
+      # add case when molecule_name1 == molecule_name2
+      if molecule_name1 == molecule_name2:
+        print("Clearly,", molecule_name1, cn.EQUAL, molecule_name2)
+      else:
+        som_path = self.getSOMPath(som1, 
+                                   self.simple.getMolecule(molecule_name1), 
+                                   self.simple.getMolecule(molecule_name2))
+        for pat in som_path:
+          print("\n" + pat.node1, cn.EQUAL, pat.node2 + " by reaction(s):")
+          for r in pat.reactions:
+            som_reaction = self.simple.getReaction(r)
+            print(som_reaction.makeIdentifier(is_include_kinetics=False))
       return True
 
   def addTypeOneError(self, mole1, mole2, reaction):

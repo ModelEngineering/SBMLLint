@@ -141,6 +141,12 @@ class TestMESGraph(unittest.TestCase):
     self.assertEqual(reaction_label1, dummy_reaction.label)
     self.assertEqual(reaction_label1, reaction_label2)
   
+  def testGetSOMPath(self):
+    pass
+
+  def testPrintSOMPath(self):
+    
+
   def testCheckTypeOneError(self):
     if IGNORE_TEST:
       return
