@@ -35,6 +35,7 @@ MOIETY_DOUBLE_SEPARATOR = MOIETY_SEPARATOR + MOIETY_SEPARATOR
 KINETICS_SEPARATOR = ";"
 ARC_ARROW = "->"
 LESSTHAN = "<"
+EQUAL = "="
 
 # Reaction categories
 REACTION_1_1 = "reaction_1_1"
@@ -74,6 +75,9 @@ REACTION_CATEGORIES = [
         predicate=lambda x,y,z,w: (x==0) or (y==0) or (z==0) or (w==0)),
     ]
 
+# building block for each MESGraph path
+PathComponents = collections.namedtuple('PathComponents',
+                                        'node1 node2 reactions')
 
 # Directories and files
 # Where data files are stored by default
