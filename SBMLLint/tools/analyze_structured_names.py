@@ -3,6 +3,7 @@
 from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule
 from SBMLLint.common import simple_sbml
+from SBMLLint.common import util
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.tools import sbmllint
 from SBMLLint.tools import print_reactions
@@ -23,24 +24,44 @@ OUTPUT_FILE = "analyze_structured_names.csv"
 DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_PATH = os.path.join(DIR, OUTPUT_FILE)
 # Miscellaneous
-DEBUG = True
+EXCLUDE_LIST = ["node", "x", "species"]
 
 def isStructuredName(name):
+  """
+  Detects if the name is a candidate for a structured name.
+  The term "element" refers to substrings separated by "_".
+  Not a structured name if any of the following are True:
+    No "_" present
+    Last element is a number
+    First element is in EXCLUDE_LIST (case independent)
+  """
   moietys = name.split(cn.MOIETY_SEPARATOR)
   if len(moietys) == 1:
     return False
-  # See if it has a numeric suffix
+  # See if last element has a numeric suffix
   try:
-    _ = float(moietys[1])
+    _ = float(moietys[-1])
     return False
   except:
       pass
-  if "species" == moietys[0]:
+  if any([moietys[0].lower() in s for s in EXCLUDE_LIST]):
     return False
   return True
 
 def calcStats(initial=1, final=50, out_path=OUTPUT_PATH, 
-    report_interval=50, min_frc=-1):
+    report_interval=50, report_progress=True, min_frc=-1):
+  """
+  Calculates statistics for structured names.
+  :param int initial: Index of first model to process
+  :param int final: Index of final model to process
+  :param str out_path: Path to the output CSV file
+  :param int report_interval: Number of files processed before
+      a report is written
+  :param bool report_progress: report file being processed
+  :param float min_frc: Filter to select only those models
+      that have at least the specified fraction of reactions
+      balanced according to structured_names
+  """
   def writeDF(dfs):
     df_count = pd.concat(dfs)
     df_count[NUM_BALANCED_REACTIONS] = df_count[NUM_REACTIONS] - df_count[NUM_BAD]
@@ -53,9 +74,10 @@ def calcStats(initial=1, final=50, out_path=OUTPUT_PATH,
   dfs = []
   sbmliter = simple_sbml.modelIterator(initial=initial, final=final)
   for item in sbmliter:
-    if DEBUG:
+    if report_progress:
       print("*Processing file %s" % item.filename)
-    simple = simple_sbml.SimpleSBML(item.model)
+    simple = simple_sbml.SimpleSBML()
+    simple.initialize(item.model)
     row = {FILENAME: [item.filename], 
            HAS_STRUCTURE: [False], 
            NUM_BOUNDARY_REACTIONS: [0],
@@ -63,16 +85,16 @@ def calcStats(initial=1, final=50, out_path=OUTPUT_PATH,
            NUM_BAD: [None],
            NUM_BAD: [0],
            }
-    Reaction.initialize(simple)
-    for reaction in Reaction.reactions:
+    for reaction in simple.reactions:
       if (len(reaction.reactants) == 0) or (len(reaction.products) == 0):
           row[NUM_BOUNDARY_REACTIONS] = [row[NUM_BOUNDARY_REACTIONS][0] + 1]
-      molecules = set(reaction.reactants).union(reaction.products)
+      molecules = util.uniqueify([m.molecule 
+          for m in set(reaction.reactants).union(reaction.products)])
       if any([isStructuredName(m.name) for m in molecules]):
           row[HAS_STRUCTURE] = [True]
-    num_reactions, num_bad = sbmllint.lint(item.model, is_report=False)
-    row[NUM_REACTIONS] = [num_reactions]
-    row[NUM_BAD] = [num_bad]
+    mcr = sbmllint.lint(item.model, is_report=False)
+    row[NUM_REACTIONS] = [mcr.num_reactions]
+    row[NUM_BAD] = [mcr.num_imbalances]
     dfs.append(pd.DataFrame(row))
     if item.number % report_interval == 0:
       writeDF(dfs)

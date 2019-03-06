@@ -47,7 +47,15 @@ class MoietyComparator(object):
   def _makeDFS(self):
     dfs = []
     for collection in self.molecule_stoichiometry_collections:
-      df = MoleculeStoichiometry.countMoietysInCollection(collection)
+      if len(collection) > 0:
+        df = MoleculeStoichiometry.countMoietysInCollection(collection)
+        dfs.append(df)
+    if len(dfs) == 0:
+      dfs = [pd.DataFrame(), pd.DataFrame()]
+    elif len(dfs) == 1:
+      col = dfs[0].columns.tolist()[0]
+      df = dfs[0].copy()
+      df[col] = 0     
       dfs.append(df)
     return dfs
 

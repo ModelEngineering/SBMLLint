@@ -21,7 +21,7 @@ def lint(model_reference, file_out=sys.stdout,
   :param TextIOWrapper file_out:
   :param str mass_balance_check: how check for mass balance
   :param bool is_report: print result
-  :return int, int: total reactions, number non-compliant
+  :return MoietyComparatorResult:
   """
   if util.isSBMLModel(model_reference):
     model = model_reference
