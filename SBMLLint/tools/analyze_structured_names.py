@@ -75,9 +75,14 @@ def calcStats(initial=1, final=50, out_path=OUTPUT_PATH,
   sbmliter = simple_sbml.modelIterator(initial=initial, final=final)
   for item in sbmliter:
     if report_progress:
-      print("*Processing file %s" % item.filename)
+      print("*Processing file %s, number %d"
+           % (item.filename, item.number))
     simple = simple_sbml.SimpleSBML()
-    simple.initialize(item.model)
+    try:
+      simple.initialize(item.model)
+    except:
+      print("  Error in model number %d." % item.number)
+      continue
     row = {FILENAME: [item.filename], 
            HAS_STRUCTURE: [False], 
            NUM_BOUNDARY_REACTIONS: [0],
@@ -92,9 +97,13 @@ def calcStats(initial=1, final=50, out_path=OUTPUT_PATH,
           for m in set(reaction.reactants).union(reaction.products)])
       if any([isStructuredName(m.name) for m in molecules]):
           row[HAS_STRUCTURE] = [True]
-    mcr = sbmllint.lint(item.model, is_report=False)
-    row[NUM_REACTIONS] = [mcr.num_reactions]
-    row[NUM_BAD] = [mcr.num_imbalances]
+    try:
+      mcr = sbmllint.lint(item.model, is_report=False)
+      row[NUM_REACTIONS] = [mcr.num_reactions]
+      row[NUM_BAD] = [mcr.num_imbalances]
+    except:
+      row[NUM_REACTIONS] = [None]
+      row[NUM_BAD] = [None]
     dfs.append(pd.DataFrame(row))
     if item.number % report_interval == 0:
       writeDF(dfs)

@@ -39,7 +39,10 @@ class Reaction(object):
     self.products = self.makeMoleculeStoichiometrys(
         libsbml_reaction.getProduct,
         libsbml_reaction.getNumProducts)
-    self.kinetics_law = libsbml_reaction.getKineticLaw().formula
+    if libsbml_reaction.getKineticLaw() is not None:
+      self.kinetics_law = libsbml_reaction.getKineticLaw().formula
+    else:
+      self.kinetics_law = None
     self.label = libsbml_reaction.getId()
     self.identifier = self.makeIdentifier(is_include_kinetics=True)
     self.category = self._getCategory()
