@@ -2,6 +2,10 @@
 import collections
 import os
 
+
+############### COLUMN NAMES ##############
+FILENAME = "filename"
+
 ############### TESTS #####################
 TEST_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEST_DIR = os.path.join(TEST_DIR, "tests")
@@ -84,3 +88,8 @@ PathComponents = collections.namedtuple('PathComponents',
 DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.dirname(DATA_DIR)
 DATA_DIR = os.path.join(DATA_DIR, "data")
+ANALYSIS_STRUCTURED_NAMES_DIR = os.path.dirname(DATA_DIR)
+ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
+    ANALYSIS_STRUCTURED_NAMES_DIR, "analysis")
+ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
+    ANALYSIS_STRUCTURED_NAMES_DIR, "structured_names")

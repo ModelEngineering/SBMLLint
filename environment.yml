@@ -8,5 +8,6 @@ dependencies:
   - python=3.6.7
   - urllib3
   - networkx
+  - xlrd
   - nose
 prefix: /home//anaconda3/envs/sbmllint
