@@ -9,7 +9,7 @@ garbage collection).
 """
 
 from SBMLLint.common import constants as cn
-from SBMLLint.common.moiety import Moiety
+from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common import util
@@ -91,10 +91,18 @@ class SimpleSBML(object):
     return reactions[0]
 
   def _getMoietys(self):
+    """
+    Sees if there is a valid moiety structure.
+    If not, the molecule is a single moiety.
+    """
     moietys = []
     for molecule in self.molecules:
-      moietys.extend(([m_s.moiety 
-        for m_s in molecule.getMoietyStoichiometrys()]))
+      try:
+        new_moietys = ([m_s.moiety 
+          for m_s in molecule.getMoietyStoichiometrys()])
+      except ValueError:
+        new_moietys = [Moiety(molecule.name)]
+      moietys.extend(new_moietys)
     return util.uniqueify(moietys)
 
   def _getMolecules(self):
