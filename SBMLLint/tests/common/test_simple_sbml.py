@@ -40,6 +40,8 @@ class TestSimpleSBML(unittest.TestCase):
     self.assertEqual(len(simple.molecules), len(simple.moietys))
 
   def testInitialize2(self):
+    if IGNORE_TEST:
+      return
     self.simple = SimpleSBML()
     model_ref = "MODEL0568648427_url.xml"
     path = os.path.join(cn.DATA_DIR, model_ref)
@@ -55,6 +57,8 @@ class TestSimpleSBML(unittest.TestCase):
     self.assertIsNone(self.simple.getMolecule(NO_NAME))
 
   def testAdd(self):
+    if IGNORE_TEST:
+      return
     def test():
       self.assertEqual(len(self.simple.reactions), 2)
       for reaction in [reaction0, reaction1]:
@@ -69,6 +73,8 @@ class TestSimpleSBML(unittest.TestCase):
     test()
 
   def testGetReaction(self):
+    if IGNORE_TEST:
+      return
     reaction = self.simple.reactions[0]
     label = reaction.label
     reaction1 = self.simple.getReaction(label)
@@ -81,6 +87,8 @@ class TestFunctions(unittest.TestCase):
     pass
 
   def testModelIterator(self):
+    if IGNORE_TEST:
+      return
     itr = simple_sbml.modelIterator(final=1)
     for item in itr:
       model = item.model

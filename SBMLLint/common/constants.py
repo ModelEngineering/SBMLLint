@@ -5,6 +5,13 @@ import os
 
 ############### COLUMN NAMES ##############
 FILENAME = "filename"
+IS_STRUCTURED = "is_structured"
+NUM_BOUNDARY_REACTIONS = "num_boundary_reactions"
+TOTAL_REACTIONS = "total_reactions"
+NUM_IMBALANCED_REACTIONS = "num_imbalanced_reactions"
+NUM_BALANCED_REACTIONS = "num_balanced_reactions"
+FRAC_BALANCED_REACTIONS = "frac_balanced_reactions"
+FRAC_BOUNDARY_REACTIONS = "frac_Boundary_reactions"
 
 ############### TESTS #####################
 TEST_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
