@@ -55,7 +55,11 @@ class TelluriumSandbox(object):
     import tellurium as te
     # Convert input to string.
     inputs = self.__class__._convert(input_string)
-    rr = te.loada(inputs)
+    # Try different ways to load the model
+    try:
+      rr = te.loada(inputs)
+    except:
+      rr = te.loadSBMLModel(inputs)
     sbml = rr.getSBML()
     sys.stdout.writelines(sbml)
 
