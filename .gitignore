@@ -10,6 +10,8 @@ __pycache__/
 
 # Data directory
 data/*.xml
+data/biomodels/*.xml
+data/bigg/*.xml
 
 # Distribution / packaging
 .Python
