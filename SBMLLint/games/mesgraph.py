@@ -32,6 +32,7 @@ class MESGraph(nx.DiGraph):
     self.soms = self.initializeSOMs(simple)
     self.add_nodes_from(self.soms)
     self.identifier = self.makeId()
+    self.multimulti_reactions = []
     self.type_one_error = False
     self.type_two_error = False
     self.type_one_errors = []
@@ -88,7 +89,7 @@ class MESGraph(nx.DiGraph):
     """
     Process a 1-1 reaction to merge nodes.
     If no need to merge, return None.
-    :param Reaction reactions:
+    :param Reaction reaction:
     """
     if reaction.category != cn.REACTION_1_1:
       pass
@@ -120,7 +121,12 @@ class MESGraph(nx.DiGraph):
     else:
       destination = [reaction.reactants[0].molecule]
       source = [product.molecule for product in reaction.products]
-      self.addArc(source, destination, reaction)
+      arcs = itertools.product(source, destination)
+      for arc in arcs:
+        if not self.checkTypeOneError(arc, reaction):
+          som_source = self.getNode(arc[0])
+          som_destination = self.getNode(arc[1])
+          self.addArc(som_source, som_destination, reaction)
       self.identifier = self.makeId()
 
   def processMultiUniReaction(self, reaction):
@@ -136,31 +142,38 @@ class MESGraph(nx.DiGraph):
     else:
       destination = [reaction.products[0].molecule]
       source = [reactant.molecule for reactant in reaction.reactants]
-      self.addArc(source, destination, reaction)
+      arcs = itertools.product(source, destination)
+      for arc in arcs:
+        if not self.checkTypeOneError(arc, reaction):
+          som_source = self.getNode(arc[0])
+          som_destination = self.getNode(arc[1])
+          self.addArc(som_source, som_destination, reaction)
       self.identifier = self.makeId()
 
-  def addArc(self, source, destination, reaction):
+  def addMultiMultiReaction(self, reaction=None):
+    if reaction not in self.multimulti_reactions:
+      self.multimulti_reactions.append(reaction)
+
+  def processMultiMultiReaction(self, reaction):
+    pass
+
+  def addArc(self, arc_source, arc_destination, reaction):
     """
-    Add arcs (edges) using two molecule lists (source/destination).
-    :param list-Molecule source:
-    :param list-Molecule destination:
+    Add a single arc (edge) using two SOMs and reaction.
+    :param SOM arc_source:
+    :param SOM arc_destination:
+    :param Reaction reaction:
     """
-    arcs = itertools.product(source, destination)
-    for arc in arcs:
-      if not self.checkTypeOneError(arc, reaction):
-        arc_source = self.getNode(arc[0])
-        arc_destination = self.getNode(arc[1])
-        # if there is already a preious reaction,
-        if self.has_edge(arc_source, arc_destination):
-          reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
-          # if reaction.label is not already included in the attribute,
-          if reaction.label not in set(reaction_label):
-            reaction_label = reaction_label + [reaction.label]
-        else:
-          reaction_label = [reaction.label]
-        self.add_edge(arc_source, arc_destination, reaction=reaction_label)
-      else:
-        continue
+    # if there is already a preious reaction,
+    if self.has_edge(arc_source, arc_destination):
+      reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
+      # if reaction.label is not already included in the attribute,
+      if reaction.label not in set(reaction_label):
+        reaction_label = reaction_label + [reaction.label]
+    else:
+      reaction_label = [reaction.label]
+    # overwrite the edge with new reactions set
+    self.add_edge(arc_source, arc_destination, reaction=reaction_label)
 
   def getSOMPath(self, som, mole1, mole2):
     """
@@ -359,19 +372,22 @@ class MESGraph(nx.DiGraph):
           self.type_two_error = True
       return True
 
-  def analyze(self, reactions, error_details=True):
+  def analyze(self, reactions=None, error_details=True):
     """
     Sort list of reactions and process them.
     Add arcs or sending error messages using
     checkTypeOneError or checkTypeTwoError.
     :param list-Reaction reactions:
     """
+    if reactions is None:
+      reactions = self.simple.reactions
     # Associate the reaction category with the function
     # that processes that category
     reaction_dic = {
         cn.REACTION_1_1: self.processUniUniReaction,
         cn.REACTION_1_n: self.processUniMultiReaction,
         cn.REACTION_n_1: self.processMultiUniReaction,
+        cn.REACTION_n_n: self.addMultiMultiReaction,
         }
     # Process each type of reaction
     for category in reaction_dic.keys():
@@ -418,5 +434,8 @@ class MESGraph(nx.DiGraph):
             nodes2.popleft()
             reactions.popleft()
         print("------------------------------------")
+    if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
+      print("No mass balance error found.")
     #
+    self.identifier = self.makeId()
     return self

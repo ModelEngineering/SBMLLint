@@ -125,15 +125,14 @@ class TestMESGraph(unittest.TestCase):
   def testAddArc(self):
     if IGNORE_TEST:
       return
-    source = [self.simple.getMolecule(FRU), 
-        self.simple.getMolecule(GLY)]
-    destination = [self.simple.getMolecule(E2)]
+    source = [self.mesgraph.getNode(self.simple.getMolecule(FRU)), 
+              self.mesgraph.getNode(self.simple.getMolecule(GLY))]
+    destination = [self.mesgraph.getNode(self.simple.getMolecule(E2))]
     dummy_reaction = self.simple.reactions[INEQUAL2]
-    self.mesgraph.addArc(source, destination, dummy_reaction)
-    arc1 = [self.mesgraph.getNode(source[0]), 
-            self.mesgraph.getNode(destination[0])]
-    arc2 = [self.mesgraph.getNode(source[1]), 
-            self.mesgraph.getNode(destination[0])]
+    self.mesgraph.addArc(source[0], destination[0], dummy_reaction)
+    self.mesgraph.addArc(source[1], destination[0], dummy_reaction)
+    arc1 = [source[0], destination[0]]
+    arc2 = [source[1], destination[0]]
     self.assertTrue(self.mesgraph.has_edge(arc1[0], arc1[1]))
     self.assertTrue(self.mesgraph.has_edge(arc2[0], arc2[1]))
     reaction_label1 = self.mesgraph.get_edge_data(arc1[0], arc1[1])[cn.REACTION][0]
