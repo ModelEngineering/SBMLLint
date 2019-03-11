@@ -186,7 +186,7 @@ class MESGraph(nx.DiGraph):
     if reaction not in self.multimulti_reactions:
       self.multimulti_reactions.append(reaction)
 
-  def addTypeThreeError(som1, som2, reaction):
+  def addTypeThreeError(self, som1, som2, reaction):
     """
     Add Type III Error components to self.type_three_errors
     All components of resulting PathComponents are str
@@ -212,7 +212,7 @@ class MESGraph(nx.DiGraph):
       flag = True
     return flag  
 
-  def checkTypeThreeError(som1, som2, reaction):
+  def checkTypeThreeError(self, som1, som2, reaction):
     """
     Check type three error, which is when
     we cannot merge nodes because there is an arc.
@@ -238,8 +238,8 @@ class MESGraph(nx.DiGraph):
     # need to redude the reaction first
     flag = False
     reduced_reaction = reaction
-    reactant_soms = list({self.getNode(mole) for mole in reduced_reaction.reactants})
-    product_soms = list({self.getNode(mole) for mole in reduced_reaction.products})
+    reactant_soms = list({self.getNode(ms.molecule) for ms in reduced_reaction.reactants})
+    product_soms = list({self.getNode(ms.molecule) for ms in reduced_reaction.products})
     if (len(reactant_soms)>1) and (len(product_soms)>1):
       return False
     #
@@ -546,6 +546,12 @@ class MESGraph(nx.DiGraph):
             nodes2.popleft()
             reactions.popleft()
         print("------------------------------------")
+      print("************************************")
+      #
+      for multimulti in self.multimulti_reactions:
+        self.processMultiMultiReaction(multimulti)
+      if self.type_three_errors:
+        print("We have type III errors\n", self.type_three_errors)
     #
     self.identifier = self.makeId()
     return self
