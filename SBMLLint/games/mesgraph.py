@@ -214,9 +214,11 @@ class MESGraph(nx.DiGraph):
 
   def checkTypeThreeError(self, som1, som2, reaction):
     """
-    Check type three error, which is when
-    we cannot merge nodes because there is an arc.
+    Check type III error, which is when
+    we cannot merge two nodes because there is an arc.
     Add the error to type three error. 
+    :param SOM som1:
+    :param SOM som2:
     :param reaction Reaction:
     :return bool:
     """
@@ -228,6 +230,21 @@ class MESGraph(nx.DiGraph):
       return True
     else:
       return False
+
+  # def checkTypeFourError(self, som1, som2, reaction):
+  #   """
+  #   Check type IV error, which is when
+  #   we cannot add an arc because there is an arc.
+  #   Add the error to type three error.
+  #   :param SOM som1:
+  #   :param SOM som2:
+  #   :param reaction Reaction:
+  #   :return bool:
+  #   """
+  #   if som1 == som2:
+  #     self.addTypeFourError(som1, som2, reaction)
+  #     return True
+  #   return False
 
   def processMultiMultiReaction(self, reaction):
     """
@@ -253,19 +270,23 @@ class MESGraph(nx.DiGraph):
           if not self.checkTypeThreeError(reactant_som, product_som, reaction):
             self.mergeNodes(reactant_som, product_som, reaction)
           flag = True
-
-    #   elif reactant_stoichiometry > product_stoichiometry:
-    #     # meaning add arc from reactant_som -> product_som
-    #     # check type IV error and addArc
-    #     if reactant_som == product_som:
-    #       self.
-    #     else:
-    #       self.addArc(reactant_som, product_som, reaction)
-    #   else:
-    #     # meaning add arc from product_som -> reactant_som
-    #     # checck type IV error and addArc
-    #   flag = True
-    # return flag
+      # Add reactant_som -> product_som
+      elif reactant_stoichiometry > product_stoichiometry:
+        self.addArc(reactant_som, product_som, reaction)
+      # Add product_som -> reactant_som
+      else:
+        self.addArc(product_som, reactant_som, reaction)
+      return True
+    else:
+      if (len(reactant_soms)==1) and (len(product_soms)>1):
+        som_arcs = itertools.product(product_soms, reactant_soms)
+      elif (len(reactant_soms)>1) and (len(product_soms)==1):
+        som_arcs = itertools.product(reactant_soms, product_soms)
+      for arc in som_arcs:
+        self.addArc(arc[0], arc[1], reaction)
+      return True
+    # return false if the reaction was not processed
+    return False
 
   def addArc(self, arc_source, arc_destination, reaction):
     """
@@ -431,8 +452,8 @@ class MESGraph(nx.DiGraph):
           nodes2.append(node2)
           reaction_labels.append(reaction.label)
       error_cycle.append(cn.PathComponents(node1=nodes1, 
-                                        node2=nodes2,
-                                        reactions=reaction_labels))
+                                           node2=nodes2,
+                                           reactions=reaction_labels))
     som1 = cycle[-1]
     som2 = cycle[0]
     som1_moles = {mole.name for mole in list(som1.molecules)}
@@ -548,10 +569,10 @@ class MESGraph(nx.DiGraph):
         print("------------------------------------")
       print("************************************")
       #
-      for multimulti in self.multimulti_reactions:
-        self.processMultiMultiReaction(multimulti)
-      if self.type_three_errors:
-        print("We have type III errors\n", self.type_three_errors)
+    for multimulti in self.multimulti_reactions:
+      self.processMultiMultiReaction(multimulti)
+    if self.type_three_errors:
+      print("We have type III errors\n", self.type_three_errors)
     #
     self.identifier = self.makeId()
     return self
