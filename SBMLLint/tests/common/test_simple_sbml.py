@@ -39,14 +39,6 @@ class TestSimpleSBML(unittest.TestCase):
     self.assertEqual(len(simple.reactions), cn.NUM_REACTIONS)
     self.assertEqual(len(simple.molecules), len(simple.moietys))
 
-  def testInitialize2(self):
-    if IGNORE_TEST:
-      return
-    self.simple = SimpleSBML()
-    model_ref = "MODEL0568648427_url.xml"
-    path = os.path.join(cn.DATA_DIR, model_ref)
-    self.simple.initialize(path)
-
   def testGetMolecule(self):
     if IGNORE_TEST:
       return
