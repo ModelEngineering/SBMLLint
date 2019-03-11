@@ -178,11 +178,94 @@ class MESGraph(nx.DiGraph):
       self.identifier = self.makeId()
 
   def addMultiMultiReaction(self, reaction=None):
+    """
+    Add a multi-multi reaction to self.multimulti_reactions
+    :param reaction Reaction:
+    :return bool:
+    """
     if reaction not in self.multimulti_reactions:
       self.multimulti_reactions.append(reaction)
 
+  def addTypeThreeError(som1, som2, reaction):
+    """
+    Add Type III Error components to self.type_three_errors
+    All components of resulting PathComponents are str
+    :param SOM som1:
+    :param SOM som2:
+    :param Reaction reaction:
+    :return bool flag:
+    """
+    flag = False
+    for component in self.type_three_errors:
+      if (component.node1==som1) and (component.node2==som2):
+        new_component = cn.PathComponents(node1=som1, 
+                                          node2=som2,
+                                          reactions=component.reactions+[reaction.label])
+        self.type_three_errors.remove(component)
+        self.type_three_errors.append(new_component)
+        flag = True
+        break
+    if not flag:
+      self.type_three_errors.append(cn.PathComponents(node1=som1, 
+                                                      node2=som2,
+                                                      reactions=[reaction.label]))
+      flag = True
+    return flag  
+
+  def checkTypeThreeError(som1, som2, reaction):
+    """
+    Check type three error, which is when
+    we cannot merge nodes because there is an arc.
+    Add the error to type three error. 
+    :param reaction Reaction:
+    :return bool:
+    """
+    if self.has_edge(som1, som2):
+      self.addTypeThreeError(som1, som2, reaction)
+      return True
+    elif self.has_edge(som2, som1):
+      self.addTypeThreeError(som2, som1, reaction)
+      return True
+    else:
+      return False
+
   def processMultiMultiReaction(self, reaction):
-    pass
+    """
+    Process a multi-multi reaction.
+    :param Reaction reaction:
+    :return bool flag:
+    """
+    # need to redude the reaction first
+    flag = False
+    reduced_reaction = reaction
+    reactant_soms = list({self.getNode(mole) for mole in reduced_reaction.reactants})
+    product_soms = list({self.getNode(mole) for mole in reduced_reaction.products})
+    if (len(reactant_soms)>1) and (len(product_soms)>1):
+      return False
+    #
+    if (len(reactant_soms)==1) and (len(product_soms)==1):
+      reactant_stoichiometry = sum([ms.stoichiometry for ms in reaction.reactants])
+      product_stoichiometry = sum([ms.stoichiometry for ms in reaction.products])
+      reactant_som = reactant_soms[0]
+      product_som = product_soms[0]
+      if reactant_stoichiometry == product_stoichiometry:
+        if reactant_som != product_som:
+          if not self.checkTypeThreeError(reactant_som, product_som, reaction):
+            self.mergeNodes(reactant_som, product_som, reaction)
+          flag = True
+
+    #   elif reactant_stoichiometry > product_stoichiometry:
+    #     # meaning add arc from reactant_som -> product_som
+    #     # check type IV error and addArc
+    #     if reactant_som == product_som:
+    #       self.
+    #     else:
+    #       self.addArc(reactant_som, product_som, reaction)
+    #   else:
+    #     # meaning add arc from product_som -> reactant_som
+    #     # checck type IV error and addArc
+    #   flag = True
+    # return flag
 
   def addArc(self, arc_source, arc_destination, reaction):
     """
@@ -280,16 +363,16 @@ class MESGraph(nx.DiGraph):
     for component in self.type_one_errors:
       if (component.node1==mole1.name) and (component.node2==mole2.name):
         new_component = cn.PathComponents(node1=mole1.name, 
-                                       node2=mole2.name,
-                                       reactions=component.reactions+[reaction.label])
+                                          node2=mole2.name,
+                                          reactions=component.reactions+[reaction.label])
         self.type_one_errors.remove(component)
         self.type_one_errors.append(new_component)
         flag = True
         break
     if not flag:
       self.type_one_errors.append(cn.PathComponents(node1=mole1.name, 
-                                                 node2=mole2.name,
-                                                 reactions=[reaction.label]))
+                                                    node2=mole2.name,
+                                                    reactions=[reaction.label]))
       flag = True
     return flag
 
