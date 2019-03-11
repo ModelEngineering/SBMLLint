@@ -57,7 +57,7 @@ REACTION_BOUNDARY = "reaction_boundary"
 ReactionCategory = collections.namedtuple('ReactionCategory',
     'category predicate')
 ReactionComponents = collections.namedtuple('ReactionComponents',
-    'label reactants products, category')
+    'label reactants products')
 
 # EmptySet in a reaction (ex. curated model 006)
 EMPTYSET = "EmptySet"

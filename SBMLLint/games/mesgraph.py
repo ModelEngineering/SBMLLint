@@ -246,6 +246,56 @@ class MESGraph(nx.DiGraph):
   #     return True
   #   return False
 
+  def reduceReaction(self, reaction):
+    """
+    Reduce the given reaction 
+    :param Reaction reaction:
+    :return False/Reaction reaction:
+    """
+    if reaction.category != cn.REACTION_n_n:
+        return False
+    # Reduces the reaction by examining for each SOM
+    for som in list(self.nodes):
+      reactants_in = collections.deque([mole_stoich for mole_stoich in  
+                           reaction.reactants if 
+                           self.getNode(mole_stoich.molecule)==som])
+      reactants_out = [mole_stoich for mole_stoich in  
+                      reaction.reactants if 
+                      self.getNode(mole_stoich.molecule)!=som]
+      products_in = collections.deque([mole_stoich for mole_stoich in  
+                          reaction.products if 
+                          self.getNode(mole_stoich.molecule)==som])
+      products_out = [mole_stoich for mole_stoich in  
+                     reaction.products if 
+                      self.getNode(mole_stoich.molecule)!=som]
+      #
+      while reactants_in and products_in:
+        reactant = reactants_in[0]
+        product = products_in[0]
+        if reactant.stoichiometry > product.stoichiometry:
+          reactants_in[0] = MoleculeStoichiometry(reactant.molecule,
+                                                  reactant.stoichiometry - product.stoichiometry)
+          products_in.popleft()
+        elif reactant.stoichiometry < product.stoichiometry:
+          products_in[0] = MoleculeStoichiometry(product.molecule,
+                                                 product.stoichiometry - reactant.stoichiometry)
+          reactants_in.popleft()
+        else:
+          reactants_in.popleft()
+          products_in.popleft()
+      reactants = list(reactants_in) + reactants_out
+      products = list(products_in) + products_out
+    #  
+    if (len(reaction.reactants) > len(reactants)) | \
+    (len(reaction.products) > len(products)):
+      reduced = True
+      reaction.reactants = reactants
+      reaction.products = products
+    #
+    reaction.identifier = reaction.makeIdentifier()
+    reaction.category = reaction._getCategory() 
+    return reaction
+
   def processMultiMultiReaction(self, reaction):
     """
     Process a multi-multi reaction.
@@ -253,7 +303,7 @@ class MESGraph(nx.DiGraph):
     :return bool flag:
     """
     # need to redude the reaction first
-    flag = False
+
     reduced_reaction = reaction
     reactant_soms = list({self.getNode(ms.molecule) for ms in reduced_reaction.reactants})
     product_soms = list({self.getNode(ms.molecule) for ms in reduced_reaction.products})
@@ -269,7 +319,6 @@ class MESGraph(nx.DiGraph):
         if reactant_som != product_som:
           if not self.checkTypeThreeError(reactant_som, product_som, reaction):
             self.mergeNodes(reactant_som, product_som, reaction)
-          flag = True
       # Add reactant_som -> product_som
       elif reactant_stoichiometry > product_stoichiometry:
         self.addArc(reactant_som, product_som, reaction)
@@ -573,6 +622,8 @@ class MESGraph(nx.DiGraph):
       self.processMultiMultiReaction(multimulti)
     if self.type_three_errors:
       print("We have type III errors\n", self.type_three_errors)
+    else:
+      print("Unfortunately(?), We don't have type III errors")
     #
     self.identifier = self.makeId()
     return self
