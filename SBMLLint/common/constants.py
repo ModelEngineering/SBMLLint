@@ -95,7 +95,7 @@ PathComponents = collections.namedtuple('PathComponents',
 # Where data files are stored by default
 DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.dirname(DATA_DIR)
-DATA_DIR = os.path.join(DATA_DIR, "data")
+DATA_DIR = os.path.join(DATA_DIR, "data/biomodels")
 ANALYSIS_STRUCTURED_NAMES_DIR = os.path.dirname(DATA_DIR)
 ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
     ANALYSIS_STRUCTURED_NAMES_DIR, "analysis")
