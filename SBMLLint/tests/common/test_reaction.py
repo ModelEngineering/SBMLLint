@@ -33,6 +33,10 @@ class TestReaction(unittest.TestCase):
     identifier2 = self.reaction.getId(is_include_kinetics=False)
     self.assertGreater(len(identifier1), len(identifier2))
     self.assertFalse(cn.KINETICS_SEPARATOR in identifier2)
+    identifier3 = self.reaction.getId(is_include_kinetics=False,
+        is_include_label=False)
+    self.assertGreater(len(identifier2), len(identifier3))
+    self.assertFalse(cn.LABEL_SEPARATOR in identifier3)
 
   def testConstructor(self):
     if IGNORE_TEST:

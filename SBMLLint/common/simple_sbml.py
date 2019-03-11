@@ -63,7 +63,7 @@ class SimpleSBML(object):
       xml = util.getXML(model_reference)
       reader = tesbml.SBMLReader()
       document = reader.readSBMLFromString(xml)
-      util.checkSBMLDocument(document)
+      util.checkSBMLDocument(document, model_reference=model_reference)
       model = document.getModel()
     # Do the initializations
     self.reactions = self._getReactions(model)

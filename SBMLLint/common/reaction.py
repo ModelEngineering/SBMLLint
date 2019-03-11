@@ -63,21 +63,23 @@ class Reaction(object):
       result.append(MoleculeStoichiometry(molecule, stoich))
     return result
 
-  def getId(self, is_include_kinetics=True):
+  def getId(self, is_include_kinetics=True, is_include_label=True):
     """
     Constructs an ID that may be a substring
     of the the full reaction identifier.
     :param bool is_include_kinetics: Include the kinetics law
     :return str:
     """
-    if is_include_kinetics:
-      return self.identifier
-    else:
-      pos = self.identifier.find(cn.KINETICS_SEPARATOR)
-      if pos < 0:
-        return self.identifier
-      else:
-        return self.identifier[:pos]
+    result = self.identifier
+    if not is_include_kinetics:
+      pos = result.find(cn.KINETICS_SEPARATOR)
+      if pos > 0:
+        result = result[:pos]
+    if not is_include_label:
+      pos = result.find(cn.LABEL_SEPARATOR)
+      if pos > 0:
+        result = result[pos+2:]  # Eliminate the separator and space
+    return result
 
   def makeIdentifier(self, is_include_kinetics=True):
     """
