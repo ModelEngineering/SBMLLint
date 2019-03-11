@@ -37,6 +37,7 @@ class MESGraph(nx.DiGraph):
     self.type_two_error = False
     self.type_one_errors = []
     self.type_two_errors = []
+    self.type_three_errors = []
 
   def __repr__(self):
     return self.identifier
@@ -85,6 +86,31 @@ class MESGraph(nx.DiGraph):
           return som
     return False
 
+  def mergeNodes(self, som1, som2, reaction):
+    """
+    Merge two nodes (SOMs).
+    Update arcs if applicable. 
+    :param SOM som1:
+    :param SOM som2:
+    :param Reaction reaction:
+    :return SOM new_som:
+    """
+    new_som = som1.merge(som2)
+    new_som.reactions.add(reaction)
+    for som in [som1, som2]:
+      for edge in list(self.in_edges(som)):
+        remaining_som = edge[0]
+        reaction_label = self.get_edge_data(edge[0], edge[1])[cn.REACTION]
+        self.add_edge(remaining_som, new_som, reaction=reaction_label)  
+      for edge in list(self.out_edges(som)):
+        remaining_som = edge[1]
+        reaction_label = self.get_edge_data(edge[0], edge[1])[cn.REACTION]
+        self.add_edge(new_som, remaining_som, reaction=reaction_label) 
+    self.remove_nodes_from([som1, som2])
+    if not self.has_node(new_som):
+      self.add_node(new_som)
+    return new_som
+
   def processUniUniReaction(self, reaction):
     """
     Process a 1-1 reaction to merge nodes.
@@ -99,12 +125,13 @@ class MESGraph(nx.DiGraph):
       if reactant_som == product_som:
         return None
       else:
-        new_som = reactant_som.merge(product_som)
-        new_som.reactions.add(reaction)
-        # TODO: if there are edges, need to also check them
-        self.remove_node(reactant_som)
-        self.remove_node(product_som)
-        self.add_node(new_som)
+        # new_som = reactant_som.merge(product_som)
+        # new_som.reactions.add(reaction)
+        # # TODO: if there are edges, need to also check them: self.mergeNodes(som1, som2, reaction)
+        # self.remove_node(reactant_som)
+        # self.remove_node(product_som)
+        # self.add_node(new_som)
+        new_som = self.mergeNodes(reactant_som, product_som, reaction)
         self.identifier = self.makeId()
         return new_som
 
@@ -398,7 +425,9 @@ class MESGraph(nx.DiGraph):
     self.checkTypeTwoError()    
     #
     if error_details:
-      # print("Type I Errors:", self.type_one_errors)
+      if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
+        print("No mass balance error found.")
+      #
       for error_path in self.type_one_errors:
         self.printSOMPath(error_path.node1, error_path.node2)
         print("\nHowever, the following reaction(s)") 
@@ -434,8 +463,6 @@ class MESGraph(nx.DiGraph):
             nodes2.popleft()
             reactions.popleft()
         print("------------------------------------")
-    if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
-      print("No mass balance error found.")
     #
     self.identifier = self.makeId()
     return self
