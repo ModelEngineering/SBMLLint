@@ -39,6 +39,7 @@ class MESGraph(nx.DiGraph):
     self.type_two_errors = []
     self.type_three_errors = []
     self.type_four_errors = []
+    self.type_five_errors = []
 
   def __repr__(self):
     return self.identifier
@@ -277,6 +278,8 @@ class MESGraph(nx.DiGraph):
         reaction.reactants = reactants
         reaction.products = products
     #
+    # print("Reduced reactants, ", reaction.reactants)
+    # print("Reduced products, ", reaction.products)
     reaction.identifier = reaction.makeIdentifier()
     reaction.category = reaction._getCategory() 
     # reduced_reaction = cn.ReactionComponents(label = reaction.label, reactants=reactants, products=products)
@@ -304,7 +307,7 @@ class MESGraph(nx.DiGraph):
     reduced_reaction = self.reduceReaction(reaction)
     if not reduced_reaction:
       return None
-    print("reduced_reaction", reduced_reaction.makeIdentifier(is_include_kinetics=False))
+    # print("reduced_reaction", reduced_reaction.makeIdentifier(is_include_kinetics=False))
     # if reduced reaction only has one side
     if len(reduced_reaction.reactants)==0 or len(reduced_reaction.products)==0:
       self.type_four_errors.append(reduced_reaction)
@@ -560,6 +563,25 @@ class MESGraph(nx.DiGraph):
           self.type_two_error = True
       return True
 
+  def checkTypeFiveError(self):
+    """
+    Check Type V Error (cycles) of a MESGraph.
+    If there is at least one cycle, 
+    add cycle to self.type_five_errors.
+    The biggest difference between type II error
+    is that type five is for multi-multi reactions,
+    so the cycle is reported by SOM-level. 
+    :return bool:
+    """
+    graph = nx.DiGraph()
+    graph.add_edges_from(self.edges)
+    cycles = list(nx.simple_cycles(graph))
+    if len(cycles) == 0:
+      return False
+    else:
+      self.type_five_errors = cycles
+      return True
+
   def analyze(self, reactions=None, error_details=True):
     """
     Sort list of reactions and process them.
@@ -587,7 +609,7 @@ class MESGraph(nx.DiGraph):
     #
     if error_details:
       if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
-        print("No mass balance error found.")
+        print("No type one or two error found.")
       #
       for error_path in self.type_one_errors:
         self.printSOMPath(error_path.node1, error_path.node2)
@@ -627,8 +649,27 @@ class MESGraph(nx.DiGraph):
       print("************************************")
     # Process multi-multi reactions only if there's no elementary errors
     if len(self.type_one_errors)==0 and len(self.type_two_errors)==0:
-      for multimulti in self.multimulti_reactions:
-        self.processMultiMultiReaction(multimulti)
+      sub_multimulti = self.multimulti_reactions
+      unsuccessful_load = 0
+      while self.multimulti_reactions:
+        flag_loop = [False] * len(self.multimulti_reactions)
+        for idx, multimulti in enumerate(self.multimulti_reactions):
+          result = self.processMultiMultiReaction(multimulti)
+          if result is None:
+            print("This reaction returned None") 
+            print(multimulti)
+            pass
+          else:
+            flag_loop[idx] = result
+        # if nothing was processed, quit the while loop
+        if sum(flag_loop)==0:
+          break
+        # if at least one was processed, subset unpressed reactions
+        self.multimulti_reactions = [self.multimulti_reactions[idx] for idx, tr \
+                                     in enumerate(flag_loop) if not tr]
+      # check SOM cycles (type V error)
+      self.checkTypeFiveError()
+      #
       if self.type_three_errors:
         print("We have type III errors\n", self.type_three_errors)
       else:
@@ -637,6 +678,10 @@ class MESGraph(nx.DiGraph):
         print("We have type IV errors\n", self.type_four_errors)
       else:
         print("We don't have type IV errors")
+      if self.type_five_errors:
+        print("We have type V errors\n", self.type_five_errors)
+      else:
+        print("We don't have type V errors")
     #
     self.identifier = self.makeId()
     return self
