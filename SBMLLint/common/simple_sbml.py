@@ -164,7 +164,7 @@ def readURL(url):
     result = do()
   return result
   
-def modelIterator(initial=0, final=1000, data_dir=cn.DATA_DIR):
+def modelIterator(initial=0, final=1000, data_dir=cn.BIOMODELS_DIR):
   """
   Iterates across all models in a data directory.
   :param int initial: initial file to process
