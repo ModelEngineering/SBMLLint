@@ -271,15 +271,15 @@ class MESGraph(nx.DiGraph):
           products_in.popleft()
       reactants = list(reactants_in) + reactants_out
       products = list(products_in) + products_out
-    #  
-    if (len(reaction.reactants) > len(reactants)) | \
-    (len(reaction.products) > len(products)):
-      reduced = True
-      reaction.reactants = reactants
-      reaction.products = products
+      #  
+      if (len(reaction.reactants) > len(reactants)) | \
+        (len(reaction.products) > len(products)):
+        reaction.reactants = reactants
+        reaction.products = products
     #
     reaction.identifier = reaction.makeIdentifier()
     reaction.category = reaction._getCategory() 
+    # reduced_reaction = cn.ReactionComponents(label = reaction.label, reactants=reactants, products=products)
     return reaction
 
   # def addTypeFourError(self, reduced_reaction):
@@ -301,8 +301,10 @@ class MESGraph(nx.DiGraph):
     :return bool flag:
     """
     # need to redude the reaction first
-
     reduced_reaction = self.reduceReaction(reaction)
+    if not reduced_reaction:
+      return None
+    print("reduced_reaction", reduced_reaction.makeIdentifier(is_include_kinetics=False))
     # if reduced reaction only has one side
     if len(reduced_reaction.reactants)==0 or len(reduced_reaction.products)==0:
       self.type_four_errors.append(reduced_reaction)
@@ -314,8 +316,8 @@ class MESGraph(nx.DiGraph):
       return False
     # if both sides have exactly one SOM
     if (len(reactant_soms)==1) and (len(product_soms)==1):
-      reactant_stoichiometry = sum([ms.stoichiometry for ms in reaction.reactants])
-      product_stoichiometry = sum([ms.stoichiometry for ms in reaction.products])
+      reactant_stoichiometry = sum([ms.stoichiometry for ms in reduced_reaction.reactants])
+      product_stoichiometry = sum([ms.stoichiometry for ms in reduced_reaction.products])
       reactant_som = reactant_soms[0]
       product_som = product_soms[0]
       if reactant_stoichiometry == product_stoichiometry:
@@ -328,6 +330,7 @@ class MESGraph(nx.DiGraph):
       # Add product_som -> reactant_som
       else:
         self.addArc(product_som, reactant_som, reaction)
+      self.identifier = self.makeId()
       return True
     # if one side has exactly one SOM, ther other sides multiple
     else: 
@@ -337,6 +340,7 @@ class MESGraph(nx.DiGraph):
         som_arcs = itertools.product(reactant_soms, product_soms)
       for arc in som_arcs:
         self.addArc(arc[0], arc[1], reaction)
+      self.identifier = self.makeId()
       return True
     # return none if none of above cases happened (should not happen)
     return None
@@ -621,17 +625,18 @@ class MESGraph(nx.DiGraph):
             reactions.popleft()
         print("------------------------------------")
       print("************************************")
-      #
-    for multimulti in self.multimulti_reactions:
-      self.processMultiMultiReaction(multimulti)
-    if self.type_three_errors:
-      print("We have type III errors\n", self.type_three_errors)
-    else:
-      print("We don't have type III errors")
-    if self.type_four_errors:
-      print("We have type IV errors\n", self.type_four_errors)
-    else:
-      print("We don't have type IV errors")
+    # Process multi-multi reactions only if there's no elementary errors
+    if len(self.type_one_errors)==0 and len(self.type_two_errors)==0:
+      for multimulti in self.multimulti_reactions:
+        self.processMultiMultiReaction(multimulti)
+      if self.type_three_errors:
+        print("We have type III errors\n", self.type_three_errors)
+      else:
+        print("We don't have type III errors")
+      if self.type_four_errors:
+        print("We have type IV errors\n", self.type_four_errors)
+      else:
+        print("We don't have type IV errors")
     #
     self.identifier = self.makeId()
     return self
