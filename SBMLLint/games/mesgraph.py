@@ -670,18 +670,19 @@ class MESGraph(nx.DiGraph):
       # check SOM cycles (type V error)
       self.checkTypeFiveError()
       #
-      if self.type_three_errors:
-        print("We have type III errors\n", self.type_three_errors)
-      else:
-        print("We don't have type III errors")
-      if self.type_four_errors:
-        print("We have type IV errors\n", self.type_four_errors)
-      else:
-        print("We don't have type IV errors")
-      if self.type_five_errors:
-        print("We have type V errors\n", self.type_five_errors)
-      else:
-        print("We don't have type V errors")
+      if error_details:
+        if self.type_three_errors:
+          print("We have type III errors\n", self.type_three_errors)
+        else:
+          print("We don't have type III errors")
+        if self.type_four_errors:
+          print("We have type IV errors\n", self.type_four_errors)
+        else:
+          print("We don't have type IV errors")
+        if self.type_five_errors:
+          print("We have type V errors\n", self.type_five_errors)
+        else:
+          print("We don't have type V errors")
     #
     self.identifier = self.makeId()
     return self
