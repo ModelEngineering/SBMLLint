@@ -16,7 +16,8 @@ OUTPUT_FILE = "analyze_structured_names.csv"
 DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_PATH = os.path.join(DIR, OUTPUT_FILE)
 # Miscellaneous
-EXCLUDE_LIST = ["node", "x", "species"]
+EXCLUDE_PREFIX = ["node", "x", "species"]
+EXCLUDE_SUFFIX = ["prime", "mrna", "prot"]
 
 def isStructuredName(name):
   """
@@ -25,7 +26,8 @@ def isStructuredName(name):
   Not a structured name if any of the following are True:
     No "_" present
     Last element is a number
-    First element is in EXCLUDE_LIST (case independent)
+    First element is in EXCLUDE_PREFIX (case independent)
+    Last element is in EXCLUDE_SUFFIX (case independent)
   """
   moietys = name.split(cn.MOIETY_SEPARATOR)
   if len(moietys) == 1:
@@ -36,7 +38,9 @@ def isStructuredName(name):
     return False
   except:
       pass
-  if any([moietys[0].lower() in s for s in EXCLUDE_LIST]):
+  if any([moietys[0].lower() in s for s in EXCLUDE_PREFIX]):
+    return False
+  if any([moietys[-1].lower() in s for s in EXCLUDE_SUFFIX]):
     return False
   return True
 
