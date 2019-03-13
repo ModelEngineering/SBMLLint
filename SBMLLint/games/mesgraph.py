@@ -277,9 +277,6 @@ class MESGraph(nx.DiGraph):
         (len(reaction.products) > len(products)):
         reaction.reactants = reactants
         reaction.products = products
-    #
-    # print("Reduced reactants, ", reaction.reactants)
-    # print("Reduced products, ", reaction.products)
     reaction.identifier = reaction.makeIdentifier()
     reaction.category = reaction._getCategory() 
     # reduced_reaction = cn.ReactionComponents(label = reaction.label, reactants=reactants, products=products)

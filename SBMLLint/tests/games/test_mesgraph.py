@@ -14,8 +14,8 @@ import re
 import tesbml
 import unittest
 
-
 IGNORE_TEST = False
+# Constants for simple and simple2, non multi-multi reactions
 INITIAL_NODES = 14
 INITIAL_EDGES = 0
 FINAL_NODES = 6
@@ -42,6 +42,17 @@ REACTION1 = "SHMTr"
 REACTION2 = "MTHFR"
 REACTION3 = "MTR"
 
+# Constants for simple3
+V1 = "v1"
+V2 = "v2"
+V3 = "v3"
+AMP = "AMP"
+ADP = "ADP"
+ATP = "ATP"
+
+#simple4, and simple5, multi-multi reactions
+
+
 
 #############################
 # Tests
@@ -55,6 +66,8 @@ class TestMESGraph(unittest.TestCase):
     # SimpleSBML with type II error
     self.simple2 = SimpleSBML()
     self.simple2.initialize(cn.TEST_FILE7)
+    self.simple3 = SimpleSBML()
+    self.simple3.initialize(cn.TEST_FILE10)
     self.mesgraph = MESGraph(self.simple)
   
   def testConstructor(self):
@@ -66,6 +79,11 @@ class TestMESGraph(unittest.TestCase):
     # molecules is a list of one-molecule sets
     molecules = [som.molecules for som in self.mesgraph.nodes]
     self.assertTrue({self.simple.getMolecule(DFG)} in molecules)
+    self.assertEqual(len(self.mesgraph.type_one_errors), 0)
+    self.assertEqual(len(self.mesgraph.type_two_errors), 0)
+    self.assertEqual(len(self.mesgraph.type_three_errors), 0)
+    self.assertEqual(len(self.mesgraph.type_four_errors), 0)
+    self.assertEqual(len(self.mesgraph.type_five_errors), 0)
 
   def testInitializeSOMs(self):
     if IGNORE_TEST:
@@ -91,6 +109,28 @@ class TestMESGraph(unittest.TestCase):
     self.assertEqual(type(aa_node), SOM)
     self.assertEqual(aa_node.molecules, {aa})
   
+  def testMergeNodes(self):
+    if IGNORE_TEST:
+      return
+    m3 = MESGraph(self.simple3)
+    v1_reaction = self.simple3.getReaction(V1)
+    v2_reaction = self.simple3.getReaction(V2)
+    amp_molecule = self.simple3.getMolecule(AMP)
+    adp_molecule = self.simple3.getMolecule(ADP)
+    atp_molecule = self.simple3.getMolecule(ATP)
+    amp_som = m3.getNode(amp_molecule)
+    adp_som = m3.getNode(adp_molecule)
+    atp_som = m3.getNode(atp_molecule)
+    ampatp_som = m3.mergeNodes(amp_som, atp_som, v1_reaction)
+    self.assertTrue(amp_molecule in ampatp_som.molecules)
+    self.assertTrue(atp_molecule in ampatp_som.molecules)
+    self.assertTrue(ampatp_som in m3.nodes)
+    # tests if anohter merge will remove previous nodes
+    ampadpatp_som = m3.mergeNodes(ampatp_som, adp_som, v2_reaction)
+    self.assertFalse(ampatp_som in m3.nodes)
+    self.assertFalse(adp_som in m3.nodes)  
+    self.assertTrue(ampadpatp_som in m3.nodes)
+
   def testProcessUniUniReaction(self):
     if IGNORE_TEST:
       return
@@ -122,6 +162,24 @@ class TestMESGraph(unittest.TestCase):
     for react in reacts:
       self.assertTrue(self.mesgraph.has_edge(react, mel))
   
+  def testAddMultiMultiReaction(self):
+    m3 = MESGraph(self.simple3)
+    v2 = self.simple3.getReaction(V2)
+    m3.addMultiMultiReaction(v2)
+    self.assertTrue(v2 in m3.multimulti_reactions)
+
+  def testAddTypeThreeError(self):
+    m3 = MESGraph(self.simple3)
+    v1 = self.simple3.getReaction(V1)
+    v2 = self.simple3.getReaction(V2)
+    v3 = self.simple3.getReaction(V3)
+    m3.processUniUniReaction(v1)
+    m3.processUniMultiReaction(v3)
+    amp = m3.getNode(self.simple3.getMolecule(AMP))
+    atp = m3.getNode(self.simple3.getMolecule(ATP))
+    m3.addTypeThreeError(amp, atp, v2)
+    self.assertTrue(len(m3.type_three_errors), 1)
+
   def testAddArc(self):
     if IGNORE_TEST:
       return
