@@ -41,17 +41,25 @@ MG = "MG"
 REACTION1 = "SHMTr"
 REACTION2 = "MTHFR"
 REACTION3 = "MTR"
-
-# Constants for simple3
+# Constants for simple3, Type III errors
 V1 = "v1"
 V2 = "v2"
 V3 = "v3"
 AMP = "AMP"
 ADP = "ADP"
 ATP = "ATP"
-
-#simple4, and simple5, multi-multi reactions
-
+# Constants for simple4, Tyep IV errors, error from reducing
+ATPASE = "ATPase"
+LOWER = "lower"
+FRU16P2 = "Fru16P2"
+#simple5, type V error, SOM cycle
+DIH = "DIH"
+DIN = "DIN"
+#simple6, no errors in multi-multi model
+R5 = "R5"
+R12 = "R12"
+AC = "Ac"
+ACP = "AcP"
 
 
 #############################
@@ -66,8 +74,18 @@ class TestMESGraph(unittest.TestCase):
     # SimpleSBML with type II error
     self.simple2 = SimpleSBML()
     self.simple2.initialize(cn.TEST_FILE7)
+    # SimpleSBML for type III error
     self.simple3 = SimpleSBML()
     self.simple3.initialize(cn.TEST_FILE10)
+    # SimpleSBML for type IV error
+    self.simple4 = SimpleSBML()
+    self.simple4.initialize(cn.TEST_FILE11)
+    # simple5 for type V error    
+    self.simple5 = SimpleSBML()
+    self.simple5.initialize(cn.TEST_FILE12)
+    # simple6 will test multi-multi model with no errors
+    self.simple6 = SimpleSBML()
+    self.simple6.initialize(cn.TEST_FILE3)
     self.mesgraph = MESGraph(self.simple)
   
   def testConstructor(self):
@@ -206,11 +224,50 @@ class TestMESGraph(unittest.TestCase):
   def testReduceReaction(self):
     if IGNORE_TEST:
       return
-    # m4 = MESGraph(self.simple4)
-    # for r in m4.simple.reactions:
-    #   print(r.makeIdentifier(is_include_kinetics=False))
-    # self.assertTrue(False)
+    m4 = MESGraph(self.simple4)
+    atpase = m4.simple.getReaction(ATPASE)
+    lower = m4.simple.getReaction(LOWER)
+    self.assertFalse(m4.reduceReaction(atpase))
+    m4.processUniUniReaction(atpase)
+    reduced_reaction = m4.reduceReaction(lower)
+    self.assertEqual(type(reduced_reaction), Reaction)
+    self.assertEqual(len(reduced_reaction.reactants), 1)
+    self.assertEqual(reduced_reaction.products, [])   
+    self.assertEqual(reduced_reaction.reactants[0].molecule.name, FRU16P2)
 
+  def testProcessMultiMultiReactions(self):
+    if IGNORE_TEST:
+      return
+    # type III error
+    m3 = MESGraph(self.simple3)
+    v1 = self.simple3.getReaction(V1)
+    v2 = self.simple3.getReaction(V2)
+    v3 = self.simple3.getReaction(V3)
+    m3.processUniUniReaction(v1)
+    m3.processUniMultiReaction(v3) 
+    self.assertEqual(m3.type_three_errors, [])
+    self.assertTrue(m3.processMultiMultiReaction(v2))
+    self.assertEqual(len(m3.type_three_errors), 1) 
+    # type IV error
+    m4 = MESGraph(self.simple4)
+    atpase = m4.simple.getReaction(ATPASE)
+    lower = m4.simple.getReaction(LOWER)
+    m4.processUniUniReaction(atpase)  
+    self.assertEqual(m4.type_four_errors, []) 
+    self.assertTrue(m4.processMultiMultiReaction(lower))
+    self.assertEqual(len(m4.type_four_errors), 1)
+    # no error
+    m6 = MESGraph(self.simple6)
+    r5 = m6.simple.getReaction(R5)
+    r12 = m6.simple.getReaction(R12)
+    m6.processUniUniReaction(r12)
+    ac = m6.getNode(self.simple6.getMolecule(AC))
+    acp = m6.getNode(self.simple6.getMolecule(ACP))
+    self.assertFalse(ac==acp)
+    self.assertTrue(m6.processMultiMultiReaction(r5))
+    ac = m6.getNode(self.simple6.getMolecule(AC))
+    acp = m6.getNode(self.simple6.getMolecule(ACP))
+    self.assertTrue(ac==acp)
 
   def testAddArc(self):
     if IGNORE_TEST:
@@ -269,8 +326,6 @@ class TestMESGraph(unittest.TestCase):
     self.assertFalse(len(self.mesgraph.type_two_errors)>0)
 
   def testCheckTypeTwoError(self):
-    # TODO: need to fix according to stoichiometry; 
-    # Need to use another model once Reaction class is fixed
     if IGNORE_TEST:
       return
     mesgraph2 = MESGraph(self.simple2)
@@ -295,6 +350,31 @@ class TestMESGraph(unittest.TestCase):
     mesgraph2.analyze(self.simple2.reactions)
     self.assertTrue(len(mesgraph2.type_one_errors)>0)
     self.assertTrue(len(mesgraph2.type_two_errors)>0)
+    #
+    mesgraph3 = MESGraph(self.simple3)
+    mesgraph3.analyze(self.simple3.reactions) 
+    self.assertTrue(len(mesgraph3.type_three_errors)>0) 
+    #
+    mesgraph4 = MESGraph(self.simple4)
+    mesgraph4.analyze(self.simple4.reactions) 
+    self.assertTrue(len(mesgraph4.type_four_errors)>0)  
+    #
+    mesgraph5 = MESGraph(self.simple5)
+    mesgraph5.analyze(self.simple5.reactions) 
+    dih = mesgraph5.getNode(self.simple5.getMolecule(DIH))
+    din = mesgraph5.getNode(self.simple5.getMolecule(DIN))
+    self.assertTrue(mesgraph5.has_edge(dih, din))  
+    self.assertTrue(mesgraph5.has_edge(din, dih)) 
+    self.assertEqual(len(mesgraph5.type_five_errors), 1)
+    #   
+    mesgraph6 = MESGraph(self.simple6)
+    mesgraph6.analyze(self.simple6.reactions) 
+    total_errors = len(mesgraph6.type_one_errors) + \
+                   len(mesgraph6.type_two_errors) + \
+                   len(mesgraph6.type_three_errors) + \
+                   len(mesgraph6.type_four_errors) +\
+                   len(mesgraph6.type_five_errors) 
+    self.assertTrue(total_errors==0)
 
 if __name__ == '__main__':
   unittest.main()

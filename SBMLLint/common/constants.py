@@ -32,6 +32,10 @@ TEST_FILE8 = os.path.join(TEST_DIR, "test_file8.xml")
 TEST_FILE9 = os.path.join(TEST_DIR, "test_file9.xml")
 # test_file10: originally "BIOMD0000000231_url.xml"
 TEST_FILE10 = os.path.join(TEST_DIR, "test_file10.xml")
+# test_file10: originally "BIOMD0000000253_url.xml"
+TEST_FILE11 = os.path.join(TEST_DIR, "test_file11.xml")
+# test_file12: originally "BIOMD0000000281_url.xml"
+TEST_FILE12 = os.path.join(TEST_DIR, "test_file12.xml")
 NUM_REACTIONS = 111
 NUM_PARAMETERS = 27
 MAX_REACTANTS = 10
