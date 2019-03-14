@@ -43,12 +43,13 @@ VALUE = "value"
 MOIETY = "moiety"
 
 #
+ARC_ARROW = "->"
+EQUAL = "="
+LABEL_SEPARATOR = ":"
+LESSTHAN = "<"
+KINETICS_SEPARATOR = ";"
 MOIETY_SEPARATOR = "_"
 MOIETY_DOUBLE_SEPARATOR = MOIETY_SEPARATOR + MOIETY_SEPARATOR
-KINETICS_SEPARATOR = ";"
-ARC_ARROW = "->"
-LESSTHAN = "<"
-EQUAL = "="
 
 # Reaction categories
 REACTION_1_1 = "reaction_1_1"
@@ -96,11 +97,10 @@ PathComponents = collections.namedtuple('PathComponents',
 
 # Directories and files
 # Where data files are stored by default
-DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_DIR = os.path.dirname(DATA_DIR)
-DATA_DIR = os.path.join(DATA_DIR, "data/biomodels")
-ANALYSIS_STRUCTURED_NAMES_DIR = os.path.dirname(DATA_DIR)
-ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
-    ANALYSIS_STRUCTURED_NAMES_DIR, "analysis")
+PROJECT_DIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(PROJECT_DIR)
+BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data/biomodels")
+ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(PROJECT_DIR, "analysis")
 ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
     ANALYSIS_STRUCTURED_NAMES_DIR, "structured_names")

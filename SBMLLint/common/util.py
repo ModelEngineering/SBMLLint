@@ -84,7 +84,7 @@ def uniqueify(collection):
       result.append(ele)
   return result
      
-def checkSBMLDocument(document): 
+def checkSBMLDocument(document, model_reference=""): 
   if (document.getNumErrors() > 0):
     raise ValueError("Errors in SBML document\n%s" 
         % model_reference)

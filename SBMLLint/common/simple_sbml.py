@@ -63,7 +63,7 @@ class SimpleSBML(object):
       xml = util.getXML(model_reference)
       reader = tesbml.SBMLReader()
       document = reader.readSBMLFromString(xml)
-      util.checkSBMLDocument(document)
+      util.checkSBMLDocument(document, model_reference=model_reference)
       model = document.getModel()
     # Do the initializations
     self.reactions = self._getReactions(model)
@@ -164,7 +164,7 @@ def readURL(url):
     result = do()
   return result
   
-def modelIterator(initial=0, final=1000, data_dir=cn.DATA_DIR):
+def modelIterator(initial=0, final=1000, data_dir=cn.BIOMODELS_DIR):
   """
   Iterates across all models in a data directory.
   :param int initial: initial file to process
