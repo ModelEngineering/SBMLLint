@@ -203,6 +203,14 @@ class TestMESGraph(unittest.TestCase):
     self.assertTrue(m3.checkTypeThreeError(adp, atp, v2))
     self.assertTrue(m3.checkTypeThreeError(atp, adp, v2))
 
+  def testReduceReaction(self):
+    if IGNORE_TEST:
+      return
+    # m4 = MESGraph(self.simple4)
+    # for r in m4.simple.reactions:
+    #   print(r.makeIdentifier(is_include_kinetics=False))
+    # self.assertTrue(False)
+
 
   def testAddArc(self):
     if IGNORE_TEST:
