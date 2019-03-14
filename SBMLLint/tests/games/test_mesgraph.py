@@ -163,12 +163,16 @@ class TestMESGraph(unittest.TestCase):
       self.assertTrue(self.mesgraph.has_edge(react, mel))
   
   def testAddMultiMultiReaction(self):
+    if IGNORE_TEST:
+      return
     m3 = MESGraph(self.simple3)
     v2 = self.simple3.getReaction(V2)
     m3.addMultiMultiReaction(v2)
     self.assertTrue(v2 in m3.multimulti_reactions)
 
   def testAddTypeThreeError(self):
+    if IGNORE_TEST:
+      return
     m3 = MESGraph(self.simple3)
     v1 = self.simple3.getReaction(V1)
     v2 = self.simple3.getReaction(V2)
@@ -177,8 +181,28 @@ class TestMESGraph(unittest.TestCase):
     m3.processUniMultiReaction(v3)
     amp = m3.getNode(self.simple3.getMolecule(AMP))
     atp = m3.getNode(self.simple3.getMolecule(ATP))
-    m3.addTypeThreeError(amp, atp, v2)
+    self.assertTrue(m3.addTypeThreeError(amp, atp, v2))
     self.assertTrue(len(m3.type_three_errors), 1)
+    error = m3.type_three_errors[0]
+    self.assertEqual(error.node1, amp)
+    self.assertEqual(error.node2, atp)
+    self.assertEqual(error.reactions, [v2.label])
+
+  def testCheckTypeThreeError(self):
+    if IGNORE_TEST:
+      return
+    m3 = MESGraph(self.simple3)
+    v1 = self.simple3.getReaction(V1)
+    v2 = self.simple3.getReaction(V2)
+    v3 = self.simple3.getReaction(V3)
+    m3.processUniUniReaction(v1)
+    adp = m3.getNode(self.simple3.getMolecule(ADP))
+    atp = m3.getNode(self.simple3.getMolecule(ATP))
+    self.assertFalse(m3.checkTypeThreeError(adp, atp, v3))
+    m3.processUniMultiReaction(v3) 
+    self.assertTrue(m3.checkTypeThreeError(adp, atp, v2))
+    self.assertTrue(m3.checkTypeThreeError(atp, adp, v2))
+
 
   def testAddArc(self):
     if IGNORE_TEST:
