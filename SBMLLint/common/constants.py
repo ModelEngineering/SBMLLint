@@ -30,6 +30,12 @@ TEST_FILE7 = os.path.join(TEST_DIR, "test_file7.xml")
 TEST_FILE8 = os.path.join(TEST_DIR, "test_file8.xml")
 # test_file8: originally curated_008
 TEST_FILE9 = os.path.join(TEST_DIR, "test_file9.xml")
+# test_file10: originally "BIOMD0000000231_url.xml"
+TEST_FILE10 = os.path.join(TEST_DIR, "test_file10.xml")
+# test_file10: originally "BIOMD0000000253_url.xml"
+TEST_FILE11 = os.path.join(TEST_DIR, "test_file11.xml")
+# test_file12: originally "BIOMD0000000281_url.xml"
+TEST_FILE12 = os.path.join(TEST_DIR, "test_file12.xml")
 NUM_REACTIONS = 111
 NUM_PARAMETERS = 27
 MAX_REACTANTS = 10
@@ -57,6 +63,8 @@ REACTION_n_n = "reaction_n_n"
 REACTION_BOUNDARY = "reaction_boundary"
 ReactionCategory = collections.namedtuple('ReactionCategory',
     'category predicate')
+ReactionComponents = collections.namedtuple('ReactionComponents',
+    'label reactants products')
 
 # EmptySet in a reaction (ex. curated model 006)
 EMPTYSET = "EmptySet"

@@ -32,10 +32,14 @@ class MESGraph(nx.DiGraph):
     self.soms = self.initializeSOMs(simple)
     self.add_nodes_from(self.soms)
     self.identifier = self.makeId()
+    self.multimulti_reactions = []
     self.type_one_error = False
     self.type_two_error = False
     self.type_one_errors = []
     self.type_two_errors = []
+    self.type_three_errors = []
+    self.type_four_errors = []
+    self.type_five_errors = []
 
   def __repr__(self):
     return self.identifier
@@ -84,11 +88,36 @@ class MESGraph(nx.DiGraph):
           return som
     return False
 
+  def mergeNodes(self, som1, som2, reaction):
+    """
+    Merge two nodes (SOMs).
+    Update arcs if applicable. 
+    :param SOM som1:
+    :param SOM som2:
+    :param Reaction reaction:
+    :return SOM new_som:
+    """
+    new_som = som1.merge(som2)
+    new_som.reactions.add(reaction)
+    for som in [som1, som2]:
+      for edge in list(self.in_edges(som)):
+        remaining_som = edge[0]
+        reaction_label = self.get_edge_data(edge[0], edge[1])[cn.REACTION]
+        self.add_edge(remaining_som, new_som, reaction=reaction_label)  
+      for edge in list(self.out_edges(som)):
+        remaining_som = edge[1]
+        reaction_label = self.get_edge_data(edge[0], edge[1])[cn.REACTION]
+        self.add_edge(new_som, remaining_som, reaction=reaction_label) 
+    self.remove_nodes_from([som1, som2])
+    if not self.has_node(new_som):
+      self.add_node(new_som)
+    return new_som
+
   def processUniUniReaction(self, reaction):
     """
     Process a 1-1 reaction to merge nodes.
     If no need to merge, return None.
-    :param Reaction reactions:
+    :param Reaction reaction:
     """
     if reaction.category != cn.REACTION_1_1:
       pass
@@ -98,12 +127,13 @@ class MESGraph(nx.DiGraph):
       if reactant_som == product_som:
         return None
       else:
-        new_som = reactant_som.merge(product_som)
-        new_som.reactions.add(reaction)
-        # TODO: if there are edges, need to also check them
-        self.remove_node(reactant_som)
-        self.remove_node(product_som)
-        self.add_node(new_som)
+        # new_som = reactant_som.merge(product_som)
+        # new_som.reactions.add(reaction)
+        # # TODO: if there are edges, need to also check them: self.mergeNodes(som1, som2, reaction)
+        # self.remove_node(reactant_som)
+        # self.remove_node(product_som)
+        # self.add_node(new_som)
+        new_som = self.mergeNodes(reactant_som, product_som, reaction)
         self.identifier = self.makeId()
         return new_som
 
@@ -120,7 +150,12 @@ class MESGraph(nx.DiGraph):
     else:
       destination = [reaction.reactants[0].molecule]
       source = [product.molecule for product in reaction.products]
-      self.addArc(source, destination, reaction)
+      arcs = itertools.product(source, destination)
+      for arc in arcs:
+        if not self.checkTypeOneError(arc, reaction):
+          som_source = self.getNode(arc[0])
+          som_destination = self.getNode(arc[1])
+          self.addArc(som_source, som_destination, reaction)
       self.identifier = self.makeId()
 
   def processMultiUniReaction(self, reaction):
@@ -136,31 +171,197 @@ class MESGraph(nx.DiGraph):
     else:
       destination = [reaction.products[0].molecule]
       source = [reactant.molecule for reactant in reaction.reactants]
-      self.addArc(source, destination, reaction)
+      arcs = itertools.product(source, destination)
+      for arc in arcs:
+        if not self.checkTypeOneError(arc, reaction):
+          som_source = self.getNode(arc[0])
+          som_destination = self.getNode(arc[1])
+          self.addArc(som_source, som_destination, reaction)
       self.identifier = self.makeId()
 
-  def addArc(self, source, destination, reaction):
+  def addMultiMultiReaction(self, reaction=None):
     """
-    Add arcs (edges) using two molecule lists (source/destination).
-    :param list-Molecule source:
-    :param list-Molecule destination:
+    Add a multi-multi reaction to self.multimulti_reactions
+    :param reaction Reaction:
+    :return bool:
     """
-    arcs = itertools.product(source, destination)
-    for arc in arcs:
-      if not self.checkTypeOneError(arc, reaction):
-        arc_source = self.getNode(arc[0])
-        arc_destination = self.getNode(arc[1])
-        # if there is already a preious reaction,
-        if self.has_edge(arc_source, arc_destination):
-          reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
-          # if reaction.label is not already included in the attribute,
-          if reaction.label not in set(reaction_label):
-            reaction_label = reaction_label + [reaction.label]
+    if reaction not in self.multimulti_reactions:
+      self.multimulti_reactions.append(reaction)
+
+  def addTypeThreeError(self, som1, som2, reaction):
+    """
+    Add Type III Error components to self.type_three_errors
+    All components of resulting PathComponents are str
+    :param SOM som1:
+    :param SOM som2:
+    :param Reaction reaction:
+    :return bool flag:
+    """
+    flag = False
+    for component in self.type_three_errors:
+      if (component.node1==som1) and (component.node2==som2):
+        new_component = cn.PathComponents(node1=som1, 
+                                          node2=som2,
+                                          reactions=component.reactions+[reaction.label])
+        self.type_three_errors.remove(component)
+        self.type_three_errors.append(new_component)
+        flag = True
+        break
+    if not flag:
+      self.type_three_errors.append(cn.PathComponents(node1=som1, 
+                                                      node2=som2,
+                                                      reactions=[reaction.label]))
+      flag = True
+    return flag  
+
+  def checkTypeThreeError(self, som1, som2, reaction):
+    """
+    Check type III error, which is when
+    we cannot merge two nodes because there is an arc.
+    Add the error to type three error. 
+    :param SOM som1:
+    :param SOM som2:
+    :param reaction Reaction:
+    :return bool:
+    """
+    if self.has_edge(som1, som2):
+      self.addTypeThreeError(som1, som2, reaction)
+      return True
+    elif self.has_edge(som2, som1):
+      self.addTypeThreeError(som2, som1, reaction)
+      return True
+    else:
+      return False
+
+  def reduceReaction(self, reaction):
+    """
+    Reduce the given reaction 
+    :param Reaction reaction:
+    :return False/Reaction reaction:
+    """
+    if reaction.category != cn.REACTION_n_n:
+        return False
+    # Reduces the reaction by examining for each SOM
+    for som in list(self.nodes):
+      reactants_in = collections.deque([mole_stoich for mole_stoich in  
+                           reaction.reactants if 
+                           self.getNode(mole_stoich.molecule)==som])
+      reactants_out = [mole_stoich for mole_stoich in  
+                      reaction.reactants if 
+                      self.getNode(mole_stoich.molecule)!=som]
+      products_in = collections.deque([mole_stoich for mole_stoich in  
+                          reaction.products if 
+                          self.getNode(mole_stoich.molecule)==som])
+      products_out = [mole_stoich for mole_stoich in  
+                     reaction.products if 
+                      self.getNode(mole_stoich.molecule)!=som]
+      #
+      while reactants_in and products_in:
+        reactant = reactants_in[0]
+        product = products_in[0]
+        if reactant.stoichiometry > product.stoichiometry:
+          reactants_in[0] = MoleculeStoichiometry(reactant.molecule,
+                                                  reactant.stoichiometry - product.stoichiometry)
+          products_in.popleft()
+        elif reactant.stoichiometry < product.stoichiometry:
+          products_in[0] = MoleculeStoichiometry(product.molecule,
+                                                 product.stoichiometry - reactant.stoichiometry)
+          reactants_in.popleft()
         else:
-          reaction_label = [reaction.label]
-        self.add_edge(arc_source, arc_destination, reaction=reaction_label)
+          reactants_in.popleft()
+          products_in.popleft()
+      reactants = list(reactants_in) + reactants_out
+      products = list(products_in) + products_out
+      #  
+      if (len(reaction.reactants) > len(reactants)) | \
+        (len(reaction.products) > len(products)):
+        reaction.reactants = reactants
+        reaction.products = products
+    reaction.identifier = reaction.makeIdentifier()
+    reaction.category = reaction._getCategory() 
+    # reduced_reaction = cn.ReactionComponents(label = reaction.label, reactants=reactants, products=products)
+    return reaction
+
+  # def addTypeFourError(self, reduced_reaction):
+  #   """
+  #   Add type IV error, which is when reduced reaction
+  #   only has one elements on one side.
+  #   :param Reaction reduced_reaction:
+  #   :return bool:
+  #   """
+  #   if som1 == som2:
+  #     self.addTypeFourError(som1, som2, reaction)
+  #     return True
+  #   return False
+
+  def processMultiMultiReaction(self, reaction):
+    """
+    Process a multi-multi reaction.
+    :param Reaction reaction:
+    :return bool flag:
+    """
+    # need to redude the reaction first
+    reduced_reaction = self.reduceReaction(reaction)
+    if not reduced_reaction:
+      return None
+    # print("reduced_reaction", reduced_reaction.makeIdentifier(is_include_kinetics=False))
+    # if reduced reaction only has one side
+    if len(reduced_reaction.reactants)==0 or len(reduced_reaction.products)==0:
+      self.type_four_errors.append(reduced_reaction)
+      return True
+    reactant_soms = list({self.getNode(ms.molecule) for ms in reduced_reaction.reactants})
+    product_soms = list({self.getNode(ms.molecule) for ms in reduced_reaction.products})
+    # if both sides have more than one SOMS, we cannot process
+    if (len(reactant_soms)>1) and (len(product_soms)>1):
+      return False
+    # if both sides have exactly one SOM
+    if (len(reactant_soms)==1) and (len(product_soms)==1):
+      reactant_stoichiometry = sum([ms.stoichiometry for ms in reduced_reaction.reactants])
+      product_stoichiometry = sum([ms.stoichiometry for ms in reduced_reaction.products])
+      reactant_som = reactant_soms[0]
+      product_som = product_soms[0]
+      if reactant_stoichiometry == product_stoichiometry:
+        if reactant_som != product_som:
+          if not self.checkTypeThreeError(reactant_som, product_som, reaction):
+            self.mergeNodes(reactant_som, product_som, reaction)
+      # Add reactant_som -> product_som
+      elif reactant_stoichiometry > product_stoichiometry:
+        self.addArc(reactant_som, product_som, reaction)
+      # Add product_som -> reactant_som
       else:
-        continue
+        self.addArc(product_som, reactant_som, reaction)
+      self.identifier = self.makeId()
+      return True
+    # if one side has exactly one SOM, ther other sides multiple
+    else: 
+      if (len(reactant_soms)==1) and (len(product_soms)>1):
+        som_arcs = itertools.product(product_soms, reactant_soms)
+      elif (len(reactant_soms)>1) and (len(product_soms)==1):
+        som_arcs = itertools.product(reactant_soms, product_soms)
+      for arc in som_arcs:
+        self.addArc(arc[0], arc[1], reaction)
+      self.identifier = self.makeId()
+      return True
+    # return none if none of above cases happened (should not happen)
+    return None
+
+  def addArc(self, arc_source, arc_destination, reaction):
+    """
+    Add a single arc (edge) using two SOMs and reaction.
+    :param SOM arc_source:
+    :param SOM arc_destination:
+    :param Reaction reaction:
+    """
+    # if there is already a preious reaction,
+    if self.has_edge(arc_source, arc_destination):
+      reaction_label = self.get_edge_data(arc_source, arc_destination)[cn.REACTION]
+      # if reaction.label is not already included in the attribute,
+      if reaction.label not in set(reaction_label):
+        reaction_label = reaction_label + [reaction.label]
+    else:
+      reaction_label = [reaction.label]
+    # overwrite the edge with new reactions set
+    self.add_edge(arc_source, arc_destination, reaction=reaction_label)
 
   def getSOMPath(self, som, mole1, mole2):
     """
@@ -240,16 +441,16 @@ class MESGraph(nx.DiGraph):
     for component in self.type_one_errors:
       if (component.node1==mole1.name) and (component.node2==mole2.name):
         new_component = cn.PathComponents(node1=mole1.name, 
-                                       node2=mole2.name,
-                                       reactions=component.reactions+[reaction.label])
+                                          node2=mole2.name,
+                                          reactions=component.reactions+[reaction.label])
         self.type_one_errors.remove(component)
         self.type_one_errors.append(new_component)
         flag = True
         break
     if not flag:
       self.type_one_errors.append(cn.PathComponents(node1=mole1.name, 
-                                                 node2=mole2.name,
-                                                 reactions=[reaction.label]))
+                                                    node2=mole2.name,
+                                                    reactions=[reaction.label]))
       flag = True
     return flag
 
@@ -308,8 +509,8 @@ class MESGraph(nx.DiGraph):
           nodes2.append(node2)
           reaction_labels.append(reaction.label)
       error_cycle.append(cn.PathComponents(node1=nodes1, 
-                                        node2=nodes2,
-                                        reactions=reaction_labels))
+                                           node2=nodes2,
+                                           reactions=reaction_labels))
     som1 = cycle[-1]
     som2 = cycle[0]
     som1_moles = {mole.name for mole in list(som1.molecules)}
@@ -359,19 +560,41 @@ class MESGraph(nx.DiGraph):
           self.type_two_error = True
       return True
 
-  def analyze(self, reactions, error_details=True):
+  def checkTypeFiveError(self):
+    """
+    Check Type V Error (cycles) of a MESGraph.
+    If there is at least one cycle, 
+    add cycle to self.type_five_errors.
+    The biggest difference between type II error
+    is that type five is for multi-multi reactions,
+    so the cycle is reported by SOM-level. 
+    :return bool:
+    """
+    graph = nx.DiGraph()
+    graph.add_edges_from(self.edges)
+    cycles = list(nx.simple_cycles(graph))
+    if len(cycles) == 0:
+      return False
+    else:
+      self.type_five_errors = cycles
+      return True
+
+  def analyze(self, reactions=None, error_details=True):
     """
     Sort list of reactions and process them.
     Add arcs or sending error messages using
     checkTypeOneError or checkTypeTwoError.
     :param list-Reaction reactions:
     """
+    if reactions is None:
+      reactions = self.simple.reactions
     # Associate the reaction category with the function
     # that processes that category
     reaction_dic = {
         cn.REACTION_1_1: self.processUniUniReaction,
         cn.REACTION_1_n: self.processUniMultiReaction,
         cn.REACTION_n_1: self.processMultiUniReaction,
+        cn.REACTION_n_n: self.addMultiMultiReaction,
         }
     # Process each type of reaction
     for category in reaction_dic.keys():
@@ -382,7 +605,9 @@ class MESGraph(nx.DiGraph):
     self.checkTypeTwoError()    
     #
     if error_details:
-      # print("Type I Errors:", self.type_one_errors)
+      if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
+        print("No type one or two error found.")
+      #
       for error_path in self.type_one_errors:
         self.printSOMPath(error_path.node1, error_path.node2)
         print("\nHowever, the following reaction(s)") 
@@ -418,5 +643,43 @@ class MESGraph(nx.DiGraph):
             nodes2.popleft()
             reactions.popleft()
         print("------------------------------------")
+      print("************************************")
+    # Process multi-multi reactions only if there's no elementary errors
+    if len(self.type_one_errors)==0 and len(self.type_two_errors)==0:
+      sub_multimulti = self.multimulti_reactions
+      unsuccessful_load = 0
+      while self.multimulti_reactions:
+        flag_loop = [False] * len(self.multimulti_reactions)
+        for idx, multimulti in enumerate(self.multimulti_reactions):
+          result = self.processMultiMultiReaction(multimulti)
+          if result is None:
+            print("This reaction returned None") 
+            print(multimulti)
+            pass
+          else:
+            flag_loop[idx] = result
+        # if nothing was processed, quit the while loop
+        if sum(flag_loop)==0:
+          break
+        # if at least one was processed, subset unpressed reactions
+        self.multimulti_reactions = [self.multimulti_reactions[idx] for idx, tr \
+                                     in enumerate(flag_loop) if not tr]
+      # check SOM cycles (type V error)
+      self.checkTypeFiveError()
+      #
+      if error_details:
+        if self.type_three_errors:
+          print("We have type III errors\n", self.type_three_errors)
+        else:
+          print("We don't have type III errors")
+        if self.type_four_errors:
+          print("We have type IV errors\n", self.type_four_errors)
+        else:
+          print("We don't have type IV errors")
+        if self.type_five_errors:
+          print("We have type V errors\n", self.type_five_errors)
+        else:
+          print("We don't have type V errors")
     #
+    self.identifier = self.makeId()
     return self
