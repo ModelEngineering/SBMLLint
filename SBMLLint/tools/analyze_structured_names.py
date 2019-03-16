@@ -9,6 +9,7 @@ from SBMLLint.tools import sbmllint
 from SBMLLint.tools import print_reactions
 
 import os
+import numpy as np
 import pandas as pd
 
 # File paths
@@ -44,9 +45,9 @@ def isStructuredName(name):
     return False
   return True
 
-# TODO: Use cn column names and add additional stats
 def calcStats(initial=0, final=50, out_path=OUTPUT_PATH, 
-    report_interval=50, report_progress=True, min_frc=-1):
+    report_interval=50, report_progress=True, min_frc=-1,
+    data_dir=cn.BIOMODELS_DIR):
   """
   Calculates statistics for structured names.
   :param int initial: Index of first model to process
@@ -64,10 +65,11 @@ def calcStats(initial=0, final=50, out_path=OUTPUT_PATH,
     df_count[cn.NUM_BALANCED_REACTIONS] =  \
         df_count[cn.TOTAL_REACTIONS]  \
         - df_count[cn.NUM_IMBALANCED_REACTIONS]
-    df_count[cn.FRAC_BALANCED_REACTIONS] =  \
-        1.0*df_count[cn.NUM_BALANCED_REACTIONS] / (
-        df_count[cn.TOTAL_REACTIONS] 
+    denom =  (df_count[cn.TOTAL_REACTIONS] 
         - df_count[cn.NUM_BOUNDARY_REACTIONS])
+    denom = [np.nan if np.isclose(v, 0) else v for v in denom]
+    df_count[cn.FRAC_BALANCED_REACTIONS] =  \
+        1.0*df_count[cn.NUM_BALANCED_REACTIONS] / denom
     df_count[cn.FRAC_BOUNDARY_REACTIONS] =  \
         1.0*df_count[cn.NUM_BOUNDARY_REACTIONS] / (
         df_count[cn.TOTAL_REACTIONS])
@@ -79,7 +81,8 @@ def calcStats(initial=0, final=50, out_path=OUTPUT_PATH,
     df.to_csv(out_path, index=False)
   #
   dfs = []
-  sbmliter = simple_sbml.modelIterator(initial=initial, final=final)
+  sbmliter = simple_sbml.modelIterator(initial=initial, final=final,
+      data_dir=data_dir)
   for item in sbmliter:
     if report_progress:
       print("*Processing file %s, number %d"
@@ -106,7 +109,7 @@ def calcStats(initial=0, final=50, out_path=OUTPUT_PATH,
           row[cn.IS_STRUCTURED] = [True]
     try:
       mcr = sbmllint.lint(item.model, is_report=False)
-      row[cn.TOTAL_REACTIONS] = [mcr.num_reactions]
+      row[cn.TOTAL_REACTIONS] = [mcr.num_reactions if mcr.num_reactions > 0 else np.nan]
       row[cn.NUM_IMBALANCED_REACTIONS] = [mcr.num_imbalances]
     except:
       row[cn.TOTAL_REACTIONS] = [None]
@@ -118,4 +121,5 @@ def calcStats(initial=0, final=50, out_path=OUTPUT_PATH,
 
 
 if __name__ == '__main__':
-  calcStats(initial=0, final=1000, report_interval=1)
+  calcStats(initial=0, final=1000, report_interval=1,
+      data_dir=cn.BIGG_DIR)

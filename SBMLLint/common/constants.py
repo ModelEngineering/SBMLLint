@@ -97,6 +97,7 @@ PROJECT_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = os.path.dirname(PROJECT_DIR)
 BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data/biomodels")
+BIGG_DIR = os.path.join(PROJECT_DIR, "data/bigg")
 ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(PROJECT_DIR, "analysis")
 ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
     ANALYSIS_STRUCTURED_NAMES_DIR, "structured_names")
