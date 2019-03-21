@@ -24,7 +24,6 @@ The following is an example of using the ``structured_names`` and ``games`` algo
 
 <img src="structured_names_example.png" width="800"/>
 
-Below, we given an example of using the GAMES algorithm when an error is detected.
 <img src="games_example.png" width="700"/>
 
 ## Installation
