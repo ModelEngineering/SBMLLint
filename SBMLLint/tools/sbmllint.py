@@ -3,6 +3,7 @@
 from SBMLLint.common import constants as cn
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import util
+from SBMLLint.games.mesgraph import MESGraph
 from SBMLLint.structured_names.moiety_comparator import MoietyComparator
 
 import argparse
@@ -21,7 +22,7 @@ def lint(model_reference, file_out=sys.stdout,
   :param TextIOWrapper file_out:
   :param str mass_balance_check: how check for mass balance
   :param bool is_report: print result
-  :return MoietyComparatorResult:
+  :return MoietyComparatorResult/bull/None:
   """
   if util.isSBMLModel(model_reference):
     model = model_reference
@@ -33,11 +34,19 @@ def lint(model_reference, file_out=sys.stdout,
     model = document.getModel()
   simple = SimpleSBML()
   simple.initialize(model)
-  result = MoietyComparator.analyzeReactions(simple)
-  if is_report:
-    for line in result.report.split('\n'):
-        file_out.write("%s\n" % line)
-  return result
+  if mass_balance_check == "structured_names":
+    result = MoietyComparator.analyzeReactions(simple)
+    if is_report:
+      for line in result.report.split('\n'):
+          file_out.write("%s\n" % line)
+    return result
+  elif mass_balance_check == "games":
+    m = MESGraph(simple)
+    m.analyze(simple.reactions)
+    return True
+  else:
+    print ("Specified method doesn't exist")
+    return None
     
 
 def main():

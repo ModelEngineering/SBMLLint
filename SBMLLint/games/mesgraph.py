@@ -606,7 +606,7 @@ class MESGraph(nx.DiGraph):
     #
     if error_details:
       if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
-        print("No type one or two error found.")
+        print("No error found in uni-uni and mulit-uni(uni-multi) reactions.")
       #
       for error_path in self.type_one_errors:
         self.printSOMPath(error_path.node1, error_path.node2)
@@ -615,7 +615,7 @@ class MESGraph(nx.DiGraph):
           print(self.simple.getReaction(arc_reaction).makeIdentifier(is_include_kinetics=False)) 
         print("imply " + error_path.node1, cn.LESSTHAN,  error_path.node2)
         print("------------------------------------")
-      print("************************************")
+      #print("************************************")
       #
       # print("We Do have type II Errors", self.type_two_errors)
       for cycle in self.type_two_errors:
@@ -643,7 +643,7 @@ class MESGraph(nx.DiGraph):
             nodes2.popleft()
             reactions.popleft()
         print("------------------------------------")
-      print("************************************")
+      print("*************************************************************")
     # Process multi-multi reactions only if there's no elementary errors
     if len(self.type_one_errors)==0 and len(self.type_two_errors)==0:
       sub_multimulti = self.multimulti_reactions
@@ -666,20 +666,25 @@ class MESGraph(nx.DiGraph):
                                      in enumerate(flag_loop) if not tr]
       # check SOM cycles (type V error)
       self.checkTypeFiveError()
+      if len(self.type_three_errors)==0 and \
+         len(self.type_four_errors)==0 and \
+         len(self.type_five_errors)==0:
+        print("No error found in multi-multi reactions.")
+        print("*************************************************************")
       #
-      if error_details:
-        if self.type_three_errors:
-          print("We have type III errors\n", self.type_three_errors)
-        else:
-          print("We don't have type III errors")
-        if self.type_four_errors:
-          print("We have type IV errors\n", self.type_four_errors)
-        else:
-          print("We don't have type IV errors")
-        if self.type_five_errors:
-          print("We have type V errors\n", self.type_five_errors)
-        else:
-          print("We don't have type V errors")
+      # if error_details:
+      #   if self.type_three_errors:
+      #     print("We have type III errors\n", self.type_three_errors)
+      #   else:
+      #     print("We don't have type III errors")
+      #   if self.type_four_errors:
+      #     print("We have type IV errors\n", self.type_four_errors)
+      #   else:
+      #     print("We don't have type IV errors")
+      #   if self.type_five_errors:
+      #     print("We have type V errors\n", self.type_five_errors)
+      #   else:
+      #     print("We don't have type V errors")
     #
     self.identifier = self.makeId()
     return self
