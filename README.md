@@ -28,7 +28,7 @@ The following is an example of using the ``structured_names`` and ``games`` algo
 
 ## Installation
 
-``SBMLLint`` is currently under development and so is not availabe for installation. An alpha version is expected by April, 2019.
+``SBMLLint`` is currently under development and so is not availabe for installation. An alpha version is expected in April, 2019.
 
 ## Future Directions
 
