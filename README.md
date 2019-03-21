@@ -24,7 +24,7 @@ The following is an example of using the ``structured_names`` algorithm to check
 
 <img src="structured_names_example.png" width="800"/>
 
-<img src="games_example.png" width="800"/>
+<img src="games_example.png" width="700"/>
 ## Installation
 ``SBMLLint`` is currently under development and so is not availabe for installation. An alpha version is expected by April, 2019.
 
