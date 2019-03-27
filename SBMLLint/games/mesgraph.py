@@ -10,6 +10,11 @@ import collections
 import itertools
 import networkx as nx
 
+NULL_STR = ""
+
+
+MESGraphReport = collections.namedtuple("MESGraphReport", 
+    "type_one type_two type_three type_four type_five")
 
 class MESGraph(nx.DiGraph):
   """
@@ -407,8 +412,9 @@ class MESGraph(nx.DiGraph):
     same SOM.
     :param str molecule_name1:
     :param str molecule_name2:
-    :return bool
+    :return true
     """
+    path_report = NULL_STR
     som1 = self.getNode(self.simple.getMolecule(molecule_name1))
     som2 = self.getNode(self.simple.getMolecule(molecule_name2))
     if som1 != som2:
@@ -416,17 +422,21 @@ class MESGraph(nx.DiGraph):
     else:
       # add case when molecule_name1 == molecule_name2
       if molecule_name1 == molecule_name2:
-        print("Clearly,", molecule_name1, cn.EQUAL, molecule_name2)
+        # print("Clearly,", molecule_name1, cn.EQUAL, molecule_name2)
+        path_report = path_report + "Clearly, %s %s %s\n" % (
+            molecule_name1, cn.EQUAL, molecule_name2)
       else:
         som_path = self.getSOMPath(som1, 
                                    self.simple.getMolecule(molecule_name1), 
                                    self.simple.getMolecule(molecule_name2))
         for pat in som_path:
-          print("\n" + pat.node1, cn.EQUAL, pat.node2 + " by reaction(s):")
+          # print("\n%s %s %s by reaction(s):" % (pat.node1, cn.EQUAL, pat.node2))
+          path_report = path_report + "\n%s %s %s by reaction(s):\n" % (pat.node1, cn.EQUAL, pat.node2)
           for r in pat.reactions:
             som_reaction = self.simple.getReaction(r)
-            print(som_reaction.makeIdentifier(is_include_kinetics=False))
-      return True
+            # print(som_reaction.makeIdentifier(is_include_kinetics=False))
+            path_report = path_report + "%s\n" % (som_reaction.makeIdentifier(is_include_kinetics=False))
+      return path_report
 
   def addTypeOneError(self, mole1, mole2, reaction):
     """
@@ -585,11 +595,13 @@ class MESGraph(nx.DiGraph):
     Add arcs or sending error messages using
     checkTypeOneError or checkTypeTwoError.
     :param list-Reaction reactions:
+    :return str:
     """
     if reactions is None:
       reactions = self.simple.reactions
     # Associate the reaction category with the function
     # that processes that category
+    report = NULL_STR
     reaction_dic = {
         cn.REACTION_1_1: self.processUniUniReaction,
         cn.REACTION_1_n: self.processUniMultiReaction,
@@ -607,14 +619,21 @@ class MESGraph(nx.DiGraph):
     if error_details:
       if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
         print("No error found in uni-uni and mulit-uni(uni-multi) reactions.")
+        report = report + "No error found in uni-uni and mulit-uni(uni-multi) reactions.\n"
       #
       for error_path in self.type_one_errors:
-        self.printSOMPath(error_path.node1, error_path.node2)
+        path_report = self.printSOMPath(error_path.node1, error_path.node2)
+        print(path_report)
+        report = report + path_report
         print("\nHowever, the following reaction(s)") 
+        report = report + "However, the following reaction(s)\n"
         for arc_reaction in error_path.reactions:
           print(self.simple.getReaction(arc_reaction).makeIdentifier(is_include_kinetics=False)) 
+          report = "%s%s\n" % (report, self.simple.getReaction(arc_reaction).makeIdentifier(is_include_kinetics=False))
         print("imply " + error_path.node1, cn.LESSTHAN,  error_path.node2)
+        report = report + "imply %s %s %s\n" % (error_path.node1, cn.LESSTHAN, error_path.node2)
         print("------------------------------------")
+        report = report + "------------------------------------\n"
       #print("************************************")
       #
       # print("We Do have type II Errors", self.type_two_errors)
@@ -630,20 +649,25 @@ class MESGraph(nx.DiGraph):
           # print SOM path between node elements
           if len(nodes1)>1:
             for node_idx in range(len(nodes1)-1):
-              self.printSOMPath(nodes1[node_idx], nodes1[node_idx+1])
+              path_report = self.printSOMPath(nodes1[node_idx], nodes1[node_idx+1])
+              report = report + path_report
           if not set(nodes2).intersection(set(next_nodes1)):
-            self.printSOMPath(nodes2[0], next_nodes1[0])
+            path_report = self.printSOMPath(nodes2[0], next_nodes1[0])
+            report = report + path_report
          #
           while nodes1:
-            print()
-            print(nodes1[0] + " < " + nodes2[0] + " by reaction:")
+            print("\n%s %s %s by reaction11:\n" % (nodes1[0], cn.LESSTHAN, nodes2[0]))
+            report = report + "\n%s %s %s by reaction:\n" % (nodes1[0], cn.LESSTHAN, nodes2[0])
             arc_reaction = self.simple.getReaction(reactions[0])
             print(arc_reaction.makeIdentifier(is_include_kinetics=False))
+            report = report + "%s\n" % (arc_reaction.makeIdentifier(is_include_kinetics=False))
             nodes1.popleft()
             nodes2.popleft()
             reactions.popleft()
         print("------------------------------------")
+        report = report + "%s\n" % ("------------------------------------")
       print("*************************************************************")
+      report = report + "%s\n" % ("*************************************************************")
     # Process multi-multi reactions only if there's no elementary errors
     if len(self.type_one_errors)==0 and len(self.type_two_errors)==0:
       sub_multimulti = self.multimulti_reactions
@@ -671,6 +695,9 @@ class MESGraph(nx.DiGraph):
          len(self.type_five_errors)==0:
         print("No error found in multi-multi reactions.")
         print("*************************************************************")
+        report = report + "%s\n %s\n" % (
+            "No error found in multi-multi reactions.", 
+            "*************************************************************")
       #
       # if error_details:
       #   if self.type_three_errors:
@@ -687,4 +714,5 @@ class MESGraph(nx.DiGraph):
       #     print("We don't have type V errors")
     #
     self.identifier = self.makeId()
-    return self
+    #return self
+    return report

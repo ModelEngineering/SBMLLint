@@ -305,7 +305,7 @@ class TestMESGraph(unittest.TestCase):
       return
     uniuni_reaction = self.simple.reactions[UNIUNI0]
     self.mesgraph.processUniUniReaction(uniuni_reaction)
-    self.assertTrue(self.mesgraph.printSOMPath(DFG, E1))
+    self.assertTrue(type(self.mesgraph.printSOMPath(DFG, E1))==str)
     self.assertFalse(self.mesgraph.printSOMPath(GLY, MEL))
 
   def testCheckTypeOneError(self):
