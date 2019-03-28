@@ -15,6 +15,8 @@ NULL_STR = ""
 
 MESGraphReport = collections.namedtuple("MESGraphReport", 
     "type_one type_two type_three type_four type_five")
+SOMMoleculeStoichiometry = collections.namedtuple("SOMStoichiometry",
+    "som molecule stoichiometry")
 
 class MESGraph(nx.DiGraph):
   """
@@ -302,8 +304,9 @@ class MESGraph(nx.DiGraph):
   def processMultiMultiReaction(self, reaction):
     """
     Process a multi-multi reaction.
-    Return False means it couldn't be processed
-    Return True means it was processed
+    Return False means graph was updated or error was added
+    Return True means graph wasn't updated 
+    and error wasn't added (already exist or couldn't find)
     :param Reaction reaction:
     :return bool:
     """
@@ -314,11 +317,14 @@ class MESGraph(nx.DiGraph):
       return False
     # if reduced reaction is EmptySet -> EmptySet, don't do anything
     if len(reduced_reaction.reactants)==0 and len(reduced_reaction.products)==0:
-      return True
+      return False
     # elif reduced reaction has exactly one side EmptySet, add type four error
     elif len(reduced_reaction.reactants)==0 or len(reduced_reaction.products)==0:
-      self.type_four_errors.append(reduced_reaction)
-      return True
+      if reduced_reaction in self.type_four_errors:
+        return False
+      else:
+        self.type_four_errors.append(reduced_reaction)
+        return True
     reactant_soms = list({self.getNode(ms.molecule) for ms in reduced_reaction.reactants})
     product_soms = list({self.getNode(ms.molecule) for ms in reduced_reaction.products})
     reactant_stoichiometry = [ms.stoichiometry for ms in reduced_reaction.reactants]
@@ -371,12 +377,120 @@ class MESGraph(nx.DiGraph):
   def processByInequality(self, reduced_reaction):
     """
     Cross-examine inequality and add arcs if possible.
-    One example is, A + B -> C + D where A < C.
-    We can conclude B > D and add arc.  
+    One example is, A + B -> C + D where A < C is given
+    by existing arc. 
+    We can conclude B > D and add an arc.  
     Return True if processed, False otherwise
     :param Reaction reduced_reaction:
     :return bool:
     """  
+    # create lists of soms with stoichiometry
+    reactants = collections.deque([
+        SOMMoleculeStoichiometry(som = self.getNode(moles.molecule),
+            molecule = moles.molecule, 
+            stoichiometry = moles.stoichiometry) for \
+            moles in reduced_reaction.reactants])
+    products = collections.deque([
+        SOMMoleculeStoichiometry(som = self.getNode(moles.molecule), 
+            molecule = moles.molecule,
+            stoichiometry = moles.stoichiometry) for \
+            moles in reduced_reaction.products])
+    print("reactants:", reactants)
+    print("products:", products)
+    reactant_soms = list({reactant.som for reactant in reactants})
+    product_soms = list({product.som for product in products})
+    print("som_reactants:", reactant_soms)
+    print("som_products:", product_soms)
+    #
+    reactant_lessthan_product = []
+    product_lessthan_reactant = []
+    no_relationship = []
+    for pair in itertools.product(reactant_soms, product_soms):
+      if self.has_edge(pair[0], pair[1]):
+        reactant_lessthan_product.append(pair)
+      elif self.has_edge(pair[1], pair[0]):
+        product_lessthan_reactant.append(pair)
+      else:
+        no_relationship.append(pair)
+    print("reactant_lessthan_product: ", reactant_lessthan_product)
+    print("product_lessthan_reactant: ", product_lessthan_reactant)
+    print("no_realtionship :", no_relationship)
+    #
+    # now, you want to infer the relationship of no_relationship
+    # or prove if existing relationships conflict
+    if not no_relationship:
+      return False
+    # if both directions exist, let's say we cannot do anything; return False
+    if reactant_lessthan_product and product_lessthan_reactant:
+      return False
+    if product_lessthan_reactant:
+      reactant_som_stoichiometry = 0
+      product_som_stoichiometry = 0
+      product_buffer = [pair[1] for pair in no_relationship]
+      remaining_reactants = [pair[0] for pair in no_relationship]
+      for pair in product_lessthan_reactant:
+        #pair = product_lessthan_reactant[0]
+        #reactant_som = pair[0]
+        #product_som = pair[1]
+        reactant_som_stoichiometry += sum([sms.stoichiometry for sms in reactants if sms.som==pair[0]])
+        product_som_stoichiometry += sum([sms.stoichiometry for sms in products if sms.som==pair[1]])
+        if pair[1] in product_buffer:
+          product_buffer.remove(pair[1])
+        if pair[0] in remaining_reactants:
+          remaining_reactants.remove(pair[0])
+      print("reactant_som_stoi, ", reactant_som_stoichiometry)
+      print("product_som_stoi, ", product_som_stoichiometry)
+      # if product_som_stoichiometry is bigger, it's okay
+      # if not, check if there is at least one buffer on product; 
+      # if yes, try adding an arc if the buffer is at least one
+      if reactant_som_stoichiometry < product_som_stoichiometry:
+        return False
+      elif product_buffer:
+        if len(product_buffer)==1:
+          # add arc
+          for arc_source in remaining_reactants:
+            # the SOMs cannot be the same because they were already reduced
+            self.addArc(arc_source, product_buffer[0])
+            return True
+        # cannot decide now because there are more than two buffers
+        else:
+          return False
+      # no buffer; add error
+      else:
+        if reduced_reaction in self.type_four_errors:
+          return False
+        else:
+          self.type_four_errors.append(reduced_reaction)
+          print("type four error added!", reduced_reaction)
+          return True
+
+
+
+
+      # for pair in product_lessthan_reactant:
+    # for reactant in reactants:
+    #   for product in products:
+
+    # while reactants and products:
+    #   reactant = reactants[0]
+    #   product = products[0]
+    #   # if reactant < product for one pair
+    #   if self.has_edge(reactant.som, product.som):
+    #     # should examine comparative stoichiometry & check the rest
+    #     if reactant.stoichiometry == product.stoichiometry:
+    #       reactants.popleft()
+    #       products.popleft()
+    #     elif reactant.stoichioemtry < product.stoichioemtry:
+
+    #   elif self.has_edge(product.som, reactant.som):
+    #     # should examine comparative stoichiometry & check the rest
+
+
+    # subtract each other if there is arc. 
+    # check the rest is still examinable: consistent arc
+    # add an arc if the rest is determinable
+    # return True if processed (i.e. arcs added)
+    # return False if the remaining is still multi-multi
     return False
 
   def addArc(self, arc_source, arc_destination, reaction):
