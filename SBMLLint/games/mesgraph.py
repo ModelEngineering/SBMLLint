@@ -312,10 +312,10 @@ class MESGraph(nx.DiGraph):
     # If the reaction was not a multi-multi reaction, return False
     if not reduced_reaction:
       return False
-    # if reduced reaction is Empty -> Empty, don't do anything
+    # if reduced reaction is EmptySet -> EmptySet, don't do anything
     if len(reduced_reaction.reactants)==0 and len(reduced_reaction.products)==0:
       return True
-    # elif reduced reaction has exactly one side Empty, add type four error
+    # elif reduced reaction has exactly one side EmptySet, add type four error
     elif len(reduced_reaction.reactants)==0 or len(reduced_reaction.products)==0:
       self.type_four_errors.append(reduced_reaction)
       return True
@@ -327,13 +327,10 @@ class MESGraph(nx.DiGraph):
     sum_product_stoichiometry = sum(product_stoichiometry)
     #
     # if both sides have more than one SOMS, we cannot process (return False)
-    if (len(reactant_soms)>1) and (len(product_soms)>1):
-      return False
+    # if (len(reactant_soms)>1) and (len(product_soms)>1):
+    #   return False
     # if both sides have exactly one SOM
     if (len(reactant_soms)==1) and (len(product_soms)==1):
-      # reactant_stoichiometry = sum([ms.stoichiometry for ms in reduced_reaction.reactants])
-      # product_stoichiometry = sum([ms.stoichiometry for ms in reduced_reaction.products])
-      # print("reactant_stoichiometry is %s\nand product stoichiometry is %s" % (reactant_stoichiometry, product_stoichiometry))
       reactant_som = reactant_soms[0]
       product_som = product_soms[0]
       if sum_reactant_stoichiometry == sum_product_stoichiometry:
@@ -348,24 +345,39 @@ class MESGraph(nx.DiGraph):
         self.addArc(product_som, reactant_som, reaction)
       self.identifier = self.makeId()
       return True
-    # if one side has exactly one SOM, ther other sides multiple SOMs
+    # if one side has exactly one SOM, and the other side multiple SOMs
     else: 
+      # SOM uni-multi reaction
       if (len(reactant_soms)==1) and \
           (sum_reactant_stoichiometry==1) and \
           (len(product_soms)>1):
         som_arcs = itertools.product(product_soms, reactant_soms)
+      # SOM multi-uni reaction
       elif (len(reactant_soms)>1) and \
           (len(product_soms)==1) and \
           (sum_product_stoichiometry==1):
         som_arcs = itertools.product(reactant_soms, product_soms)
+      # The rest are all multi-multi 
+      # that is, multiple SOMs on both sides, or one side one SOM with stoichiometry>1
       else:
-        return False
+        return self.processByInequality(reduced_reaction)
       for arc in som_arcs:
         self.addArc(arc[0], arc[1], reaction)
       self.identifier = self.makeId()
       return True
-    # return none if none of above cases happened (should not happen)
+    # return none if none of above applied (should not happen)
     return None
+
+  def processByInequality(self, reduced_reaction):
+    """
+    Cross-examine inequality and add arcs if possible.
+    One example is, A + B -> C + D where A < C.
+    We can conclude B > D and add arc.  
+    Return True if processed, False otherwise
+    :param Reaction reduced_reaction:
+    :return bool:
+    """  
+    return False
 
   def addArc(self, arc_source, arc_destination, reaction):
     """
