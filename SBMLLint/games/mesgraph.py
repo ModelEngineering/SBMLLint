@@ -395,12 +395,8 @@ class MESGraph(nx.DiGraph):
             molecule = moles.molecule,
             stoichiometry = moles.stoichiometry) for \
             moles in reduced_reaction.products])
-    print("reactants:", reactants)
-    print("products:", products)
     reactant_soms = list({reactant.som for reactant in reactants})
     product_soms = list({product.som for product in products})
-    print("som_reactants:", reactant_soms)
-    print("som_products:", product_soms)
     #
     reactant_lessthan_product = []
     product_lessthan_reactant = []
@@ -412,45 +408,51 @@ class MESGraph(nx.DiGraph):
         product_lessthan_reactant.append(pair)
       else:
         no_relationship.append(pair)
+    print("reduced reaction...", reduced_reaction.makeIdentifier(is_include_kinetics=False))
     print("reactant_lessthan_product: ", reactant_lessthan_product)
     print("product_lessthan_reactant: ", product_lessthan_reactant)
     print("no_realtionship :", no_relationship)
+    print("----------------------------------------------------------")
     #
-    # now, you want to infer the relationship of no_relationship
+    # now, want to infer the relationship of no_relationship
     # or prove if existing relationships conflict
     if not no_relationship:
       return False
     # if both directions exist, let's say we cannot do anything; return False
     if reactant_lessthan_product and product_lessthan_reactant:
       return False
-    if product_lessthan_reactant:
-      reactant_som_stoichiometry = 0
-      product_som_stoichiometry = 0
-      product_buffer = [pair[1] for pair in no_relationship]
-      remaining_reactants = [pair[0] for pair in no_relationship]
-      for pair in product_lessthan_reactant:
-        #pair = product_lessthan_reactant[0]
-        #reactant_som = pair[0]
-        #product_som = pair[1]
-        reactant_som_stoichiometry += sum([sms.stoichiometry for sms in reactants if sms.som==pair[0]])
-        product_som_stoichiometry += sum([sms.stoichiometry for sms in products if sms.som==pair[1]])
-        if pair[1] in product_buffer:
-          product_buffer.remove(pair[1])
-        if pair[0] in remaining_reactants:
-          remaining_reactants.remove(pair[0])
-      print("reactant_som_stoi, ", reactant_som_stoichiometry)
-      print("product_som_stoi, ", product_som_stoichiometry)
+    def processPairs(pairs, small, big, idx_small, idx_big):
+    # under product_lessthan_reactant, idx_small = 1, idx_big = 0
+    # under the same, small = products, big = reactants
+    # soms_buffer is same side as small_som
+    # remaining_soms is same side as big_som
+      big_som_stoichiometry = 0
+      small_som_stoichiometry = 0
+      soms_buffer = [pair[idx_small] for pair in no_relationship]
+      remaining_soms = [pair[idx_big] for pair in no_relationship]
+      for pair in pairs:
+        print("We are dealing with, ", pair)
+        big_som_stoichiometry += sum([
+            sms.stoichiometry for sms in big if sms.som==pair[idx_big]])
+        small_som_stoichiometry += sum([
+            sms.stoichiometry for sms in small if sms.som==pair[idx_small]])
+        if pair[idx_small] in soms_buffer:
+          soms_buffer.remove(pair[idx_small])
+        if pair[idx_big] in remaining_soms:
+          remaining_soms.remove(pair[idx_big])
+      print("big_som_stoi, ", big_som_stoichiometry)
+      print("small_som_stoi, ", small_som_stoichiometry)
       # if product_som_stoichiometry is bigger, it's okay
       # if not, check if there is at least one buffer on product; 
       # if yes, try adding an arc if the buffer is at least one
-      if reactant_som_stoichiometry < product_som_stoichiometry:
+      if big_som_stoichiometry < small_som_stoichiometry:
         return False
-      elif product_buffer:
-        if len(product_buffer)==1:
+      elif soms_buffer:
+        if len(soms_buffer)==1:
           # add arc
-          for arc_source in remaining_reactants:
+          for arc_source in remaining_soms:
             # the SOMs cannot be the same because they were already reduced
-            self.addArc(arc_source, product_buffer[0])
+            self.addArc(arc_source, soms_buffer[0])
             return True
         # cannot decide now because there are more than two buffers
         else:
@@ -463,6 +465,8 @@ class MESGraph(nx.DiGraph):
           self.type_four_errors.append(reduced_reaction)
           print("type four error added!", reduced_reaction)
           return True
+    if product_lessthan_reactant:
+      return processPairs(pairs=product_lessthan_reactant, big=reactants, small=products, idx_big=0, idx_small=1)
 
 
 
