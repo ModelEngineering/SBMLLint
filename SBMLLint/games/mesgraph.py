@@ -466,35 +466,17 @@ class MESGraph(nx.DiGraph):
           print("type four error added!", reduced_reaction)
           return True
     if product_lessthan_reactant:
-      return processPairs(pairs=product_lessthan_reactant, big=reactants, small=products, idx_big=0, idx_small=1)
-
-
-
-
-      # for pair in product_lessthan_reactant:
-    # for reactant in reactants:
-    #   for product in products:
-
-    # while reactants and products:
-    #   reactant = reactants[0]
-    #   product = products[0]
-    #   # if reactant < product for one pair
-    #   if self.has_edge(reactant.som, product.som):
-    #     # should examine comparative stoichiometry & check the rest
-    #     if reactant.stoichiometry == product.stoichiometry:
-    #       reactants.popleft()
-    #       products.popleft()
-    #     elif reactant.stoichioemtry < product.stoichioemtry:
-
-    #   elif self.has_edge(product.som, reactant.som):
-    #     # should examine comparative stoichiometry & check the rest
-
-
-    # subtract each other if there is arc. 
-    # check the rest is still examinable: consistent arc
-    # add an arc if the rest is determinable
-    # return True if processed (i.e. arcs added)
-    # return False if the remaining is still multi-multi
+      return processPairs(
+          pairs=product_lessthan_reactant, 
+          big=reactants, 
+          small=products, 
+          idx_big=0, idx_small=1)
+    elif reactant_lessthan_product:
+      return processPairs(
+          pairs=reactant_lessthan_product, 
+          big=products, 
+          small=reactants, 
+          idx_big=1, idx_small=0)
     return False
 
   def addArc(self, arc_source, arc_destination, reaction):
@@ -819,7 +801,9 @@ class MESGraph(nx.DiGraph):
     if len(self.type_one_errors)==0 and len(self.type_two_errors)==0:
       sub_multimulti = self.multimulti_reactions
       unsuccessful_load = 0
-      while self.multimulti_reactions:
+      max_loop = 0
+      while (self.multimulti_reactions) and (max_loop<5):
+        max_loop  = max_loop + 1
         flag_loop = [False] * len(self.multimulti_reactions)
         for idx, multimulti in enumerate(self.multimulti_reactions):
           result = self.processMultiMultiReaction(multimulti)
