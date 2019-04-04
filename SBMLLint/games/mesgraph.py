@@ -745,9 +745,8 @@ class MESGraph(nx.DiGraph):
     self.checkTypeTwoError()    
     #
     if error_details:
-      if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
-        # print("No error found in uni-uni and mulit-uni(uni-multi) reactions.")
-        report = report + "No error found in uni-uni and mulit-uni(uni-multi) reactions.\n"
+      # if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
+      #   report = report + "No error found in uni-uni and mulit-uni(uni-multi) reactions.\n"
       #
       for error_path in self.type_one_errors:
         path_report = self.printSOMPath(error_path.node1, error_path.node2)
@@ -784,18 +783,14 @@ class MESGraph(nx.DiGraph):
             report = report + "%s\n" % path_report
          #
           while nodes1:
-            # print("\n%s %s %s by reaction11:\n" % (nodes1[0], cn.LESSTHAN, nodes2[0]))
             report = report + "\n%s %s %s by reaction:\n" % (nodes1[0], cn.LESSTHAN, nodes2[0])
             arc_reaction = self.simple.getReaction(reactions[0])
-            # print(arc_reaction.makeIdentifier(is_include_kinetics=False))
             report = report + "%s\n" % (arc_reaction.makeIdentifier(is_include_kinetics=False))
             nodes1.popleft()
             nodes2.popleft()
             reactions.popleft()
-        # print("------------------------------------")
-        report = report + "%s\n" % ("------------------------------------")
-      # print("*************************************************************")
-      report = report + "%s\n" % ("*************************************************************")
+        report = report + "%s" % ("------------------------------------")
+      # report = report + "%s\n" % ("*************************************************************")
     # Process multi-multi reactions only if there's no elementary errors
     if len(self.type_one_errors)==0 and len(self.type_two_errors)==0:
       sub_multimulti = self.multimulti_reactions
@@ -820,14 +815,14 @@ class MESGraph(nx.DiGraph):
                                      in enumerate(flag_loop) if not tr]
       # check SOM cycles (type V error)
       self.checkTypeFiveError()
-      if len(self.type_three_errors)==0 and \
-         len(self.type_four_errors)==0 and \
-         len(self.type_five_errors)==0:
-        # print("No error found in multi-multi reactions.")
-        # print("*************************************************************")
-        report = report + "%s\n%s\n" % (
-            "No error found in multi-multi reactions.", 
-            "*************************************************************")
+      # if len(self.type_three_errors)==0 and \
+      #    len(self.type_four_errors)==0 and \
+      #    len(self.type_five_errors)==0:
+      #   # print("No error found in multi-multi reactions.")
+      #   # print("*************************************************************")
+      #   report = report + "%s\n%s\n" % (
+      #       "No error found in multi-multi reactions.", 
+      #       "*************************************************************")
       #
       # if error_details:
       #   if self.type_three_errors:
@@ -852,6 +847,6 @@ class MESGraph(nx.DiGraph):
         self.type_five_errors:
       print("At least one error found.")
     else:
-      print("No error found")
+      print("No error detected.")
     #return self
     return report
