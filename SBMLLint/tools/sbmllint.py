@@ -42,7 +42,9 @@ def lint(model_reference, file_out=sys.stdout,
     return result
   elif mass_balance_check == "games":
     m = MESGraph(simple)
-    m.analyze(simple.reactions)
+    report = m.analyze(simple.reactions)
+    if is_report:
+      print(report)
     return True
   else:
     print ("Specified method doesn't exist")

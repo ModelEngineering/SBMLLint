@@ -10,6 +10,13 @@ import collections
 import itertools
 import networkx as nx
 
+NULL_STR = ""
+
+
+MESGraphReport = collections.namedtuple("MESGraphReport", 
+    "type_one type_two type_three type_four type_five")
+SOMMoleculeStoichiometry = collections.namedtuple("SOMStoichiometry",
+    "som molecule stoichiometry")
 
 class MESGraph(nx.DiGraph):
   """
@@ -297,53 +304,179 @@ class MESGraph(nx.DiGraph):
   def processMultiMultiReaction(self, reaction):
     """
     Process a multi-multi reaction.
+    Return False means graph was updated or error was added
+    Return True means graph wasn't updated 
+    and error wasn't added (already exist or couldn't find)
     :param Reaction reaction:
-    :return bool flag:
+    :return bool:
     """
-    # need to redude the reaction first
+    # Reduce the reaction using existing SOMs
     reduced_reaction = self.reduceReaction(reaction)
+    # If the reaction was not a multi-multi reaction, return False
     if not reduced_reaction:
-      return None
-    # print("reduced_reaction", reduced_reaction.makeIdentifier(is_include_kinetics=False))
-    # if reduced reaction only has one side
-    if len(reduced_reaction.reactants)==0 or len(reduced_reaction.products)==0:
-      self.type_four_errors.append(reduced_reaction)
-      return True
+      return False
+    # if reduced reaction is EmptySet -> EmptySet, don't do anything
+    if len(reduced_reaction.reactants)==0 and len(reduced_reaction.products)==0:
+      return False
+    # elif reduced reaction has exactly one side EmptySet, add type four error
+    elif len(reduced_reaction.reactants)==0 or len(reduced_reaction.products)==0:
+      if reduced_reaction in self.type_four_errors:
+        return False
+      else:
+        self.type_four_errors.append(reduced_reaction)
+        return True
     reactant_soms = list({self.getNode(ms.molecule) for ms in reduced_reaction.reactants})
     product_soms = list({self.getNode(ms.molecule) for ms in reduced_reaction.products})
-    # if both sides have more than one SOMS, we cannot process
-    if (len(reactant_soms)>1) and (len(product_soms)>1):
-      return False
+    reactant_stoichiometry = [ms.stoichiometry for ms in reduced_reaction.reactants]
+    product_stoichiometry = [ms.stoichiometry for ms in reduced_reaction.products]
+    sum_reactant_stoichiometry = sum(reactant_stoichiometry)
+    sum_product_stoichiometry = sum(product_stoichiometry)
+    #
+    # if both sides have more than one SOMS, we cannot process (return False)
+    # if (len(reactant_soms)>1) and (len(product_soms)>1):
+    #   return False
     # if both sides have exactly one SOM
     if (len(reactant_soms)==1) and (len(product_soms)==1):
-      reactant_stoichiometry = sum([ms.stoichiometry for ms in reduced_reaction.reactants])
-      product_stoichiometry = sum([ms.stoichiometry for ms in reduced_reaction.products])
       reactant_som = reactant_soms[0]
       product_som = product_soms[0]
-      if reactant_stoichiometry == product_stoichiometry:
+      if sum_reactant_stoichiometry == sum_product_stoichiometry:
         if reactant_som != product_som:
           if not self.checkTypeThreeError(reactant_som, product_som, reaction):
             self.mergeNodes(reactant_som, product_som, reaction)
       # Add reactant_som -> product_som
-      elif reactant_stoichiometry > product_stoichiometry:
+      elif sum_reactant_stoichiometry > sum_product_stoichiometry:
         self.addArc(reactant_som, product_som, reaction)
       # Add product_som -> reactant_som
       else:
         self.addArc(product_som, reactant_som, reaction)
       self.identifier = self.makeId()
       return True
-    # if one side has exactly one SOM, ther other sides multiple
+    # if one side has exactly one SOM, and the other side multiple SOMs
     else: 
-      if (len(reactant_soms)==1) and (len(product_soms)>1):
+      # SOM uni-multi reaction
+      if (len(reactant_soms)==1) and \
+          (sum_reactant_stoichiometry==1) and \
+          (len(product_soms)>1):
         som_arcs = itertools.product(product_soms, reactant_soms)
-      elif (len(reactant_soms)>1) and (len(product_soms)==1):
+      # SOM multi-uni reaction
+      elif (len(reactant_soms)>1) and \
+          (len(product_soms)==1) and \
+          (sum_product_stoichiometry==1):
         som_arcs = itertools.product(reactant_soms, product_soms)
+      # The rest are all multi-multi 
+      # that is, multiple SOMs on both sides, or one side one SOM with stoichiometry>1
+      else:
+        return self.processByInequality(reduced_reaction)
       for arc in som_arcs:
         self.addArc(arc[0], arc[1], reaction)
       self.identifier = self.makeId()
       return True
-    # return none if none of above cases happened (should not happen)
+    # return none if none of above applied (should not happen)
     return None
+
+  def processByInequality(self, reduced_reaction):
+    """
+    Cross-examine inequality and add arcs if possible.
+    One example is, A + B -> C + D where A < C is given
+    by existing arc. 
+    We can conclude B > D and add an arc.  
+    Return True if processed, False otherwise
+    :param Reaction reduced_reaction:
+    :return bool:
+    """  
+    # create lists of soms with stoichiometry
+    reactants = collections.deque([
+        SOMMoleculeStoichiometry(som = self.getNode(moles.molecule),
+            molecule = moles.molecule, 
+            stoichiometry = moles.stoichiometry) for \
+            moles in reduced_reaction.reactants])
+    products = collections.deque([
+        SOMMoleculeStoichiometry(som = self.getNode(moles.molecule), 
+            molecule = moles.molecule,
+            stoichiometry = moles.stoichiometry) for \
+            moles in reduced_reaction.products])
+    reactant_soms = list({reactant.som for reactant in reactants})
+    product_soms = list({product.som for product in products})
+    #
+    reactant_lessthan_product = []
+    product_lessthan_reactant = []
+    no_relationship = []
+    for pair in itertools.product(reactant_soms, product_soms):
+      if self.has_edge(pair[0], pair[1]):
+        reactant_lessthan_product.append(pair)
+      elif self.has_edge(pair[1], pair[0]):
+        product_lessthan_reactant.append(pair)
+      else:
+        no_relationship.append(pair)
+    # print("reduced reaction...", reduced_reaction.makeIdentifier(is_include_kinetics=False))
+    # print("reactant_lessthan_product: ", reactant_lessthan_product)
+    # print("product_lessthan_reactant: ", product_lessthan_reactant)
+    # print("no_realtionship :", no_relationship)
+    # print("----------------------------------------------------------")
+    # now, want to infer the relationship of no_relationship
+    # or prove if existing relationships conflict
+    if not no_relationship:
+      return False
+    # if both directions exist, let's say we cannot do anything; return False
+    if reactant_lessthan_product and product_lessthan_reactant:
+      return False
+    def processPairs(pairs, small, big, idx_small, idx_big):
+    # under product_lessthan_reactant, idx_small = 1, idx_big = 0
+    # under the same, small = products, big = reactants
+    # soms_buffer is same side as small_som
+    # remaining_soms is same side as big_som
+      big_som_stoichiometry = 0
+      small_som_stoichiometry = 0
+      soms_buffer = [pair[idx_small] for pair in no_relationship]
+      remaining_soms = [pair[idx_big] for pair in no_relationship]
+      for pair in pairs:
+        print("We are dealing with, ", pair)
+        big_som_stoichiometry += sum([
+            sms.stoichiometry for sms in big if sms.som==pair[idx_big]])
+        small_som_stoichiometry += sum([
+            sms.stoichiometry for sms in small if sms.som==pair[idx_small]])
+        if pair[idx_small] in soms_buffer:
+          soms_buffer.remove(pair[idx_small])
+        if pair[idx_big] in remaining_soms:
+          remaining_soms.remove(pair[idx_big])
+      print("big_som_stoi, ", big_som_stoichiometry)
+      print("small_som_stoi, ", small_som_stoichiometry)
+      # if product_som_stoichiometry is bigger, it's okay
+      # if not, check if there is at least one buffer on product; 
+      # if yes, try adding an arc if the buffer is at least one
+      if big_som_stoichiometry < small_som_stoichiometry:
+        return False
+      elif soms_buffer:
+        if len(soms_buffer)==1:
+          # add arc
+          for arc_source in remaining_soms:
+            # the SOMs cannot be the same because they were already reduced
+            self.addArc(arc_source, soms_buffer[0])
+            return True
+        # cannot decide now because there are more than two buffers
+        else:
+          return False
+      # no buffer; add error
+      else:
+        if reduced_reaction in self.type_four_errors:
+          return False
+        else:
+          self.type_four_errors.append(reduced_reaction)
+          print("type four error added!", reduced_reaction)
+          return True
+    if product_lessthan_reactant:
+      return processPairs(
+          pairs=product_lessthan_reactant, 
+          big=reactants, 
+          small=products, 
+          idx_big=0, idx_small=1)
+    elif reactant_lessthan_product:
+      return processPairs(
+          pairs=reactant_lessthan_product, 
+          big=products, 
+          small=reactants, 
+          idx_big=1, idx_small=0)
+    return False
 
   def addArc(self, arc_source, arc_destination, reaction):
     """
@@ -407,8 +540,9 @@ class MESGraph(nx.DiGraph):
     same SOM.
     :param str molecule_name1:
     :param str molecule_name2:
-    :return bool
+    :return true
     """
+    path_report = NULL_STR
     som1 = self.getNode(self.simple.getMolecule(molecule_name1))
     som2 = self.getNode(self.simple.getMolecule(molecule_name2))
     if som1 != som2:
@@ -416,17 +550,21 @@ class MESGraph(nx.DiGraph):
     else:
       # add case when molecule_name1 == molecule_name2
       if molecule_name1 == molecule_name2:
-        print("Clearly,", molecule_name1, cn.EQUAL, molecule_name2)
+        # print("Clearly,", molecule_name1, cn.EQUAL, molecule_name2)
+        path_report = path_report + "Clearly, %s %s %s\n" % (
+            molecule_name1, cn.EQUAL, molecule_name2)
       else:
         som_path = self.getSOMPath(som1, 
                                    self.simple.getMolecule(molecule_name1), 
                                    self.simple.getMolecule(molecule_name2))
         for pat in som_path:
-          print("\n" + pat.node1, cn.EQUAL, pat.node2 + " by reaction(s):")
+          # print("\n%s %s %s by reaction(s):" % (pat.node1, cn.EQUAL, pat.node2))
+          path_report = path_report + "\n%s %s %s by reaction(s):\n" % (pat.node1, cn.EQUAL, pat.node2)
           for r in pat.reactions:
             som_reaction = self.simple.getReaction(r)
-            print(som_reaction.makeIdentifier(is_include_kinetics=False))
-      return True
+            # print(som_reaction.makeIdentifier(is_include_kinetics=False))
+            path_report = path_report + "%s\n" % (som_reaction.makeIdentifier(is_include_kinetics=False))
+      return path_report
 
   def addTypeOneError(self, mole1, mole2, reaction):
     """
@@ -585,11 +723,13 @@ class MESGraph(nx.DiGraph):
     Add arcs or sending error messages using
     checkTypeOneError or checkTypeTwoError.
     :param list-Reaction reactions:
+    :return str:
     """
     if reactions is None:
       reactions = self.simple.reactions
     # Associate the reaction category with the function
     # that processes that category
+    report = NULL_STR
     reaction_dic = {
         cn.REACTION_1_1: self.processUniUniReaction,
         cn.REACTION_1_n: self.processUniMultiReaction,
@@ -605,16 +745,22 @@ class MESGraph(nx.DiGraph):
     self.checkTypeTwoError()    
     #
     if error_details:
-      if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
-        print("No error found in uni-uni and mulit-uni(uni-multi) reactions.")
+      # if (len(self.type_one_errors)==0) and (len(self.type_two_errors)==0):
+      #   report = report + "No error found in uni-uni and mulit-uni(uni-multi) reactions.\n"
       #
       for error_path in self.type_one_errors:
-        self.printSOMPath(error_path.node1, error_path.node2)
-        print("\nHowever, the following reaction(s)") 
+        path_report = self.printSOMPath(error_path.node1, error_path.node2)
+        # print(path_report)
+        report = report + "%s\n" % path_report
+        # print("\nHowever, the following reaction(s)") 
+        report = report + "However, the following reaction(s)\n"
         for arc_reaction in error_path.reactions:
-          print(self.simple.getReaction(arc_reaction).makeIdentifier(is_include_kinetics=False)) 
-        print("imply " + error_path.node1, cn.LESSTHAN,  error_path.node2)
-        print("------------------------------------")
+          # print(self.simple.getReaction(arc_reaction).makeIdentifier(is_include_kinetics=False)) 
+          report = "%s%s\n" % (report, self.simple.getReaction(arc_reaction).makeIdentifier(is_include_kinetics=False))
+        # print("imply " + error_path.node1, cn.LESSTHAN,  error_path.node2)
+        report = report + "imply %s %s %s\n" % (error_path.node1, cn.LESSTHAN, error_path.node2)
+        # print("------------------------------------")
+        report = report + "------------------------------------\n"
       #print("************************************")
       #
       # print("We Do have type II Errors", self.type_two_errors)
@@ -630,25 +776,28 @@ class MESGraph(nx.DiGraph):
           # print SOM path between node elements
           if len(nodes1)>1:
             for node_idx in range(len(nodes1)-1):
-              self.printSOMPath(nodes1[node_idx], nodes1[node_idx+1])
+              path_report = self.printSOMPath(nodes1[node_idx], nodes1[node_idx+1])
+              report = report + "%s\n" % path_report
           if not set(nodes2).intersection(set(next_nodes1)):
-            self.printSOMPath(nodes2[0], next_nodes1[0])
+            path_report = self.printSOMPath(nodes2[0], next_nodes1[0])
+            report = report + "%s\n" % path_report
          #
           while nodes1:
-            print()
-            print(nodes1[0] + " < " + nodes2[0] + " by reaction:")
+            report = report + "\n%s %s %s by reaction:\n" % (nodes1[0], cn.LESSTHAN, nodes2[0])
             arc_reaction = self.simple.getReaction(reactions[0])
-            print(arc_reaction.makeIdentifier(is_include_kinetics=False))
+            report = report + "%s\n" % (arc_reaction.makeIdentifier(is_include_kinetics=False))
             nodes1.popleft()
             nodes2.popleft()
             reactions.popleft()
-        print("------------------------------------")
-      print("*************************************************************")
+        report = report + "%s" % ("------------------------------------")
+      # report = report + "%s\n" % ("*************************************************************")
     # Process multi-multi reactions only if there's no elementary errors
     if len(self.type_one_errors)==0 and len(self.type_two_errors)==0:
       sub_multimulti = self.multimulti_reactions
       unsuccessful_load = 0
-      while self.multimulti_reactions:
+      max_loop = 0
+      while (self.multimulti_reactions) and (max_loop<5):
+        max_loop  = max_loop + 1
         flag_loop = [False] * len(self.multimulti_reactions)
         for idx, multimulti in enumerate(self.multimulti_reactions):
           result = self.processMultiMultiReaction(multimulti)
@@ -666,11 +815,14 @@ class MESGraph(nx.DiGraph):
                                      in enumerate(flag_loop) if not tr]
       # check SOM cycles (type V error)
       self.checkTypeFiveError()
-      if len(self.type_three_errors)==0 and \
-         len(self.type_four_errors)==0 and \
-         len(self.type_five_errors)==0:
-        print("No error found in multi-multi reactions.")
-        print("*************************************************************")
+      # if len(self.type_three_errors)==0 and \
+      #    len(self.type_four_errors)==0 and \
+      #    len(self.type_five_errors)==0:
+      #   # print("No error found in multi-multi reactions.")
+      #   # print("*************************************************************")
+      #   report = report + "%s\n%s\n" % (
+      #       "No error found in multi-multi reactions.", 
+      #       "*************************************************************")
       #
       # if error_details:
       #   if self.type_three_errors:
@@ -687,4 +839,14 @@ class MESGraph(nx.DiGraph):
       #     print("We don't have type V errors")
     #
     self.identifier = self.makeId()
-    return self
+    print("Model analyzed...")
+    if self.type_one_errors or \
+        self.type_two_errors or \
+        self.type_three_errors or \
+        self.type_four_errors or \
+        self.type_five_errors:
+      print("At least one error found.")
+    else:
+      print("No error detected.")
+    #return self
+    return report
