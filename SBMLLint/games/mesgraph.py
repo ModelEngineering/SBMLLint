@@ -408,12 +408,11 @@ class MESGraph(nx.DiGraph):
         product_lessthan_reactant.append(pair)
       else:
         no_relationship.append(pair)
-    print("reduced reaction...", reduced_reaction.makeIdentifier(is_include_kinetics=False))
-    print("reactant_lessthan_product: ", reactant_lessthan_product)
-    print("product_lessthan_reactant: ", product_lessthan_reactant)
-    print("no_realtionship :", no_relationship)
-    print("----------------------------------------------------------")
-    #
+    # print("reduced reaction...", reduced_reaction.makeIdentifier(is_include_kinetics=False))
+    # print("reactant_lessthan_product: ", reactant_lessthan_product)
+    # print("product_lessthan_reactant: ", product_lessthan_reactant)
+    # print("no_realtionship :", no_relationship)
+    # print("----------------------------------------------------------")
     # now, want to infer the relationship of no_relationship
     # or prove if existing relationships conflict
     if not no_relationship:
@@ -826,7 +825,7 @@ class MESGraph(nx.DiGraph):
          len(self.type_five_errors)==0:
         # print("No error found in multi-multi reactions.")
         # print("*************************************************************")
-        report = report + "%s\n %s\n" % (
+        report = report + "%s\n%s\n" % (
             "No error found in multi-multi reactions.", 
             "*************************************************************")
       #
