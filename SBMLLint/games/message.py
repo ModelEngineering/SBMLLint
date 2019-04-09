@@ -1,7 +1,7 @@
 """Mass Equality Set Structure Analysis with Gaussian Elimination (MESSAGE)"""
 
 from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
+from SBMLLint.common.molecule import MoleculeStoichiometry
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.games.som import SOM
 from SBMLLint.common.simple_sbml import SimpleSBML
@@ -17,26 +17,6 @@ from sympy.matrices import Matrix, eye
 # BIOMD 383 will test the validity of Gaussian Elimination to find errors, 
 # before proceeding to building MESGraph
 
-    
-ReactionSummary = collections.namedtuple('ReactionSummary', 
-                  'label reactants products category')
-REACTION_REDUNDANT = "reaction_redundant"
-REACTION_ERROR = "reaction_error"
-REACTION_SUMMARY_CATEGORIES = [
-    cn.ReactionCategory(category=REACTION_REDUNDANT,
-        predicate=lambda x,y,r,p: (x==0) and (y==0)),
-    cn.ReactionCategory(category=REACTION_ERROR,
-        predicate=lambda x,y,r,p: ((x==0) and (y!=0)) \
-                                  or ((x!=0) and (y==0))),
-    cn.ReactionCategory(category=cn.REACTION_1_1,
-        predicate=lambda x,y,r,p: (x==1) and (y==1) and (sum(r)==sum(p))),
-    
-    cn.ReactionCategory(category=cn.REACTION_1_n,
-        predicate=lambda x,y,r,p: (x==1) and (sum([r[0]<=e for e in p])==len(p))  ),
-                     
-    cn.ReactionCategory(category=cn.REACTION_n_1,
-        predicate=lambda x,y,r,p: (y==1) and (sum([p[0]<=e for e in r])==len(r))),
-    ]
 
 
 class Message(nx.DiGraph):
@@ -193,7 +173,7 @@ class Message(nx.DiGraph):
     stoichiometry_products = [p.stoichiometry for p \
                              in products \
                              if p.molecule.name!=cn.EMPTYSET]
-    for reaction_category in REACTION_SUMMARY_CATEGORIES:
+    for reaction_category in cn.REACTION_SUMMARY_CATEGORIES:
       if reaction_category.predicate(num_reactants, num_products, 
                                      stoichiometry_reactants, 
                                      stoichiometry_products):
@@ -221,18 +201,23 @@ class Message(nx.DiGraph):
       products = [MoleculeStoichiometry(simple.getMolecule(molecule), 
                                      reduced_reaction_series[molecule]) \
               for molecule in reduced_reaction_series.index if reduced_reaction_series[molecule]>0]
-      reactions.append(ReactionSummary(label=reaction_name, 
+      reactions.append(cn.ReactionSummary(label=reaction_name, 
                                       reactants=reactants,
                                       products=products,
-                                      category=getReactionSummaryCategory(reactants, products)))
+                                      category=self.getReactionSummaryCategory(reactants, products)))
     return reactions
   #
-  # def 
-
-
-
-
-
+  def analyze(self, error_details=True):
+    """
+    Using the stoichiometry matrix, compute
+    row reduced echelon form and create SOMGraph
+    Add arcs or sending error messages using
+    checkTypeOneError or checkTypeTwoError.
+    :param bool error_details:
+    :return str:
+    """
+    report = NULL_STR
+    pass
 
 
 

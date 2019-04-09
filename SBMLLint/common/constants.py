@@ -61,6 +61,9 @@ REACTION_n_1 = "reaction_n_1"
 REACTION_1_n = "reaction_1_n"
 REACTION_n_n = "reaction_n_n"
 REACTION_BOUNDARY = "reaction_boundary"
+# for reduced reactions
+REACTION_REDUNDANT = "reaction_redundant"
+REACTION_ERROR = "reaction_error"
 ReactionCategory = collections.namedtuple('ReactionCategory',
     'category predicate')
 ReactionComponents = collections.namedtuple('ReactionComponents',
@@ -94,10 +97,38 @@ REACTION_CATEGORIES = [
     ReactionCategory(category=REACTION_BOUNDARY,
         predicate=lambda x,y,z,w: (x==0) or (y==0) or (z==0) or (w==0)),
     ]
+# Similar to REACTION_CATEGORIES but have different arguments r, p 
+# and two additional categories - reaction_redundant and reaction_error
+# r: list of reactants stoichiometry
+# p: list of products stoichiometry
+REACTION_SUMMARY_CATEGORIES = [
+    ReactionCategory(category=REACTION_REDUNDANT,
+        predicate=lambda x,y,r,p: (x==0) and (y==0)),
+    ReactionCategory(category=REACTION_ERROR,
+        predicate=lambda x,y,r,p: ((x==0) and (y!=0)) \
+                                  or ((x!=0) and (y==0))),
+    ReactionCategory(category=REACTION_1_1,
+        predicate=lambda x,y,r,p: (x==1) and (y==1) and (sum(r)==sum(p))),
+    
+    ReactionCategory(category=REACTION_1_n,
+        predicate=lambda x,y,r,p: (x==1) and (sum([r[0]<=e for e in p])==len(p))),
+                     
+    ReactionCategory(category=REACTION_n_1,
+        predicate=lambda x,y,r,p: (y==1) and (sum([p[0]<=e for e in r])==len(r))),
+    ]
+
+
+# summarized version of a reaction
+ReactionSummary = collections.namedtuple('ReactionSummary', 
+                  'label reactants products category')
+
 
 # building block for each MESGraph path
 PathComponents = collections.namedtuple('PathComponents',
                                         'node1 node2 reactions')
+
+# used for creating a report
+NULL_STR = ""
 
 # Directories and files
 # Where data files are stored by default
