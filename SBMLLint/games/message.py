@@ -11,7 +11,8 @@ import itertools
 import networkx as nx
 import numpy as np
 import pandas as pd
-import scipy
+#import scipy
+from sympy.matrices import Matrix, eye
 
 # BIOMD 383 will test the validity of Gaussian Elimination to find errors, 
 # before proceeding to building MESGraph
@@ -58,7 +59,36 @@ class Message(nx.DiGraph):
     self.molecules = self._getNonBoundaryMolecules(simple, self.reactions)
     self.stoichiometry_matrix = self.getStoichiometryMatrix(self.reactions, self.molecules)
     self.reduced_reactions = []
+    # INVERSE of L from LU decomposition
+    self.lower_inverse = None
+    self.permuted_matrix = None
+    # Components for SOMGraph
+    super(Message, self).__init__()
+    self.soms = self.initializeSOMs(self.molecules)
+    # networkx method
+    self.add_nodes_from(self.soms)
+    self.identifier = self.makeId()
 
+  #
+  def __repr__(self):
+    return self.identifier
+  #
+  def makeId(self):
+    """
+    Construct an identifier for the graph.
+    :return str:
+    """
+    identifier = ""
+    if self.edges:
+      for edge in self.edges:
+        identifier = identifier + str(edge[0]) + cn.ARC_ARROW + str(edge[1]) + "\n"
+    for key, node in enumerate(nx.isolates(self)):
+      identifier = identifier + str(node)
+      if key < (len(list(nx.isolates(self)))-1):
+          identifier = identifier + cn.KINETICS_SEPARATOR
+    # Return the identifier
+    return identifier
+  #
   def _getNonBoundaryReactions(self, simple):
     """
     Get list of non-boundary reacetions
@@ -75,15 +105,29 @@ class Message(nx.DiGraph):
     """
     Get list of non-boundary molecules
     :param SimpleSBML simple:
-    :return list-Molecule.name:
+    :return list-Molecule:
     """
     molecules = set()
     for reaction in reactions:
-      reactants = {r.molecule.name for r in reaction.reactants}
-      products = {r.molecule.name for r in reaction.products}
+      reactants = {simple.getMolecule(r.molecule.name) for r in reaction.reactants}
+      products = {simple.getMolecule(r.molecule.name) for r in reaction.products}
       molecules = molecules.union(reactants)
       molecules = molecules.union(products)
     return list(molecules)
+  #
+  def initializeSOMs(self, molecules):
+    """
+    Create a list of one-molecule SOMs
+    :param list-Molecule molecules:
+    :return list-SOM soms:
+    """
+    soms = []
+    for molecule in molecules:
+      if molecule.name == cn.EMPTYSET:
+        continue
+      else:
+        soms.append(SOM({molecule}))
+    return soms
   #
   def getStoichiometryMatrix(self, reactions, molecules):
     """
@@ -93,7 +137,8 @@ class Message(nx.DiGraph):
     :return pd.DataFrame:
     """
     reaction_labels = [r.label for r in reactions]
-    stoichiometry_matrix = pd.DataFrame(0.0, index=molecules, columns=reaction_labels)
+    molecule_names = [m.name for m in molecules]
+    stoichiometry_matrix = pd.DataFrame(0.0, index=molecule_names, columns=reaction_labels)
     for reaction in reactions:
       reactants = {r.molecule.name:r.stoichiometry for r in reaction.reactants}
       products = {p.molecule.name:p.stoichiometry for p in reaction.products}
@@ -105,25 +150,30 @@ class Message(nx.DiGraph):
   #
   def decomposeMatrix(self, mat_df):
     """
-    LU decomposition of the matrix.
+    LU decomposition of the stoichiometry matrix.
     First it transposes the input matrix
-    and find P, L, U matrices. 
+    and find L, U matrices and permutation list. 
     :param pandas.DataFrame mat_df:
-    :yield typle-numpy.array:
+    :yield pandas.DataFrame new_df:
     """
     mat_t = mat_df.T
     idx_mat_t = mat_t.index
     # LU decomposition
-    mat_lu = scipy.linalg.lu(mat_t)
-    # inverse pivot matrix
-    p_inv = scipy.linalg.inv(mat_lu[0])
-    pivot_index = [list(k).index(1) for k in p_inv]
-    new_idx_mat_t = [idx_mat_t[idx] for idx in pivot_index]
-    # row reduced matrix
-    row_reduced = pd.DataFrame(mat_lu[2], index=new_idx_mat_t, columns=mat_t.columns).T
-    # 'L' matrix
-    yield mat_lu[1]
-    yield row_reduced
+    m = Matrix(mat_df.T)
+    lower, upper, perm = m.LUdecomposition()
+    permuted_m = m.permuteFwd(perm)
+    new_idx_mat_t = list(Matrix(idx_mat_t).permuteFwd(perm))
+    perm_df = pd.DataFrame(np.array(permuted_m).astype(np.float64),
+        index=new_idx_mat_t,
+        columns=mat_t.columns).T
+    rref_df = pd.DataFrame(np.array(upper).astype(np.float64),
+        index=new_idx_mat_t,
+        columns=mat_t.columns).T
+    lower_operation = pd.DataFrame(np.array(lower.inv()).astype(np.float64),
+        columns=new_idx_mat_t)
+    self.permuted_matrix = perm_df
+    self.lower_inverse = lower_operation
+    return rref_df
   #
   def getReactionSummaryCategory(self, reactants, products):
     """
@@ -176,7 +226,8 @@ class Message(nx.DiGraph):
                                       products=products,
                                       category=getReactionSummaryCategory(reactants, products)))
     return reactions
-
+  #
+  # def 
 
 
 
