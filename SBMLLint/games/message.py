@@ -1,7 +1,7 @@
 """Mass Equality Set Structure Analysis with Gaussian Elimination (MESSAGE)"""
 
 from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import MoleculeStoichiometry
+from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common import util
 from SBMLLint.games.som import SOM
@@ -131,7 +131,8 @@ class Message(nx.DiGraph):
         self.molecules,
         som=False
         )
-    self.reduced_reactions = []
+    self.som_stoichiometry_matrix = None
+    self.reduced_som_reactions = []
     self.reactions_lu = []
     self.som_reactions_lu = []
     self.permuted_matrix = None
@@ -147,7 +148,10 @@ class Message(nx.DiGraph):
     # storing errors
     self.rref_errors = []
     self.type_one_errors = []
+    self.canceling_erros = []
     self.type_two_errors = []
+    self.type_three_erros = []
+    self.type_one_som_errors = set()
   #
   def __repr__(self):
     return self.identifier
@@ -270,69 +274,50 @@ class Message(nx.DiGraph):
     self.rref_df = rref_df
     return rref_df
   #
-  def getReactionSummaryCategory(self, reactants, products):
+  def convertMatrixToSOMReactions(self, mat_df):
     """
-    Return category of reaction. Return reaction_n_n
-    if none of the above applies
-    :param list-MoleculeStoichiometry reactants:
-    :param list-Moleculestoichiometry products:
-    :return str reaction_category:
-    """
-    num_reactants = len([r.molecule for r in reactants \
-                         if r.molecule.name!=cn.EMPTYSET])
-    num_products = len([p.molecule for p in products \
-                        if p.molecule.name!=cn.EMPTYSET])
-    stoichiometry_reactants = [r.stoichiometry for r \
-                                  in reactants \
-                                  if r.molecule.name!=cn.EMPTYSET]
-    stoichiometry_products = [p.stoichiometry for p \
-                             in products \
-                             if p.molecule.name!=cn.EMPTYSET]
-    for reaction_category in cn.REACTION_SUMMARY_CATEGORIES:
-      if reaction_category.predicate(num_reactants, num_products, 
-                                     stoichiometry_reactants, 
-                                     stoichiometry_products):
-        return reaction_category.category
-    # if none of the above, return reaction_n_n
-    return cn.REACTION_n_n
-  #
-  def convertMatrixToReactions(self, simple, mat_df):
-    """
-    Convert a stoichiometry matrix, 
-    where columns are reactions and 
-    rows are molecules(species),
-    to simpleSBML reactions. 
-    :param simpleSBML simple:
+    Convert a stoichiometry matrix to SOMReactions,
+    where columns are SOMReactions and 
+    rows are SOMs (species).
     :param pandas.DataFrame mat_df:
-    :return list-ReactionSummary reactions:
+    :return list-SOMReaction reactions:
     """
     reactions = []
     for reaction_name in mat_df.columns:
-      reaction = simple.getReaction(reaction_name)
-      reduced_reaction_series = mat_df[reaction_name]
-      reactants = [MoleculeStoichiometry(simple.getMolecule(molecule), 
-                                     abs(reduced_reaction_series[molecule])) \
-              for molecule in reduced_reaction_series.index if reduced_reaction_series[molecule]<0]
-      products = [MoleculeStoichiometry(simple.getMolecule(molecule), 
-                                     reduced_reaction_series[molecule]) \
-              for molecule in reduced_reaction_series.index if reduced_reaction_series[molecule]>0]
-      reactions.append(cn.ReactionSummary(label=reaction_name, 
-                                      reactants=reactants,
-                                      products=products,
-                                      category=self.getReactionSummaryCategory(reactants, products)))
+      reaction_elements = mat_df[reaction_name]
+      reactants = [SOMStoichiometry(
+          self.getNode(som_label),
+          abs(reaction_elements[som_label])
+          ) \
+          for som_label in reaction_elements.index if reaction_elements[som_label]<0]
+      products = [SOMStoichiometry(
+          self.getNode(som_label),
+          abs(reaction_elements[som_label])
+          ) \
+          for som_label in reaction_elements.index if reaction_elements[som_label]>0]
+      reactions.append(SOMReaction(
+          reactants=reactants,
+          products=products,
+          label=reaction_name
+          ))
     return reactions
   #
-  def getNode(self, molecule):
+  def getNode(self, input_arg):
     """
-    Find a node(SOM) containing the given molecule.
+    Find a node(SOM) containing the given molecule
+    or the SOM identifier. 
     If no such SOM exists, return False
-    :param Molecule molecule:
+    :param Molecule/str input_arg:
     :return SOM/False:
     """
     for som in list(self.nodes):
-      for mole in som.molecules:
-        if mole.name == molecule.name:
-          return som
+      if isinstance(input_arg, Molecule):
+        for mole in som.molecules:
+          if mole.name == input_arg.name:
+            return som
+      elif isinstance(input_arg, str):
+      	if som.identifier == input_arg:
+      	  return som
     return False
   #
   def mergeNodes(self, som1, som2, reaction):
@@ -388,10 +373,10 @@ class Message(nx.DiGraph):
   #
   def addArc(self, arc_source, arc_destination, reaction):
     """
-    Add a single arc (edge) using two SOMs and reaction.
+    Add a single arc (edge) using two SOMs and reaction/somreaction.
     :param SOM arc_source:
     :param SOM arc_destination:
-    :param Reaction reaction:
+    :param Reaction/SOMReaction reaction:
     """
     # if there is already a preious reaction,
     if self.has_edge(arc_source, arc_destination):
@@ -456,6 +441,31 @@ class Message(nx.DiGraph):
       # the reaction has not added any errors, will be used for lu
       if error_count == 0:
         self.reactions_lu.append(reaction)
+      self.identifier = self.makeId()
+  #
+  def processUnequalSOMReaction(self, reaction):
+    """
+    Process a 1-n or n-1 SOMReaction to add arcs.
+    An arc flows from SOM with less mass (source)
+    to SOM with greater mass (destination). 
+    :param SOMReaction reaction:
+    """
+    category = reaction.category
+    if (category!=cn.REACTION_n_1) and (category!=cn.REACTION_1_n):
+      pass
+    else:
+      if category == cn.REACTION_n_1:
+        destination = [reaction.products[0].som]
+        source = [reactant.som for reactant in reaction.reactants]
+      elif category == cn.REACTION_1_n:
+        destination = [reaction.reactants[0].som]
+        source = [product.som for product in reaction.products]
+      arcs = itertools.product(source, destination)
+      for arc in arcs:
+        if arc[0] == arc[1]:
+          self.type_one_som_errors = self.type_one_som_errors.add(reaction.label)
+        else:
+          self.addArc(arc[0], arc[1], reaction)
       self.identifier = self.makeId()
   #
   def addTypeOneError(self, mole1, mole2, reaction):
@@ -614,6 +624,7 @@ class Message(nx.DiGraph):
     products = reaction.products
     reactant_soms = list({self.getNode(r.molecule) for r in reactants})
     product_soms = list({self.getNode(p.molecule) for p in products})
+    #
     def getSumStoichiometry(som, species):
       """
       :param SOM som:
@@ -665,6 +676,43 @@ class Message(nx.DiGraph):
       self.som_reactions_lu.append(
           self.convertReactionToSOMReaction(reaction)
           )
+    #
+    # Now, step 1: creates SOMStoichiometryMatrix
+    self.som_stoichiometry_matrix = self.getStoichiometryMatrix(self.som_reactions_lu, list(self.nodes), som=True)
+    # step 2: reconvert it into SOMReactions and examine canceling errors
+    initial_reduced_som_reactions = self.convertMatrixToSOMReactions(self.som_stoichiometry_matrix)
+    dropping_reactions = []
+    for r in initial_reduced_som_reactions:
+      if r.category == cn.REACTION_ERROR:
+        self.canceling_erros.append(r)
+        dropping_reactions.append(r.label)
+    if dropping_reactions:
+      self.som_stoichiometry_matrix = self.som_stoichiometry_matrix.drop(columns=dropping_reactions)
+      print("Columns Dropped!")
+      print(dropping_reactions)
+    # step 3: decompose and examine rref errors
+    rref_df = self.decomposeMatrix(self.som_stoichiometry_matrix)
+    self.reduced_som_reactions = self.convertMatrixToSOMReactions(rref_df)
+
+    ## the below can be categorized loop
+    # for r in reduced_som_reactions:
+    #   if r.category == cn.REACTION_ERROR:
+    #     self.processErrorReactions(r)
+    # step 4: using the rest, update the graph (remaining 1_1 and 1_n, n_1), check errors
+    # okay let's just update and add arcs
+    ### we need process one-one definitely and add type three errors 
+    som_reaction_dic = {
+        cn.REACTION_ERROR: self.processErrorReactions,
+        cn.REACTION_1_n: self.processUnequalSOMReaction,
+        cn.REACTION_n_1: self.processUnequalSOMReaction,
+        }
+    for category in som_reaction_dic.keys():
+      for reaction in [r for r in self.reduced_som_reactions if r.category == category]:
+        func = som_reaction_dic[category]
+        func(reaction)
+    # step 5: check type two errors
+    self.checkTypeTwoError()
+    # 
     # # Decompose matrix and prepare reduced reactions
     # rref_df = self.decomposeMatrix(self.stoichiometry_matrix)
 
@@ -688,15 +736,18 @@ class Message(nx.DiGraph):
 
 
 
-    # print("We just analyzed the data...")
-    # print("RREF error: ", self.rref_errors)
-    # print("Type I error: ", self.type_one_errors)
-    # print("Type II error: " , self.type_two_errors)
-    if self.rref_errors or self.type_one_errors or self.type_two_errors:
+    print("We just analyzed the data...")
+    print("Type I error: ", self.type_one_errors)
+    print("Type II error: " , self.type_two_errors)
+    print("Canceling error: ", self.canceling_erros)
+    print("RREF error: ", self.rref_errors)
+    print("Type III error: ", self.type_three_erros)
+    print("Type I-SOM error: " , self.type_one_som_errors)    
+    if self.rref_errors or self.type_one_errors or self.type_two_errors \
+        or self.canceling_errors or self.type_three_erros or self.type_one_som_errors:
       return True
     else:
       return False
-
 
 
 
