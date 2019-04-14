@@ -72,7 +72,7 @@ class TestSOMReaction(unittest.TestCase):
     self.som_reaction = SOMReaction(
         reactants=[self.pga_ss],
         products=[self.rubp_ss],
-        reaction_label=self.reaction.label)
+        label=self.reaction.label)
 
   def testConstructor(self):
     self.assertTrue(isinstance(self.reaction, Reaction))
@@ -93,7 +93,7 @@ class TestSOMReaction(unittest.TestCase):
   	    self.som_reaction.category,
   	    cn.REACTION_1_1)
 
-  	
+
 
 if __name__ == '__main__':
   unittest.main()

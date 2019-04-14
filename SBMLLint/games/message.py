@@ -39,10 +39,10 @@ class SOMStoichiometry(object):
 #
 class SOMReaction(object):
 
-  def __init__(self, reactants, products, reaction_label):
+  def __init__(self, reactants, products, label):
     self.reactants = reactants
     self.products = products
-    self.reaction_label = reaction_label
+    self.label = label
     self.identifier = self.makeId()
     self.category = self.getCategory()
 
@@ -79,7 +79,7 @@ class SOMReaction(object):
     reactant_collection = makeTermCollection(self.reactants)
     product_collection = makeTermCollection(self.products)
     #
-    reaction_str = "%s: %s -> %s" % (self.reaction_label,
+    reaction_str = "%s: %s -> %s" % (self.label,
         reactant_collection, product_collection)
     reaction_str = reaction_str
     return reaction_str
@@ -126,9 +126,14 @@ class Message(nx.DiGraph):
     self.simple = simple
     self.reactions = self._getNonBoundaryReactions(simple)
     self.molecules = self._getNonBoundaryMolecules(simple, self.reactions)
-    self.stoichiometry_matrix = self.getStoichiometryMatrix(self.reactions, self.molecules)
+    self.stoichiometry_matrix = self.getStoichiometryMatrix(
+        self.reactions,
+        self.molecules,
+        som=False
+        )
     self.reduced_reactions = []
-    self.multimulti_reactions = []
+    self.reactions_lu = []
+    self.som_reactions_lu = []
     self.permuted_matrix = None
     # L matrix from LU decomposition (not always invertible)
     self.lower_inverse  = None
@@ -203,23 +208,36 @@ class Message(nx.DiGraph):
         soms.append(SOM({molecule}))
     return soms
   #
-  def getStoichiometryMatrix(self, reactions, molecules):
+  def getStoichiometryMatrix(self, reactions, species, som=False):
     """
     Creates a full stoichiometry matrix
     using non-boundary reactions.
     Helped by https://gist.github.com/lukauskas/d1e30bdccc5b801d341d
+    :param list-Reaction/SOMReaction reactions:
+    :param list-Molecule/SOM species:
     :return pd.DataFrame:
     """
     reaction_labels = [r.label for r in reactions]
-    molecule_names = [m.name for m in molecules]
-    stoichiometry_matrix = pd.DataFrame(0.0, index=molecule_names, columns=reaction_labels)
+    if som:
+      species_names = [s.identifier for s in species]
+    else:
+      species_names = [m.name for m in species]
+    stoichiometry_matrix = pd.DataFrame(
+        0.0,
+        index=species_names,
+        columns=reaction_labels
+        )
     for reaction in reactions:
-      reactants = {r.molecule.name:r.stoichiometry for r in reaction.reactants}
-      products = {p.molecule.name:p.stoichiometry for p in reaction.products}
-      reaction_molecules = list(set(reactants.keys()).union(products.keys()))
-      for molecule_name in reaction_molecules:
-        net_stoichiometry = products.get(molecule_name, 0.0) - reactants.get(molecule_name, 0.0)
-        stoichiometry_matrix[reaction.label][molecule_name] = net_stoichiometry
+      if som:
+        reactants = {r.som.identifier:r.stoichiometry for r in reaction.reactants}
+        products = {p.som.identifier:p.stoichiometry for p in reaction.products}
+      else:
+        reactants = {r.molecule.name:r.stoichiometry for r in reaction.reactants}
+        products = {p.molecule.name:p.stoichiometry for p in reaction.products}
+      reaction_species = list(set(reactants.keys()).union(products.keys()))
+      for species_name in reaction_species:
+        net_stoichiometry = products.get(species_name, 0.0) - reactants.get(species_name, 0.0)
+        stoichiometry_matrix[reaction.label][species_name] = net_stoichiometry
     return stoichiometry_matrix
   #
   def decomposeMatrix(self, mat_df):
@@ -342,14 +360,13 @@ class Message(nx.DiGraph):
       self.add_node(new_som)
     return new_som
   #
-  def addMultiMultiReaction(self, reaction=None):
+  def addReaction(self, reaction=None):
     """
-    Add a multi-multi reaction to self.multimulti_reactions
+    Add a reaction to self.reactions_lu
     :param reaction Reaction:
-    :return bool:
     """
-    if reaction not in self.multimulti_reactions:
-      self.multimulti_reactions.append(reaction)  
+    if reaction not in self.reactions_lu:
+      self.reactions_lu.append(reaction)  
   #
   def processUniUniReaction(self, reaction):
     """
@@ -401,11 +418,17 @@ class Message(nx.DiGraph):
       destination = [reaction.reactants[0].molecule]
       source = [product.molecule for product in reaction.products]
       arcs = itertools.product(source, destination)
+      error_count = 0
       for arc in arcs:
         if not self.checkTypeOneError(arc, reaction):
           som_source = self.getNode(arc[0])
           som_destination = self.getNode(arc[1])
           self.addArc(som_source, som_destination, reaction)
+        else:
+          error_count += 1
+      # the reaction has not added any errors, will be used for lu
+      if error_count == 0:
+        self.reactions_lu.append(reaction)
       self.identifier = self.makeId()
   #
   def processMultiUniReaction(self, reaction):
@@ -422,11 +445,17 @@ class Message(nx.DiGraph):
       destination = [reaction.products[0].molecule]
       source = [reactant.molecule for reactant in reaction.reactants]
       arcs = itertools.product(source, destination)
+      error_count = 0
       for arc in arcs:
         if not self.checkTypeOneError(arc, reaction):
           som_source = self.getNode(arc[0])
           som_destination = self.getNode(arc[1])
           self.addArc(som_source, som_destination, reaction)
+        else:
+          error_count += 1
+      # the reaction has not added any errors, will be used for lu
+      if error_count == 0:
+        self.reactions_lu.append(reaction)
       self.identifier = self.makeId()
   #
   def addTypeOneError(self, mole1, mole2, reaction):
@@ -574,6 +603,37 @@ class Message(nx.DiGraph):
     ## Here, we may need to add more info that will 
     ## help us track the operations that lead to this error 
     return True
+
+  def convertReactionToSOMReaction(self, reaction):
+    """
+    Convert simpleSBML Reaction to SOMReaction
+    :param Reaction reaction:
+    :return SOMReaction:
+    """	
+    reactants = reaction.reactants
+    products = reaction.products
+    reactant_soms = list({self.getNode(r.molecule) for r in reactants})
+    product_soms = list({self.getNode(p.molecule) for p in products})
+    def getSumStoichiometry(som, species):
+      """
+      :param SOM som:
+      :param list-MoleculeStoichiometry species:
+      :return SOMStoichiometry:
+      """   
+      sum_stoichiometry = 0.0
+      for s in species:
+        if self.getNode(s.molecule) == som:
+          sum_stoichiometry += s.stoichiometry
+      return SOMStoichiometry(som, sum_stoichiometry)
+    #
+    ss_reactants = []
+    ss_products = []
+    for som in reactant_soms:
+      ss_reactants.append(getSumStoichiometry(som, reactants))
+    for som in product_soms:
+      ss_products.append(getSumStoichiometry(som, products))
+    #
+    return SOMReaction(ss_reactants, ss_products, reaction.label)
   #
   def analyze(self, reactions=None, error_details=True):
     """
@@ -593,33 +653,41 @@ class Message(nx.DiGraph):
         cn.REACTION_1_1: self.processUniUniReaction,
         cn.REACTION_1_n: self.processUniMultiReaction,
         cn.REACTION_n_1: self.processMultiUniReaction,
-        cn.REACTION_n_n: self.addMultiMultiReaction,
+        cn.REACTION_n_n: self.addReaction,
         }
     # Process each type of reaction
     for category in reaction_dic.keys():
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
         func(reaction)
-    #
+    # convert reactions to somreactions
+    for reaction in self.reactions_lu:
+      self.som_reactions_lu.append(
+          self.convertReactionToSOMReaction(reaction)
+          )
+    # # Decompose matrix and prepare reduced reactions
+    # rref_df = self.decomposeMatrix(self.stoichiometry_matrix)
 
-    # Decompose matrix and prepare reduced reactions
-    rref_df = self.decomposeMatrix(self.stoichiometry_matrix)
-    reduced_reactions = self.convertMatrixToReactions(self.simple, rref_df)
-    self.reduced_reactions = reduced_reactions
-    report = cn.NULL_STR
-    reaction_dic = {
-        cn.REACTION_ERROR: self.processErrorReactions,
-        cn.REACTION_1_1: self.processUniUniReaction,
-        cn.REACTION_1_n: self.processUniMultiReaction,
-        cn.REACTION_n_1: self.processMultiUniReaction
-        }
-    # Process each type of reaction
-    for category in reaction_dic.keys():
-      for reaction in [r for r in reduced_reactions if r.category == category]:
-        func = reaction_dic[category]
-        func(reaction)
-    #
-    self.checkTypeTwoError()
+
+    # reduced_reactions = self.convertMatrixToReactions(self.simple, rref_df)
+    # self.reduced_reactions = reduced_reactions
+
+    # reaction_dic = {
+    #     cn.REACTION_ERROR: self.processErrorReactions,
+    #     cn.REACTION_1_1: self.processUniUniReaction,
+    #     cn.REACTION_1_n: self.processUniMultiReaction,
+    #     cn.REACTION_n_1: self.processMultiUniReaction
+    #     }
+    # # Process each type of reaction
+    # for category in reaction_dic.keys():
+    #   for reaction in [r for r in reduced_reactions if r.category == category]:
+    #     func = reaction_dic[category]
+    #     func(reaction)
+    # #
+    # self.checkTypeTwoError()
+
+
+
     # print("We just analyzed the data...")
     # print("RREF error: ", self.rref_errors)
     # print("Type I error: ", self.type_one_errors)
