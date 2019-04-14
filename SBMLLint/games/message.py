@@ -28,11 +28,86 @@ class SOMStoichiometry(object):
       raise ValueError("Second argument must be a float.")
     self.som = som
     self.stoichiometry = stoichiometry
+    self.identifier = self.makeId()
 
   def __repr__(self):
-    return "%s * % 2.2f" % (str(self.som), self.stoichiometry)
+    return self.makeId()
 
+  def makeId(self):
+  	return "%s * %2.2f" % (str(self.som), self.stoichiometry)
+#
+#
+class SOMReaction(object):
 
+  def __init__(self, reactants, products, reaction_label):
+    self.reactants = reactants
+    self.products = products
+    self.reaction_label = reaction_label
+    self.identifier = self.makeId()
+    self.category = self.getCategory()
+
+  def __repr__(self):
+    return self.makeId()
+
+  def makeId(self):
+    """
+    Provides a string representation of the som_reaction
+    :return str:
+    """
+    def makeStoichiometryString(som_stoichiometry):
+      num = som_stoichiometry.stoichiometry
+      if np.isclose(num, 1.0):
+        return ''
+      else:
+        return "%2.2f " % num
+    #
+    def makeTermCollection(som_stoichiometries):
+      """
+      Formats a set of terms with stoichiometries.
+      :param list-MoleculeStoichiometry:
+      :return str:
+      """
+      term_collection = ''
+      for s_s in som_stoichiometries:
+        term = "%s%s" % (makeStoichiometryString(s_s), str(s_s.som.identifier))
+        if len(term_collection) == 0:
+          term_collection += term
+        else:
+          term_collection += " + " + term
+      return term_collection
+    #
+    reactant_collection = makeTermCollection(self.reactants)
+    product_collection = makeTermCollection(self.products)
+    #
+    reaction_str = "%s: %s -> %s" % (self.reaction_label,
+        reactant_collection, product_collection)
+    reaction_str = reaction_str
+    return reaction_str
+
+  def getCategory(self):
+    """
+    Return category of SOMReaction. 
+    Return reaction_n_n
+    if none of the above applies.
+    Each reactant/product (SOMStoichiometry)
+    should have a unique SOM wthin the side. 
+    :return str:
+    """
+    num_reactants = len(self.reactants)
+    num_products = len(self.products)
+    stoichiometry_reactants = [r.stoichiometry for r \
+                                  in self.reactants]
+    stoichiometry_products = [p.stoichiometry for p \
+                             in self.products]
+    for reaction_category in cn.REACTION_SUMMARY_CATEGORIES:
+      if reaction_category.predicate(num_reactants, num_products, 
+                                     stoichiometry_reactants, 
+                                     stoichiometry_products):
+        return reaction_category.category
+    # if none of the above, return reaction_n_n
+    return cn.REACTION_n_n
+#
+#
 class Message(nx.DiGraph):
   """
   Similar to MESGraph, The Message algorithm creates
