@@ -148,7 +148,7 @@ class Message(nx.DiGraph):
     # storing errors
     self.rref_errors = []
     self.type_one_errors = []
-    self.canceling_erros = []
+    self.canceling_errors = []
     self.type_two_errors = []
     self.type_three_erros = []
     self.type_one_som_errors = set()
@@ -671,78 +671,53 @@ class Message(nx.DiGraph):
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
         func(reaction)
-    # convert reactions to somreactions
-    for reaction in self.reactions_lu:
-      self.som_reactions_lu.append(
-          self.convertReactionToSOMReaction(reaction)
-          )
-    #
-    # Now, step 1: creates SOMStoichiometryMatrix
-    self.som_stoichiometry_matrix = self.getStoichiometryMatrix(self.som_reactions_lu, list(self.nodes), som=True)
-    # step 2: reconvert it into SOMReactions and examine canceling errors
-    initial_reduced_som_reactions = self.convertMatrixToSOMReactions(self.som_stoichiometry_matrix)
-    dropping_reactions = []
-    for r in initial_reduced_som_reactions:
-      if r.category == cn.REACTION_ERROR:
-        self.canceling_erros.append(r)
-        dropping_reactions.append(r.label)
-    if dropping_reactions:
-      self.som_stoichiometry_matrix = self.som_stoichiometry_matrix.drop(columns=dropping_reactions)
-      print("Columns Dropped!")
-      print(dropping_reactions)
-    # step 3: decompose and examine rref errors
-    rref_df = self.decomposeMatrix(self.som_stoichiometry_matrix)
-    self.reduced_som_reactions = self.convertMatrixToSOMReactions(rref_df)
-
-    ## the below can be categorized loop
-    # for r in reduced_som_reactions:
-    #   if r.category == cn.REACTION_ERROR:
-    #     self.processErrorReactions(r)
-    # step 4: using the rest, update the graph (remaining 1_1 and 1_n, n_1), check errors
-    # okay let's just update and add arcs
-    ### we need process one-one definitely and add type three errors 
-    som_reaction_dic = {
-        cn.REACTION_ERROR: self.processErrorReactions,
-        cn.REACTION_1_n: self.processUnequalSOMReaction,
-        cn.REACTION_n_1: self.processUnequalSOMReaction,
-        }
-    for category in som_reaction_dic.keys():
-      for reaction in [r for r in self.reduced_som_reactions if r.category == category]:
-        func = som_reaction_dic[category]
-        func(reaction)
+    if self.reactions_lu:
+      # convert reactions to somreactions
+      for reaction in self.reactions_lu:
+        self.som_reactions_lu.append(
+            self.convertReactionToSOMReaction(reaction)
+            )
+      #
+      # Now, step 1: creates SOMStoichiometryMatrix
+      self.som_stoichiometry_matrix = self.getStoichiometryMatrix(self.som_reactions_lu, list(self.nodes), som=True)
+      # step 2: reconvert it into SOMReactions and examine canceling errors
+      initial_reduced_som_reactions = self.convertMatrixToSOMReactions(self.som_stoichiometry_matrix)
+      dropping_reactions = []
+      for r in initial_reduced_som_reactions:
+        if r.category == cn.REACTION_ERROR:
+          self.canceling_errors.append(r)
+          dropping_reactions.append(r.label)
+      if dropping_reactions:
+        self.som_stoichiometry_matrix = self.som_stoichiometry_matrix.drop(columns=dropping_reactions)
+        if error_details:
+          print("Columns Dropped!")
+          print(dropping_reactions)
+      # step 3: decompose and examine rref errors
+      rref_df = self.decomposeMatrix(self.som_stoichiometry_matrix)
+      self.reduced_som_reactions = self.convertMatrixToSOMReactions(rref_df)
+      # step 4: using the rest, update the graph (remaining 1_1 and 1_n, n_1), check errors
+      # okay let's just update and add arcs
+      ### we need process one-one definitely and add type three errors 
+      som_reaction_dic = {
+          cn.REACTION_ERROR: self.processErrorReactions,
+          cn.REACTION_1_n: self.processUnequalSOMReaction,
+          cn.REACTION_n_1: self.processUnequalSOMReaction,
+          }
+      for category in som_reaction_dic.keys():
+        for reaction in [r for r in self.reduced_som_reactions if r.category == category]:
+          func = som_reaction_dic[category]
+          func(reaction)
     # step 5: check type two errors
     self.checkTypeTwoError()
-    # 
-    # # Decompose matrix and prepare reduced reactions
-    # rref_df = self.decomposeMatrix(self.stoichiometry_matrix)
-
-
-    # reduced_reactions = self.convertMatrixToReactions(self.simple, rref_df)
-    # self.reduced_reactions = reduced_reactions
-
-    # reaction_dic = {
-    #     cn.REACTION_ERROR: self.processErrorReactions,
-    #     cn.REACTION_1_1: self.processUniUniReaction,
-    #     cn.REACTION_1_n: self.processUniMultiReaction,
-    #     cn.REACTION_n_1: self.processMultiUniReaction
-    #     }
-    # # Process each type of reaction
-    # for category in reaction_dic.keys():
-    #   for reaction in [r for r in reduced_reactions if r.category == category]:
-    #     func = reaction_dic[category]
-    #     func(reaction)
-    # #
-    # self.checkTypeTwoError()
-
-
-
-    print("We just analyzed the data...")
-    print("Type I error: ", self.type_one_errors)
-    print("Type II error: " , self.type_two_errors)
-    print("Canceling error: ", self.canceling_erros)
-    print("RREF error: ", self.rref_errors)
-    print("Type III error: ", self.type_three_erros)
-    print("Type I-SOM error: " , self.type_one_som_errors)    
+    #
+    if error_details:
+      print("We just analyzed the data...")
+      print("Type I error: ", self.type_one_errors)
+      print("Type II error: " , self.type_two_errors)
+      print("Canceling error: ", self.canceling_errors)
+      print("RREF error: ", self.rref_errors)
+      print("Type III error: ", self.type_three_erros)
+      print("Type I-SOM error: " , self.type_one_som_errors)    
     if self.rref_errors or self.type_one_errors or self.type_two_errors \
         or self.canceling_errors or self.type_three_erros or self.type_one_som_errors:
       return True
