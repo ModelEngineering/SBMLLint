@@ -110,7 +110,7 @@ class SOMReaction(object):
 #
 class Message(nx.DiGraph):
   """
-  Similar to MESGraph, The Message algorithm creates
+  Similar to MESGraph, The Message -GAMES+- algorithm creates
   a directed graph of SOMs, but before creating the graph
   it creates a row-reduced echolon metrix using the 
   stoichiometry matrix. 
@@ -132,12 +132,25 @@ class Message(nx.DiGraph):
         som=False
         )
     self.som_stoichiometry_matrix = None
-    self.reduced_som_reactions = []
+    # reactions before LU decomposition
     self.reactions_lu = []
+    # SOMReactinos before LU decomposition
     self.som_reactions_lu = []
-    self.permuted_matrix = None
-    # L matrix from LU decomposition (not always invertible)
+    # SOMReactions after LU decomposition
+    self.reduced_som_reactions = []
+    # RREF SOMReactions after LU -> RREF
+    self.rref_som_reactions = []
+    # L^-1 matrix from LU decomposition
     self.lower_inverse  = None
+    # P matrix from 'P'LU decomposition
+    self.perm_inverse = None
+    # permuted stoichiometry matrix
+    self.permuted_matrix = None
+    # U matrix from LU decomposition
+    self.echelon_df = None
+    # RREF operation matrix 
+    self.rref_operation = None
+    # RREF matrix
     self.rref_df = None
     # Components for SOMGraph
     super(Message, self).__init__()
@@ -146,11 +159,17 @@ class Message(nx.DiGraph):
     self.add_nodes_from(self.soms)
     self.identifier = self.makeId()
     # storing errors
-    self.rref_errors = []
+    # Mass balance error from U matrix
+    self.echelon_errors = []
+    # Can't add arc
     self.type_one_errors = []
+    # Mass balance error from net stoichiometry 
     self.canceling_errors = []
+    # SOM cycle
     self.type_two_errors = []
+    # Can't merge nodes
     self.type_three_erros = []
+    # Cant't add arcs using SOMs (after LU decomposition)
     self.type_one_som_errors = set()
   #
   def __repr__(self):
@@ -250,30 +269,107 @@ class Message(nx.DiGraph):
     First it transposes the input matrix
     and find L, U matrices and permutation list. 
     :param pandas.DataFrame mat_df:
-    :yield pandas.DataFrame new_df:
+    :return pandas.DataFrame echelon_df:
     """
     mat_t = mat_df.T
     idx_mat_t = mat_t.index
+    cols_mat_t = mat_t.columns
+    #
+    diff = None
+    if mat_t.shape[0] > mat_t.shape[1]:
+      diff = mat_t.shape[0] - mat_t.shape[1]
+      for i in range(diff):
+        mat_t["_" + str(i)] = np.zeros(mat_t.shape[0])
     # LU decomposition
     perm, lower, upper = lu(mat_t)
-    # the following is applicable to transposed stoichiometry matrix
-    permuted_m = inv(perm).dot(mat_t)
-    pivot_index = [list(k).index(1) for k in inv(perm)]
+    perm_inverse = perm.T
+    permuted_m = (perm_inverse).dot(mat_t)
+    pivot_index = [list(k).index(1) for k in perm_inverse]
     new_idx_mat_t = [idx_mat_t[idx] for idx in pivot_index]
-    # we save as; perm_df * lower_operation * mat_t = rref_df
-    perm_df = pd.DataFrame(permuted_m,
-        index=new_idx_mat_t,
-        columns=mat_t.columns).T
-    rref_df = pd.DataFrame(upper,
-        index=new_idx_mat_t,
-        columns=mat_t.columns).T
-    lower_operation = pd.DataFrame(lower,
-        columns=new_idx_mat_t)
+    # we save as; lower_inverse * perm_df = echelon_df
+    if diff:
+      perm_df = pd.DataFrame(permuted_m,
+          index=new_idx_mat_t,
+          columns=mat_t.columns).drop(columns = mat_t.columns[-diff:]).T
+      echelon_df = pd.DataFrame(upper,
+          index=new_idx_mat_t,
+          columns=mat_t.columns).drop(columns = mat_t.columns[-diff:]).T
+    else:
+      perm_df = pd.DataFrame(permuted_m,
+          index=new_idx_mat_t,
+          columns=mat_t.columns).T
+      echelon_df = pd.DataFrame(upper,
+          index=new_idx_mat_t,
+          columns=mat_t.columns).T
+    lower_inverse = pd.DataFrame(inv(lower),
+          index=new_idx_mat_t,
+          columns=new_idx_mat_t)
+    self.perm_inverse = perm_inverse
     self.permuted_matrix = perm_df
-    self.lower_inverse = lower_operation
+    self.lower_inverse = lower_inverse
+    self.echelon_df = echelon_df
+
+
+    ####################################################
+    # mat_t = mat_df.T
+    # idx_mat_t = mat_t.index
+    # # LU decomposition
+    # perm, lower, upper = lu(mat_t)
+    # # the following is applicable to transposed stoichiometry matrix
+    # # 'perm' is an orthogonal matrix, meaning perm.T == inv(perm)
+    # ## permuted_m = inv(perm).dot(mat_t)
+    # self.perm_inverse = perm.T
+    # permuted_m = (self.perm_inverse).dot(mat_t)
+    # pivot_index = [list(k).index(1) for k in self.perm_inverse]
+    # new_idx_mat_t = [idx_mat_t[idx] for idx in pivot_index]
+    # # we save as; perm_df * lower_operation * mat_t = echelon_df
+    # perm_df = pd.DataFrame(permuted_m,
+    #     index=new_idx_mat_t,
+    #     columns=mat_t.columns).T
+    # echelon_df = pd.DataFrame(upper,
+    #     index=new_idx_mat_t,
+    #     columns=mat_t.columns).T
+    # lower_operation = pd.DataFrame(lower,
+    #     columns=new_idx_mat_t)
+    # self.permuted_matrix = perm_df
+    # self.lower_inverse = lower_operation
+    # self.echelon_df = echelon_df
+    return echelon_df
+  #
+  def getRREFMatrix(self, echelon_df):
+    """
+    Get RREF of the stoichiometry matrix.
+    Stoichiometry matrix should be in echelon form.
+    Columns are reactions and indices are species. 
+    :param pandas.DataFrame echelon_df:
+    :return pandas.DataFrame rref_df:
+    """
+    rref_operation = np.identity(echelon_df.T.shape[0])
+    rref_operation = pd.DataFrame(rref_operation,
+                     index = echelon_df.columns,
+                     columns = echelon_df.columns)
+
+    # now update the operation matrix, finally multiply (dot product) two matrices
+    for idx, colname in enumerate(echelon_df.columns):
+      reaction_series = echelon_df[colname]
+      # Find the first nonzero values
+      nonzero_idx = np.nonzero(echelon_df[colname])[0]
+      # Skip if there is no nonzero value or if it is first reaction
+      if not nonzero_idx.any() or idx == 0:
+        continue
+      nonzero_species = reaction_series.index[nonzero_idx[0]]
+      nonzero_value = reaction_series[nonzero_idx[0]]
+      # find current nonzero index
+      current_echelon_t = rref_operation.dot(echelon_df.T).T
+      for prev_colname in current_echelon_t.columns[:idx]:
+        if np.round(current_echelon_t[prev_colname][nonzero_species], 3) != 0.0:
+          reduction_value = current_echelon_t[prev_colname][nonzero_species]
+          rref_operation.at[prev_colname, colname] = (-1.0) * reduction_value / nonzero_value
+    rref_df = np.round(rref_operation.dot(echelon_df.T).T, 3)
+    self.rref_operation = rref_operation	
     self.rref_df = rref_df
     return rref_df
-  #
+
   def convertMatrixToSOMReactions(self, mat_df):
     """
     Convert a stoichiometry matrix to SOMReactions,
@@ -287,14 +383,16 @@ class Message(nx.DiGraph):
       reaction_elements = mat_df[reaction_name]
       reactants = [SOMStoichiometry(
           self.getNode(som_label),
-          abs(reaction_elements[som_label])
+          np.round(abs(reaction_elements[som_label]), 3)
           ) \
-          for som_label in reaction_elements.index if reaction_elements[som_label]<0]
+          for som_label in reaction_elements.index \
+          if reaction_elements[som_label]<-0.0001]
       products = [SOMStoichiometry(
           self.getNode(som_label),
-          abs(reaction_elements[som_label])
+          np.round(abs(reaction_elements[som_label]), 3)
           ) \
-          for som_label in reaction_elements.index if reaction_elements[som_label]>0]
+          for som_label in reaction_elements.index \
+          if reaction_elements[som_label]>0.0001]
       reactions.append(SOMReaction(
           reactants=reactants,
           products=products,
@@ -443,6 +541,23 @@ class Message(nx.DiGraph):
         self.reactions_lu.append(reaction)
       self.identifier = self.makeId()
   #
+  def processEqualSOMReaction(self, reaction):
+    """
+    Process a 1-1 SOMReaction to check 
+    mergeability of nodes.
+    Because there are existing arcs, some nodes
+    cannot be merged which will lead to a 
+    type_one_som_errors
+    :param SOMReaction reaction:
+    """
+    if reaction.category != cn.REACTION_1_1:
+      pass
+    else:
+      reactant = reaction.reactants[0].som
+      product = reaction.products[0].som
+      if self.has_edge(reactant, product) or self.has_edge(product, reactant):
+        self.type_three_errors.add(reaction)
+
   def processUnequalSOMReaction(self, reaction):
     """
     Process a 1-n or n-1 SOMReaction to add arcs.
@@ -607,9 +722,9 @@ class Message(nx.DiGraph):
     :param Reaction reaction:
     :return bool:
     """
-    error_reactions = [r.label for r in self.rref_errors]
+    error_reactions = [r.label for r in self.echelon_errors]
     if reaction.label not in error_reactions:
-      self.rref_errors.append(reaction)
+      self.echelon_errors.append(reaction)
     ## Here, we may need to add more info that will 
     ## help us track the operations that lead to this error 
     return True
@@ -646,12 +761,14 @@ class Message(nx.DiGraph):
     #
     return SOMReaction(ss_reactants, ss_products, reaction.label)
   #
-  def analyze(self, reactions=None, error_details=True):
+  def analyze(self, reactions=None, rref=True, error_details=True):
     """
     Using the stoichiometry matrix, compute
     row reduced echelon form and create SOMGraph
     Add arcs or sending error messages using
     checkTypeOneError or checkTypeTwoError.
+    :param list-Reaction reactions:
+    :param bool rref:
     :param bool error_details:
     :return bool:
     """
@@ -671,6 +788,7 @@ class Message(nx.DiGraph):
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
         func(reaction)
+
     if self.reactions_lu:
       # convert reactions to somreactions
       for reaction in self.reactions_lu:
@@ -693,13 +811,14 @@ class Message(nx.DiGraph):
           print("Columns Dropped!")
           print(dropping_reactions)
       # step 3: decompose and examine rref errors
-      rref_df = self.decomposeMatrix(self.som_stoichiometry_matrix)
-      self.reduced_som_reactions = self.convertMatrixToSOMReactions(rref_df)
+      echelon_df = self.decomposeMatrix(self.som_stoichiometry_matrix)
+      self.reduced_som_reactions = self.convertMatrixToSOMReactions(echelon_df)
       # step 4: using the rest, update the graph (remaining 1_1 and 1_n, n_1), check errors
       # okay let's just update and add arcs
       ### we need process one-one definitely and add type three errors 
       som_reaction_dic = {
           cn.REACTION_ERROR: self.processErrorReactions,
+          cn.REACTION_1_1: self.processEqualSOMReaction,
           cn.REACTION_1_n: self.processUnequalSOMReaction,
           cn.REACTION_n_1: self.processUnequalSOMReaction,
           }
@@ -707,18 +826,34 @@ class Message(nx.DiGraph):
         for reaction in [r for r in self.reduced_som_reactions if r.category == category]:
           func = som_reaction_dic[category]
           func(reaction)
+
+
+      error_reactions = []
+      for r in self.reduced_som_reactions:
+        if r.category == cn.REACTION_ERROR:
+          error_reactions.append(r.label)
+      # Get reduced row echelon matrix, BUT ONLY IF there is no error found in echelon matrix
+      if rref and not error_reactions and not self.type_one_som_errors and not self.type_three_errors:
+        rref_df = self.getRREFMatrix(self.echelon_df)
+        self.rref_som_reactions = self.convertMatrixToSOMReactions(rref_df)
+        for category in som_reaction_dic.keys():
+          for reaction in [r for r in self.rref_som_reactions if r.category == category]:
+            func = som_reaction_dic[category]
+            func(reaction)
+
     # step 5: check type two errors
     self.checkTypeTwoError()
+
     #
     if error_details:
       print("We just analyzed the data...")
       print("Type I error: ", self.type_one_errors)
       print("Type II error: " , self.type_two_errors)
       print("Canceling error: ", self.canceling_errors)
-      print("RREF error: ", self.rref_errors)
+      print("Echelon error: ", self.echelon_errors)
       print("Type III error: ", self.type_three_erros)
       print("Type I-SOM error: " , self.type_one_som_errors)    
-    if self.rref_errors or self.type_one_errors or self.type_two_errors \
+    if self.echelon_errors or self.type_one_errors or self.type_two_errors \
         or self.canceling_errors or self.type_three_erros or self.type_one_som_errors:
       return True
     else:
