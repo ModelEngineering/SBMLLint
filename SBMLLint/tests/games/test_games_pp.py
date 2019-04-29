@@ -1,10 +1,10 @@
 """
-Tests for Mass Equality Set Structure Analysis with Gaussian Elimination (MESSAGE)
+Test for GAMES Plus (Reduced) Row Echelon Form (GAMES_PP)
 """
 from SBMLLint.common import constants as cn
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.games.message import SOMStoichiometry, SOMReaction, Message
+from SBMLLint.games.games_pp import SOMStoichiometry, SOMReaction, GAMES_PP
 from SBMLLint.games.som import SOM
 from SBMLLint.common import simple_sbml
 
@@ -34,7 +34,7 @@ class TestSOMStoichiometry(unittest.TestCase):
 
   def setUp(self):
     self.simple = SimpleSBML()
-    self.simple.initialize(cn.TEST_FILE_MESSAGE1)
+    self.simple.initialize(cn.TEST_FILE_GAMES_PP1)
     self.reaction = self.simple.getReaction(PGA_CONS)
     self.rubp = self.reaction.products[0]
     self.rubl_ss = SOMStoichiometry(
@@ -57,7 +57,7 @@ class TestSOMReaction(unittest.TestCase):
 
   def setUp(self):
     self.simple = SimpleSBML()
-    self.simple.initialize(cn.TEST_FILE_MESSAGE1)
+    self.simple.initialize(cn.TEST_FILE_GAMES_PP1)
     self.reaction = self.simple.getReaction(PGA_CONS)
     self.pga = self.reaction.reactants[0]
     self.pga_ss = SOMStoichiometry(

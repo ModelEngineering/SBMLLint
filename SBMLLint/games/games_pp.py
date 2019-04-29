@@ -1,4 +1,4 @@
-"""Mass Equality Set Structure Analysis with Gaussian Elimination (MESSAGE)"""
+"""GAMES Plus (Reduced) Row Echelon Form (GAMES_PP)"""
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
@@ -107,7 +107,7 @@ class SOMReaction(object):
     return cn.REACTION_n_n
 
 
-class Message(nx.DiGraph):
+class GAMES_PP(nx.DiGraph):
   """
   Similar to MESGraph, The Message -GAMES++- algorithm creates
   a directed graph of SOMs, and updates the graph using
@@ -160,7 +160,7 @@ class Message(nx.DiGraph):
     # RREF matrix
     self.rref_df = None
     # Components for SOMGraph
-    super(Message, self).__init__()
+    super(GAMES_PP, self).__init__()
     self.soms = self.initializeSOMs(self.molecules)
     # networkx method
     self.add_nodes_from(self.soms)
@@ -173,7 +173,7 @@ class Message(nx.DiGraph):
     self.type_one_errors = []
     # Mass balance error from net stoichiometry 
     self.canceling_errors = []
-    # SOM cycle
+    # SOM cycle ({A} -> {B} -> ... -> {A})
     self.type_two_errors = []
     # Can't merge nodes
     self.type_three_errors = []
@@ -210,7 +210,7 @@ class Message(nx.DiGraph):
       if reaction.category != cn.REACTION_BOUNDARY:
         reactions.append(reaction)
     return reactions  
-  #
+  
   def _getNonBoundaryMolecules(self, simple, reactions):
     """
     Get list of non-boundary molecules
@@ -224,7 +224,7 @@ class Message(nx.DiGraph):
       molecules = molecules.union(reactants)
       molecules = molecules.union(products)
     return list(molecules)
-  #
+  
   def initializeSOMs(self, molecules):
     """
     Create a list of one-molecule SOMs
@@ -238,7 +238,7 @@ class Message(nx.DiGraph):
       else:
         soms.append(SOM({molecule}))
     return soms
-  #
+  
   def getStoichiometryMatrix(self, reactions, species, som=False):
     """
     Creates a full stoichiometry matrix
@@ -270,7 +270,7 @@ class Message(nx.DiGraph):
         net_stoichiometry = products.get(species_name, 0.0) - reactants.get(species_name, 0.0)
         stoichiometry_matrix[reaction.label][species_name] = net_stoichiometry
     return stoichiometry_matrix
-  #
+  
   def decomposeMatrix(self, mat_df):
     """
     LU decomposition of the stoichiometry matrix.
@@ -316,34 +316,8 @@ class Message(nx.DiGraph):
     self.permuted_matrix = perm_df
     self.lower_inverse = lower_inverse
     self.echelon_df = echelon_df
-
-
-    ####################################################
-    # mat_t = mat_df.T
-    # idx_mat_t = mat_t.index
-    # # LU decomposition
-    # perm, lower, upper = lu(mat_t)
-    # # the following is applicable to transposed stoichiometry matrix
-    # # 'perm' is an orthogonal matrix, meaning perm.T == inv(perm)
-    # ## permuted_m = inv(perm).dot(mat_t)
-    # self.perm_inverse = perm.T
-    # permuted_m = (self.perm_inverse).dot(mat_t)
-    # pivot_index = [list(k).index(1) for k in self.perm_inverse]
-    # new_idx_mat_t = [idx_mat_t[idx] for idx in pivot_index]
-    # # we save as; perm_df * lower_operation * mat_t = echelon_df
-    # perm_df = pd.DataFrame(permuted_m,
-    #     index=new_idx_mat_t,
-    #     columns=mat_t.columns).T
-    # echelon_df = pd.DataFrame(upper,
-    #     index=new_idx_mat_t,
-    #     columns=mat_t.columns).T
-    # lower_operation = pd.DataFrame(lower,
-    #     columns=new_idx_mat_t)
-    # self.permuted_matrix = perm_df
-    # self.lower_inverse = lower_operation
-    # self.echelon_df = echelon_df
     return echelon_df
-  #
+  
   def getRREFMatrix(self, echelon_df):
     """
     Get RREF of the stoichiometry matrix.
@@ -450,7 +424,7 @@ class Message(nx.DiGraph):
     if not self.has_node(new_som):
       self.add_node(new_som)
     return new_som
-  #
+  
   def addReaction(self, reaction=None):
     """
     Add a reaction to self.reactions_lu
@@ -458,7 +432,7 @@ class Message(nx.DiGraph):
     """
     if reaction not in self.reactions_lu:
       self.reactions_lu.append(reaction)  
-  #
+  
   def processUniUniReaction(self, reaction):
     """
     Process a 1-1 reaction to merge nodes.
@@ -476,7 +450,7 @@ class Message(nx.DiGraph):
         new_som = self.mergeNodes(reactant_som, product_som, reaction)
         self.identifier = self.makeId()
         return new_som
-  #
+  
   def addArc(self, arc_source, arc_destination, reaction):
     """
     Add a single arc (edge) using two SOMs and reaction/somreaction.
@@ -494,7 +468,7 @@ class Message(nx.DiGraph):
       reaction_label = [reaction.label]
     # overwrite the edge with new reactions set
     self.add_edge(arc_source, arc_destination, reaction=reaction_label)
-  # 
+  
   def processUniMultiReaction(self, reaction):
     """
     Process a 1-n reaction to add arcs.
@@ -521,7 +495,7 @@ class Message(nx.DiGraph):
       if error_count == 0:
         self.reactions_lu.append(reaction)
       self.identifier = self.makeId()
-  #
+  
   def processMultiUniReaction(self, reaction):
     """
     Process a n-1 reaction to add arcs.
@@ -548,7 +522,7 @@ class Message(nx.DiGraph):
       if error_count == 0:
         self.reactions_lu.append(reaction)
       self.identifier = self.makeId()
-  #
+  
   def processEqualSOMReaction(self, reaction):
     """
     Process a 1-1 SOMReaction to check 
@@ -590,7 +564,7 @@ class Message(nx.DiGraph):
         else:
           self.addArc(arc[0], arc[1], reaction)
       self.identifier = self.makeId()
-  #
+  
   def addTypeOneError(self, mole1, mole2, reaction):
     """
     Add Type I Error components to self.type_one_errors
@@ -616,7 +590,7 @@ class Message(nx.DiGraph):
                                                     reactions=[reaction.label]))
       flag = True
     return flag
-  #
+  
   def checkTypeOneError(self, arc, inequality_reaction=None):
     """
     Check Type I Error of an arc.
@@ -634,7 +608,7 @@ class Message(nx.DiGraph):
       return True
     else:
       return False
-  #
+  
   def addTypeTwoError(self, cycle):
     """
     Add Type II Error components to self.type_two_errors
@@ -701,7 +675,7 @@ class Message(nx.DiGraph):
                                         node2=nodes2,
                                         reactions=reaction_labels))
     self.type_two_errors.append(error_cycle)  
-  #
+  
   def checkTypeTwoError(self):
     """
     Check Type II Error (cycles) of a MESGraph.
@@ -723,7 +697,7 @@ class Message(nx.DiGraph):
         # if not self.type_two_error:
         #   self.type_two_error = True
       return True
-  #
+  
   def processErrorReactions(self, reaction):
     """
     Simply add error reactions to error
@@ -747,7 +721,7 @@ class Message(nx.DiGraph):
     products = reaction.products
     reactant_soms = list({self.getNode(r.molecule) for r in reactants})
     product_soms = list({self.getNode(p.molecule) for p in products})
-    #
+    
     def getSumStoichiometry(som, species):
       """
       :param SOM som:
@@ -768,7 +742,7 @@ class Message(nx.DiGraph):
       ss_products.append(getSumStoichiometry(som, products))
     #
     return SOMReaction(ss_reactants, ss_products, reaction.label)
-  #
+  
   def analyze(self, reactions=None, simple_games=False, rref=True, error_details=True):
     """
     Using the stoichiometry matrix, compute
@@ -804,7 +778,6 @@ class Message(nx.DiGraph):
           self.som_reactions_lu.append(
               self.convertReactionToSOMReaction(reaction)
               )
-        #
         # Now, step 1: creates SOMStoichiometryMatrix
         self.som_stoichiometry_matrix = self.getStoichiometryMatrix(self.som_reactions_lu, list(self.nodes), som=True)
         # step 2: reconvert it into SOMReactions and examine canceling errors
@@ -822,9 +795,7 @@ class Message(nx.DiGraph):
         # step 3: decompose and examine rref errors
         echelon_df = self.decomposeMatrix(self.som_stoichiometry_matrix)
         self.reduced_som_reactions = self.convertMatrixToSOMReactions(echelon_df)
-        # step 4: using the rest, update the graph (remaining 1_1 and 1_n, n_1), check errors
-        # okay let's just update and add arcs
-        ### we need process one-one definitely and add type three errors 
+        # step 4: using the rest, update the graph (remaining and 1_n, n_1), check errors
         som_reaction_dic = {
             cn.REACTION_ERROR: self.processErrorReactions,
             cn.REACTION_1_1: self.processEqualSOMReaction,
@@ -848,7 +819,6 @@ class Message(nx.DiGraph):
             for reaction in [r for r in self.rref_som_reactions if r.category == category]:
               func = som_reaction_dic[category]
               func(reaction)
-
     # Check type two errors
     self.checkTypeTwoError()
     #
