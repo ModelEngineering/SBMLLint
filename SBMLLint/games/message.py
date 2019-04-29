@@ -12,7 +12,6 @@ import itertools
 import networkx as nx
 import numpy as np
 import pandas as pd
-#import scipy
 from scipy.linalg import lu, inv
 
 # BIOMD 383 will test the validity of Gaussian Elimination to find errors, 
@@ -35,8 +34,8 @@ class SOMStoichiometry(object):
 
   def makeId(self):
   	return "%s * %2.2f" % (str(self.som), self.stoichiometry)
-#
-#
+
+
 class SOMReaction(object):
 
   def __init__(self, reactants, products, label):
@@ -60,7 +59,7 @@ class SOMReaction(object):
         return ''
       else:
         return "%2.2f " % num
-    #
+    
     def makeTermCollection(som_stoichiometries):
       """
       Formats a set of terms with stoichiometries.
@@ -106,18 +105,31 @@ class SOMReaction(object):
         return reaction_category.category
     # if none of the above, return reaction_n_n
     return cn.REACTION_n_n
-#
-#
+
+
 class Message(nx.DiGraph):
   """
-  Similar to MESGraph, The Message -GAMES+- algorithm creates
-  a directed graph of SOMs, but before creating the graph
-  it creates a row-reduced echolon metrix using the 
-  stoichiometry matrix. 
+  Similar to MESGraph, The Message -GAMES++- algorithm creates
+  a directed graph of SOMs, and updates the graph using
+  the (reduced) row echolon stoichiometry matrix. 
+  There are three graphical errors and two matricial errors.
+
+  <Graphical Errors - Type I, II, and III>
   Type I Error occurs when we find inequality between two molecules
   in the same SOM, because each element in a SOM has the same weight.
   Type II Error implies there is cyclism between molecules, such as
   A < B < C < ... < A, which is physically impossible.
+  Finally, Type III Errors when it cannot merge two SOMs because
+  there is already an existing arc.
+
+  <Matricial Errors - Canceling and Echelon>
+  A canceling error occurs when constructing stoichiometry matrix.
+  As the algorithm calculates net stoichiometry using SOMs, 
+  if a column (a net som_stoichiometry reaction) has only one sign,
+  it causes an arror.
+  The Echelon error is similar, but it occurs after the matrix is 
+  reduced to echelon, or reduced row echelon form. If there is only
+  soms with one sign (+ or -), and this causes mass balance error.
   """
   def __init__(self, simple=None):
     """
@@ -126,11 +138,6 @@ class Message(nx.DiGraph):
     self.simple = simple
     self.reactions = self._getNonBoundaryReactions(simple)
     self.molecules = self._getNonBoundaryMolecules(simple, self.reactions)
-    self.stoichiometry_matrix = self.getStoichiometryMatrix(
-        self.reactions,
-        self.molecules,
-        som=False
-        )
     self.som_stoichiometry_matrix = None
     # reactions before LU decomposition
     self.reactions_lu = []
@@ -158,7 +165,8 @@ class Message(nx.DiGraph):
     # networkx method
     self.add_nodes_from(self.soms)
     self.identifier = self.makeId()
-    # storing errors
+    #
+    # List of errors
     # Mass balance error from U matrix
     self.echelon_errors = []
     # Can't add arc
@@ -168,13 +176,13 @@ class Message(nx.DiGraph):
     # SOM cycle
     self.type_two_errors = []
     # Can't merge nodes
-    self.type_three_erros = []
+    self.type_three_errors = []
     # Cant't add arcs using SOMs (after LU decomposition)
     self.type_one_som_errors = set()
-  #
+  
   def __repr__(self):
     return self.identifier
-  #
+  
   def makeId(self):
     """
     Construct an identifier for the graph.
@@ -188,9 +196,9 @@ class Message(nx.DiGraph):
       identifier = identifier + str(node)
       if key < (len(list(nx.isolates(self)))-1):
           identifier = identifier + cn.KINETICS_SEPARATOR
-    # Return the identifier
+    
     return identifier
-  #
+  
   def _getNonBoundaryReactions(self, simple):
     """
     Get list of non-boundary reacetions
@@ -556,7 +564,7 @@ class Message(nx.DiGraph):
       reactant = reaction.reactants[0].som
       product = reaction.products[0].som
       if self.has_edge(reactant, product) or self.has_edge(product, reactant):
-        self.type_three_errors.add(reaction)
+        self.type_three_errors.append(reaction)
 
   def processUnequalSOMReaction(self, reaction):
     """
@@ -761,7 +769,7 @@ class Message(nx.DiGraph):
     #
     return SOMReaction(ss_reactants, ss_products, reaction.label)
   #
-  def analyze(self, reactions=None, rref=True, error_details=True):
+  def analyze(self, reactions=None, simple_games=False, rref=True, error_details=True):
     """
     Using the stoichiometry matrix, compute
     row reduced echelon form and create SOMGraph
@@ -788,62 +796,61 @@ class Message(nx.DiGraph):
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
         func(reaction)
-
-    if self.reactions_lu:
-      # convert reactions to somreactions
-      for reaction in self.reactions_lu:
-        self.som_reactions_lu.append(
-            self.convertReactionToSOMReaction(reaction)
-            )
-      #
-      # Now, step 1: creates SOMStoichiometryMatrix
-      self.som_stoichiometry_matrix = self.getStoichiometryMatrix(self.som_reactions_lu, list(self.nodes), som=True)
-      # step 2: reconvert it into SOMReactions and examine canceling errors
-      initial_reduced_som_reactions = self.convertMatrixToSOMReactions(self.som_stoichiometry_matrix)
-      dropping_reactions = []
-      for r in initial_reduced_som_reactions:
-        if r.category == cn.REACTION_ERROR:
-          self.canceling_errors.append(r)
-          dropping_reactions.append(r.label)
-      if dropping_reactions:
-        self.som_stoichiometry_matrix = self.som_stoichiometry_matrix.drop(columns=dropping_reactions)
-        if error_details:
-          print("Columns Dropped!")
-          print(dropping_reactions)
-      # step 3: decompose and examine rref errors
-      echelon_df = self.decomposeMatrix(self.som_stoichiometry_matrix)
-      self.reduced_som_reactions = self.convertMatrixToSOMReactions(echelon_df)
-      # step 4: using the rest, update the graph (remaining 1_1 and 1_n, n_1), check errors
-      # okay let's just update and add arcs
-      ### we need process one-one definitely and add type three errors 
-      som_reaction_dic = {
-          cn.REACTION_ERROR: self.processErrorReactions,
-          cn.REACTION_1_1: self.processEqualSOMReaction,
-          cn.REACTION_1_n: self.processUnequalSOMReaction,
-          cn.REACTION_n_1: self.processUnequalSOMReaction,
-          }
-      for category in som_reaction_dic.keys():
-        for reaction in [r for r in self.reduced_som_reactions if r.category == category]:
-          func = som_reaction_dic[category]
-          func(reaction)
-
-
-      error_reactions = []
-      for r in self.reduced_som_reactions:
-        if r.category == cn.REACTION_ERROR:
-          error_reactions.append(r.label)
-      # Get reduced row echelon matrix, BUT ONLY IF there is no error found in echelon matrix
-      if rref and not error_reactions and not self.type_one_som_errors and not self.type_three_errors:
-        rref_df = self.getRREFMatrix(self.echelon_df)
-        self.rref_som_reactions = self.convertMatrixToSOMReactions(rref_df)
+    # if simple_games, we only run elementary operations
+    if not simple_games:
+      if self.reactions_lu:
+        # convert reactions to somreactions
+        for reaction in self.reactions_lu:
+          self.som_reactions_lu.append(
+              self.convertReactionToSOMReaction(reaction)
+              )
+        #
+        # Now, step 1: creates SOMStoichiometryMatrix
+        self.som_stoichiometry_matrix = self.getStoichiometryMatrix(self.som_reactions_lu, list(self.nodes), som=True)
+        # step 2: reconvert it into SOMReactions and examine canceling errors
+        initial_reduced_som_reactions = self.convertMatrixToSOMReactions(self.som_stoichiometry_matrix)
+        dropping_reactions = []
+        for r in initial_reduced_som_reactions:
+          if r.category == cn.REACTION_ERROR:
+            self.canceling_errors.append(r)
+            dropping_reactions.append(r.label)
+        if dropping_reactions:
+          self.som_stoichiometry_matrix = self.som_stoichiometry_matrix.drop(columns=dropping_reactions)
+          if error_details:
+            print("Columns Dropped!")
+            print(dropping_reactions)
+        # step 3: decompose and examine rref errors
+        echelon_df = self.decomposeMatrix(self.som_stoichiometry_matrix)
+        self.reduced_som_reactions = self.convertMatrixToSOMReactions(echelon_df)
+        # step 4: using the rest, update the graph (remaining 1_1 and 1_n, n_1), check errors
+        # okay let's just update and add arcs
+        ### we need process one-one definitely and add type three errors 
+        som_reaction_dic = {
+            cn.REACTION_ERROR: self.processErrorReactions,
+            cn.REACTION_1_1: self.processEqualSOMReaction,
+            cn.REACTION_1_n: self.processUnequalSOMReaction,
+            cn.REACTION_n_1: self.processUnequalSOMReaction,
+            }
         for category in som_reaction_dic.keys():
-          for reaction in [r for r in self.rref_som_reactions if r.category == category]:
+          for reaction in [r for r in self.reduced_som_reactions if r.category == category]:
             func = som_reaction_dic[category]
             func(reaction)
 
-    # step 5: check type two errors
-    self.checkTypeTwoError()
+        error_reactions = []
+        for r in self.reduced_som_reactions:
+          if r.category == cn.REACTION_ERROR:
+            error_reactions.append(r.label)
+        # Get reduced row echelon matrix, BUT ONLY IF there is no error found in echelon matrix
+        if rref and not error_reactions and not self.type_one_som_errors and not self.type_three_errors:
+          rref_df = self.getRREFMatrix(self.echelon_df)
+          self.rref_som_reactions = self.convertMatrixToSOMReactions(rref_df)
+          for category in som_reaction_dic.keys():
+            for reaction in [r for r in self.rref_som_reactions if r.category == category]:
+              func = som_reaction_dic[category]
+              func(reaction)
 
+    # Check type two errors
+    self.checkTypeTwoError()
     #
     if error_details:
       print("We just analyzed the data...")
@@ -851,10 +858,10 @@ class Message(nx.DiGraph):
       print("Type II error: " , self.type_two_errors)
       print("Canceling error: ", self.canceling_errors)
       print("Echelon error: ", self.echelon_errors)
-      print("Type III error: ", self.type_three_erros)
+      print("Type III error: ", self.type_three_errors)
       print("Type I-SOM error: " , self.type_one_som_errors)    
     if self.echelon_errors or self.type_one_errors or self.type_two_errors \
-        or self.canceling_errors or self.type_three_erros or self.type_one_som_errors:
+        or self.canceling_errors or self.type_three_errors or self.type_one_som_errors:
       return True
     else:
       return False
