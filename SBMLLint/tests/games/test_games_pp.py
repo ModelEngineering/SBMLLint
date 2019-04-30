@@ -10,6 +10,7 @@ from SBMLLint.games.som import SOM
 from SBMLLint.common import simple_sbml
 
 import numpy as np
+import pandas as pd
 import os
 import re
 import tesbml
@@ -27,6 +28,9 @@ PGA_CONS_SOMREACTION_IDENTIFIER = "PGA_cons: {PGA} -> {RuBP}"
 PGA_PROD_VC = "PGA_prod_Vc"
 # SOMStoichiometry identifier
 RUBP_ONE = "{RuBP} * 1.00"
+# SOMStoichiometry NADPH identifier and stoichioemtry
+NADPH = "{NADPH}"
+NADPH_STOICHIOMETRY = 2.00
 # StoichiometryMatrix value
 PGA_CONS_WITH_PGA = -1.0
 PGA_PROD_VC_WITH_RUBP = -1.0
@@ -131,9 +135,30 @@ class TestGAMES_PP(unittest.TestCase):
         self.games_pp.reactions,
         self.games_pp.molecules,
         som=False)
+    self.assertTrue(isinstance(mat, pd.DataFrame))
     self.assertEqual(mat.shape, (NUM_MOLECULES, NUM_REACTIONS))
     self.assertEqual(mat[PGA_CONS][PGA], PGA_CONS_WITH_PGA)
     self.assertEqual(mat[PGA_PROD_VC][RUBP], PGA_PROD_VC_WITH_RUBP)
+
+  def testConvertReactionToSOMReaction(self):
+    reaction1 = self.games_pp.simple.getReaction(PGA_CONS)
+    reaction2 = self.games_pp.simple.getReaction(PGA_PROD_VC)
+    som_reaction1 = self.games_pp.convertReactionToSOMReaction(reaction1)
+    som_reaction2 = self.games_pp.convertReactionToSOMReaction(reaction2)
+    self.assertTrue(isinstance(som_reaction1, SOMReaction))
+    self.assertTrue(isinstance(som_reaction2, SOMReaction))
+    ms_rubp = som_reaction1.products[0]
+    self.assertTrue(isinstance(ms_rubp, SOMStoichiometry))
+    self.assertEqual(list(ms_rubp.som.molecules)[0], 
+        self.games_pp.simple.getMolecule(RUBP))
+    ms_nadph = None
+    for ms in som_reaction2.reactants:
+      if ms.som.identifier == NADPH:
+        ms_nadph = ms
+        break
+    self.assertTrue(ms_nadph.som.identifier==NADPH)
+    self.assertEqual(ms_nadph.stoichiometry, NADPH_STOICHIOMETRY)
+
 
 if __name__ == '__main__':
   unittest.main()

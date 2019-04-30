@@ -238,6 +238,38 @@ class GAMES_PP(nx.DiGraph):
       else:
         soms.append(SOM({molecule}))
     return soms
+
+  def convertReactionToSOMReaction(self, reaction):
+    """
+    Convert simpleSBML Reaction to SOMReaction
+    :param Reaction reaction:
+    :return SOMReaction:
+    """ 
+    reactants = reaction.reactants
+    products = reaction.products
+    reactant_soms = list({self.getNode(r.molecule) for r in reactants})
+    product_soms = list({self.getNode(p.molecule) for p in products})
+    
+    def getSumStoichiometry(som, species):
+      """
+      :param SOM som:
+      :param list-MoleculeStoichiometry species:
+      :return SOMStoichiometry:
+      """   
+      sum_stoichiometry = 0.0
+      for s in species:
+        if self.getNode(s.molecule) == som:
+          sum_stoichiometry += s.stoichiometry
+      return SOMStoichiometry(som, sum_stoichiometry)
+    #
+    ss_reactants = []
+    ss_products = []
+    for som in reactant_soms:
+      ss_reactants.append(getSumStoichiometry(som, reactants))
+    for som in product_soms:
+      ss_products.append(getSumStoichiometry(som, products))
+    #
+    return SOMReaction(ss_reactants, ss_products, reaction.label)
   
   def getStoichiometryMatrix(self, reactions, species, som=False):
     """
@@ -710,38 +742,6 @@ class GAMES_PP(nx.DiGraph):
     ## Here, we may need to add more info that will 
     ## help us track the operations that lead to this error 
     return True
-
-  def convertReactionToSOMReaction(self, reaction):
-    """
-    Convert simpleSBML Reaction to SOMReaction
-    :param Reaction reaction:
-    :return SOMReaction:
-    """	
-    reactants = reaction.reactants
-    products = reaction.products
-    reactant_soms = list({self.getNode(r.molecule) for r in reactants})
-    product_soms = list({self.getNode(p.molecule) for p in products})
-    
-    def getSumStoichiometry(som, species):
-      """
-      :param SOM som:
-      :param list-MoleculeStoichiometry species:
-      :return SOMStoichiometry:
-      """   
-      sum_stoichiometry = 0.0
-      for s in species:
-        if self.getNode(s.molecule) == som:
-          sum_stoichiometry += s.stoichiometry
-      return SOMStoichiometry(som, sum_stoichiometry)
-    #
-    ss_reactants = []
-    ss_products = []
-    for som in reactant_soms:
-      ss_reactants.append(getSumStoichiometry(som, reactants))
-    for som in product_soms:
-      ss_products.append(getSumStoichiometry(som, products))
-    #
-    return SOMReaction(ss_reactants, ss_products, reaction.label)
   
   def analyze(self, reactions=None, simple_games=False, rref=True, error_details=True):
     """
