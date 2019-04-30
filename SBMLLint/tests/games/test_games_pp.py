@@ -23,6 +23,7 @@ ZERO = 0.0
 # Molecule names
 PGA = "PGA"
 RUBP = "RuBP"
+CO2 = "CO2"
 # Reaction names
 PGA_CONS = "PGA_cons"
 PGA_CONS_SOMREACTION_IDENTIFIER = "PGA_cons: {PGA} -> {RuBP}"
@@ -117,6 +118,8 @@ class TestGAMES_PP(unittest.TestCase):
     self.games_pp = GAMES_PP(self.simple1)
 
   def testConstructor(self):
+    if IGNORE_TEST:
+      return
     self.assertEqual(len(self.games_pp.reactions), NUM_REACTIONS)
     for r in self.games_pp.reactions:
       print(r.category)
@@ -134,6 +137,8 @@ class TestGAMES_PP(unittest.TestCase):
     self.assertEqual(self.games_pp.identifier, init_identifier)
 
   def testConvertReactionToSOMReaction(self):
+    if IGNORE_TEST:
+      return
     reaction1 = self.games_pp.simple.getReaction(PGA_CONS)
     reaction2 = self.games_pp.simple.getReaction(PGA_PROD_VC)
     som_reaction1 = self.games_pp.convertReactionToSOMReaction(reaction1)
@@ -153,6 +158,8 @@ class TestGAMES_PP(unittest.TestCase):
     self.assertEqual(ms_nadph.stoichiometry, NADPH_STOICHIOMETRY)
 
   def testGetStoichiometryMatrix(self):
+    if IGNORE_TEST:
+      return
     # For regular stoichiometry matrix
     mat = self.games_pp.getStoichiometryMatrix(
         self.games_pp.reactions,
@@ -175,6 +182,8 @@ class TestGAMES_PP(unittest.TestCase):
     self.assertEqual(som_mat[PGA_PROD_VC][SOM_RUBP], PGA_PROD_VC_WITH_RUBP)
 
   def testDecomposeMatrix(self):
+    if IGNORE_TEST:
+      return
     # should be all None before decomposition
     self.assertTrue(self.games_pp.perm_inverse is None)
     self.assertTrue(self.games_pp.permuted_matrix is None)
@@ -202,6 +211,8 @@ class TestGAMES_PP(unittest.TestCase):
     self.assertFalse(echelon.iloc[0][0]==ZERO)
 
   def testGetRREFMatrix(self):
+    if IGNORE_TEST:
+      return
     self.assertTrue(self.games_pp.rref_operation is None) 
     self.assertTrue(self.games_pp.rref_df is None)
     som_reactions = []
@@ -223,6 +234,8 @@ class TestGAMES_PP(unittest.TestCase):
     self.assertEqual(last_row[nonzero_species][0], sum(rref.T[nonzero_species]))
 
   def testConverMatrixToSOMReactions(self):
+    if IGNORE_TEST:
+      return
     som_reactions1 = []
     for r in self.games_pp.reactions:
       som_reactions1.append(self.games_pp.convertReactionToSOMReaction(r))
@@ -254,6 +267,27 @@ class TestGAMES_PP(unittest.TestCase):
     self.assertEqual(sr1_reactsom, sr2_reactsom)
     self.assertEqual(sr1_prodsom, sr2_prodsom)
 
+  def testGetNode(self):
+    if IGNORE_TEST:
+      return
+    co2 = self.games_pp.simple.getMolecule(CO2)
+    co2_node = self.games_pp.getNode(co2)
+    self.assertEqual(type(co2_node), SOM)
+    self.assertEqual(co2_node.molecules, {co2})
+
+  def testMergeNodes(self):
+    if IGNORE_TEST:
+      return
+    reaction = self.games_pp.simple.getReaction(PGA_CONS)
+    pga = self.games_pp.simple.getMolecule(PGA)
+    rubp = self.games_pp.simple.getMolecule(RUBP)
+    som_pga = self.games_pp.getNode(pga)
+    som_rubp = self.games_pp.getNode(rubp)
+    som_pga_rubp = self.games_pp.mergeNodes(som_pga, som_rubp, reaction)
+    self.assertTrue(isinstance(som_pga_rubp, SOM))
+    self.assertTrue(pga in som_pga_rubp.molecules)
+    self.assertTrue(rubp in som_pga_rubp.molecules)
+    self.assertTrue(reaction in som_pga_rubp.reactions)
 
 if __name__ == '__main__':
   unittest.main()
