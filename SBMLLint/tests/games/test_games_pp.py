@@ -289,8 +289,48 @@ class TestGAMES_PP(unittest.TestCase):
     self.assertTrue(rubp in som_pga_rubp.molecules)
     self.assertTrue(reaction in som_pga_rubp.reactions)
 
+  def testAddReaction(self):
+    if IGNORE_TEST:
+      return
+    self.assertEqual(len(self.games_pp.reactions_lu), 0)
+    reaction = self.games_pp.simple.getReaction(PGA_CONS)
+    self.games_pp.addReaction(reaction)
+    self.assertTrue(reaction in self.games_pp.reactions_lu)
+    self.games_pp.addReaction(reaction)
+    self.assertTrue(len(self.games_pp.reactions_lu), 1)
+
+
+
 if __name__ == '__main__':
   unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
