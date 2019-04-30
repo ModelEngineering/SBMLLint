@@ -381,7 +381,7 @@ class GAMES_PP(nx.DiGraph):
           label=reaction_name
           ))
     return reactions
-  #
+  
   def getNode(self, input_arg):
     """
     Find a node(SOM) containing the given molecule
