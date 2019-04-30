@@ -222,6 +222,38 @@ class TestGAMES_PP(unittest.TestCase):
     # The SUM of nonzero species column must be the same as the single value
     self.assertEqual(last_row[nonzero_species][0], sum(rref.T[nonzero_species]))
 
+  def testConverMatrixToSOMReactions(self):
+    som_reactions1 = []
+    for r in self.games_pp.reactions:
+      som_reactions1.append(self.games_pp.convertReactionToSOMReaction(r))
+    som_mat = self.games_pp.getStoichiometryMatrix(
+        som_reactions1,
+        self.games_pp.nodes,
+        som=True)
+    som_reactions2 = self.games_pp.convertMatrixToSOMReactions(som_mat)
+    sr1 = None
+    sr2 = None
+    for sr in som_reactions1:
+      if sr.label == PGA_PROD_VC:
+        sr1 = sr
+        break
+    for sr in som_reactions2:
+      if sr.label == PGA_PROD_VC:
+        sr2 = sr
+        break
+    sr1_reactants = {ms.som for ms in sr1.reactants}
+    sr2_reactants = {ms.som for ms in sr2.reactants}
+    sr1_products = {ms.som for ms in sr1.products}
+    sr2_products = {ms.som for ms in sr2.products}
+    sr1_reactsom = sum([ms.stoichiometry for ms in sr1.reactants])
+    sr2_reactsom = sum([ms.stoichiometry for ms in sr2.reactants])
+    sr1_prodsom = sum([ms.stoichiometry for ms in sr1.products])
+    sr2_prodsom = sum([ms.stoichiometry for ms in sr2.products])
+    self.assertEqual(sr1_reactants, sr2_reactants)
+    self.assertEqual(sr1_products, sr2_products)
+    self.assertEqual(sr1_reactsom, sr2_reactsom)
+    self.assertEqual(sr1_prodsom, sr2_prodsom)
+
 
 if __name__ == '__main__':
   unittest.main()
