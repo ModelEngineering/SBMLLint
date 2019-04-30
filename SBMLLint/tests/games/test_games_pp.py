@@ -18,6 +18,7 @@ import unittest
 
 IGNORE_TEST = False
 
+ZERO = 0.0
 # BIOMD0000000383
 # Molecule names
 PGA = "PGA"
@@ -29,8 +30,10 @@ PGA_PROD_VC = "PGA_prod_Vc"
 # SOMStoichiometry identifier
 RUBP_ONE = "{RuBP} * 1.00"
 # SOMStoichiometry NADPH identifier and stoichioemtry
-NADPH = "{NADPH}"
-NADPH_STOICHIOMETRY = 2.00
+SOM_NADPH = "{NADPH}"
+SOM_PGA = "{PGA}"
+SOM_RUBP = "{RuBP}"
+NADPH_STOICHIOMETRY = 2.0
 # StoichiometryMatrix value
 PGA_CONS_WITH_PGA = -1.0
 PGA_PROD_VC_WITH_RUBP = -1.0
@@ -130,16 +133,6 @@ class TestGAMES_PP(unittest.TestCase):
         init_identifier = init_identifier + ";"
     self.assertEqual(self.games_pp.identifier, init_identifier)
 
-  def testGetStoichiometryMatrix(self):
-    mat = self.games_pp.getStoichiometryMatrix(
-        self.games_pp.reactions,
-        self.games_pp.molecules,
-        som=False)
-    self.assertTrue(isinstance(mat, pd.DataFrame))
-    self.assertEqual(mat.shape, (NUM_MOLECULES, NUM_REACTIONS))
-    self.assertEqual(mat[PGA_CONS][PGA], PGA_CONS_WITH_PGA)
-    self.assertEqual(mat[PGA_PROD_VC][RUBP], PGA_PROD_VC_WITH_RUBP)
-
   def testConvertReactionToSOMReaction(self):
     reaction1 = self.games_pp.simple.getReaction(PGA_CONS)
     reaction2 = self.games_pp.simple.getReaction(PGA_PROD_VC)
@@ -153,12 +146,92 @@ class TestGAMES_PP(unittest.TestCase):
         self.games_pp.simple.getMolecule(RUBP))
     ms_nadph = None
     for ms in som_reaction2.reactants:
-      if ms.som.identifier == NADPH:
+      if ms.som.identifier == SOM_NADPH:
         ms_nadph = ms
         break
-    self.assertTrue(ms_nadph.som.identifier==NADPH)
+    self.assertTrue(ms_nadph.som.identifier==SOM_NADPH)
     self.assertEqual(ms_nadph.stoichiometry, NADPH_STOICHIOMETRY)
+
+  def testGetStoichiometryMatrix(self):
+    # For regular stoichiometry matrix
+    mat = self.games_pp.getStoichiometryMatrix(
+        self.games_pp.reactions,
+        self.games_pp.molecules,
+        som=False)
+    self.assertTrue(isinstance(mat, pd.DataFrame))
+    self.assertEqual(mat.shape, (NUM_MOLECULES, NUM_REACTIONS))
+    self.assertEqual(mat[PGA_CONS][PGA], PGA_CONS_WITH_PGA)
+    self.assertEqual(mat[PGA_PROD_VC][RUBP], PGA_PROD_VC_WITH_RUBP)
+    # For SOM stoichiometry matrix
+    som_reactions = []
+    for r in self.games_pp.reactions:
+      som_reactions.append(self.games_pp.convertReactionToSOMReaction(r))
+    som_mat = self.games_pp.getStoichiometryMatrix(
+        som_reactions,
+        self.games_pp.nodes,
+        som=True)
+    self.assertTrue(isinstance(som_mat, pd.DataFrame))
+    self.assertEqual(som_mat[PGA_CONS][SOM_PGA], PGA_CONS_WITH_PGA)
+    self.assertEqual(som_mat[PGA_PROD_VC][SOM_RUBP], PGA_PROD_VC_WITH_RUBP)
+
+  def testDecomposeMatrix(self):
+    # should be all None before decomposition
+    self.assertTrue(self.games_pp.perm_inverse is None)
+    self.assertTrue(self.games_pp.permuted_matrix is None)
+    self.assertTrue(self.games_pp.lower_inverse is None)
+    self.assertTrue(self.games_pp.echelon_df is None)
+    som_reactions = []
+    for r in self.games_pp.reactions:
+      som_reactions.append(self.games_pp.convertReactionToSOMReaction(r))
+    som_mat = self.games_pp.getStoichiometryMatrix(
+        som_reactions,
+        self.games_pp.nodes,
+        som=True)
+    echelon = self.games_pp.decomposeMatrix(som_mat).T
+    self.assertFalse(self.games_pp.perm_inverse is None)
+    self.assertFalse(self.games_pp.permuted_matrix is None)
+    self.assertFalse(self.games_pp.lower_inverse is None)
+    self.assertFalse(self.games_pp.echelon_df is None)
+    self.assertTrue(isinstance(self.games_pp.perm_inverse, np.ndarray))    
+    self.assertTrue(isinstance(self.games_pp.permuted_matrix, pd.DataFrame))
+    self.assertTrue(isinstance(self.games_pp.lower_inverse, pd.DataFrame))
+    self.assertTrue(isinstance(self.games_pp.echelon_df, pd.DataFrame))
+    # Checking lower echelon - lower left element should be 0.0 (zero)
+    self.assertTrue(echelon.iloc[echelon.shape[0]-1][0]==ZERO)
+    # On the ohter hand, upper left should be nonzero
+    self.assertFalse(echelon.iloc[0][0]==ZERO)
+
+
 
 
 if __name__ == '__main__':
   unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
