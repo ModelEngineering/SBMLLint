@@ -201,6 +201,27 @@ class TestGAMES_PP(unittest.TestCase):
     # On the ohter hand, upper left should be nonzero
     self.assertFalse(echelon.iloc[0][0]==ZERO)
 
+  def getRREFMatrix(self):
+    self.assertTrue(self.games_pp.rref_operation is None) 
+    self.assertTrue(self.games_pp.rref_df is None)
+    som_reactions = []
+    for r in self.games_pp.reactions:
+      som_reactions.append(self.games_pp.convertReactionToSOMReaction(r))
+    som_mat = self.games_pp.getStoichiometryMatrix(
+        som_reactions,
+        self.games_pp.nodes,
+        som=True)
+    echelon = self.games_pp.decomposeMatrix(som_mat).T
+    rref = self.games_pp.getRREFMatrix(echelon)
+    self.assertTrue(isinstance(self.games_pp.rref_operation, pd.DataFrame))
+    self.assertTrue(isinstance(self.games_pp.rref, pd.DataFrame))
+    # Choose the last row of rref.T 
+    last_row = rref.T.iloc[-1:]
+    # Get the first nonzero index
+    nonzero_species = (last_row != 0).idxmax(axis=1)[0]
+    # The SUM of nonzero species column must be the same as the single value
+    self.assertEqual(last_row[nonzero_species][0], sum(rref.T[nonzero_species]))
+
 
 
 
