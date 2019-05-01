@@ -623,7 +623,7 @@ class GAMES_PP(nx.DiGraph):
       flag = True
     return flag
   
-  def checkTypeOneError(self, arc, inequality_reaction=None):
+  def checkTypeOneError(self, arc, inequality_reaction):
     """
     Check Type I Error of an arc.
     If both source and destination are found
@@ -641,6 +641,7 @@ class GAMES_PP(nx.DiGraph):
     else:
       return False
   
+  # We may remove this method
   def addTypeTwoError(self, cycle):
     """
     Add Type II Error components to self.type_two_errors
@@ -724,13 +725,14 @@ class GAMES_PP(nx.DiGraph):
       return False
     else:
       for cycle in cycles:
-        ######self.addTypeTwoError(cycle)######
+        # We are not using addTypeTwoError yet. 
+        # self.addTypeTwoError(cycle)
         self.type_two_errors.append(cycle)
         # if not self.type_two_error:
         #   self.type_two_error = True
       return True
   
-  def processErrorReactions(self, reaction):
+  def processErrorReaction(self, reaction):
     """
     Simply add error reactions to error
     :param Reaction reaction:
@@ -797,7 +799,7 @@ class GAMES_PP(nx.DiGraph):
         self.reduced_som_reactions = self.convertMatrixToSOMReactions(echelon_df)
         # step 4: using the rest, update the graph (remaining and 1_n, n_1), check errors
         som_reaction_dic = {
-            cn.REACTION_ERROR: self.processErrorReactions,
+            cn.REACTION_ERROR: self.processErrorReaction,
             cn.REACTION_1_1: self.processEqualSOMReaction,
             cn.REACTION_1_n: self.processUnequalSOMReaction,
             cn.REACTION_n_1: self.processUnequalSOMReaction,

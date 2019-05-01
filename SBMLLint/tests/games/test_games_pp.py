@@ -31,6 +31,7 @@ CO2 = "CO2"
 PGA_CONS = "PGA_cons"
 PGA_CONS_SOMREACTION_IDENTIFIER = "PGA_cons: {PGA} -> {RuBP}"
 PGA_PROD_VC = "PGA_prod_Vc"
+PGA_PROD_VO = "PGA_prod_Vo"
 # SOMStoichiometry identifier
 RUBP_ONE = "{RuBP} * 1.00"
 # SOMStoichiometry NADPH identifier and stoichioemtry
@@ -47,7 +48,13 @@ NUM_REACTIONS = 4
 NUM_MOLECULES = 5
 #
 # BIOMD0000000018
-
+# Reactions
+CH2FH4toHCHO = "CH2FH4toHCHO"
+HCHOtoCH2FH4 = "HCHOtoCH2FH4"
+# Molecules
+CH2FH4 = "CH2FH4"
+FH4 = "FH4"
+HCHO = "HCHO"
 
 #############################
 # Tests
@@ -354,11 +361,11 @@ class TestGAMES_PP(unittest.TestCase):
       return
     games_pp2 = GAMES_PP(self.simple2)
     self.assertTrue(isinstance(games_pp2, GAMES_PP))
-    reaction = games_pp2.simple.getReaction(CH2FH4toHCHO)
+    reaction = games_pp2.simple.getReaction(HCHOtoCH2FH4)
     reactant1 = games_pp2.simple.getMolecule(FH4)
     reactant2 = games_pp2.simple.getMolecule(HCHO)
     product1 = games_pp2.simple.getMolecule(CH2FH4)
-    games_pp2.processUniMultiReaction(reaction)
+    games_pp2.processMultiUniReaction(reaction)
     som_product1 = games_pp2.getNode(product1)
     som_reactant1 = games_pp2.getNode(reactant1)
     som_reactant2 = games_pp2.getNode(reactant2)
@@ -384,20 +391,109 @@ class TestGAMES_PP(unittest.TestCase):
     self.games_pp.processEqualSOMReaction(som_reaction)
     self.assertTrue(len(self.games_pp.type_three_errors) > ZERO)
 
+  def testProcessUnequalSOMReaction(self):
+    if IGNORE_TEST:
+      return
+    games_pp2 = GAMES_PP(self.simple2)
+    self.assertTrue(len(games_pp2.edges)==0)
+    reaction = games_pp2.simple.getReaction(CH2FH4toHCHO)
+    som_reaction = games_pp2.convertReactionToSOMReaction(reaction)
+    games_pp2.processUnequalSOMReaction(som_reaction)
+    self.assertTrue(len(games_pp2.edges)==2)
+    reactant1 = games_pp2.simple.getMolecule(FH4)
+    reactant2 = games_pp2.simple.getMolecule(HCHO)
+    product1 = games_pp2.simple.getMolecule(CH2FH4)
+    games_pp2.processUniMultiReaction(reaction)
+    som_product1 = games_pp2.getNode(product1)
+    som_reactant1 = games_pp2.getNode(reactant1)
+    som_reactant2 = games_pp2.getNode(reactant2)
+    self.assertTrue(games_pp2.has_edge(som_reactant1, som_product1))
+    self.assertTrue(games_pp2.has_edge(som_reactant2, som_product1))
 
+  def testAddTypeOneError(self):
+    if IGNORE_TEST:
+      return
+    games_pp2 = GAMES_PP(self.simple2)
+    self.assertTrue(len(games_pp2.type_one_errors)==ZERO)
+    reaction = games_pp2.simple.getReaction(CH2FH4toHCHO)
+    reactant1 = games_pp2.simple.getMolecule(FH4)
+    product1 = games_pp2.simple.getMolecule(CH2FH4)
+    games_pp2.addTypeOneError(reactant1, product1, reaction)
+    self.assertTrue(len(games_pp2.type_one_errors)==ONE)
+    error = games_pp2.type_one_errors[ZERO]
+    self.assertEqual(error.node1, reactant1.name)
+    self.assertEqual(error.node2, product1.name)
+    self.assertEqual(error.reactions, [reaction.label])
+
+  def testChekcTypeOneError(self):
+    if IGNORE_TEST:
+      return
+    games_pp1 = GAMES_PP(self.simple1)
+    reaction = games_pp1.simple.getReaction(PGA_CONS)
+    pga = games_pp1.simple.getMolecule(PGA)
+    rubp = games_pp1.simple.getMolecule(RUBP)
+    som_pga = games_pp1.getNode(pga)
+    som_rubp = games_pp1.getNode(rubp)
+    som_pga_rubp = games_pp1.mergeNodes(som_pga, som_rubp, reaction)
+    self.assertTrue(len(games_pp1.type_one_errors)==ZERO)
+    is_error = games_pp1.checkTypeOneError((pga, rubp), reaction)
+    self.assertTrue(is_error)
+    error = games_pp1.type_one_errors[ZERO]
+    self.assertEqual(error.node1, pga.name)
+    self.assertEqual(error.node2, rubp.name)
+    self.assertEqual(error.reactions, [reaction.label])
+
+  def testCheckTypeTwoError(self):
+    if IGNORE_TEST:
+      return    
+    # Create a dummy cycle by adding two conflicting arcs
+    games_pp2 = GAMES_PP(self.simple2)
+    self.assertTrue(isinstance(games_pp2, GAMES_PP))
+    unimulti_reaction = games_pp2.simple.getReaction(CH2FH4toHCHO)
+    multiuni_reaction = games_pp2.simple.getReaction(HCHOtoCH2FH4)
+    fh4 = games_pp2.simple.getMolecule(FH4)
+    # hcho = games_pp2.simple.getMolecule(HCHO)
+    ch2fh4 = games_pp2.simple.getMolecule(CH2FH4)
+    som_fh4 = games_pp2.getNode(fh4)
+    som_ch2fh4 = games_pp2.getNode(ch2fh4)
+    # do we need the next two methods if we're giving a cycle? 
+    games_pp2.addArc(som_fh4, som_ch2fh4, unimulti_reaction)
+    games_pp2.addArc(som_ch2fh4, som_fh4, multiuni_reaction) 
+    self.assertTrue(len(games_pp2.type_two_errors)==ZERO)
+    games_pp2.checkTypeTwoError()
+    self.assertTrue(len(games_pp2.type_two_errors)==ONE)
+    error = games_pp2.type_two_errors[ZERO]
+    self.assertTrue(games_pp2.has_edge(error[ZERO], error[ONE]))
+    self.assertTrue(games_pp2.has_edge(error[ONE], error[ZERO]))
+    error_reactions = set(games_pp2.get_edge_data(error[ZERO], error[ONE])[REACTION])
+    error_reactions = error_reactions.union(set(games_pp2.get_edge_data(error[ONE], error[ZERO])[REACTION]))
+    self.assertTrue(CH2FH4toHCHO in error_reactions)
+    self.assertTrue(HCHOtoCH2FH4 in error_reactions)
+
+  def testProcessErrorReaction(self):
+    if IGNORE_TEST:
+      return  
+    games_pp1 = GAMES_PP(self.simple1)
+    self.assertTrue(len(games_pp1.echelon_errors)==ZERO)
+    reaction = self.games_pp.simple.getReaction(PGA_PROD_VO)
+    games_pp1.processErrorReaction(reaction)
+    self.assertTrue(len(games_pp1.echelon_errors)==ONE)
+    self.assertTrue(reaction in games_pp1.echelon_errors)
+
+  def testAnalyze(self):
+    if IGNORE_TEST:
+      return  
+    games_pp1 = GAMES_PP(self.simple1)
+    games_pp2 = GAMES_PP(self.simple2)
+    self.assertTrue(games_pp1.analyze(rref=False))
+    self.assertTrue(games_pp2.analyze())
+    self.assertTrue(len(games_pp1.echelon_errors)>ZERO)
+    self.assertTrue(len(games_pp1.type_one_errors)==ZERO)
+    self.assertTrue(len(games_pp1.type_two_errors)==ZERO)
+    self.assertTrue(len(games_pp2.type_one_errors)>ZERO)
 
 if __name__ == '__main__':
   unittest.main()
-
-
-# Reactions
-CH2FH4toHCHO = "CH2FH4toHCHO"
-HCHOtoCH2FH4 = "HCHOtoCH2FH4"
-# Molecules
-CH2FH4 = "CH2FH4"
-FH4 = "FH4"
-HCHO = "HCHO"
-
 
 
 
