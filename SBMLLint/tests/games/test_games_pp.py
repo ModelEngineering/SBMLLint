@@ -38,7 +38,8 @@ NADPH_STOICHIOMETRY = 2.0
 # StoichiometryMatrix value
 PGA_CONS_WITH_PGA = -1.0
 PGA_PROD_VC_WITH_RUBP = -1.0
-#
+#"
+REACTION = "reaction"
 NUM_REACTIONS = 4
 NUM_MOLECULES = 5
 
@@ -299,7 +300,29 @@ class TestGAMES_PP(unittest.TestCase):
     self.games_pp.addReaction(reaction)
     self.assertTrue(len(self.games_pp.reactions_lu), 1)
 
+  def testProcessUniUniReaction(self):
+    if IGNORE_TEST:
+      return
+    reaction = self.games_pp.simple.getReaction(PGA_CONS)
+    som = self.games_pp.processUniUniReaction(reaction)
+    self.assertTrue(isinstance(som, SOM))
+    self.assertTrue(som in self.games_pp.nodes)
+    pga = self.games_pp.simple.getMolecule(PGA)
+    rubp = self.games_pp.simple.getMolecule(RUBP)
+    self.assertTrue(pga in som.molecules)
+    self.assertTrue(rubp in som.molecules)
 
+  def testAddArc(self):
+    if IGNORE_TEST:
+      return
+    reaction = self.games_pp.simple.getReaction(PGA_PROD_VC)
+    co2 = self.games_pp.simple.getMolecule(CO2)
+    pga = self.games_pp.simple.getMolecule(PGA)
+    som_co2 = self.games_pp.getNode(co2)
+    som_pga = self.games_pp.getNode(pga)
+    self.games_pp.addArc(som_co2, som_pga, reaction)
+    self.assertTrue(self.games_pp.has_edge(som_co2, som_pga))
+    self.assertEqual(self.games_pp.get_edge_data(som_co2, som_pga)[REACTION], [PGA_PROD_VC])
 
 if __name__ == '__main__':
   unittest.main()
