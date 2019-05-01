@@ -18,7 +18,10 @@ import unittest
 
 IGNORE_TEST = False
 
-ZERO = 0.0
+ZERO = 0
+ONE = 1
+ZERO_F = 0.0
+ONE_F = 1.0
 # BIOMD0000000383
 # Molecule names
 PGA = "PGA"
@@ -42,6 +45,8 @@ PGA_PROD_VC_WITH_RUBP = -1.0
 REACTION = "reaction"
 NUM_REACTIONS = 4
 NUM_MOLECULES = 5
+#
+# BIOMD0000000018
 
 
 #############################
@@ -114,9 +119,13 @@ class TestSOMReaction(unittest.TestCase):
 class TestGAMES_PP(unittest.TestCase):
 
   def setUp(self):
+    # BIOMD0000000383
     self.simple1 = SimpleSBML()
     self.simple1.initialize(cn.TEST_FILE_GAMES_PP1)
     self.games_pp = GAMES_PP(self.simple1)
+    # BIOMD0000000018
+    self.simple2 = SimpleSBML()
+    self.simple2.initialize(cn.TEST_FILE_GAMES_PP2)
 
   def testConstructor(self):
     if IGNORE_TEST:
@@ -207,9 +216,9 @@ class TestGAMES_PP(unittest.TestCase):
     self.assertTrue(isinstance(self.games_pp.lower_inverse, pd.DataFrame))
     self.assertTrue(isinstance(self.games_pp.echelon_df, pd.DataFrame))
     # Checking lower echelon - lower left element should be 0.0 (zero)
-    self.assertTrue(echelon.iloc[echelon.shape[0]-1][0]==ZERO)
+    self.assertTrue(echelon.iloc[echelon.shape[0]-1][0]==ZERO_F)
     # On the ohter hand, upper left should be nonzero
-    self.assertFalse(echelon.iloc[0][0]==ZERO)
+    self.assertFalse(echelon.iloc[0][0]==ZERO_F)
 
   def testGetRREFMatrix(self):
     if IGNORE_TEST:
@@ -324,11 +333,70 @@ class TestGAMES_PP(unittest.TestCase):
     self.assertTrue(self.games_pp.has_edge(som_co2, som_pga))
     self.assertEqual(self.games_pp.get_edge_data(som_co2, som_pga)[REACTION], [PGA_PROD_VC])
 
+  def testProcessUniMultiReaction(self):
+    if IGNORE_TEST:
+      return
+    games_pp2 = GAMES_PP(self.simple2)
+    self.assertTrue(isinstance(games_pp2, GAMES_PP))
+    reaction = games_pp2.simple.getReaction(CH2FH4toHCHO)
+    reactant1 = games_pp2.simple.getMolecule(CH2FH4)
+    product1 = games_pp2.simple.getMolecule(FH4)
+    product2 = games_pp2.simple.getMolecule(HCHO)
+    games_pp2.processUniMultiReaction(reaction)
+    som_reactant1 = games_pp2.getNode(reactant1)
+    som_product1 = games_pp2.getNode(product1)
+    som_product2 = games_pp2.getNode(product2)
+    self.assertTrue(games_pp2.has_edge(som_product1, som_reactant1))
+    self.assertTrue(games_pp2.has_edge(som_product2, som_reactant1))
+
+  def testProcessMultiUniReaction(self):
+    if IGNORE_TEST:
+      return
+    games_pp2 = GAMES_PP(self.simple2)
+    self.assertTrue(isinstance(games_pp2, GAMES_PP))
+    reaction = games_pp2.simple.getReaction(CH2FH4toHCHO)
+    reactant1 = games_pp2.simple.getMolecule(FH4)
+    reactant2 = games_pp2.simple.getMolecule(HCHO)
+    product1 = games_pp2.simple.getMolecule(CH2FH4)
+    games_pp2.processUniMultiReaction(reaction)
+    som_product1 = games_pp2.getNode(product1)
+    som_reactant1 = games_pp2.getNode(reactant1)
+    som_reactant2 = games_pp2.getNode(reactant2)
+    self.assertTrue(games_pp2.has_edge(som_reactant1, som_product1))
+    self.assertTrue(games_pp2.has_edge(som_reactant2, som_product1))
+
+  def testProcessEqualSOMReaction(self):
+    if IGNORE_TEST:
+      return
+    print("type three", self.games_pp.type_three_errors)
+    self.assertEqual(len(self.games_pp.type_three_errors), ZERO)
+    # Add an arc
+    reaction = self.games_pp.simple.getReaction(PGA_PROD_VC)
+    co2 = self.games_pp.simple.getMolecule(CO2)
+    pga = self.games_pp.simple.getMolecule(PGA)
+    som_co2 = self.games_pp.getNode(co2)
+    som_pga = self.games_pp.getNode(pga)
+    self.games_pp.addArc(som_co2, som_pga, reaction)
+    # Process a dummy reaction
+    soms_co2 = SOMStoichiometry(som_co2, 1.0)
+    soms_pga = SOMStoichiometry(som_pga, 1.0)
+    som_reaction = SOMReaction([soms_co2], [soms_pga], "dummy")
+    self.games_pp.processEqualSOMReaction(som_reaction)
+    self.assertTrue(len(self.games_pp.type_three_errors) > ZERO)
+
+
+
 if __name__ == '__main__':
   unittest.main()
 
 
-
+# Reactions
+CH2FH4toHCHO = "CH2FH4toHCHO"
+HCHOtoCH2FH4 = "HCHOtoCH2FH4"
+# Molecules
+CH2FH4 = "CH2FH4"
+FH4 = "FH4"
+HCHO = "HCHO"
 
 
 
