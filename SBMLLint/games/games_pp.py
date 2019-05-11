@@ -14,8 +14,8 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import lu, inv
 
-# BIOMD 383 will test the validity of Gaussian Elimination to find errors, 
-# before proceeding to building SOMGraph
+GAMESErrors = collections.namedtuple("GAMESErrors", 
+    "type_one")
 
 
 class SOMStoichiometry(object):
@@ -367,7 +367,8 @@ class GAMES_PP(nx.DiGraph):
     for idx, colname in enumerate(echelon_df.columns):
       reaction_series = echelon_df[colname]
       # Find the first nonzero values
-      nonzero_idx = np.nonzero(echelon_df[colname])[0]
+      # Deprecation: instead of np.nonzero(Series), use Series.to_numpy().nonzero()
+      nonzero_idx = echelon_df[colname].to_numpy().nonzero()[0]
       # Skip if there is no nonzero value or if it is first reaction
       if not nonzero_idx.any() or idx == 0:
         continue

@@ -540,7 +540,7 @@ class MESGraph(nx.DiGraph):
     same SOM.
     :param str molecule_name1:
     :param str molecule_name2:
-    :return true
+    :return bool/str:
     """
     path_report = NULL_STR
     som1 = self.getNode(self.simple.getMolecule(molecule_name1))
