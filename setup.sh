@@ -8,5 +8,6 @@ conda install -c anaconda nose
 pip install xlrd
 pip install tellurium
 #
-conda install numpydoc future pyyaml
+conda install numpydoc future
 pip install depinfo
+pip install pyyaml
