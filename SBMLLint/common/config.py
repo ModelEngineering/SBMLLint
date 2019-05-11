@@ -6,9 +6,13 @@
 
 import yaml
 
-with open(".sbmllint_cfg", "r") as fd:
-  lines = fd.readlines()
-
-lines = '\n'.join(lines)
-result = yaml.safe_load(lines)
-import pdb; pdb.set_trace()
+def getConfiguration():
+  """
+  :return dict: dictionary of configuration values
+  """
+  # TODO: Consider that .sbmllint_cfg may be in home directory
+  with open("SBMLLint/.sbmllint_cfg", "r") as fd:
+    lines = fd.readlines()
+  lines = '\n'.join(lines)
+  result = yaml.safe_load(lines)
+  return result
