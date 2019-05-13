@@ -14,7 +14,6 @@ class TestFunctions(unittest.TestCase):
     result = config.getConfiguration()
     self.assertTrue(isinstance(result, dict))
     self.assertTrue("implicits" in result.keys())
-    import pdb; pdb.set_trace()
     
 
 if __name__ == '__main__':
