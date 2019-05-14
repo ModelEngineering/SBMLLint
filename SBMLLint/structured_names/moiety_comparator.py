@@ -23,11 +23,13 @@ class MoietyComparator(object):
   """Analysis of moieties of molecules."""
 
   def __init__(self, mol_stoichs1, mol_stoichs2, 
-      names=["reactants", "products"]):
+      names=["reactants", "products"],
+      implicits=None):
     """
     :param set-MoleculeStoichiometry mol_stoichs1:
     :param set-MoleculeStoichiometry mol_stoichs2:
     :param list-str names: names to refer to the two sets
+    :param list-moieties implicits: implicit moieties
     """
     def checkType(objs):
       trues = [isinstance(o, MoleculeStoichiometry)
@@ -43,6 +45,10 @@ class MoietyComparator(object):
         mol_stoichs2,
         ]
     self.names = names
+    if implicits is None:
+      self._implicits = []
+    else:
+      self._implicits = implicits
 
   def _makeDFS(self):
     dfs = []
@@ -85,7 +91,9 @@ class MoietyComparator(object):
     dfs = self._makeDFS()
     addDFIndex(dfs[0], dfs[1].index)
     addDFIndex(dfs[1], dfs[0].index)
-    return dfs[0] - dfs[1]
+    df = dfs[0] - dfs[1]
+    drops = set(self._implicits).intersection(df.index)
+    return df.drop(drops)
 
   def reportDifference(self):
     """
@@ -124,7 +132,7 @@ class MoietyComparator(object):
     return "%s%s" % (stg1, stg2)
 
   @classmethod
-  def analyzeReactions(cls, model_reference):
+  def analyzeReactions(cls, model_reference, implicits=None):
     """
     Analyzes all reactions to detect moiety imbalances.
     :param libsbml.Model or SimpleSBML model:
@@ -139,7 +147,8 @@ class MoietyComparator(object):
     num_imbalances = 0
     report = NULL_STR
     for reaction in simple.reactions:
-      comparator = cls(reaction.reactants, reaction.products)
+      comparator = cls(reaction.reactants, reaction.products,
+          implicits=implicits)
       stg = comparator.reportDifference()
       if len(stg) > 0:
         num_imbalances += 1

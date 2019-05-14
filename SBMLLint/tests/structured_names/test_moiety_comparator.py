@@ -83,6 +83,11 @@ class TestMoietyComparator(unittest.TestCase):
       return
     df = self.comparator.difference()
     self.assertLess(df.loc[MOIETY_NAME1].tolist()[0], 0)
+    #
+    comparator = MoietyComparator(self.molecules1,
+        self.molecules2, implicits=[MOIETY_NAME1])
+    df = comparator.difference()
+    self.assertFalse(MOIETY_NAME1 in df.index)
   
   def testReportDifference(self):  
     if IGNORE_TEST:

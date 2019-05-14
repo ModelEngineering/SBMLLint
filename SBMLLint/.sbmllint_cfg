@@ -2,4 +2,4 @@
 # Implicit molecules are molecules that may be implicit
 # in either the reactants or products.
 implicits:
-# - ATP  # An example of adding an implicit molecule
+ - DUMMYIMPLICIT   # an implicit molecule

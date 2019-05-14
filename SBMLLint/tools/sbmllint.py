@@ -1,5 +1,6 @@
 """Checks for static errors in a model."""
 
+from SBMLLint.common import config
 from SBMLLint.common import constants as cn
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import util
@@ -24,6 +25,7 @@ def lint(model_reference, file_out=sys.stdout,
   :param bool is_report: print result
   :return MoietyComparatorResult/bull/None:
   """
+  configuration = config.getConfiguration()
   if util.isSBMLModel(model_reference):
     model = model_reference
   else:
@@ -35,7 +37,8 @@ def lint(model_reference, file_out=sys.stdout,
   simple = SimpleSBML()
   simple.initialize(model)
   if mass_balance_check == "structured_names":
-    result = MoietyComparator.analyzeReactions(simple)
+    result = MoietyComparator.analyzeReactions(simple,
+        implicits=configuration['implicits'])
     if is_report:
       for line in result.report.split('\n'):
           file_out.write("%s\n" % line)
