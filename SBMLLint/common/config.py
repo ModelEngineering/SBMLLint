@@ -1,3 +1,6 @@
+
+CONFIG_PATH = "SBMLLint/.sbmllint_cfg"
+
 """Reads yaml configuration file for SBMLLint."""
 # TODO:
 # 1. Provide standard interface to accessing configuration files
@@ -6,12 +9,15 @@
 
 import yaml
 
-def getConfiguration():
+def getConfiguration(path=None):
   """
+  :param str path: path to configuration file
   :return dict: dictionary of configuration values
   """
   # TODO: Consider that .sbmllint_cfg may be in home directory
-  with open("SBMLLint/.sbmllint_cfg", "r") as fd:
+  if path is None:
+    path = CONFIG_PATH
+  with open(path, "r") as fd:
     lines = fd.readlines()
   lines = '\n'.join(lines)
   result = yaml.safe_load(lines)

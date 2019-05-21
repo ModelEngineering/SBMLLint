@@ -15,6 +15,7 @@ import tesbml
 
 def lint(model_reference, file_out=sys.stdout,
     mass_balance_check="structured_names",
+    config_path=None,
     is_report=True):
   """
   Reports on errors found in a model
@@ -22,10 +23,11 @@ def lint(model_reference, file_out=sys.stdout,
       libsbml_model, file, antimony string, xml string
   :param TextIOWrapper file_out:
   :param str mass_balance_check: how check for mass balance
+  :param str config_path: path to configuration file
   :param bool is_report: print result
   :return MoietyComparatorResult/bull/None:
   """
-  configuration = config.getConfiguration()
+  configuration = config.getConfiguration(path=config_path)
   if util.isSBMLModel(model_reference):
     model = model_reference
   else:
