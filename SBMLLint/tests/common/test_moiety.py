@@ -39,7 +39,6 @@ class TestMoietyStoichiometry(unittest.TestCase):
         MOIETY_NAME1)
     self.assertEqual(moiety_stoichiometry.stoichiometry, NUM1)
  
-
   def testMake(self):
     if IGNORE_TEST:
       return
