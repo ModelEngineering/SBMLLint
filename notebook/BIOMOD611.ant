@@ -1,4 +1,3 @@
-model = """
 R1: TF + VII -> TF_VII; k2 * TF * VII - k1 * TF_VII
 R2: TF + VII_a -> TF_VII_a; k4 * TF * VII_a - k3 * TF_VII_a
 R3: TF_VII_a + VII -> TF_VII_a + VII_a; k5 * TF_VII_a * VII
@@ -9,7 +8,7 @@ R6b: TF_VII_a_X -> TF_VII_a_X_a; k10 * TF_VII_a_X
 R7: TF_VII_a + X_a -> TF_VII_a_X_a; k12 * TF_VII_a * X_a - k11 * TF_VII_a_X_a
 R8: TF_VII_a + IX -> TF_VII_a_IX; k14 * TF_VII_a * IX - k13 * TF_VII_a_IX
 R8b: TF_VII_a_IX -> TF_VII_a + IX_a; k15 * TF_VII_a_IX
-R9: X_a + II -> X_a + II_a + mwbdb849d8_2b25_4551_8de8__adc8be_ad2303; k16 * X_a * II
+R9: X_a + II -> X_a + II_a + mwbdb849d8_2b25_x4551_8de8_adc8be_ad2303; k16 * X_a * II
 R10: II_a + VIII -> II_a + VIII_a; k17 * II_a * VIII
 R11: IX_a + VIII_a -> IX_a_VIII_a; k19 * IX_a * VIII_a - k18 * IX_a_VIII_a
 R12: IX_a_VIII_a + X -> IX_a_VIII_a_X; k21 * IX_a_VIII_a * X - k20 * IX_a_VIII_a_X
@@ -18,9 +17,9 @@ R13: VIII_a -> VIII_a1_L + VIII_a2; k24 * VIII_a - k23 * VIII_a1_L * VIII_a2
 R14: IX_a_VIII_a_X -> VIII_a1_L + VIII_a2 + X + IX_a; k25 * IX_a_VIII_a_X
 R15: IX_a_VIII_a -> VIII_a1_L + VIII_a2 + IX_a; k26 * IX_a_VIII_a
 R16: II_a + V -> II_a + V_a; k27 * II_a * V
-R17: X_a + V_a -> X_a_V_a; mw8482c_a53_fc_a1_4841__ac2f_2469_a76_a758e * X_a * V_a - mw1511789f_5e7b_43bf_b162_d930b027_a867 * X_a_V_a
+R17: X_a + V_a -> X_a_V_a; mw8482c_a53_fc_a1_4841_ac2f_2469_a76_a758e * X_a * V_a - mw1511789f_5e7b_43bf_b162_d930b027_a867 * X_a_V_a
 R18: X_a_V_a + II -> X_a_V_a_II; k30 * X_a_V_a * II - k29 * X_a_V_a_II
-R18b: X_a_V_a_II -> X_a_V_a + mII_a + mwbdb849d8_2b25_4551_8de8__adc8be_ad2303; k31 * X_a_V_a_II
+R18b: X_a_V_a_II -> X_a_V_a + mII_a + mwbdb849d8_2b25_x4551_8de8_adc8be_ad2303; k31 * X_a_V_a_II
 R19: mII_a + X_a_V_a -> II_a + X_a_V_a; k32 * mII_a * X_a_V_a
 R20: X_a + TFPI -> X_a_TFPI; k34 * X_a * TFPI - k33 * X_a_TFPI
 R21: TF_VII_a_X_a + TFPI -> TF_VII_a_X_a_TFPI; k36 * TF_VII_a_X_a * TFPI - k35 * TF_VII_a_X_a_TFPI
@@ -85,9 +84,9 @@ k9 = 0
 mII_a = 0
 mII_a_ATIII = 0
 mw1511789f_5e7b_43bf_b162_d930b027_a867 = 0
-mw8482c_a53_fc_a1_4841__ac2f_2469_a76_a758e = 0
-mwbdb849d8_2b25_4551_8de8__adc8be_ad2303 = 0
-mwbdb849d8_2b25_4551_8de8__adc8be_ad2303 = 0
+mw8482c_a53_fc_a1_4841_ac2f_2469_a76_a758e = 0
+mwbdb849d8_2b25_x4551_8de8_adc8be_ad2303 = 0
+mwbdb849d8_2b25_x4551_8de8_adc8be_ad2303 = 0
 TF = 0
 TFPI = 0
 TF_VII_a = 0
@@ -112,4 +111,3 @@ X_a_TFPI = 0
 X_a_V_a = 0
 X_a_V_a_II = 0
 X_a_VIII_a = 0
-"""
