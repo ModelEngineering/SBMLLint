@@ -49,8 +49,9 @@ class TestModelMaker(unittest.TestCase):
     self.assertGreater(len(model_str), len(REACTIONSTR))
    
   def testMakeModelFile(self): 
+    self.assertFalse(os.path.isfile(TEST_OUT_PATH))
     model_str = self.maker.makeModelFile(TEST_OUT_PATH)
-
+    self.assertTrue(os.path.isfile(TEST_OUT_PATH))
 
 if __name__ == '__main__':
   unittest.main()
