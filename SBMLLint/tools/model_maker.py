@@ -8,7 +8,7 @@ This is done by:
 
 import sys
 
-EXTRANEOUS = ["+", "->", "-", "(", ")", "*", "\n", ";"]
+EXTRANEOUS = ["+", "->", "-", "(", ")", "*", "\n", ";", ","]
 
 class ModelMaker(object):
   """
