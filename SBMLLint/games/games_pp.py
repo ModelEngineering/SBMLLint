@@ -16,7 +16,7 @@ from scipy.linalg import lu, inv
 
 GAMESErrors = collections.namedtuple("GAMESErrors", 
     "type_one")
-
+TOLERANCE = 0.0001
 
 class SOMStoichiometry(object):
 
@@ -167,7 +167,8 @@ class GAMES_PP(nx.DiGraph):
     self.identifier = self.makeId()
     #
     # List of errors
-    # Mass balance error from U matrix
+    # Mass balance error from U matrix (LP decomposition)
+    # If not error was detected from U, the error is from RREF
     self.echelon_errors = []
     # Can't add arc
     self.type_one_errors = []
@@ -401,13 +402,13 @@ class GAMES_PP(nx.DiGraph):
           np.round(abs(reaction_elements[som_label]), 3)
           ) \
           for som_label in reaction_elements.index \
-          if reaction_elements[som_label]<-0.0001]
+          if reaction_elements[som_label]<TOLERANCE*(-1)]
       products = [SOMStoichiometry(
           self.getNode(som_label),
           np.round(abs(reaction_elements[som_label]), 3)
           ) \
           for som_label in reaction_elements.index \
-          if reaction_elements[som_label]>0.0001]
+          if reaction_elements[som_label]>TOLERANCE]
       reactions.append(SOMReaction(
           reactants=reactants,
           products=products,
