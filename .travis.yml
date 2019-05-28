@@ -15,7 +15,7 @@ install:
   - conda env create --quiet --name sbmllint --file environment.yml
   - source activate sbmllint
   - pip install --upgrade pip
-  - pip install matplotlib numpy pandas==0.22 urllib3 networkx tellurium nose
+  - pip install matplotlib numpy pandas==0.22 urllib3 networkx tellurium nose pyyaml
 
 script:
   - cd data/biomodels; unzip *.zip > t.out; cd ..; cd ..

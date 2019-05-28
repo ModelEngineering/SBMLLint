@@ -54,6 +54,20 @@ class TestFunctions(unittest.TestCase):
     self.assertEqual(result.num_reactions, 1)
     self.assertEqual(result.num_imbalances, 0)
 
+  def testLint4(self):
+    model = """
+    2Glu_DUMMYIMPLICIT + 2A__P_3 -> 2Glu_P + 2A_P_P; 1
+    Glu_DUMMYIMPLICIT = 0
+    A_P_P = 0
+    Glu_P = 0
+    A__P_3 = 0
+    A = 0
+    """
+    with open(TEST_OUT_PATH, 'w') as fd:
+      result = sbmllint.lint(model, file_out=fd)
+    self.assertEqual(result.num_reactions, 1)
+    self.assertEqual(result.num_imbalances, 0)
+
   def testMain(self):
     return
     # FIXME: This test fails in traves
