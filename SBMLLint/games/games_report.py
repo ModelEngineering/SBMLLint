@@ -231,7 +231,6 @@ class GAMESReport(object):
   	  	    som = self.mesgraph.getNode(self.mesgraph.simple.getMolecule(last_node))
   	  	    som_path = self.getSOMPath(som, last_node, one_path.node1[0])
   	  	    som_path_report = som_path_report + self.reportSOMPath(som_path)
-
   	  	for tup in comb:
   	  	  report = report + "\n%s %s %s by\n" % (tup[0], cn.LESSTHAN, tup[1])
   	  	  reaction = self.mesgraph.simple.getReaction(tup[2])
@@ -396,21 +395,6 @@ class GAMESReport(object):
       for som_name in canceled_soms:
         linked_molecules, linked_reactions = self.getMoleculeLinkage(som_name, reported_reactions)
         linkage_report = linkage_report + self.reportLinkage(linked_molecules, linked_reactions)
-        # linkage_report = linkage_report + "\n" + "->"*int((NUM_STAR/2))
-        # if len(linked_molecules) == 1:
-        #   m = list(linked_molecules)[0]
-        #   linkage_report = linkage_report + "\n%s is a common element in the reactions above.\n" % m
-        # else:
-        #   linkage_report = linkage_report + "\nThe following molecules,\n"
-        #   for m in list(linked_molecules):
-        #     linkage_report = linkage_report + m + "\n"
-        #   linkage_report = linkage_report + "Have equal mass by the following reaction(s).\n"
-        #   for r in linked_reactions:
-        #     reaction = self.mesgraph.simple.getReaction(r)
-        #     linkage_report = linkage_report + reaction.makeIdentifier(is_include_kinetics=False)
-        #     linkage_report = linkage_report + "\n"
-        # linkage_report = linkage_report + "<-"*int((NUM_STAR/2)) + "\n"
-      # generate an error report for a single echelon error
       error_report = "The following reactions create a mass imbalance:\n\n"
       for r in reported_reactions:
       	simple_reaction = self.mesgraph.simple.getReaction(r)
@@ -419,6 +403,39 @@ class GAMESReport(object):
       echelon_report = echelon_report + "\n" + error_report + linkage_report + "\n" + "*"*NUM_STAR + "\n"
     echelon_report = echelon_report + "-"*NUM_STAR + "\n"
     return echelon_report
+
+  def reportCancelingError(self, canceling_errors):
+  	"""
+  	Generate a report for canceling errors.
+  	A canceling error occurs when a reaction has
+  	an imbalanced net stoichiometry.
+  	:param list-SOMReaction:
+  	:return str: report
+  	"""
+  	report = NULL_STR
+  	for error in canceling_errors:
+  	  label = error.label
+  	  reaction = self.mesgraph.simple.getReaction(label)
+  	  som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
+  	  som_reactants = {r.som for r in som_reaction.reactants}
+  	  som_products = {p.som for p in som_reaction.products}
+  	  canceled_soms = list(som_reactants.intersection(som_products))
+  	  report = report + \
+  	           "\nThe following reaction:\n%s\n\nhas a mass balance error\n" % (
+  	           reaction.makeIdentifier(is_include_kinetics=False)
+  	           )
+  	  report = report + "because of the following equality.\n"
+  	  for som in canceled_soms:
+  	  	# need to find molecules that are included in each, and print out path
+  	  	molecules = {m.name for m in som.molecules}
+  	  	reactants = molecules.intersection({r.molecule.name for r in reaction.reactants})
+  	  	products = molecules.intersection({p.molecule.name for p in reaction.products})
+  	  	# the following line may not be needed
+  	  	som_path = self.getSOMPath(som, list(reactants)[0], list(products)[0])
+  	  	report = report + self.getMoleculeEqualityPathReport(list(reactants)[0], list(products)[0]) + "\n"
+  	  report = report + "*"*NUM_STAR + "\n"
+  	report = report + "-"*NUM_STAR + "\n"
+  	return report
 
 
 

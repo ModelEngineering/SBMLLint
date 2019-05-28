@@ -774,6 +774,12 @@ class GAMES_PP(nx.DiGraph):
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
         func(reaction)
+    self.checkTypeTwoError()
+    #########################
+    # if we find type I or II errors, we make it a simple_game
+    # if self.type_one_errors or self.type_two_errors:
+    #   simple_games = True
+    ########################
     # if simple_games, we only run elementary operations
     if not simple_games:
       if self.reactions_lu:
@@ -824,7 +830,7 @@ class GAMES_PP(nx.DiGraph):
               func = som_reaction_dic[category]
               func(reaction)
     # Check type two errors
-    self.checkTypeTwoError()
+    # self.checkTypeTwoError()
     #
     if error_details:
       print("We just analyzed the data...")
