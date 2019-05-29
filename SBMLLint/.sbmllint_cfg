@@ -3,6 +3,7 @@
 # in either the reactants or products.
 implicits:
  - DUMMYIMPLICIT   # an implicit molecule
+# 611
  - a
  - a1
  - a2
@@ -14,3 +15,17 @@ implicits:
  - ad2303
  - adc8be
  - mwbdb849d8
+# 611
+ - IkBalpha
+ - IkBbeta
+ - IKK
+ - transcript
+ - IkBeps
+ - nuc
+# 293
+ - NatP
+ - MisP
+ - Ub
+ - Source
+ - upregUb
+ - P
