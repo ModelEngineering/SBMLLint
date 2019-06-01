@@ -83,9 +83,7 @@ class ModelMaker(object):
     """
     if exclude_funcs is None:
       exclude_funcs = []
-    if DOUBLEUNDERSCORE in symbol:
-      raise ValueError("Cannot process symbol: %s" % symbol)
-    splits = symbol.split(UNDERSCORE)
+    splits = symbol.split(DOUBLEUNDERSCORE)
     is_changed = False
     for idx, stg in enumerate(splits):
       is_ignore = False

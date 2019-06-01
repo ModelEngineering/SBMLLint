@@ -1,0 +1,18 @@
+# Configuration for SBMLLint
+# Implicit molecules are molecules that may be implicit
+# in either the reactants or products.
+implicits:
+ - DUMMYIMPLICIT   # an implicit molecule
+# 293
+ - Agg  # Protein aggregation
+ - dam  # damaged
+ - damaged  # Damaged proten
+ - Mis  # Misfolded protein
+ - misfolded
+ - Nat # Native protein
+ - P  # phosphate
+ - Proteasome
+ - ROS  # Reactive oxygen species
+ - Seq
+ - Source
+ - upreg  # Upregulated
