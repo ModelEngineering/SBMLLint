@@ -4,6 +4,7 @@ This is done by:
 1. Parsing the reactions for symbols used.
 2. Creating assignment statements for symbols.
 3. Append these assignments to the list of reactions.
+Assumes that name segments are separated by a DOUBLEUNDERSCORE.
 
 TODO:
 1. Keep state of updates to model
@@ -35,7 +36,7 @@ class ModelMaker(object):
     """
     self._reaction_strs = self._getReactionstrs(in_arg)
     self.symbols = None  # symbols found
-    self.model = None  # full model
+    self.model_str = None  # full model
 
   def _getReactionstrs(self, in_arg):
     if isinstance(in_arg, list):
@@ -113,21 +114,22 @@ class ModelMaker(object):
     rename_dict = {k: v for k, v in rename_dict.items() if k != v}
     return rename_dict
 
-  def replaceSymbols(self, symbol_dict):
+  def replaceSymbols(self, symbol_dict, is_sort=True):
     """
     Replaces the symbol (key) with its value.
     :param dict symbol_dict:
-    Updates self.model
+    :param bool is_sort: sort replacement strings by size to
+        avoid substrint replacements
+    Updates self.model_str
     :return str:
-    Replacements are done in reverse order of size to avoid
-    replacing substrings.
     """
     ser = pd.Series([len(k) for k in symbol_dict.keys()])
     ser.index = [s for s in symbol_dict.keys()]
-    ser = ser.sort_values(ascending=False)
+    if is_sort:
+      ser = ser.sort_values(ascending=False)
     for k in ser.index:
-      self.model = self.model.replace(k, symbol_dict[k])
-    return self.model
+      self.model_str = self.model_str.replace(k, symbol_dict[k])
+    return self.model_str
 
   def makeModelStr(self):
     """
@@ -136,8 +138,8 @@ class ModelMaker(object):
     """
     model_strs = list(self._reaction_strs)
     [model_strs.append("%s = 0" % s) for s in self.extractSymbols()]
-    self.model = '\n'.join(model_strs)
-    return self.model
+    self.model_str = '\n'.join(model_strs)
+    return self.model_str
  
   def makeModelFile(self, out_path):
     """

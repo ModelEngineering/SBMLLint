@@ -100,12 +100,12 @@ class TestModelMaker(unittest.TestCase):
           exclude_funcs=exclude_funcs)
       self.assertEqual(result, expected)
     #
-    test("ab_bB12", "ab_bB12", exclude_funcs=[lambda n: n[0]=="b"])
+    test("ab__bB12", "ab__bB12", exclude_funcs=[lambda n: n[0]=="b"])
     test("ab12", "ab_12")
-    test("a_bb12", "a__bb_12")
-    test("ab_bB12", "ab__bB_12")
-    test("ab_bB12", "ab__bB_12", exclude_funcs=[lambda n: n[0]=="a"])
-    test("E3SUB_SUB_misfolded_Ub2_UCHL1",
+    test("a__bb12", "a__bb_12")
+    test("ab__bB12", "ab__bB_12")
+    test("ab__bB12", "ab__bB_12", exclude_funcs=[lambda n: n[0]=="a"])
+    test("E3SUB__SUB__misfolded__Ub2__UCHL1",
         "E3SUB__SUB__misfolded__Ub_2__UCHL1",
         exclude_funcs=[lambda n: "UCHL" in n])
 
@@ -143,9 +143,9 @@ class TestModelMaker(unittest.TestCase):
     model_str = self.maker.makeModelStr()
     self.maker.replaceSymbols({SYM1: SYM2, SYM3: SYM4})
     for sym in [SYM2, SYM4]:
-      self.assertEqual(self.maker.model.count(sym), 4)
+      self.assertEqual(self.maker.model_str.count(sym), 4)
     for sym in [SYM1, SYM3]:
-      self.assertEqual(self.maker.model.count(sym), 0)
+      self.assertEqual(self.maker.model_str.count(sym), 0)
 
 
 if __name__ == '__main__':
