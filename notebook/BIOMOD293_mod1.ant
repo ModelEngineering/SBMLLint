@@ -116,43 +116,43 @@ DisAggregation4: Agg__Prot_2 -> Agg__Prot_1 + Mis__Prot; kdisAgg2 * Agg__Prot_2
 
 DisAggregation5: Agg__Prot_1 -> 2.00 Mis__Prot; kdisAgg1 * Agg__Prot_1
 
-InclusionFormation: Mis__Prot + Agg__Prot_5 -> Seq__Agg__Prot + 7.00 AggMis__Prot; kAgg2 * Mis__Prot * Agg__Prot_5
+InclusionFormation: Mis__Prot + Agg__Prot_5 -> Seq__Agg__Prot + 7.00 Agg__Mis__Prot; kAgg2 * Mis__Prot * Agg__Prot_5
 
-InclusionGrowth1: Mis__Prot + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot; kigrowth1 * Mis__Prot * Seq__Agg__Prot
+InclusionGrowth1: Mis__Prot + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot; kigrowth1 * Mis__Prot * Seq__Agg__Prot
 
-InclusionGrowth2: E3__Mis__Prot + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + AggE3; kigrowth2 * E3__Mis__Prot * Seq__Agg__Prot
+InclusionGrowth2: E3__Mis__Prot + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + Agg__E3; kigrowth2 * E3__Mis__Prot * Seq__Agg__Prot
 
-InclusionGrowth3: E3__Mis__Prot__Ub + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + AggUb + AggE3; kigrowth2 * E3__Mis__Prot__Ub * Seq__Agg__Prot
+InclusionGrowth3: E3__Mis__Prot__Ub + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + Agg__Ub + Agg__E3; kigrowth2 * E3__Mis__Prot__Ub * Seq__Agg__Prot
 
-InclusionGrowth4: E3__Mis__Prot__Ub_2 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 2.00 AggUb + AggE3; kigrowth2 * E3__Mis__Prot__Ub_2 * Seq__Agg__Prot
+InclusionGrowth4: E3__Mis__Prot__Ub_2 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 2.00 Agg__Ub + Agg__E3; kigrowth2 * E3__Mis__Prot__Ub_2 * Seq__Agg__Prot
 
-InclusionGrowth5: E3__Mis__Prot__Ub_3 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 3.00 AggUb + AggE3; kigrowth2 * E3__Mis__Prot__Ub_3 * Seq__Agg__Prot
+InclusionGrowth5: E3__Mis__Prot__Ub_3 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 3.00 Agg__Ub + Agg__E3; kigrowth2 * E3__Mis__Prot__Ub_3 * Seq__Agg__Prot
 
-InclusionGrowth6: E3__Mis__Prot__Ub_4 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 4.00 AggUb + AggE3; kigrowth2 * E3__Mis__Prot__Ub_4 * Seq__Agg__Prot
+InclusionGrowth6: E3__Mis__Prot__Ub_4 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 4.00 Agg__Ub + Agg__E3; kigrowth2 * E3__Mis__Prot__Ub_4 * Seq__Agg__Prot
 
-InclusionGrowth7: E3__Mis__Prot__Ub_5 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 5.00 AggUb + AggE3; kigrowth2 * E3__Mis__Prot__Ub_5 * Seq__Agg__Prot
+InclusionGrowth7: E3__Mis__Prot__Ub_5 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 5.00 Agg__Ub + Agg__E3; kigrowth2 * E3__Mis__Prot__Ub_5 * Seq__Agg__Prot
 
-InclusionGrowth8: E3__Mis__Prot__Ub_6 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 6.00 AggUb + AggE3; kigrowth2 * E3__Mis__Prot__Ub_6 * Seq__Agg__Prot
+InclusionGrowth8: E3__Mis__Prot__Ub_6 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 6.00 Agg__Ub + Agg__E3; kigrowth2 * E3__Mis__Prot__Ub_6 * Seq__Agg__Prot
 
-InclusionGrowth9: E3__Mis__Prot__Ub_7 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 7.00 AggUb + AggE3; kigrowth2 * E3__Mis__Prot__Ub_7 * Seq__Agg__Prot
+InclusionGrowth9: E3__Mis__Prot__Ub_7 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 7.00 Agg__Ub + Agg__E3; kigrowth2 * E3__Mis__Prot__Ub_7 * Seq__Agg__Prot
 
-InclusionGrowth10: E3__Mis__Prot__Ub_8 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + 8.00 AggUb + AggE3; kigrowth2 * E3__Mis__Prot__Ub_8 * Seq__Agg__Prot
+InclusionGrowth10: E3__Mis__Prot__Ub_8 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + 8.00 Agg__Ub + Agg__E3; kigrowth2 * E3__Mis__Prot__Ub_8 * Seq__Agg__Prot
 
-InclusionGrowth11: E3__Mis__Prot__Ub__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + AggUb + AggE3 + AggDUB; kigrowth2 * E3__Mis__Prot__Ub__DUB * Seq__Agg__Prot
+InclusionGrowth11: E3__Mis__Prot__Ub__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + Agg__Ub + Agg__E3 + Agg__DUB; kigrowth2 * E3__Mis__Prot__Ub__DUB * Seq__Agg__Prot
 
-InclusionGrowth12: E3__Mis__Prot__Ub_2__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 2.00 AggUb + AggE3 + AggDUB; kigrowth2 * E3__Mis__Prot__Ub_2__DUB * Seq__Agg__Prot
+InclusionGrowth12: E3__Mis__Prot__Ub_2__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 2.00 Agg__Ub + Agg__E3 + Agg__DUB; kigrowth2 * E3__Mis__Prot__Ub_2__DUB * Seq__Agg__Prot
 
-InclusionGrowth13: E3__Mis__Prot__Ub_3__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 3.00 AggUb + AggE3 + AggDUB; kigrowth2 * E3__Mis__Prot__Ub_3__DUB * Seq__Agg__Prot
+InclusionGrowth13: E3__Mis__Prot__Ub_3__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 3.00 Agg__Ub + Agg__E3 + Agg__DUB; kigrowth2 * E3__Mis__Prot__Ub_3__DUB * Seq__Agg__Prot
 
-InclusionGrowth14: E3__Mis__Prot__Ub_4__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 4.00 AggUb + AggE3 + AggDUB; kigrowth2 * E3__Mis__Prot__Ub_4__DUB * Seq__Agg__Prot
+InclusionGrowth14: E3__Mis__Prot__Ub_4__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 4.00 Agg__Ub + Agg__E3 + Agg__DUB; kigrowth2 * E3__Mis__Prot__Ub_4__DUB * Seq__Agg__Prot
 
-InclusionGrowth15: E3__Mis__Prot__Ub_5__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 5.00 AggUb + AggE3 + AggDUB; kigrowth2 * E3__Mis__Prot__Ub_5__DUB * Seq__Agg__Prot
+InclusionGrowth15: E3__Mis__Prot__Ub_5__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 5.00 Agg__Ub + Agg__E3 + Agg__DUB; kigrowth2 * E3__Mis__Prot__Ub_5__DUB * Seq__Agg__Prot
 
-InclusionGrowth16: E3__Mis__Prot__Ub_6__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 6.00 AggUb + AggE3 + AggDUB; kigrowth2 * E3__Mis__Prot__Ub_6__DUB * Seq__Agg__Prot
+InclusionGrowth16: E3__Mis__Prot__Ub_6__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 6.00 Agg__Ub + Agg__E3 + Agg__DUB; kigrowth2 * E3__Mis__Prot__Ub_6__DUB * Seq__Agg__Prot
 
-InclusionGrowth17: E3__Mis__Prot__Ub_7__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 7.00 AggUb + AggE3 + AggDUB; kigrowth2 * E3__Mis__Prot__Ub_7__DUB * Seq__Agg__Prot
+InclusionGrowth17: E3__Mis__Prot__Ub_7__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 7.00 Agg__Ub + Agg__E3 + Agg__DUB; kigrowth2 * E3__Mis__Prot__Ub_7__DUB * Seq__Agg__Prot
 
-InclusionGrowth18: E3__Mis__Prot__Ub_8__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggMis__Prot + 8.00 AggUb + AggE3 + AggDUB; kigrowth2 * E3__Mis__Prot__Ub_8__DUB * Seq__Agg__Prot
+InclusionGrowth18: E3__Mis__Prot__Ub_8__DUB + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + Agg__Mis__Prot + 8.00 Agg__Ub + Agg__E3 + Agg__DUB; kigrowth2 * E3__Mis__Prot__Ub_8__DUB * Seq__Agg__Prot
 
 ProteasomeInhibition1: Agg__Prot_1 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * Agg__Prot_1 * Proteasome
 
@@ -204,67 +204,67 @@ SUBmisfolding: SUB + ROS -> SUB__misfolded + ROS; kmisfoldSUB * SUB * ROS
 
 SUBRefolding: SUB__misfolded -> SUB; krefoldSUB * SUB__misfolded
 
-E3SUBBinding: SUB__misfolded + E3SUB -> E3SUB__SUB__misfolded; kbinE3SUB * SUB__misfolded * E3SUB
+E3__SUBBinding: SUB__misfolded + E3__SUB -> E3__SUB__SUB__misfolded; kbinE3__SUB * SUB__misfolded * E3__SUB
 
-E3SUBRelease: E3SUB__SUB__misfolded -> SUB__misfolded + E3SUB; krelE3SUB * E3SUB__SUB__misfolded
+E3__SUBRelease: E3__SUB__SUB__misfolded -> SUB__misfolded + E3__SUB; krelE3__SUB * E3__SUB__SUB__misfolded
 
-SUBMonoubiquitination: E2__Ub + E3SUB__SUB__misfolded -> E3SUB__SUB__misfolded__Ub + E2; kmonoUb * E2__Ub * E3SUB__SUB__misfolded
+SUBMonoubiquitination: E2__Ub + E3__SUB__SUB__misfolded -> E3__SUB__SUB__misfolded__Ub + E2; kmonoUb * E2__Ub * E3__SUB__SUB__misfolded
 
-SUBPolyubiquitination1: E3SUB__SUB__misfolded__Ub + E2__Ub -> E3SUB__SUB__misfolded__Ub_2 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub * E2__Ub
+SUBPolyubiquitination1: E3__SUB__SUB__misfolded__Ub + E2__Ub -> E3__SUB__SUB__misfolded__Ub_2 + E2; kpolyUb * E3__SUB__SUB__misfolded__Ub * E2__Ub
 
-SUBPolyubiquitination2: E3SUB__SUB__misfolded__Ub_2 + E2__Ub -> E3SUB__SUB__misfolded__Ub_3 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub_2 * E2__Ub
+SUBPolyubiquitination2: E3__SUB__SUB__misfolded__Ub_2 + E2__Ub -> E3__SUB__SUB__misfolded__Ub_3 + E2; kpolyUb * E3__SUB__SUB__misfolded__Ub_2 * E2__Ub
 
-SUBPolyubiquitination3: E3SUB__SUB__misfolded__Ub_3 + E2__Ub -> E3SUB__SUB__misfolded__Ub_4 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub_3 * E2__Ub
+SUBPolyubiquitination3: E3__SUB__SUB__misfolded__Ub_3 + E2__Ub -> E3__SUB__SUB__misfolded__Ub_4 + E2; kpolyUb * E3__SUB__SUB__misfolded__Ub_3 * E2__Ub
 
-SUBPolyubiquitination4: E3SUB__SUB__misfolded__Ub_4 + E2__Ub -> E3SUB__SUB__misfolded__Ub_5 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub_4 * E2__Ub
+SUBPolyubiquitination4: E3__SUB__SUB__misfolded__Ub_4 + E2__Ub -> E3__SUB__SUB__misfolded__Ub_5 + E2; kpolyUb * E3__SUB__SUB__misfolded__Ub_4 * E2__Ub
 
-SUBPolyubiquitination5: E3SUB__SUB__misfolded__Ub_5 + E2__Ub -> E3SUB__SUB__misfolded__Ub_6 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub_5 * E2__Ub
+SUBPolyubiquitination5: E3__SUB__SUB__misfolded__Ub_5 + E2__Ub -> E3__SUB__SUB__misfolded__Ub_6 + E2; kpolyUb * E3__SUB__SUB__misfolded__Ub_5 * E2__Ub
 
-SUBPolyubiquitination6: E3SUB__SUB__misfolded__Ub_6 + E2__Ub -> E3SUB__SUB__misfolded__Ub_7 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub_6 * E2__Ub
+SUBPolyubiquitination6: E3__SUB__SUB__misfolded__Ub_6 + E2__Ub -> E3__SUB__SUB__misfolded__Ub_7 + E2; kpolyUb * E3__SUB__SUB__misfolded__Ub_6 * E2__Ub
 
-SUBPolyubiquitination7: E3SUB__SUB__misfolded__Ub_7 + E2__Ub -> E3SUB__SUB__misfolded__Ub_8 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub_7 * E2__Ub
+SUBPolyubiquitination7: E3__SUB__SUB__misfolded__Ub_7 + E2__Ub -> E3__SUB__SUB__misfolded__Ub_8 + E2; kpolyUb * E3__SUB__SUB__misfolded__Ub_7 * E2__Ub
 
-SUBUCHL1binding1: E3SUB__SUB__misfolded__Ub + UCHL1 -> E3SUB__SUB__misfolded__Ub__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub * UCHL1
+SUBUCHL1binding1: E3__SUB__SUB__misfolded__Ub + UCHL1 -> E3__SUB__SUB__misfolded__Ub__UCHL1; kbinSUBUCHL1 * E3__SUB__SUB__misfolded__Ub * UCHL1
 
-SUBUCHL1binding2: E3SUB__SUB__misfolded__Ub_2 + UCHL1 -> E3SUB__SUB__misfolded__Ub_2__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub_2 * UCHL1
+SUBUCHL1binding2: E3__SUB__SUB__misfolded__Ub_2 + UCHL1 -> E3__SUB__SUB__misfolded__Ub_2__UCHL1; kbinSUBUCHL1 * E3__SUB__SUB__misfolded__Ub_2 * UCHL1
 
-SUBUCHL1binding3: E3SUB__SUB__misfolded__Ub_3 + UCHL1 -> E3SUB__SUB__misfolded__Ub_3__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub_3 * UCHL1
+SUBUCHL1binding3: E3__SUB__SUB__misfolded__Ub_3 + UCHL1 -> E3__SUB__SUB__misfolded__Ub_3__UCHL1; kbinSUBUCHL1 * E3__SUB__SUB__misfolded__Ub_3 * UCHL1
 
-SUBUCHL1binding4: E3SUB__SUB__misfolded__Ub_4 + UCHL1 -> E3SUB__SUB__misfolded__Ub_4__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub_4 * UCHL1
+SUBUCHL1binding4: E3__SUB__SUB__misfolded__Ub_4 + UCHL1 -> E3__SUB__SUB__misfolded__Ub_4__UCHL1; kbinSUBUCHL1 * E3__SUB__SUB__misfolded__Ub_4 * UCHL1
 
-SUBUCHL1binding5Ub__UCHL1: E3SUB__SUB__misfolded__Ub_5 + UCHL1 -> E3SUB__SUB__misfolded__Ub_5__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub_5 * UCHL1
+SUBUCHL1binding5Ub__UCHL1: E3__SUB__SUB__misfolded__Ub_5 + UCHL1 -> E3__SUB__SUB__misfolded__Ub_5__UCHL1; kbinSUBUCHL1 * E3__SUB__SUB__misfolded__Ub_5 * UCHL1
 
-SUBUCHL1binding6: E3SUB__SUB__misfolded__Ub_6 + UCHL1 -> E3SUB__SUB__misfolded__Ub_6__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub_6 * UCHL1
+SUBUCHL1binding6: E3__SUB__SUB__misfolded__Ub_6 + UCHL1 -> E3__SUB__SUB__misfolded__Ub_6__UCHL1; kbinSUBUCHL1 * E3__SUB__SUB__misfolded__Ub_6 * UCHL1
 
-SUBUCHL1binding7: E3SUB__SUB__misfolded__Ub_7 + UCHL1 -> E3SUB__SUB__misfolded__Ub_7__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub_7 * UCHL1
+SUBUCHL1binding7: E3__SUB__SUB__misfolded__Ub_7 + UCHL1 -> E3__SUB__SUB__misfolded__Ub_7__UCHL1; kbinSUBUCHL1 * E3__SUB__SUB__misfolded__Ub_7 * UCHL1
 
-SUBUCHL1binding8: E3SUB__SUB__misfolded__Ub_8 + UCHL1 -> E3SUB__SUB__misfolded__Ub_8__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub_8 * UCHL1
+SUBUCHL1binding8: E3__SUB__SUB__misfolded__Ub_8 + UCHL1 -> E3__SUB__SUB__misfolded__Ub_8__UCHL1; kbinSUBUCHL1 * E3__SUB__SUB__misfolded__Ub_8 * UCHL1
 
-SUBDeubiquitination8: E3SUB__SUB__misfolded__Ub_8__UCHL1 -> E3SUB__SUB__misfolded__Ub_7__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub_8__UCHL1
+SUBDeubiquitination8: E3__SUB__SUB__misfolded__Ub_8__UCHL1 -> E3__SUB__SUB__misfolded__Ub_7__UCHL1 + Ub; kactUCHL1 * E3__SUB__SUB__misfolded__Ub_8__UCHL1
 
-SUBDeubiquitination7: E3SUB__SUB__misfolded__Ub_7__UCHL1 -> E3SUB__SUB__misfolded__Ub_6__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub_7__UCHL1
+SUBDeubiquitination7: E3__SUB__SUB__misfolded__Ub_7__UCHL1 -> E3__SUB__SUB__misfolded__Ub_6__UCHL1 + Ub; kactUCHL1 * E3__SUB__SUB__misfolded__Ub_7__UCHL1
 
-SUBDeubiquitination6: E3SUB__SUB__misfolded__Ub_6__UCHL1 -> E3SUB__SUB__misfolded__Ub_5__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub_6__UCHL1
+SUBDeubiquitination6: E3__SUB__SUB__misfolded__Ub_6__UCHL1 -> E3__SUB__SUB__misfolded__Ub_5__UCHL1 + Ub; kactUCHL1 * E3__SUB__SUB__misfolded__Ub_6__UCHL1
 
-SUBDeubiquitination5: E3SUB__SUB__misfolded__Ub_5__UCHL1 -> E3SUB__SUB__misfolded__Ub_4__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub_5__UCHL1
+SUBDeubiquitination5: E3__SUB__SUB__misfolded__Ub_5__UCHL1 -> E3__SUB__SUB__misfolded__Ub_4__UCHL1 + Ub; kactUCHL1 * E3__SUB__SUB__misfolded__Ub_5__UCHL1
 
-SUBDeubiquitination4: E3SUB__SUB__misfolded__Ub_4__UCHL1 -> E3SUB__SUB__misfolded__Ub_3__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub_4__UCHL1
+SUBDeubiquitination4: E3__SUB__SUB__misfolded__Ub_4__UCHL1 -> E3__SUB__SUB__misfolded__Ub_3__UCHL1 + Ub; kactUCHL1 * E3__SUB__SUB__misfolded__Ub_4__UCHL1
 
-SUBDeubiquitination3: E3SUB__SUB__misfolded__Ub_3__UCHL1 -> E3SUB__SUB__misfolded__Ub_2__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub_3__UCHL1
+SUBDeubiquitination3: E3__SUB__SUB__misfolded__Ub_3__UCHL1 -> E3__SUB__SUB__misfolded__Ub_2__UCHL1 + Ub; kactUCHL1 * E3__SUB__SUB__misfolded__Ub_3__UCHL1
 
-SUBDeubiquitination2: E3SUB__SUB__misfolded__Ub_2__UCHL1 -> E3SUB__SUB__misfolded__Ub__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub_2__UCHL1
+SUBDeubiquitination2: E3__SUB__SUB__misfolded__Ub_2__UCHL1 -> E3__SUB__SUB__misfolded__Ub__UCHL1 + Ub; kactUCHL1 * E3__SUB__SUB__misfolded__Ub_2__UCHL1
 
-SUBDeubiquitination1: E3SUB__SUB__misfolded__Ub__UCHL1 -> E3SUB__SUB__misfolded + UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub__UCHL1
+SUBDeubiquitination1: E3__SUB__SUB__misfolded__Ub__UCHL1 -> E3__SUB__SUB__misfolded + UCHL1 + Ub; kactUCHL1 * E3__SUB__SUB__misfolded__Ub__UCHL1
 
-SUBProteasomeBindingUb4: E3SUB__SUB__misfolded__Ub_4 + Proteasome -> SUB__misfolded__Ub_4__Proteasome + E3SUB; kbinProt * E3SUB__SUB__misfolded__Ub_4 * Proteasome
+SUBProteasomeBindingUb4: E3__SUB__SUB__misfolded__Ub_4 + Proteasome -> SUB__misfolded__Ub_4__Proteasome + E3__SUB; kbinProt * E3__SUB__SUB__misfolded__Ub_4 * Proteasome
 
-SUBProteasomeBindingUb5: E3SUB__SUB__misfolded__Ub_5 + Proteasome -> SUB__misfolded__Ub_5__Proteasome + E3SUB; kbinProt * E3SUB__SUB__misfolded__Ub_5 * Proteasome
+SUBProteasomeBindingUb5: E3__SUB__SUB__misfolded__Ub_5 + Proteasome -> SUB__misfolded__Ub_5__Proteasome + E3__SUB; kbinProt * E3__SUB__SUB__misfolded__Ub_5 * Proteasome
 
-SUBProteasomeBindingUb6: E3SUB__SUB__misfolded__Ub_6 + Proteasome -> SUB__misfolded__Ub_6__Proteasome + E3SUB; kbinProt * E3SUB__SUB__misfolded__Ub_6 * Proteasome
+SUBProteasomeBindingUb6: E3__SUB__SUB__misfolded__Ub_6 + Proteasome -> SUB__misfolded__Ub_6__Proteasome + E3__SUB; kbinProt * E3__SUB__SUB__misfolded__Ub_6 * Proteasome
 
-SUBProteasomeBindingUb7: E3SUB__SUB__misfolded__Ub_7 + Proteasome -> SUB__misfolded__Ub_7__Proteasome + E3SUB; kbinProt * E3SUB__SUB__misfolded__Ub_7 * Proteasome
+SUBProteasomeBindingUb7: E3__SUB__SUB__misfolded__Ub_7 + Proteasome -> SUB__misfolded__Ub_7__Proteasome + E3__SUB; kbinProt * E3__SUB__SUB__misfolded__Ub_7 * Proteasome
 
-SUBProteasomeBindingUb8: E3SUB__SUB__misfolded__Ub_8 + Proteasome -> SUB__misfolded__Ub_8__Proteasome + E3SUB; kbinProt * E3SUB__SUB__misfolded__Ub_8 * Proteasome
+SUBProteasomeBindingUb8: E3__SUB__SUB__misfolded__Ub_8 + Proteasome -> SUB__misfolded__Ub_8__Proteasome + E3__SUB; kbinProt * E3__SUB__SUB__misfolded__Ub_8 * Proteasome
 
 DeubiquitinationBoundSUB8: SUB__misfolded__Ub_8__Proteasome + DUB -> SUB__misfolded__Ub_7__Proteasome + Ub + DUB; kactDUBProt * SUB__misfolded__Ub_8__Proteasome * DUB
 
@@ -380,25 +380,25 @@ AsynDegradationUb7: asyn__dam__Ub_7__Proteasome + A__P__P__P -> 7.00 Ub + Protea
 
 AsynDegradationUb8: asyn__dam__Ub_8__Proteasome + A__P__P__P -> 8.00 Ub + Proteasome + A__P__P; kactProt * kproteff * asyn__dam__Ub_8__Proteasome * A__P__P__P / (5000 + A__P__P__P)
 
-Aggregationasyn1: 2.00 asyn -> AggA_1; kAggasyn1 * asyn * (asyn - 1) * 0.5
+Aggregationasyn1: 2.00 asyn -> AggA_1; kAgg__asyn1 * asyn * (asyn - 1) * 0.5
 
-Aggregationasyn2: asyn + AggA_1 -> AggA_2; kAggasyn2 * asyn * AggA_1
+Aggregationasyn2: asyn + AggA_1 -> AggA_2; kAgg__asyn2 * asyn * AggA_1
 
-Aggregationasyn3: asyn + AggA_2 -> AggA_3; kAggasyn2 * asyn * AggA_2
+Aggregationasyn3: asyn + AggA_2 -> AggA_3; kAgg__asyn2 * asyn * AggA_2
 
-Aggregationasyn4: asyn + AggA_3 -> AggA_4; kAggasyn2 * asyn * AggA_3
+Aggregationasyn4: asyn + AggA_3 -> AggA_4; kAgg__asyn2 * asyn * AggA_3
 
-Aggregationasyn5: asyn + AggA_4 -> AggA_5; kAggasyn2 * asyn * AggA_4
+Aggregationasyn5: asyn + AggA_4 -> AggA_5; kAgg__asyn2 * asyn * AggA_4
 
-DisAggregationasyn1: AggA_5 -> AggA_4 + asyn; kdisAggasyn5 * AggA_5
+DisAggregationasyn1: AggA_5 -> AggA_4 + asyn; kdisAgg__asyn5 * AggA_5
 
-DisAggregationasyn2: AggA_4 -> AggA_3 + asyn; kdisAggasyn4 * AggA_4
+DisAggregationasyn2: AggA_4 -> AggA_3 + asyn; kdisAgg__asyn4 * AggA_4
 
-DisAggregationasyn3: AggA_3 -> AggA_2 + asyn; kdisAggasyn3 * AggA_3
+DisAggregationasyn3: AggA_3 -> AggA_2 + asyn; kdisAgg__asyn3 * AggA_3
 
-DisAggregationasyn4: AggA_2 -> AggA_1 + asyn; kdisAggasyn2 * AggA_2
+DisAggregationasyn4: AggA_2 -> AggA_1 + asyn; kdisAgg__asyn2 * AggA_2
 
-DisAggregationasyn5: AggA_1 -> 2.00 asyn; kdisAggasyn1 * AggA_1
+DisAggregationasyn5: AggA_1 -> 2.00 asyn; kdisAgg__asyn1 * AggA_1
 
 AggA_1ProteasomeInhibition: AggA_1 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggA_1 * Proteasome
 
@@ -410,9 +410,9 @@ AggA_4ProteasomeInhibition: AggA_4 + Proteasome -> Agg__Prot__Proteasome; kbinAg
 
 AggA_5ProteasomeInhibition: AggA_5 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggA_5 * Proteasome
 
-AsynInclusionFormation: asyn + AggA_5 -> Seq__Agg__Prot + 7.00 Aggasyn; kAggasyn2 * asyn * AggA_5
+AsynInclusionFormation: asyn + AggA_5 -> Seq__Agg__Prot + 7.00 Agg__asyn; kAgg__asyn2 * asyn * AggA_5
 
-AsynInclusionGrowth: Seq__Agg__Prot + asyn -> 2.00 Seq__Agg__Prot + Aggasyn; kigrowth1 * Seq__Agg__Prot * asyn
+AsynInclusionGrowth: Seq__Agg__Prot + asyn -> 2.00 Seq__Agg__Prot + Agg__asyn; kigrowth1 * Seq__Agg__Prot * asyn
 
 ROSgenerationSmallAggA_1: AggA_1 -> AggA_1 + ROS; kgenROSAgg__Prot * AggA_1
 
@@ -434,15 +434,15 @@ AggregationAsynDam4: asyn__dam + AggD_3 -> AggD_4; kAgg2dam * asyn__dam * AggD_3
 
 AggregationAsynDam5: asyn__dam + AggD_4 -> AggD_5; kAgg2dam * asyn__dam * AggD_4
 
-DisAggregationAsynDam1: AggD_5 -> AggD_4 + asyn__dam; kdisAggasyndam5 * AggD_5
+DisAggregationAsynDam1: AggD_5 -> AggD_4 + asyn__dam; kdisAgg__asyn__dam5 * AggD_5
 
-DisAggregationAsynDam2: AggD_4 -> AggD_3 + asyn__dam; kdisAggasyndam4 * AggD_4
+DisAggregationAsynDam2: AggD_4 -> AggD_3 + asyn__dam; kdisAgg__asyn__dam4 * AggD_4
 
-DisAggregationAsynDam3: AggD_3 -> AggD_2 + asyn__dam; kdisAggasyndam3 * AggD_3
+DisAggregationAsynDam3: AggD_3 -> AggD_2 + asyn__dam; kdisAgg__asyn__dam3 * AggD_3
 
-DisAggregationAsynDam4: AggD_2 -> AggD_1 + asyn__dam; kdisAggasyndam2 * AggD_2
+DisAggregationAsynDam4: AggD_2 -> AggD_1 + asyn__dam; kdisAgg__asyn__dam2 * AggD_2
 
-DisAggregationAsynDam5: AggD_1 -> 2.00 asyn__dam; kdisAggasyndam1 * AggD_1
+DisAggregationAsynDam5: AggD_1 -> 2.00 asyn__dam; kdisAgg__asyn__dam1 * AggD_1
 
 AggD_1ProteasomeInhibition: AggD_1 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggD_1 * Proteasome
 
@@ -454,43 +454,43 @@ AggD_4ProteasomeInhibition: AggD_4 + Proteasome -> Agg__Prot__Proteasome; kbinAg
 
 AggD_5ProteasomeInhibition: AggD_5 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggD_5 * Proteasome
 
-AsynDamInclusionFormation: asyn__dam + AggD_5 -> Seq__Agg__Prot + 7.00 Aggasyndam; kAgg2dam * asyn__dam * AggD_5
+AsynDamInclusionFormation: asyn__dam + AggD_5 -> Seq__Agg__Prot + 7.00 Agg__asyn__dam; kAgg2dam * asyn__dam * AggD_5
 
-AsynDamInclusionGrowth1: Seq__Agg__Prot + asyn__dam -> 2.00 Seq__Agg__Prot + Aggasyndam; kigrowth1 * Seq__Agg__Prot * asyn__dam
+AsynDamInclusionGrowth1: Seq__Agg__Prot + asyn__dam -> 2.00 Seq__Agg__Prot + Agg__asyn__dam; kigrowth1 * Seq__Agg__Prot * asyn__dam
 
-AsynDamInclusionGrowth2: Seq__Agg__Prot + Parkin__asyn__dam -> 2.00 Seq__Agg__Prot + Aggasyndam + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam
+AsynDamInclusionGrowth2: Seq__Agg__Prot + Parkin__asyn__dam -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam
 
-AsynDamInclusionGrowth3: Seq__Agg__Prot + Parkin__asyn__dam__Ub -> 2.00 Seq__Agg__Prot + Aggasyndam + AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub
+AsynDamInclusionGrowth3: Seq__Agg__Prot + Parkin__asyn__dam__Ub -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub
 
-AsynDamInclusionGrowth4: Seq__Agg__Prot + Parkin__asyn__dam__Ub_2 -> 2.00 Seq__Agg__Prot + Aggasyndam + 2.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_2
+AsynDamInclusionGrowth4: Seq__Agg__Prot + Parkin__asyn__dam__Ub_2 -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 2.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_2
 
-AsynDamInclusionGrowth5: Seq__Agg__Prot + Parkin__asyn__dam__Ub_3 -> 2.00 Seq__Agg__Prot + Aggasyndam + 3.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_3
+AsynDamInclusionGrowth5: Seq__Agg__Prot + Parkin__asyn__dam__Ub_3 -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 3.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_3
 
-AsynDamInclusionGrowth6: Seq__Agg__Prot + Parkin__asyn__dam__Ub_4 -> 2.00 Seq__Agg__Prot + Aggasyndam + 4.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_4
+AsynDamInclusionGrowth6: Seq__Agg__Prot + Parkin__asyn__dam__Ub_4 -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 4.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_4
 
-AsynDamInclusionGrowth7: Seq__Agg__Prot + Parkin__asyn__dam__Ub_5 -> 2.00 Seq__Agg__Prot + Aggasyndam + 5.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_5
+AsynDamInclusionGrowth7: Seq__Agg__Prot + Parkin__asyn__dam__Ub_5 -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 5.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_5
 
-AsynDamInclusionGrowth8: Seq__Agg__Prot + Parkin__asyn__dam__Ub_6 -> 2.00 Seq__Agg__Prot + Aggasyndam + 6.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_6
+AsynDamInclusionGrowth8: Seq__Agg__Prot + Parkin__asyn__dam__Ub_6 -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 6.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_6
 
-AsynDamInclusionGrowth9: Seq__Agg__Prot + Parkin__asyn__dam__Ub_7 -> 2.00 Seq__Agg__Prot + Aggasyndam + 7.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_7
+AsynDamInclusionGrowth9: Seq__Agg__Prot + Parkin__asyn__dam__Ub_7 -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 7.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_7
 
-AsynDamInclusionGrowth10: Seq__Agg__Prot + Parkin__asyn__dam__Ub_8 -> 2.00 Seq__Agg__Prot + Aggasyndam + 8.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_8
+AsynDamInclusionGrowth10: Seq__Agg__Prot + Parkin__asyn__dam__Ub_8 -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 8.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_8
 
-AsynDamInclusionGrowth11: Seq__Agg__Prot + Parkin__asyn__dam__Ub__DUB -> 2.00 Seq__Agg__Prot + Aggasyndam + AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub__DUB
+AsynDamInclusionGrowth11: Seq__Agg__Prot + Parkin__asyn__dam__Ub__DUB -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub__DUB
 
-AsynDamInclusionGrowth12: Seq__Agg__Prot + Parkin__asyn__dam__Ub_2__DUB -> 2.00 Seq__Agg__Prot + Aggasyndam + 2.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_2__DUB
+AsynDamInclusionGrowth12: Seq__Agg__Prot + Parkin__asyn__dam__Ub_2__DUB -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 2.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_2__DUB
 
-AsynDamInclusionGrowth13: Seq__Agg__Prot + Parkin__asyn__dam__Ub_3__DUB -> 2.00 Seq__Agg__Prot + Aggasyndam + 3.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_3__DUB
+AsynDamInclusionGrowth13: Seq__Agg__Prot + Parkin__asyn__dam__Ub_3__DUB -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 3.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_3__DUB
 
-AsynDamInclusionGrowth14: Seq__Agg__Prot + Parkin__asyn__dam__Ub_4__DUB -> 2.00 Seq__Agg__Prot + Aggasyndam + 4.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_4__DUB
+AsynDamInclusionGrowth14: Seq__Agg__Prot + Parkin__asyn__dam__Ub_4__DUB -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 4.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_4__DUB
 
-AsynDamInclusionGrowth15: Seq__Agg__Prot + Parkin__asyn__dam__Ub_5__DUB -> 2.00 Seq__Agg__Prot + Aggasyndam + 5.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_5__DUB
+AsynDamInclusionGrowth15: Seq__Agg__Prot + Parkin__asyn__dam__Ub_5__DUB -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 5.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_5__DUB
 
-AsynDamInclusionGrowth16: Seq__Agg__Prot + Parkin__asyn__dam__Ub_6__DUB -> 2.00 Seq__Agg__Prot + Aggasyndam + 6.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_6__DUB
+AsynDamInclusionGrowth16: Seq__Agg__Prot + Parkin__asyn__dam__Ub_6__DUB -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 6.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_6__DUB
 
-AsynDamInclusionGrowth17: Seq__Agg__Prot + Parkin__asyn__dam__Ub_7__DUB -> 2.00 Seq__Agg__Prot + Aggasyndam + 7.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_7__DUB
+AsynDamInclusionGrowth17: Seq__Agg__Prot + Parkin__asyn__dam__Ub_7__DUB -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 7.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_7__DUB
 
-AsynDamInclusionGrowth18: Seq__Agg__Prot + Parkin__asyn__dam__Ub_8__DUB -> 2.00 Seq__Agg__Prot + Aggasyndam + 8.00 AggUb + AggParkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_8__DUB
+AsynDamInclusionGrowth18: Seq__Agg__Prot + Parkin__asyn__dam__Ub_8__DUB -> 2.00 Seq__Agg__Prot + Agg__asyn__dam + 8.00 Agg__Ub + Agg__Parkin; kigrowth2 * Seq__Agg__Prot * Parkin__asyn__dam__Ub_8__DUB
 
 ROSgenerationSmallAggD_1: AggD_1 -> AggD_1 + ROS; kgenROSAgg__Prot * AggD_1
 
@@ -532,11 +532,11 @@ AggU_4ProteasomeInhibition: AggU_4 + Proteasome -> Agg__Prot__Proteasome; kbinAg
 
 AggU_5ProteasomeInhibition: AggU_5 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggU_5 * Proteasome
 
-UCHL1DamInclusionFormation: UCHL1__damaged + AggU_5 -> Seq__Agg__Prot + 7.00 AggUchl1dam; kAgg2dam * UCHL1__damaged * AggU_5
+UCHL1DamInclusionFormation: UCHL1__damaged + AggU_5 -> Seq__Agg__Prot + 7.00 AggUCHL1dam; kAgg2dam * UCHL1__damaged * AggU_5
 
-UCHL1DamagedSequestering: Seq__Agg__Prot + UCHL1__damaged -> 2.00 Seq__Agg__Prot + AggUchl1dam; kigrowth1 * Seq__Agg__Prot * UCHL1__damaged
+UCHL1DamagedSequestering: Seq__Agg__Prot + UCHL1__damaged -> 2.00 Seq__Agg__Prot + AggUCHL1dam; kigrowth1 * Seq__Agg__Prot * UCHL1__damaged
 
-UCHL1DamagedLamp2aSequestering: Seq__Agg__Prot + Lamp2a__UCHL1__damaged -> 2.00 Seq__Agg__Prot + AggUchl1dam; kigrowth1 * Seq__Agg__Prot * Lamp2a__UCHL1__damaged
+UCHL1DamagedLamp2aSequestering: Seq__Agg__Prot + Lamp2a__UCHL1__damaged -> 2.00 Seq__Agg__Prot + AggUCHL1dam; kigrowth1 * Seq__Agg__Prot * Lamp2a__UCHL1__damaged
 
 ROSgenerationSmallAggU_1: AggU_1 -> AggU_1 + ROS; kgenROSAgg__Prot * AggU_1
 
@@ -548,83 +548,83 @@ ROSgenerationSmallAggU_4: AggU_4 -> AggU_4 + ROS; kgenROSAgg__Prot * AggU_4
 
 ROSgenerationSmallAggU_5: AggU_5 -> AggU_5 + ROS; kgenROSAgg__Prot * AggU_5
 
-SUBAggregation1: 2.00 SUB__misfolded -> AggS1; kAggSUB1 * SUB__misfolded * (SUB__misfolded - 1) * 0.5
+SUBAggregation1: 2.00 SUB__misfolded -> AggS_1; kAggSUB1 * SUB__misfolded * (SUB__misfolded - 1) * 0.5
 
-SUBAggregation2: SUB__misfolded + AggS1 -> AggS2; kAggSUB2 * SUB__misfolded * AggS1
+SUBAggregation2: SUB__misfolded + AggS_1 -> AggS_2; kAggSUB2 * SUB__misfolded * AggS_1
 
-SUBAggregation3: SUB__misfolded + AggS2 -> AggS3; kAggSUB2 * SUB__misfolded * AggS2
+SUBAggregation3: SUB__misfolded + AggS_2 -> AggS_3; kAggSUB2 * SUB__misfolded * AggS_2
 
-SUBAggregation4: SUB__misfolded + AggS3 -> AggS4; kAggSUB2 * SUB__misfolded * AggS3
+SUBAggregation4: SUB__misfolded + AggS_3 -> AggS_4; kAggSUB2 * SUB__misfolded * AggS_3
 
-SUBAggregation5: SUB__misfolded + AggS4 -> AggS5; kAggSUB2 * SUB__misfolded * AggS4
+SUBAggregation5: SUB__misfolded + AggS_4 -> AggS_5; kAggSUB2 * SUB__misfolded * AggS_4
 
-SUBDisAggregation1: AggS5 -> AggS4 + SUB__misfolded; kdisAggSUB5 * AggS5
+SUBDisAggregation1: AggS_5 -> AggS_4 + SUB__misfolded; kdisAggSUB5 * AggS_5
 
-SUBDisAggregation2: AggS4 -> AggS3 + SUB__misfolded; kdisAggSUB4 * AggS4
+SUBDisAggregation2: AggS_4 -> AggS_3 + SUB__misfolded; kdisAggSUB4 * AggS_4
 
-SUBDisAggregation3: AggS3 -> AggS2 + SUB__misfolded; kdisAggSUB3 * AggS3
+SUBDisAggregation3: AggS_3 -> AggS_2 + SUB__misfolded; kdisAggSUB3 * AggS_3
 
-SUBDisAggregation4: AggS2 -> AggS1 + SUB__misfolded; kdisAggSUB2 * AggS2
+SUBDisAggregation4: AggS_2 -> AggS_1 + SUB__misfolded; kdisAggSUB2 * AggS_2
 
-SUBDisAggregation5: AggS1 -> 2.00 SUB__misfolded; kdisAggSUB1 * AggS1
+SUBDisAggregation5: AggS_1 -> 2.00 SUB__misfolded; kdisAggSUB1 * AggS_1
 
-AggS1ProteasomeInhibition: AggS1 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggS1 * Proteasome
+AggS_1ProteasomeInhibition: AggS_1 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggS_1 * Proteasome
 
-AggS2ProteasomeInhibition: AggS2 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggS2 * Proteasome
+AggS_2ProteasomeInhibition: AggS_2 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggS_2 * Proteasome
 
-AggS3ProteasomeInhibition: AggS3 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggS3 * Proteasome
+AggS_3ProteasomeInhibition: AggS_3 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggS_3 * Proteasome
 
-AggS4ProteasomeInhibition: AggS4 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggS4 * Proteasome
+AggS_4ProteasomeInhibition: AggS_4 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggS_4 * Proteasome
 
-AggS5ProteasomeInhibition: AggS5 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggS5 * Proteasome
+AggS_5ProteasomeInhibition: AggS_5 + Proteasome -> Agg__Prot__Proteasome; kbinAgg__Protrot * AggS_5 * Proteasome
 
-SUBInclusionFormation: AggS5 + SUB__misfolded -> Seq__Agg__Prot + 7.00 AggSUB; kAggSUB2 * AggS5 * SUB__misfolded
+SUBInclusionFormation: AggS_5 + SUB__misfolded -> Seq__Agg__Prot + 7.00 AggSUB; kAggSUB2 * AggS_5 * SUB__misfolded
 
 SUBInclusionGrowth0: Seq__Agg__Prot + SUB__misfolded -> 2.00 Seq__Agg__Prot + AggSUB; kigrowth1 * Seq__Agg__Prot * SUB__misfolded
 
-SUBInclusionGrowth1: E3SUB__SUB__misfolded + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB; kigrowth2 * E3SUB__SUB__misfolded * Seq__Agg__Prot
+SUBInclusionGrowth1: E3__SUB__SUB__misfolded + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB; kigrowth2 * E3__SUB__SUB__misfolded * Seq__Agg__Prot
 
-SUBInclusionGrowth2: E3SUB__SUB__misfolded__Ub + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub * Seq__Agg__Prot
+SUBInclusionGrowth2: E3__SUB__SUB__misfolded__Ub + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub * Seq__Agg__Prot
 
-SUBInclusionGrowth3: E3SUB__SUB__misfolded__Ub_2 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 2.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_2 * Seq__Agg__Prot
+SUBInclusionGrowth3: E3__SUB__SUB__misfolded__Ub_2 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 2.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_2 * Seq__Agg__Prot
 
-SUBInclusionGrowth4: E3SUB__SUB__misfolded__Ub_3 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 3.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_3 * Seq__Agg__Prot
+SUBInclusionGrowth4: E3__SUB__SUB__misfolded__Ub_3 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 3.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_3 * Seq__Agg__Prot
 
-SUBInclusionGrowth5: E3SUB__SUB__misfolded__Ub_4 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 4.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_4 * Seq__Agg__Prot
+SUBInclusionGrowth5: E3__SUB__SUB__misfolded__Ub_4 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 4.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_4 * Seq__Agg__Prot
 
-SUBInclusionGrowth6: E3SUB__SUB__misfolded__Ub_5 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 5.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_5 * Seq__Agg__Prot
+SUBInclusionGrowth6: E3__SUB__SUB__misfolded__Ub_5 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 5.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_5 * Seq__Agg__Prot
 
-SUBInclusionGrowth7: E3SUB__SUB__misfolded__Ub_6 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 6.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_6 * Seq__Agg__Prot
+SUBInclusionGrowth7: E3__SUB__SUB__misfolded__Ub_6 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 6.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_6 * Seq__Agg__Prot
 
-SUBInclusionGrowth8: E3SUB__SUB__misfolded__Ub_7 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 7.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_7 * Seq__Agg__Prot
+SUBInclusionGrowth8: E3__SUB__SUB__misfolded__Ub_7 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 7.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_7 * Seq__Agg__Prot
 
-SUBInclusionGrowth9: E3SUB__SUB__misfolded__Ub_8 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 8.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_8 * Seq__Agg__Prot
+SUBInclusionGrowth9: E3__SUB__SUB__misfolded__Ub_8 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + 8.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_8 * Seq__Agg__Prot
 
-SUBInclusionGrowth10: E3SUB__SUB__misfolded__Ub__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUchl1 + AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub__UCHL1 * Seq__Agg__Prot
+SUBInclusionGrowth10: E3__SUB__SUB__misfolded__Ub__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUCHL1 + Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub__UCHL1 * Seq__Agg__Prot
 
-SUBInclusionGrowth11: E3SUB__SUB__misfolded__Ub_2__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUchl1 + 2.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_2__UCHL1 * Seq__Agg__Prot
+SUBInclusionGrowth11: E3__SUB__SUB__misfolded__Ub_2__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUCHL1 + 2.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_2__UCHL1 * Seq__Agg__Prot
 
-SUBInclusionGrowth12: E3SUB__SUB__misfolded__Ub_3__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUchl1 + 3.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_3__UCHL1 * Seq__Agg__Prot
+SUBInclusionGrowth12: E3__SUB__SUB__misfolded__Ub_3__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUCHL1 + 3.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_3__UCHL1 * Seq__Agg__Prot
 
-SUBInclusionGrowth13: E3SUB__SUB__misfolded__Ub_4__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUchl1 + 4.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_4__UCHL1 * Seq__Agg__Prot
+SUBInclusionGrowth13: E3__SUB__SUB__misfolded__Ub_4__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUCHL1 + 4.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_4__UCHL1 * Seq__Agg__Prot
 
-SUBInclusionGrowth14: E3SUB__SUB__misfolded__Ub_5__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUchl1 + 5.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_5__UCHL1 * Seq__Agg__Prot
+SUBInclusionGrowth14: E3__SUB__SUB__misfolded__Ub_5__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUCHL1 + 5.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_5__UCHL1 * Seq__Agg__Prot
 
-SUBInclusionGrowth15: E3SUB__SUB__misfolded__Ub_6__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUchl1 + 6.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_6__UCHL1 * Seq__Agg__Prot
+SUBInclusionGrowth15: E3__SUB__SUB__misfolded__Ub_6__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUCHL1 + 6.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_6__UCHL1 * Seq__Agg__Prot
 
-SUBInclusionGrowth16: E3SUB__SUB__misfolded__Ub_7__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUchl1 + 7.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_7__UCHL1 * Seq__Agg__Prot
+SUBInclusionGrowth16: E3__SUB__SUB__misfolded__Ub_7__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUCHL1 + 7.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_7__UCHL1 * Seq__Agg__Prot
 
-SUBInclusionGrowth17: E3SUB__SUB__misfolded__Ub_8__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUchl1 + 8.00 AggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub_8__UCHL1 * Seq__Agg__Prot
+SUBInclusionGrowth17: E3__SUB__SUB__misfolded__Ub_8__UCHL1 + Seq__Agg__Prot -> 2.00 Seq__Agg__Prot + AggSUB + AggUCHL1 + 8.00 Agg__Ub; kigrowth2 * E3__SUB__SUB__misfolded__Ub_8__UCHL1 * Seq__Agg__Prot
 
-ROSgenerationSmallAggS1: AggS1 -> AggS1 + ROS; kgenROSAgg__Prot * AggS1
+ROSgenerationSmallAggS_1: AggS_1 -> AggS_1 + ROS; kgenROSAgg__Prot * AggS_1
 
-ROSgenerationSmallAggS2: AggS2 -> AggS2 + ROS; kgenROSAgg__Prot * AggS2
+ROSgenerationSmallAggS_2: AggS_2 -> AggS_2 + ROS; kgenROSAgg__Prot * AggS_2
 
-ROSgenerationSmallAggS3: AggS3 -> AggS3 + ROS; kgenROSAgg__Prot * AggS3
+ROSgenerationSmallAggS_3: AggS_3 -> AggS_3 + ROS; kgenROSAgg__Prot * AggS_3
 
-ROSgenerationSmallAggS4: AggS4 -> AggS4 + ROS; kgenROSAgg__Prot * AggS4
+ROSgenerationSmallAggS_4: AggS_4 -> AggS_4 + ROS; kgenROSAgg__Prot * AggS_4
 
-ROSgenerationSmallAggS5: AggS5 -> AggS5 + ROS; kgenROSAgg__Prot * AggS5
+ROSgenerationSmallAggS_5: AggS_5 -> AggS_5 + ROS; kgenROSAgg__Prot * AggS_5
 
 radicalFormation: Source -> ROS; kgenROS * Source
 
@@ -649,11 +649,11 @@ Agg__Prot_3 = 0
 Agg__Prot_4 = 0
 Agg__Prot_5 = 0
 Agg__Prot__Proteasome = 0
-AggS1 = 0
-AggS2 = 0
-AggS3 = 0
-AggS4 = 0
-AggS5 = 0
+AggS_1 = 0
+AggS_2 = 0
+AggS_3 = 0
+AggS_4 = 0
+AggS_5 = 0
 AggU_1 = 0
 AggU_2 = 0
 AggU_3 = 0
@@ -665,24 +665,24 @@ E1__Ub = 0
 E2 = 0
 E2__Ub = 0
 E3 = 0
-E3SUB = 0
-E3SUB__SUB__misfolded = 0
-E3SUB__SUB__misfolded__Ub = 0
-E3SUB__SUB__misfolded__Ub_2 = 0
-E3SUB__SUB__misfolded__Ub_2__UCHL1 = 0
-E3SUB__SUB__misfolded__Ub_3 = 0
-E3SUB__SUB__misfolded__Ub_3__UCHL1 = 0
-E3SUB__SUB__misfolded__Ub_4 = 0
-E3SUB__SUB__misfolded__Ub_4__UCHL1 = 0
-E3SUB__SUB__misfolded__Ub_5 = 0
-E3SUB__SUB__misfolded__Ub_5__UCHL1 = 0
-E3SUB__SUB__misfolded__Ub_6 = 0
-E3SUB__SUB__misfolded__Ub_6__UCHL1 = 0
-E3SUB__SUB__misfolded__Ub_7 = 0
-E3SUB__SUB__misfolded__Ub_7__UCHL1 = 0
-E3SUB__SUB__misfolded__Ub_8 = 0
-E3SUB__SUB__misfolded__Ub_8__UCHL1 = 0
-E3SUB__SUB__misfolded__Ub__UCHL1 = 0
+E3__SUB = 0
+E3__SUB__SUB__misfolded = 0
+E3__SUB__SUB__misfolded__Ub = 0
+E3__SUB__SUB__misfolded__Ub_2 = 0
+E3__SUB__SUB__misfolded__Ub_2__UCHL1 = 0
+E3__SUB__SUB__misfolded__Ub_3 = 0
+E3__SUB__SUB__misfolded__Ub_3__UCHL1 = 0
+E3__SUB__SUB__misfolded__Ub_4 = 0
+E3__SUB__SUB__misfolded__Ub_4__UCHL1 = 0
+E3__SUB__SUB__misfolded__Ub_5 = 0
+E3__SUB__SUB__misfolded__Ub_5__UCHL1 = 0
+E3__SUB__SUB__misfolded__Ub_6 = 0
+E3__SUB__SUB__misfolded__Ub_6__UCHL1 = 0
+E3__SUB__SUB__misfolded__Ub_7 = 0
+E3__SUB__SUB__misfolded__Ub_7__UCHL1 = 0
+E3__SUB__SUB__misfolded__Ub_8 = 0
+E3__SUB__SUB__misfolded__Ub_8__UCHL1 = 0
+E3__SUB__SUB__misfolded__Ub__UCHL1 = 0
 E3__Mis__Prot = 0
 E3__Mis__Prot__Ub = 0
 E3__Mis__Prot__Ub_2 = 0
@@ -746,16 +746,16 @@ UCHL1__damaged = 0
 UCHL1__damaged__Proteasome = 0
 Ub = 0
 Ub__UCHL1 = 0
-AggDUB = 0
-AggE3 = 0
-AggMis__Prot = 0
-AggParkin = 0
+Agg__DUB = 0
+Agg__E3 = 0
+Agg__Mis__Prot = 0
+Agg__Parkin = 0
 AggSUB = 0
-AggUb = 0
-AggUchl1 = 0
-AggUchl1dam = 0
-Aggasyn = 0
-Aggasyndam = 0
+Agg__Ub = 0
+AggUCHL1 = 0
+AggUCHL1dam = 0
+Agg__asyn = 0
+Agg__asyn__dam = 0
 asyn = 0
 asyn__Lamp2a = 0
 asyn__Proteasome = 0
@@ -769,19 +769,19 @@ kCMAasyn = 0
 kactDUB = 0
 kactDUBProt = 0
 kactProt = 0
-kactUchl1 = 0
+kactUCHL1 = 0
 kAgg1 = 0
 kAgg1dam = 0
 kAgg2 = 0
 kAgg2dam = 0
 kAggSUB1 = 0
 kAggSUB2 = 0
-kAggasyn1 = 0
-kAggasyn2 = 0
+kAgg__asyn1 = 0
+kAgg__asyn2 = 0
 kbinAgg__Protrot = 0
 kbinE1Ub = 0
 kbinE2Ub = 0
-kbinE3SUB = 0
+kbinE3__SUB = 0
 kbinLamp2aUCHL1dam = 0
 kbinMis__ProtDUB = 0
 kbinMis__ProtE3 = 0
@@ -809,16 +809,16 @@ kdisAggSUB2 = 0
 kdisAggSUB3 = 0
 kdisAggSUB4 = 0
 kdisAggSUB5 = 0
-kdisAggasyn1 = 0
-kdisAggasyn2 = 0
-kdisAggasyn3 = 0
-kdisAggasyn4 = 0
-kdisAggasyn5 = 0
-kdisAggasyndam1 = 0
-kdisAggasyndam2 = 0
-kdisAggasyndam3 = 0
-kdisAggasyndam4 = 0
-kdisAggasyndam5 = 0
+kdisAgg__asyn1 = 0
+kdisAgg__asyn2 = 0
+kdisAgg__asyn3 = 0
+kdisAgg__asyn4 = 0
+kdisAgg__asyn5 = 0
+kdisAgg__asyn__dam1 = 0
+kdisAgg__asyn__dam2 = 0
+kdisAgg__asyn__dam3 = 0
+kdisAgg__asyn__dam4 = 0
+kdisAgg__asyn__dam5 = 0
 kdisAgguchl1dam1 = 0
 kdisAgguchl1dam2 = 0
 kdisAgguchl1dam3 = 0
@@ -835,7 +835,7 @@ kpolyUb = 0
 kproteff = 0
 krefold = 0
 krefoldSUB = 0
-krelE3SUB = 0
+krelE3__SUB = 0
 krelLamp2aUCHL1dam = 0
 krelMis__ProtE3 = 0
 krelUbUCHL1 = 0
