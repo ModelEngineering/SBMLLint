@@ -144,3 +144,10 @@ BIGG_DIR = os.path.join(PROJECT_DIR, "data/bigg")
 ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(PROJECT_DIR, "analysis")
 ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
     ANALYSIS_STRUCTURED_NAMES_DIR, "structured_names")
+
+# Configuration related
+CFG_IMPLICITS = "implicits"
+CFG_PROCESS_BOUNDARY_REACTIONS = "process_boundary_reactions"
+CFG_DEFAULTS = {}
+CFG_DEFAULTS[CFG_IMPLICITS] = []
+CFG_DEFAULTS[CFG_PROCESS_BOUNDARY_REACTIONS] = False
