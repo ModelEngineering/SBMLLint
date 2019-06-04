@@ -37,4 +37,4 @@ def getConfiguration(path=None):
       result[k] = v 
   return result
 #
-config_dict = getConfiguration()
+config_dict = getConfiguration(path=cn.CFG_DEFAULT_PATH)

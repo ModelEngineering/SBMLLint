@@ -151,3 +151,5 @@ CFG_PROCESS_BOUNDARY_REACTIONS = "process_boundary_reactions"
 CFG_DEFAULTS = {}
 CFG_DEFAULTS[CFG_IMPLICITS] = []
 CFG_DEFAULTS[CFG_PROCESS_BOUNDARY_REACTIONS] = False
+CFG_DEFAULT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CFG_DEFAULT_PATH = os.path.join(CFG_DEFAULT_PATH, ".sbmllint_cfg")
