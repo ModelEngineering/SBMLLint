@@ -2,12 +2,14 @@
 Tests for MoietyComparator
 """
 from SBMLLint.common import constants as cn
+from SBMLLint.common import config
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import util
 from SBMLLint.structured_names.moiety_comparator  \
      import MoietyComparator
 
+import copy
 import itertools
 import numpy as np
 import os
@@ -63,6 +65,10 @@ class TestMoietyComparator(unittest.TestCase):
         for n in MOLECULE_NAME_SET[3:]]
     self.comparator = MoietyComparator(self.molecules1,
         self.molecules2)
+    self.config_dict = copy.deepcopy(config.config_dict)
+
+  def tearDown(self):
+    config.config_dict = self.config_dict
 
   def testConstructor(self):
     if IGNORE_TEST:
@@ -88,6 +94,20 @@ class TestMoietyComparator(unittest.TestCase):
         self.molecules2, implicits=[MOIETY_NAME1])
     df = comparator.difference()
     self.assertFalse(MOIETY_NAME1 in df.index)
+    #
+    config.config_dict[cn.CFG_PROCESS_BOUNDARY_REACTIONS] = False
+    molecules1 = [MoleculeStoichiometry(Molecule(n), 0)
+        for n in MOLECULE_NAME_SET[:3]]
+    comparator = MoietyComparator(molecules1, self.molecules2)
+    df = comparator.difference()
+    self.assertEqual(df[df.columns[0]].sum(), 0)
+    #
+    config.config_dict[cn.CFG_PROCESS_BOUNDARY_REACTIONS] = True
+    molecules1 = [MoleculeStoichiometry(Molecule(n), 0)
+        for n in MOLECULE_NAME_SET[:3]]
+    comparator = MoietyComparator(molecules1, self.molecules2)
+    df = comparator.difference()
+    self.assertNotEqual(df[df.columns[0]].sum(), 0)
   
   def testReportDifference(self):  
     if IGNORE_TEST:

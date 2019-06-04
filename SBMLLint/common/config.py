@@ -1,5 +1,6 @@
 
 CONFIG_PATH = "SBMLLint/.sbmllint_cfg"
+config_dict = {}  # Default configuration dictionary.
 
 """Reads yaml configuration file for SBMLLint."""
 # TODO:
@@ -35,3 +36,5 @@ def getConfiguration(path=None):
     if not k in result:
       result[k] = v 
   return result
+#
+config_dict = getConfiguration()
