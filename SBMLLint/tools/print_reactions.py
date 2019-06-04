@@ -22,9 +22,12 @@ def prettyPrint(model_reference, file_out=sys.stdout, **kwargs):
   model = document.getModel()
   simple = SimpleSBML()
   simple.initialize(model)
+  stgs = []
   for reaction in simple.reactions:
     stg = reaction.getId(**kwargs)
+    stgs.append(stg)
     file_out.write("%s\n" % stg)
+  return stgs
 
 def main():
   parser = argparse.ArgumentParser(description='SBML XML file.')
