@@ -16,3 +16,6 @@ implicits:
  - Seq
  - Source
  - upreg  # Upregulated
+
+# Indicates if boundary reactions are checked
+process_boundary_reactions: False

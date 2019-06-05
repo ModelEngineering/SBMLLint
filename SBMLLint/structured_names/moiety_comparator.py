@@ -97,13 +97,16 @@ class MoietyComparator(object):
     dfs = self._makeDFS()
     addDFIndex(dfs[0], dfs[1].index)
     addDFIndex(dfs[1], dfs[0].index)
-    df = dfs[0] - dfs[1]
-    drops = set(self._implicits).intersection(df.index)
+    drops = set(self._implicits).intersection(dfs[0].index)
+    df0 = dfs[0].drop(drops)
+    df1 = dfs[1].drop(drops)
+    df = df0 - df1
     # Handle boundaries
     if not config.config_dict[cn.CFG_PROCESS_BOUNDARY_REACTIONS]:
-      if isZeroColumn(dfs[0]) or isZeroColumn(dfs[1]):
+      if isZeroColumn(df0) or isZeroColumn(df1):
         df[df.columns[0]] = 0
-    return df.drop(drops)
+    #
+    return df
 
   def reportDifference(self):
     """
