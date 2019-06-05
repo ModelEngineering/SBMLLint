@@ -27,7 +27,8 @@ def lint(model_reference, file_out=sys.stdout,
   :param bool is_report: print result
   :return MoietyComparatorResult/bull/None:
   """
-  config.config_dict = config.getConfiguration(path=config_path)
+  config.setConfiguration(path=config_path)
+  config_dict = config.getConfiguration()
   if util.isSBMLModel(model_reference):
     model = model_reference
   else:
@@ -40,7 +41,7 @@ def lint(model_reference, file_out=sys.stdout,
   simple.initialize(model)
   if mass_balance_check == "structured_names":
     result = MoietyComparator.analyzeReactions(simple,
-        implicits=config.config_dict['implicits'])
+        implicits=config_dict['implicits'])
     if is_report:
       for line in result.report.split('\n'):
           file_out.write("%s\n" % line)

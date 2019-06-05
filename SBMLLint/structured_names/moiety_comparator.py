@@ -102,7 +102,8 @@ class MoietyComparator(object):
     df1 = dfs[1].drop(drops)
     df = df0 - df1
     # Handle boundaries
-    if not config.config_dict[cn.CFG_PROCESS_BOUNDARY_REACTIONS]:
+    config_dict = config.getConfiguration()
+    if not config_dict[cn.CFG_PROCESS_BOUNDARY_REACTIONS]:
       if isZeroColumn(df0) or isZeroColumn(df1):
         df[df.columns[0]] = 0
     #
