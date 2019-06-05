@@ -2,7 +2,7 @@
 Reporting class for GAMES Plus (GAMES_PP) algorithm
 """
 from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule
+from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.games.games_pp import SOMStoichiometry, SOMReaction, GAMES_PP, TOLERANCE
@@ -19,6 +19,106 @@ NULL_STR = ""
 ReactionOperation = collections.namedtuple("ReactionOperation", 
     "reaction operation")
 NUM_STAR = 50
+
+
+class SimplifiedReaction(object):
+
+  def __init__(self, reactants, products, label, mesgraph):
+    """
+    :param list-MoleculeStoichiometry reactants:
+    :param list-MoleculeStoichiometry products:
+    :param str label:
+    """
+    self.reactants = reactants
+    self.products = products
+    self.label = label
+    self.identifier = self.makeIdentifier()
+    self.mesgraph = mesgraph
+    
+  def makeIdentifier(self):
+    """
+    Provides a string representation of the reaction
+    :param bool is_include_kinetics: include the kinetics formula
+    :return str:
+    """
+    def makeStoichiometryString(molecule_stoichiometry):
+      num = molecule_stoichiometry.stoichiometry
+      if np.isclose(num, 1.0):
+        return ''
+      else:
+        return "%2.2f " % num
+    #
+    def makeTermCollection(molecule_stoichiometries):
+      """
+      Formats a set of terms with stoichiometries.
+      :param list-MoleculeStoichiometry:
+      :return str:
+      """
+      term_collection = ''
+      for m_s in molecule_stoichiometries:
+        term = "%s%s" % (makeStoichiometryString(m_s), str(m_s.molecule))
+        if len(term_collection) == 0:
+          term_collection += term
+        else:
+          term_collection += " + " + term
+      return term_collection
+    #
+    reactant_collection = makeTermCollection(self.reactants)
+    product_collection = makeTermCollection(self.products)
+    formula_str = ''
+    reaction_str = "%s: %s -> %s" % (self.label,
+        reactant_collection, product_collection)
+    reaction_str = reaction_str + formula_str
+    return reaction_str
+
+  def reduceBySOMs(self):
+    """
+    Cancel reactants and products by SOMs
+    SOMs is given by existing MESGraph.
+    Return a new identifier. 
+    :return str:
+    """
+    reactant_soms = {self.mesgraph.getNode(r.molecule) for r in self.reactants}
+    product_soms = {self.mesgraph.getNode(p.molecule) for p in self.products}
+    common_soms = list(reactant_soms.intersection(product_soms))
+    if common_soms:
+      for som in common_soms:
+        reactants_in = collections.deque([ms for ms in
+                                          self.reactants if
+                                          self.mesgraph.getNode(ms.molecule)==som])
+        reactants_out = [ms for ms in
+                         self.reactants if
+                         self.mesgraph.getNode(ms.molecule)!=som]
+        products_in = collections.deque([ms for ms in
+                                         self.products if
+                                         self.mesgraph.getNode(ms.molecule)==som])
+        products_out = [ms for ms in
+                        self.products if
+                        self.mesgraph.getNode(ms.molecule)!=som]
+        #
+        while reactants_in and products_in:
+          reactant = reactants_in[0]
+          product = products_in[0]
+          if reactant.stoichiometry > product.stoichiometry:
+            reactants_in[0] = MoleculeStoichiometry(reactant.molecule,
+                                                    reactant.stoichiometry - product.stoichiometry)
+            products_in.popleft()
+          elif reactant.stoichiometry < product.stoichiometry:
+            products_in[0] = MoleculeStoichiometry(product.molecule,
+                                                   product.stoichiometry - reactant.stoichiometry)
+            reactants_in.popleft()
+          else:
+            reactants_in.popleft()
+            products_in.popleft()
+        reactants = list(reactants_in) + reactants_out
+        products = list(products_in) + products_out
+        #  
+        if (len(self.reactants) > len(reactants)) | \
+          (len(self.products) > len(products)):
+          self.reactants = reactants
+          self.products = products
+      self.identifier = self.makeIdentifier()
+    return self.identifier
 
 
 class GAMESReport(object):
@@ -287,28 +387,33 @@ class GAMESReport(object):
       operations.append(reaction_op)
     return operations
 
-  def findSOM(self, som_name):
+  def findSOM(self, som_info):
   	"""
-  	Return a SOM by a SOM identifier.
-  	:param str som_name:
+  	Return a SOM by given informatino.
+  	som_info can be either som identifier,
+  	or one of the molecules within the som. 
+  	:param str/SOM som:
   	:return SOM/None:
   	"""
   	for node in self.mesgraph.nodes:
-  	  if node.identifier == som_name:
-  	    return node
+  	  if type(som_info) == str:
+  	  	if node.identifier == som_info:
+  	  	  return node
+  	  elif type(som_info) == Molecule:
+  	  	if som_info in node.molecules:
+  	  	  return node
   	return None
 
   def getMoleculeLinkage(self, som_name, reactions):
   	"""
   	Create two lists. 
-  	1. molecules in the reported_reactions that are in the same som
+  	1. molecules in the reactions that are in the same som
   	2. reactions used to merge the molecules
   	:param str som_name:
   	:param list-str reactions:
   	:return list-str: linked_molecules
   	:return list-str: linked_reactions
   	"""
-  	pass
   	som = self.findSOM(som_name)
   	molecules = {m.name for m in som.molecules}
   	# linked_molecules: molecules within both the SOM and given reactions
@@ -355,6 +460,155 @@ class GAMESReport(object):
   	linkage_report = linkage_report + "<-"*int((NUM_STAR/2)) + "\n"
   	return linkage_report
 
+  def getOperationMatrix(self):
+  	"""
+  	Return an operation matrix (pandas DataFrame)
+  	on the transposed stoichiometry matrix
+  	:return pandas.DataFrame: operation_df
+  	"""
+  	if self.mesgraph.rref_df is None:
+  	  operation_df = self.mesgraph.lower_inverse
+  	else:
+  	  operation_df = self.mesgraph.rref_operation.dot(self.mesgraph.lower_inverse)
+  	return operation_df
+
+  def getResultingSeries(self, reaction_label):
+    """
+    Return a reaction series, that is, a column
+    from a reduced stoichiometry matrix.
+    :param str reaction_label:
+    :return False/pandas.Series: result_series
+    """
+    if type(reaction_label) != str:
+      return False
+    else: 
+      if self.mesgraph.rref_df is None:
+        result_series = self.mesgraph.echelon_df[reaction_label]
+      else:
+        result_series = self.mesgraph.rref_df[reaction_label]
+      return result_series
+
+  def getOperationStoichiometryMatrix(self, reaction_operations):
+  	"""
+  	Create a stoichiometry matrix of reactions 
+  	related to operations.
+  	:param list-ReactionOperation reaction_operations:
+  	:return pandas.DataFrame: stoichiometry_df
+  	"""
+  	reactions = []
+  	species = set()
+  	for op in reaction_operations:
+  	  reaction = self.mesgraph.simple.getReaction(op.reaction)
+  	  reactions.append(reaction)
+  	  species = species.union({r.molecule for r in reaction.reactants})
+  	  species = species.union({p.molecule for p in reaction.products})
+  	operations = np.array([val.operation for val in reaction_operations])
+  	stoichiometry_df = self.mesgraph.getStoichiometryMatrix(reactions, list(species))
+  	return stoichiometry_df
+
+  def getInferredReaction(self, reaction_operations):
+  	"""
+  	Create an inferred reaction from reaction_operations.
+  	An inferred reaction is a linear combination of reactions.
+  	:param list-ReactionOperation reaction_operations:
+  	:return SimplifiedReaction: inferred_reaction
+  	"""
+  	INFERRED_REACTION = "Inferred Reaction"
+  	stoichiometry_df = self.getOperationStoichiometryMatrix(reaction_operations)
+  	reaction_index = [op.reaction for op in reaction_operations]
+  	operation_series = pd.Series([val.operation for val in reaction_operations], index=reaction_index)
+  	resulting_reaction = stoichiometry_df.dot(operation_series)
+  	# Create a simplified reaction based on the resulting_reaction
+  	reactants = []
+  	products = []
+  	for ms in resulting_reaction.iteritems():
+  	  if abs(ms[1]) < TOLERANCE:
+  	  	continue
+  	  elif ms[1] > 0:
+  	  	products.append(MoleculeStoichiometry(molecule=self.mesgraph.simple.getMolecule(ms[0]),
+  	  	                                      stoichiometry=ms[1]))
+  	  else:
+  	  	reactants.append(MoleculeStoichiometry(molecule=self.mesgraph.simple.getMolecule(ms[0]),
+  	  	                                      stoichiometry=abs(ms[1])))
+  	inferred_reaction = SimplifiedReaction(reactants,
+  		                                   products,
+  		                                   INFERRED_REACTION,
+  		                                   self.mesgraph)
+  	inferred_reaction.reduceBySOMs()
+  	return inferred_reaction
+
+  def getCommonSOMs(self, reactions):
+    """
+    Get SOMs that are common in all reactions.
+    :param list-str reactions:
+    :return list-SOM: soms
+    """
+    soms = set(self.mesgraph.nodes)
+    for r in reactions:
+      reaction = self.mesgraph.simple.getReaction(r)
+      som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
+      reactant_soms = {r.som for r in som_reaction.reactants}
+      product_soms = {p.som for p in som_reaction.products}
+      reaction_soms = reactant_soms.union(product_soms)
+      soms = soms.intersection(reaction_soms)
+    return list(soms)
+
+  def reportTypeThreeError(self, type_three_errors):
+  	"""
+  	Generate a report for Type III errors.
+  	A Type III error occurs when there is 
+  	a 1-1 SOMReaction, while there is a preexisting
+  	MESGraph node between them. 
+  	:param list-SOMReaction type_three_errors:
+  	:return False/str: report
+  	"""
+  	report = NULL_STR
+  	type3_error = type_three_errors[0]
+  	if type3_error.category != cn.REACTION_1_1:
+  	  print("This canot be a type three error!")
+  	  return False
+  	else:
+  	  reaction_label = type3_error.label
+
+  	  # original_reaction = self.mesgraph.simple.getReaction(reaction_label)
+  	  reactant_som = type3_error.reactants[0].som
+  	  product_som = type3_error.products[0].som
+  	  # linked_molecules_r, linked_reactions_r = self.getMoleculeLinkage(reactant_som.identifier, [reaction_label])
+  	  # linked_molecules_p, linked_reactions_p = self.getMoleculeLinkage(product_som.identifier, [reaction_label])
+  	  # print("Reactant linked molecules", linked_molecules_r)
+  	  # print("Reactant linked reactions", linked_reactions_r)
+  	  # print("Product linked molecules", linked_molecules_p)
+  	  # print("Product linked reactions", linked_reactions_p)
+  	  operation_df = self.getOperationMatrix()
+  	  operation_series = operation_df.T[reaction_label]
+  	  reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
+  	  common_soms = self.getCommonSOMs([ro.reaction for ro in reaction_operations])
+  	  inferred_reaction = self.getInferredReaction(reaction_operations)
+  	  #
+  	  report = report + "\nFrom the reactions,\n"
+  	  for r in reaction_operations:
+  	    reaction = self.mesgraph.simple.getReaction(r.reaction)
+  	    report = report + "%s\n" % reaction.makeIdentifier(is_include_kinetics=False)
+  	  for som in common_soms:
+  	  	for reaction in list(som.reactions):
+  	  	  report = report + "%s\n" % reaction.makeIdentifier(is_include_kinetics=False)
+  	  report = report + "\nWe can infer equality by the following uni-uni reaction\n"
+  	  report = report + "%s\n" % inferred_reaction.identifier
+  	  report = report + "\nHowever, the following reaction indicates inequality.\n"
+      #
+  	  if self.mesgraph.has_edge(reactant_som, product_som):
+  	  	report = report + "%s %s %s\n" % (reactant_som.makeId(), cn.LESSTHAN, product_som.makeId())
+  	  	edge_reactions = self.mesgraph.get_edge_data(reactant_som, product_som)[cn.REACTION]
+  	  elif self.mesgraph.has_edge(product_som, reactant_som):
+  	  	report = report + "%s %s %s\n" % (product_som.makeId(), cn.LESSTHAN, reactant_som.makeId())
+  	  	edge_reactions = self.mesgraph.get_edge_data(product_som, reactant_som)[cn.REACTION]
+  	  for r in edge_reactions:
+  	  	reaction = self.mesgraph.simple.getReaction(r)
+  	  	report = report + "%s\n" % reaction.makeIdentifier(is_include_kinetics=False)
+  	  report = report + "*"*NUM_STAR + "\n"
+  	  report = report + "-"*NUM_STAR + "\n\n"
+  	  return reaction_operations, report
+
   def reportEchelonError(self, echelon_errors):
     """
     Generate a report for echelon errors, i.e.
@@ -366,19 +620,26 @@ class GAMESReport(object):
     :param list-SOMReaction echelon_errors:
     :return str: echelon_report
     """
-    if self.mesgraph.rref_df is None:
-      operation_df = self.mesgraph.lower_inverse
-    else:
-      operation_df = self.mesgraph.rref_operation.dot(self.mesgraph.lower_inverse)
+    operation_df = self.getOperationMatrix()
     echelon_report = NULL_STR
     error_report = NULL_STR
     for reaction in echelon_errors:
       reaction_label = reaction.label
       operation_series = operation_df.T[reaction_label]
-      if self.mesgraph.rref_df is None:
-        result_series = self.mesgraph.echelon_df[reaction_label]
-      else:
-        result_series = self.mesgraph.rref_df[reaction_label]
+      result_series = self.getResultingSeries(reaction_label)
+      #######
+      operation_df = self.getOperationMatrix()
+      operation_series = operation_df.T[reaction_label]
+      reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
+      #common_soms = self.getCommonSOMs([ro.reaction for ro in reaction_operations])
+      inferred_reaction = self.getInferredReaction(reaction_operations)
+      inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
+      #######
+      echelon_report = echelon_report + "\nThe following mass imbalance\n%s\n" % inferred_reaction.identifier
+      # if self.mesgraph.rref_df is None:
+      #   result_series = self.mesgraph.echelon_df[reaction_label]
+      # else:
+      #   result_series = self.mesgraph.rref_df[reaction_label]
       nonzero_result_series = result_series[result_series.to_numpy().nonzero()[0]]
       # part 1: find reactions that caused mass balance errors
       reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
@@ -395,7 +656,7 @@ class GAMESReport(object):
       for som_name in canceled_soms:
         linked_molecules, linked_reactions = self.getMoleculeLinkage(som_name, reported_reactions)
         linkage_report = linkage_report + self.reportLinkage(linked_molecules, linked_reactions)
-      error_report = "The following reactions create a mass imbalance:\n\n"
+      error_report = "was inferred from the reactions below:\n\n"
       for r in reported_reactions:
       	simple_reaction = self.mesgraph.simple.getReaction(r)
       	error_report = error_report + simple_reaction.makeIdentifier(is_include_kinetics=False)
