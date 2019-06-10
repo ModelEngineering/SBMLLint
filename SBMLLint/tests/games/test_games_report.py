@@ -29,19 +29,19 @@ class TestGAMESReport(unittest.TestCase):
     self.simple1 = SimpleSBML()
     self.simple1.initialize(cn.TEST_FILE_GAMESREPORT1)
 
-  def testReportCancelingError(self):
-  	m = GAMES_PP(self.simple1)
-  	m.analyze(error_details=False)
-  	gr = GAMESReport(m)
-  	canceling_error_report = gr.reportCancelingError(m.canceling_errors)
-  	correct_report = NULL_STR
-  	correct_report = correct_report + "\nThe following reaction:\n"
-  	correct_report = correct_report + "OxidativePhosphorylation: 6.00 ADP + CTtis -> 6.00 ATP\n\n"
-  	correct_report = correct_report + "has a mass balance error\nbecause of the following equality."
-  	correct_report = correct_report + "\n\nADP = ATP by reaction(s):\n"
-  	correct_report = correct_report + "ATPase: ATP -> ADP\n\n"
-  	correct_report = correct_report + "*"*NUM_STAR + "\n" + "-"*NUM_STAR + "\n"
-  	self.assertEqual(correct_report, canceling_error_report)
+  # def testReportCancelingError(self):
+  # 	m = GAMES_PP(self.simple1)
+  # 	m.analyze(error_details=False)
+  # 	gr = GAMESReport(m)
+  # 	canceling_error_report = gr.reportCancelingError(m.canceling_errors)
+  # 	correct_report = NULL_STR
+  # 	correct_report = correct_report + "\nThe following reaction:\n"
+  # 	correct_report = correct_report + "OxidativePhosphorylation: 6.00 ADP + CTtis -> 6.00 ATP\n\n"
+  # 	correct_report = correct_report + "has a mass balance error\nbecause of the following equality."
+  # 	correct_report = correct_report + "\n\nADP = ATP by reaction(s):\n"
+  # 	correct_report = correct_report + "ATPase: ATP -> ADP\n\n"
+  # 	correct_report = correct_report + "*"*NUM_STAR + "\n" + "-"*NUM_STAR + "\n"
+  # 	self.assertEqual(correct_report, canceling_error_report)
 
 
 
