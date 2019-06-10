@@ -181,8 +181,10 @@ class GAMESReport(object):
     :param str molecule_name1:
     :param str molecule_name2:
     :return bool/str: path_report
+    :return int: reaction_count
     """
     path_report = NULL_STR
+    reaction_count = 0
     som1 = self.mesgraph.getNode(self.mesgraph.simple.getMolecule(molecule_name1))
     som2 = self.mesgraph.getNode(self.mesgraph.simple.getMolecule(molecule_name2))
     if som1 != som2:
@@ -194,16 +196,17 @@ class GAMESReport(object):
             molecule_name1, cn.EQUAL, molecule_name2)
       else:
         som_path = self.getMoleculeEqualityPath(som1, 
-                                   self.mesgraph.simple.getMolecule(molecule_name1), 
-                                   self.mesgraph.simple.getMolecule(molecule_name2))
+                       self.mesgraph.simple.getMolecule(molecule_name1), 
+                       self.mesgraph.simple.getMolecule(molecule_name2))
         for pat in som_path:
           path_report = path_report + "\n%s %s %s by reaction(s):\n" % (pat.node1, cn.EQUAL, pat.node2)
           for r in pat.reactions:
             som_reaction = self.mesgraph.simple.getReaction(r)
-            path_report = path_report + "%s\n" % (som_reaction.makeIdentifier(is_include_kinetics=False))
-      return path_report
+            reaction_count += 1
+            path_report = path_report + "%d. %s\n" % (reaction_count, som_reaction.makeIdentifier(is_include_kinetics=False))
+      return reaction_count, path_report
 
-  def getMoleculeInequalityPathReport(self, molecule_name1, molecule_name2, reaction_names):
+  def getMoleculeInequalityPathReport(self, molecule_name1, molecule_name2, reaction_names, reaction_count):
   	"""
   	Print the reactions that infer inequality between molecules. 
   	Molecule name are given as arguments.
@@ -211,14 +214,17 @@ class GAMESReport(object):
   	:param str molecule_name1:
   	:param str molecule_name2:
   	:param list-str reaction_names:
+  	:param int reaction_count:
   	:return str: path_report
+  	:return int reaction_count:
   	"""
   	path_report = NULL_STR
   	path_report = path_report + "%s %s %s by reaction(s):\n" % (molecule_name1, cn.LESSTHAN, molecule_name2)
   	for reaction_name in reaction_names:
+  	  reaction_count += 1
   	  reaction = self.mesgraph.simple.getReaction(reaction_name)
-  	  path_report = path_report + "%s\n" % (reaction.makeIdentifier(is_include_kinetics=False))
-  	return path_report
+  	  path_report = path_report + "%d. %s\n" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+  	return reaction_count, path_report
 
   def reportTypeOneError(self, type_one_errors):
     """
@@ -232,14 +238,17 @@ class GAMESReport(object):
     """
     report = NULL_STR
     for pc in type_one_errors:
+      report = report + "We detected a mass imbalance from the following reactions:\n"
       mole1 = pc.node1
       mole2 = pc.node2
       reactions = pc.reactions
-      report = report + self.getMoleculeEqualityPathReport(mole1, mole2)
+      reaction_count, equality_report = self.getMoleculeEqualityPathReport(mole1, mole2)
+      report = report + equality_report
       report = report + "\nHowever, "
-      report = report + self.getMoleculeInequalityPathReport(mole1, mole2, reactions)
-      report = report + "*"*NUM_STAR + "\n"
-    report = report + "-"*NUM_STAR + "\n"
+      reaction_count, inequality_report = self.getMoleculeInequalityPathReport(mole1, mole2, reactions, reaction_count)
+      report = report + inequality_report
+      report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+    report = report + "\n%s\n" % (REPORT_DIVIDER)
     return report
 
   def decompostSOMCycle(self, cycle):
@@ -623,6 +632,14 @@ class GAMESReport(object):
   	  	  reaction_count += 1
   	  	  report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
   	  if explain_details:
+  	    report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+  	    report = report + "These multi-uni (uni-multi) reactions created mass-inequality.\n"   	  
+  	  for r in inequality_reactions:
+  	  	reaction = self.mesgraph.simple.getReaction(r)
+  	  	reaction_count += 1
+  	  	report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+  	  reaction_count = reaction_count - len(inequality_reactions)
+  	  if explain_details:
   	  	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
   	  	report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions.\n"
   	  	pseudo_reaction_count = 0
@@ -637,18 +654,19 @@ class GAMESReport(object):
   	  	    report = report + " - "
   	  	  else:
   	  	    report = report + " + "
-  	  	  report = report + "%.2f * %s" % (abs(ro.operation), ro.reaction)
+  	  	  report = report + "%.2f * %s\n" % (abs(ro.operation), ro.reaction)
   	  	report = report + "\n\nwill result in a uni-uni reaction:\n"
   	  	report = report + "\n%s\n" % (inferred_som_reaction.identifier)
-  	  	report = report + "\nmeaning %s and %s are equal.\n" % (reactant_som, product_som)
+  	  	report = report + "\n\nmeaning %s and %s have equal mass.\n" % (reactant_som, product_som)
   	  	report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
   	  	report = report + "However, the following mass-equivalent pseudo reaction(s):\n"
   	  	for r in inequality_reactions:
   	  	  reaction = self.mesgraph.simple.getReaction(r)
-  	  	  report = report + "\n%s" % (reaction.makeIdentifier(is_include_kinetics=False))
+  	  	  reaction_count += 1
+  	  	  report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
   	  	  som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
-  	  	  report = report + "\n(pseudo) %s" % (som_reaction.identifier)
-  	  	report = report + "\n\nincidates %s and %s are not equal.\n" % (reactant_som, product_som)
+  	  	  report = report + "\n(pseudo %d.) %s" % (reaction_count, som_reaction.identifier)
+  	  	report = report + "\n\nincidates the masses of %s and %s are unequal.\n" % (reactant_som, product_som)
   	  	##
   	  	report = report + "\nThis creates a mass conflict between reactions."
   	  	report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
@@ -754,6 +772,8 @@ class GAMESReport(object):
   	  report = report + "We detected a mass imbalance from the following reactions:\n"
   	  label = error.label
   	  reaction = self.mesgraph.simple.getReaction(label)
+  	  simplified_reaction = SimplifiedReaction(reaction.reactants, reaction.products, label, self.mesgraph)
+  	  simplified_reaction.reduceBySOMs()
   	  som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
   	  som_reactants = {r.som for r in som_reaction.reactants}
   	  som_products = {p.som for p in som_reaction.products}
@@ -778,7 +798,7 @@ class GAMESReport(object):
   	  elif error.products==[]:
   	    one_side = "product"
   	  report = report + "\n\nTherefore, they will result in empty %s with zero mass:\n" % (one_side)
-  	  report = report + "\n%s\n" % (error.identifier)
+  	  report = report + "\n%s\n" % (simplified_reaction.identifier)
   	  report = report + "\nThis indicates a mass conflict between reactions."  	  	
   	  report = report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
   	report = report + "\n%s\n" % (REPORT_DIVIDER)
