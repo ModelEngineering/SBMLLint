@@ -1,0 +1,316 @@
+UbSynthesis: Source -> Ub; kubs * Source
+UbDegradation: Ub + Proteasome -> Proteasome; kubd * Proteasome * Ub * kproteff
+UbUpregulation: MisProt -> MisProt + 3.00 Ub + 3.00 upregUb; kubss * (pow(MisProt, 6) / (pow(1500, 6) + pow(MisProt, 6)))
+ProteinSynthesis: Source -> NatProt; ksynNatProt * Source
+Misfolding: NatProt + ROS -> MisProt + ROS; kmisfold * NatProt * ROS
+Refolding: MisProt -> NatProt; krefold * MisProt
+MisProtE3Binding: MisProt + E3 -> E3__MisProt; kbinMisProtE3 * MisProt * E3
+MisProtE3Release: E3__MisProt -> MisProt + E3; krelMisProtE3 * E3__MisProt
+E1UbBinding: E1 + Ub + ATP -> E1__Ub + AMP; kbinE1Ub * E1 * Ub * ATP / (5000 + ATP)
+E2UbBinding: E2 + E1__Ub -> E2__Ub + E1; kbinE2Ub * E2 * E1__Ub
+Monoubiquitination: E2__Ub + E3__MisProt -> E3__MisProt__Ub + E2; kmonoUb * E2__Ub * E3__MisProt
+Polyubiquitination1: E3__MisProt__Ub + E2__Ub -> E3__MisProt__Ub2 + E2; kpolyUb * E3__MisProt__Ub * E2__Ub
+Polyubiquitination2: E3__MisProt__Ub2 + E2__Ub -> E3__MisProt__Ub3 + E2; kpolyUb * E3__MisProt__Ub2 * E2__Ub
+Polyubiquitination3: E3__MisProt__Ub3 + E2__Ub -> E3__MisProt__Ub4 + E2; kpolyUb * E3__MisProt__Ub3 * E2__Ub
+Polyubiquitination4: E3__MisProt__Ub4 + E2__Ub -> E3__MisProt__Ub5 + E2; kpolyUb * E3__MisProt__Ub4 * E2__Ub
+Polyubiquitination5: E3__MisProt__Ub5 + E2__Ub -> E3__MisProt__Ub6 + E2; kpolyUb * E3__MisProt__Ub5 * E2__Ub
+Polyubiquitination6: E3__MisProt__Ub6 + E2__Ub -> E3__MisProt__Ub7 + E2; kpolyUb * E3__MisProt__Ub6 * E2__Ub
+Polyubiquitination7: E3__MisProt__Ub7 + E2__Ub -> E3__MisProt__Ub8 + E2; kpolyUb * E3__MisProt__Ub7 * E2__Ub
+MisProtDUBbinding1: E3__MisProt__Ub + DUB -> E3__MisProt__Ub__DUB; kbinMisProtDUB * E3__MisProt__Ub * DUB
+MisProtDUBbinding2: E3__MisProt__Ub2 + DUB -> E3__MisProt__Ub2__DUB; kbinMisProtDUB * E3__MisProt__Ub2 * DUB
+MisProtDUBbinding3: E3__MisProt__Ub3 + DUB -> E3__MisProt__Ub3__DUB; kbinMisProtDUB * E3__MisProt__Ub3 * DUB
+MisProtDUBbinding4: E3__MisProt__Ub4 + DUB -> E3__MisProt__Ub4__DUB; kbinMisProtDUB * E3__MisProt__Ub4 * DUB
+MisProtDUBbinding5: E3__MisProt__Ub5 + DUB -> E3__MisProt__Ub5__DUB; kbinMisProtDUB * E3__MisProt__Ub5 * DUB
+MisProtDUBbinding6: E3__MisProt__Ub6 + DUB -> E3__MisProt__Ub6__DUB; kbinMisProtDUB * E3__MisProt__Ub6 * DUB
+MisProtDUBbinding7: E3__MisProt__Ub7 + DUB -> E3__MisProt__Ub7__DUB; kbinMisProtDUB * E3__MisProt__Ub7 * DUB
+MisProtDUBbinding8: E3__MisProt__Ub8 + DUB -> E3__MisProt__Ub8__DUB; kbinMisProtDUB * E3__MisProt__Ub8 * DUB
+Deubiquitination8: E3__MisProt__Ub8__DUB -> E3__MisProt__Ub7__DUB + Ub; kactDUB * E3__MisProt__Ub8__DUB
+Deubiquitination7: E3__MisProt__Ub7__DUB -> E3__MisProt__Ub6__DUB + Ub; kactDUB * E3__MisProt__Ub7__DUB
+Deubiquitination6: E3__MisProt__Ub6__DUB -> E3__MisProt__Ub5__DUB + Ub; kactDUB * E3__MisProt__Ub6__DUB
+Deubiquitination5: E3__MisProt__Ub5__DUB -> E3__MisProt__Ub4__DUB + Ub; kactDUB * E3__MisProt__Ub5__DUB
+Deubiquitination4: E3__MisProt__Ub4__DUB -> E3__MisProt__Ub3__DUB + Ub; kactDUB * E3__MisProt__Ub4__DUB
+Deubiquitination3: E3__MisProt__Ub3__DUB -> E3__MisProt__Ub2__DUB + Ub; kactDUB * E3__MisProt__Ub3__DUB
+Deubiquitination2: E3__MisProt__Ub2__DUB -> E3__MisProt__Ub__DUB + Ub; kactDUB * E3__MisProt__Ub2__DUB
+Deubiquitination1: E3__MisProt__Ub__DUB -> E3__MisProt + DUB + Ub; kactDUB * E3__MisProt__Ub__DUB
+ProteasomeBindingUb4: E3__MisProt__Ub4 + Proteasome -> E3 + MisProt__Ub4__Proteasome; kbinProt * E3__MisProt__Ub4 * Proteasome
+ProteasomeBindingUb5: E3__MisProt__Ub5 + Proteasome -> E3 + MisProt__Ub5__Proteasome; kbinProt * E3__MisProt__Ub5 * Proteasome
+ProteasomeBindingUb6: E3__MisProt__Ub6 + Proteasome -> E3 + MisProt__Ub6__Proteasome; kbinProt * E3__MisProt__Ub6 * Proteasome
+ProteasomeBindingUb7: E3__MisProt__Ub7 + Proteasome -> E3 + MisProt__Ub7__Proteasome; kbinProt * E3__MisProt__Ub7 * Proteasome
+ProteasomeBindingUb8: E3__MisProt__Ub8 + Proteasome -> E3 + MisProt__Ub8__Proteasome; kbinProt * E3__MisProt__Ub8 * Proteasome
+DeubiquitinationBoundMisProt5: MisProt__Ub8__Proteasome + DUB -> MisProt__Ub7__Proteasome + Ub + DUB; kactDUBProt * MisProt__Ub8__Proteasome * DUB
+DeubiquitinationBoundMisProt4: MisProt__Ub7__Proteasome + DUB -> MisProt__Ub6__Proteasome + Ub + DUB; kactDUBProt * MisProt__Ub7__Proteasome * DUB
+DeubiquitinationBoundMisProt3: MisProt__Ub6__Proteasome + DUB -> MisProt__Ub5__Proteasome + Ub + DUB; kactDUBProt * MisProt__Ub6__Proteasome * DUB
+DeubiquitinationBoundMisProt2: MisProt__Ub5__Proteasome + DUB -> MisProt__Ub4__Proteasome + Ub + DUB; kactDUBProt * MisProt__Ub5__Proteasome * DUB
+DeubiquitinationBoundMisProt1: MisProt__Ub4__Proteasome + DUB -> MisProt + Proteasome + 4.00 Ub + DUB; kactDUBProt * MisProt__Ub4__Proteasome * DUB
+ProteasomeActivity1: MisProt__Ub4__Proteasome + ATP -> 4.00 Ub + Proteasome + ADP; kactProt * kproteff * MisProt__Ub4__Proteasome * ATP / (5000 + ATP)
+ProteasomeActivity2: MisProt__Ub5__Proteasome + ATP -> 5.00 Ub + Proteasome + ADP; kactProt * kproteff * MisProt__Ub5__Proteasome * ATP / (5000 + ATP)
+ProteasomeActivity3: MisProt__Ub6__Proteasome + ATP -> 6.00 Ub + Proteasome + ADP; kactProt * kproteff * MisProt__Ub6__Proteasome * ATP / (5000 + ATP)
+ProteasomeActivity4: MisProt__Ub7__Proteasome + ATP -> 7.00 Ub + Proteasome + ADP; kactProt * kproteff * MisProt__Ub7__Proteasome * ATP / (5000 + ATP)
+ProteasomeActivity5: MisProt__Ub8__Proteasome + ATP -> 8.00 Ub + Proteasome + ADP; kactProt * kproteff * MisProt__Ub8__Proteasome * ATP / (5000 + ATP)
+Aggregation1: 2.00 MisProt -> AggProt1; kagg1 * MisProt * (MisProt - 1) * 0.5
+Aggregation2: MisProt + AggProt1 -> AggProt2; kagg2 * MisProt * AggProt1
+Aggregation3: MisProt + AggProt2 -> AggProt3; kagg2 * MisProt * AggProt2
+Aggregation4: MisProt + AggProt3 -> AggProt4; kagg2 * MisProt * AggProt3
+Aggregation5: MisProt + AggProt4 -> AggProt5; kagg2 * MisProt * AggProt4
+Disaggregation1: AggProt5 -> AggProt4 + MisProt; kdisagg5 * AggProt5
+Disaggregation2: AggProt4 -> AggProt3 + MisProt; kdisagg4 * AggProt4
+Disaggregation3: AggProt3 -> AggProt2 + MisProt; kdisagg3 * AggProt3
+Disaggregation4: AggProt2 -> AggProt1 + MisProt; kdisagg2 * AggProt2
+Disaggregation5: AggProt1 -> 2.00 MisProt; kdisagg1 * AggProt1
+InclusionFormation: MisProt + AggProt5 -> SeqAggProt + 7.00 aggMisProt; kagg2 * MisProt * AggProt5
+InclusionGrowth1: MisProt + SeqAggProt -> 2.00 SeqAggProt + aggMisProt; kigrowth1 * MisProt * SeqAggProt
+InclusionGrowth2: E3__MisProt + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + aggE3; kigrowth2 * E3__MisProt * SeqAggProt
+InclusionGrowth3: E3__MisProt__Ub + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + aggUb + aggE3; kigrowth2 * E3__MisProt__Ub * SeqAggProt
+InclusionGrowth4: E3__MisProt__Ub2 + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 2.00 aggUb + aggE3; kigrowth2 * E3__MisProt__Ub2 * SeqAggProt
+InclusionGrowth5: E3__MisProt__Ub3 + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 3.00 aggUb + aggE3; kigrowth2 * E3__MisProt__Ub3 * SeqAggProt
+InclusionGrowth6: E3__MisProt__Ub4 + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 4.00 aggUb + aggE3; kigrowth2 * E3__MisProt__Ub4 * SeqAggProt
+InclusionGrowth7: E3__MisProt__Ub5 + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 5.00 aggUb + aggE3; kigrowth2 * E3__MisProt__Ub5 * SeqAggProt
+InclusionGrowth8: E3__MisProt__Ub6 + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 6.00 aggUb + aggE3; kigrowth2 * E3__MisProt__Ub6 * SeqAggProt
+InclusionGrowth9: E3__MisProt__Ub7 + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 7.00 aggUb + aggE3; kigrowth2 * E3__MisProt__Ub7 * SeqAggProt
+InclusionGrowth10: E3__MisProt__Ub8 + SeqAggProt -> 2.00 SeqAggProt + 8.00 aggUb + aggE3; kigrowth2 * E3__MisProt__Ub8 * SeqAggProt
+InclusionGrowth11: E3__MisProt__Ub__DUB + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + aggUb + aggE3 + aggDUB; kigrowth2 * E3__MisProt__Ub__DUB * SeqAggProt
+InclusionGrowth12: E3__MisProt__Ub2__DUB + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 2.00 aggUb + aggE3 + aggDUB; kigrowth2 * E3__MisProt__Ub2__DUB * SeqAggProt
+InclusionGrowth13: E3__MisProt__Ub3__DUB + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 3.00 aggUb + aggE3 + aggDUB; kigrowth2 * E3__MisProt__Ub3__DUB * SeqAggProt
+InclusionGrowth14: E3__MisProt__Ub4__DUB + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 4.00 aggUb + aggE3 + aggDUB; kigrowth2 * E3__MisProt__Ub4__DUB * SeqAggProt
+InclusionGrowth15: E3__MisProt__Ub5__DUB + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 5.00 aggUb + aggE3 + aggDUB; kigrowth2 * E3__MisProt__Ub5__DUB * SeqAggProt
+InclusionGrowth16: E3__MisProt__Ub6__DUB + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 6.00 aggUb + aggE3 + aggDUB; kigrowth2 * E3__MisProt__Ub6__DUB * SeqAggProt
+InclusionGrowth17: E3__MisProt__Ub7__DUB + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 7.00 aggUb + aggE3 + aggDUB; kigrowth2 * E3__MisProt__Ub7__DUB * SeqAggProt
+InclusionGrowth18: E3__MisProt__Ub8__DUB + SeqAggProt -> 2.00 SeqAggProt + aggMisProt + 8.00 aggUb + aggE3 + aggDUB; kigrowth2 * E3__MisProt__Ub8__DUB * SeqAggProt
+ProteasomeInhibition1: AggProt1 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggProt1 * Proteasome
+ProteasomeInhibition2: AggProt2 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggProt2 * Proteasome
+ProteasomeInhibition3: AggProt3 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggProt3 * Proteasome
+ProteasomeInhibition4: AggProt4 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggProt4 * Proteasome
+ProteasomeInhibition5: AggProt5 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggProt5 * Proteasome
+ROSgenerationSmallAggProt1: AggProt1 -> AggProt1 + ROS; kgenROSAggProt * AggProt1
+ROSgenerationSmallAggProt2: AggProt2 -> AggProt2 + ROS; kgenROSAggProt * AggProt2
+ROSgenerationSmallAggProt3: AggProt3 -> AggProt3 + ROS; kgenROSAggProt * AggProt3
+ROSgenerationSmallAggProt4: AggProt4 -> AggProt4 + ROS; kgenROSAggProt * AggProt4
+ROSgenerationSmallAggProt5: AggProt5 -> AggProt5 + ROS; kgenROSAggProt * AggProt5
+UCHL1Synthesis: Source -> UCHL1; ksynUCHL1 * Source
+UCHL1ProteasomeBinding: UCHL1 + Proteasome -> UCHL1__Proteasome; kbinUCHL1Prot * UCHL1 * Proteasome
+UCHL1ProteasomeDegradation: UCHL1__Proteasome -> Proteasome; kdegProtUCHL1 * UCHL1__Proteasome * kproteff
+UCHL1LysosomalDegradation: UCHL1 + Lysosome -> Lysosome; kdegLysUCHL1 * UCHL1 * Lysosome
+UCHL1damage: UCHL1 + ROS -> UCHL1__damaged + ROS; kdamUCHL1 * UCHL1 * ROS
+UCHL1DamgedProteasomeBinding: UCHL1__damaged + Proteasome -> UCHL1__damaged__Proteasome; kbinUCHL1Prot * UCHL1__damaged * Proteasome
+UCHL1DamagedProteasomeDegradation: UCHL1__damaged__Proteasome -> Proteasome; kdegProtUCHL1 * UCHL1__damaged__Proteasome * kproteff
+UCHL1DamagedLysosomalDegradation: UCHL1__damaged + Lysosome -> Lysosome; kdegLysUCHL1dam * UCHL1__damaged * Lysosome
+UCHL1Lamp2abinding: UCHL1__damaged + Lamp2a -> Lamp2a__UCHL1__damaged; kbinLamp2aUCHL1dam * UCHL1__damaged * Lamp2a
+UCHL1Lamp2aRelease: Lamp2a__UCHL1__damaged -> UCHL1__damaged + Lamp2a; krelLamp2aUCHL1dam * Lamp2a__UCHL1__damaged
+UbUCHL1binding: Ub + UCHL1 -> Ub__UCHL1; kbinUbUCHL1 * Ub * UCHL1
+UbUCHL1release: Ub__UCHL1 -> Ub + UCHL1; krelUbUCHL1 * Ub__UCHL1
+SUBsynthesis: Source -> SUB; ksynSUB * Source
+SUBmisfolding: SUB + ROS -> SUB__misfolded + ROS; kmisfoldSUB * SUB * ROS
+SUBRefolding: SUB__misfolded -> SUB; krefoldSUB * SUB__misfolded
+E3SUBBinding: SUB__misfolded + E3SUB -> E3SUB__SUB__misfolded; kbinE3SUB * SUB__misfolded * E3SUB
+E3SUBRelease: E3SUB__SUB__misfolded -> SUB__misfolded + E3SUB; krelE3SUB * E3SUB__SUB__misfolded
+SUBMonoubiquitination: E2__Ub + E3SUB__SUB__misfolded -> E3SUB__SUB__misfolded__Ub + E2; kmonoUb * E2__Ub * E3SUB__SUB__misfolded
+SUBPolyubiquitination1: E3SUB__SUB__misfolded__Ub + E2__Ub -> E3SUB__SUB__misfolded__Ub2 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub * E2__Ub
+SUBPolyubiquitination2: E3SUB__SUB__misfolded__Ub2 + E2__Ub -> E3SUB__SUB__misfolded__Ub3 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub2 * E2__Ub
+SUBPolyubiquitination3: E3SUB__SUB__misfolded__Ub3 + E2__Ub -> E3SUB__SUB__misfolded__Ub4 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub3 * E2__Ub
+SUBPolyubiquitination4: E3SUB__SUB__misfolded__Ub4 + E2__Ub -> E3SUB__SUB__misfolded__Ub5 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub4 * E2__Ub
+SUBPolyubiquitination5: E3SUB__SUB__misfolded__Ub5 + E2__Ub -> E3SUB__SUB__misfolded__Ub6 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub5 * E2__Ub
+SUBPolyubiquitination6: E3SUB__SUB__misfolded__Ub6 + E2__Ub -> E3SUB__SUB__misfolded__Ub7 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub6 * E2__Ub
+SUBPolyubiquitination7: E3SUB__SUB__misfolded__Ub7 + E2__Ub -> E3SUB__SUB__misfolded__Ub8 + E2; kpolyUb * E3SUB__SUB__misfolded__Ub7 * E2__Ub
+SUBUCHL1binding1: E3SUB__SUB__misfolded__Ub + UCHL1 -> E3SUB__SUB__misfolded__Ub__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub * UCHL1
+SUBUCHL1binding2: E3SUB__SUB__misfolded__Ub2 + UCHL1 -> E3SUB__SUB__misfolded__Ub2__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub2 * UCHL1
+SUBUCHL1binding3: E3SUB__SUB__misfolded__Ub3 + UCHL1 -> E3SUB__SUB__misfolded__Ub3__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub3 * UCHL1
+SUBUCHL1binding4: E3SUB__SUB__misfolded__Ub4 + UCHL1 -> E3SUB__SUB__misfolded__Ub4__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub4 * UCHL1
+SUBUCHL1binding5Ub__UCHL1: E3SUB__SUB__misfolded__Ub5 + UCHL1 -> E3SUB__SUB__misfolded__Ub5__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub5 * UCHL1
+SUBUCHL1binding6: E3SUB__SUB__misfolded__Ub6 + UCHL1 -> E3SUB__SUB__misfolded__Ub6__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub6 * UCHL1
+SUBUCHL1binding7: E3SUB__SUB__misfolded__Ub7 + UCHL1 -> E3SUB__SUB__misfolded__Ub7__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub7 * UCHL1
+SUBUCHL1binding8: E3SUB__SUB__misfolded__Ub8 + UCHL1 -> E3SUB__SUB__misfolded__Ub8__UCHL1; kbinSUBUCHL1 * E3SUB__SUB__misfolded__Ub8 * UCHL1
+SUBDeubiquitination8: E3SUB__SUB__misfolded__Ub8__UCHL1 -> E3SUB__SUB__misfolded__Ub7__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub8__UCHL1
+SUBDeubiquitination7: E3SUB__SUB__misfolded__Ub7__UCHL1 -> E3SUB__SUB__misfolded__Ub6__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub7__UCHL1
+SUBDeubiquitination6: E3SUB__SUB__misfolded__Ub6__UCHL1 -> E3SUB__SUB__misfolded__Ub5__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub6__UCHL1
+SUBDeubiquitination5: E3SUB__SUB__misfolded__Ub5__UCHL1 -> E3SUB__SUB__misfolded__Ub4__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub5__UCHL1
+SUBDeubiquitination4: E3SUB__SUB__misfolded__Ub4__UCHL1 -> E3SUB__SUB__misfolded__Ub3__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub4__UCHL1
+SUBDeubiquitination3: E3SUB__SUB__misfolded__Ub3__UCHL1 -> E3SUB__SUB__misfolded__Ub2__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub3__UCHL1
+SUBDeubiquitination2: E3SUB__SUB__misfolded__Ub2__UCHL1 -> E3SUB__SUB__misfolded__Ub__UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub2__UCHL1
+SUBDeubiquitination1: E3SUB__SUB__misfolded__Ub__UCHL1 -> E3SUB__SUB__misfolded + UCHL1 + Ub; kactUchl1 * E3SUB__SUB__misfolded__Ub__UCHL1
+SUBProteasomeBindingUb4: E3SUB__SUB__misfolded__Ub4 + Proteasome -> SUB__misfolded__Ub4__Proteasome + E3SUB; kbinProt * E3SUB__SUB__misfolded__Ub4 * Proteasome
+SUBProteasomeBindingUb5: E3SUB__SUB__misfolded__Ub5 + Proteasome -> SUB__misfolded__Ub5__Proteasome + E3SUB; kbinProt * E3SUB__SUB__misfolded__Ub5 * Proteasome
+SUBProteasomeBindingUb6: E3SUB__SUB__misfolded__Ub6 + Proteasome -> SUB__misfolded__Ub6__Proteasome + E3SUB; kbinProt * E3SUB__SUB__misfolded__Ub6 * Proteasome
+SUBProteasomeBindingUb7: E3SUB__SUB__misfolded__Ub7 + Proteasome -> SUB__misfolded__Ub7__Proteasome + E3SUB; kbinProt * E3SUB__SUB__misfolded__Ub7 * Proteasome
+SUBProteasomeBindingUb8: E3SUB__SUB__misfolded__Ub8 + Proteasome -> SUB__misfolded__Ub8__Proteasome + E3SUB; kbinProt * E3SUB__SUB__misfolded__Ub8 * Proteasome
+DeubiquitinationBoundSUB8: SUB__misfolded__Ub8__Proteasome + DUB -> SUB__misfolded__Ub7__Proteasome + Ub + DUB; kactDUBProt * SUB__misfolded__Ub8__Proteasome * DUB
+DeubiquitinationBoundSUB7: SUB__misfolded__Ub7__Proteasome + DUB -> SUB__misfolded__Ub6__Proteasome + Ub + DUB; kactDUBProt * SUB__misfolded__Ub7__Proteasome * DUB
+DeubiquitinationBoundSUB6: SUB__misfolded__Ub6__Proteasome + DUB -> SUB__misfolded__Ub5__Proteasome + Ub + DUB; kactDUBProt * SUB__misfolded__Ub6__Proteasome * DUB
+DeubiquitinationBoundSUB5: SUB__misfolded__Ub5__Proteasome + DUB -> SUB__misfolded__Ub4__Proteasome + Ub + DUB; kactDUBProt * SUB__misfolded__Ub5__Proteasome * DUB
+DeubiquitinationBoundSUB4: SUB__misfolded__Ub4__Proteasome + DUB -> SUB__misfolded + Proteasome + 4.00 Ub + DUB; kactDUBProt * SUB__misfolded__Ub4__Proteasome * DUB
+SUBDegradationUb4: SUB__misfolded__Ub4__Proteasome + ATP -> 4.00 Ub + Proteasome + ADP; kactProt * SUB__misfolded__Ub4__Proteasome * kproteff * ATP / (5000 + ATP)
+SUBDegradationUb5: SUB__misfolded__Ub5__Proteasome + ATP -> 5.00 Ub + Proteasome + ADP; kactProt * SUB__misfolded__Ub5__Proteasome * kproteff * ATP / (5000 + ATP)
+SUBDegradationUb6: SUB__misfolded__Ub6__Proteasome + ATP -> 6.00 Ub + Proteasome + ADP; kactProt * SUB__misfolded__Ub6__Proteasome * kproteff * ATP / (5000 + ATP)
+SUBDegradationUb7: SUB__misfolded__Ub7__Proteasome + ATP -> 7.00 Ub + Proteasome + ADP; kactProt * SUB__misfolded__Ub7__Proteasome * kproteff * ATP / (5000 + ATP)
+SUBDegradationUb8: SUB__misfolded__Ub8__Proteasome + ATP -> 8.00 Ub + Proteasome + ADP; kactProt * SUB__misfolded__Ub8__Proteasome * kproteff * ATP / (5000 + ATP)
+asynSynthesis1: Source -> asyn; ksynasyn * Source
+asynProt20Sbinding: asyn + Proteasome -> asyn__Proteasome; kbinasynProt * asyn * Proteasome
+asynProt20Sdegradation: asyn__Proteasome -> Proteasome; kdegasynProt * kproteff * asyn__Proteasome
+asynLamp2aBinding: asyn + Lamp2a -> asyn__Lamp2a; kbinasynLamp2a * asyn * Lamp2a
+asynCMAdegradation: asyn__Lamp2a -> Lamp2a; kCMAasyn * asyn__Lamp2a
+asynDamage: asyn + ROS -> asyn__dam + ROS; kdamasyn * ROS * asyn
+asyn__damParkinBinding: asyn__dam + Parkin -> Parkin__asyn__dam; kbinasynParkin * asyn__dam * Parkin
+asyn__damParkinRelease: Parkin__asyn__dam -> asyn__dam + Parkin; krelasynParkin * Parkin__asyn__dam
+AsynMonoubiquitination: E2__Ub + Parkin__asyn__dam -> Parkin__asyn__dam__Ub + E2; kmonoUb * E2__Ub * Parkin__asyn__dam
+AsynPolyubiquitination1: Parkin__asyn__dam__Ub + E2__Ub -> Parkin__asyn__dam__Ub2 + E2; kpolyUb * Parkin__asyn__dam__Ub * E2__Ub
+AsynPolyubiquitination2: Parkin__asyn__dam__Ub2 + E2__Ub -> Parkin__asyn__dam__Ub3 + E2; kpolyUb * Parkin__asyn__dam__Ub2 * E2__Ub
+AsynPolyubiquitination3: Parkin__asyn__dam__Ub3 + E2__Ub -> Parkin__asyn__dam__Ub4 + E2; kpolyUb * Parkin__asyn__dam__Ub3 * E2__Ub
+AsynPolyubiquitination4: Parkin__asyn__dam__Ub4 + E2__Ub -> Parkin__asyn__dam__Ub5 + E2; kpolyUb * Parkin__asyn__dam__Ub4 * E2__Ub
+AsynPolyubiquitination5: Parkin__asyn__dam__Ub5 + E2__Ub -> Parkin__asyn__dam__Ub6 + E2; kpolyUb * Parkin__asyn__dam__Ub5 * E2__Ub
+AsynPolyubiquitination6: Parkin__asyn__dam__Ub6 + E2__Ub -> Parkin__asyn__dam__Ub7 + E2; kpolyUb * Parkin__asyn__dam__Ub6 * E2__Ub
+AsynPolyubiquitination7: Parkin__asyn__dam__Ub7 + E2__Ub -> Parkin__asyn__dam__Ub8 + E2; kpolyUb * Parkin__asyn__dam__Ub7 * E2__Ub
+AsynDUBbindingUb8: Parkin__asyn__dam__Ub8 + DUB -> Parkin__asyn__dam__Ub8__DUB; kbinasynDUB * Parkin__asyn__dam__Ub8 * DUB
+AsynDUBbindingUb7: Parkin__asyn__dam__Ub7 + DUB -> Parkin__asyn__dam__Ub7__DUB; kbinasynDUB * Parkin__asyn__dam__Ub7 * DUB
+AsynDUBbindingUb6: Parkin__asyn__dam__Ub6 + DUB -> Parkin__asyn__dam__Ub6__DUB; kbinasynDUB * Parkin__asyn__dam__Ub6 * DUB
+AsynDUBbindingUb5: Parkin__asyn__dam__Ub5 + DUB -> Parkin__asyn__dam__Ub5__DUB; kbinasynDUB * Parkin__asyn__dam__Ub5 * DUB
+AsynDUBbindingUb4: Parkin__asyn__dam__Ub4 + DUB -> Parkin__asyn__dam__Ub4__DUB; kbinasynDUB * Parkin__asyn__dam__Ub4 * DUB
+AsynDUBbindingUb3: Parkin__asyn__dam__Ub3 + DUB -> Parkin__asyn__dam__Ub3__DUB; kbinasynDUB * Parkin__asyn__dam__Ub3 * DUB
+AsynDUBbindingUb2: Parkin__asyn__dam__Ub2 + DUB -> Parkin__asyn__dam__Ub2__DUB; kbinasynDUB * Parkin__asyn__dam__Ub2 * DUB
+AsynDUBbindingUb1: Parkin__asyn__dam__Ub + DUB -> Parkin__asyn__dam__Ub__DUB; kbinasynDUB * Parkin__asyn__dam__Ub * DUB
+AsynDeubiquitinationUb8: Parkin__asyn__dam__Ub8__DUB -> Parkin__asyn__dam__Ub7__DUB + Ub; kactDUB * Parkin__asyn__dam__Ub8__DUB
+AsynDeubiquitinationUb7: Parkin__asyn__dam__Ub7__DUB -> Parkin__asyn__dam__Ub6__DUB + Ub; kactDUB * Parkin__asyn__dam__Ub7__DUB
+AsynDeubiquitinationUb6: Parkin__asyn__dam__Ub6__DUB -> Parkin__asyn__dam__Ub5__DUB + Ub; kactDUB * Parkin__asyn__dam__Ub6__DUB
+AsynDeubiquitinationUb5: Parkin__asyn__dam__Ub5__DUB -> Parkin__asyn__dam__Ub4__DUB + Ub; kactDUB * Parkin__asyn__dam__Ub5__DUB
+AsynDeubiquitinationUb4: Parkin__asyn__dam__Ub4__DUB -> Parkin__asyn__dam__Ub3__DUB + Ub; kactDUB * Parkin__asyn__dam__Ub4__DUB
+AsynDeubiquitinationUb3: Parkin__asyn__dam__Ub3__DUB -> Parkin__asyn__dam__Ub2__DUB + Ub; kactDUB * Parkin__asyn__dam__Ub3__DUB
+AsynDeubiquitinationUb2: Parkin__asyn__dam__Ub2__DUB -> Parkin__asyn__dam__Ub__DUB + Ub; kactDUB * Parkin__asyn__dam__Ub2__DUB
+AsynDeubiquitinationUb1: Parkin__asyn__dam__Ub__DUB -> Parkin__asyn__dam + DUB + Ub; kactDUB * Parkin__asyn__dam__Ub__DUB
+AsynProteasomeBindingUb4: Parkin__asyn__dam__Ub4 + Proteasome -> asyn__dam__Ub4__Proteasome + Parkin; kbinProt * Parkin__asyn__dam__Ub4 * Proteasome
+AsynProteasomeBindingUb5: Parkin__asyn__dam__Ub5 + Proteasome -> asyn__dam__Ub5__Proteasome + Parkin; kbinProt * Parkin__asyn__dam__Ub5 * Proteasome
+AsynProteasomeBindingUb6: Parkin__asyn__dam__Ub6 + Proteasome -> asyn__dam__Ub6__Proteasome + Parkin; kbinProt * Parkin__asyn__dam__Ub6 * Proteasome
+AsynProteasomeBindingUb7: Parkin__asyn__dam__Ub7 + Proteasome -> asyn__dam__Ub7__Proteasome + Parkin; kbinProt * Parkin__asyn__dam__Ub7 * Proteasome
+AsynProteasomeBindingUb8: Parkin__asyn__dam__Ub8 + Proteasome -> asyn__dam__Ub8__Proteasome + Parkin; kbinProt * Parkin__asyn__dam__Ub8 * Proteasome
+DeubiquitinationBoundasyn__damUb8: asyn__dam__Ub8__Proteasome + DUB -> asyn__dam__Ub7__Proteasome + Ub + DUB; kactDUBProt * asyn__dam__Ub8__Proteasome * DUB
+DeubiquitinationBoundasynDamUb7: asyn__dam__Ub7__Proteasome + DUB -> asyn__dam__Ub6__Proteasome + Ub + DUB; kactDUBProt * asyn__dam__Ub7__Proteasome * DUB
+DeubiquitinationBoundasynDamUb6: asyn__dam__Ub6__Proteasome + DUB -> asyn__dam__Ub5__Proteasome + Ub + DUB; kactDUBProt * asyn__dam__Ub6__Proteasome * DUB
+DeubiquitinationBoundasynDamUb5: asyn__dam__Ub5__Proteasome + DUB -> asyn__dam__Ub4__Proteasome + Ub + DUB; kactDUBProt * asyn__dam__Ub5__Proteasome * DUB
+DeubiquitinationBoundasynDamUb4: asyn__dam__Ub4__Proteasome + DUB -> asyn__dam + Proteasome + 4.00 Ub + DUB; kactDUBProt * asyn__dam__Ub4__Proteasome * DUB
+AsynProteasomeActivityUb4: asyn__dam__Ub4__Proteasome + ATP -> 4.00 Ub + Proteasome + ADP; kactProt * kproteff * asyn__dam__Ub4__Proteasome * ATP / (5000 + ATP)
+AsynDegradationUb5: asyn__dam__Ub5__Proteasome + ATP -> 5.00 Ub + Proteasome + ADP; kactProt * kproteff * asyn__dam__Ub5__Proteasome * ATP / (5000 + ATP)
+AsynDegradationUb6: asyn__dam__Ub6__Proteasome + ATP -> 6.00 Ub + Proteasome + ADP; kactProt * kproteff * asyn__dam__Ub6__Proteasome * ATP / (5000 + ATP)
+AsynDegradationUb7: asyn__dam__Ub7__Proteasome + ATP -> 7.00 Ub + Proteasome + ADP; kactProt * kproteff * asyn__dam__Ub7__Proteasome * ATP / (5000 + ATP)
+AsynDegradationUb8: asyn__dam__Ub8__Proteasome + ATP -> 8.00 Ub + Proteasome + ADP; kactProt * kproteff * asyn__dam__Ub8__Proteasome * ATP / (5000 + ATP)
+Aggregationasyn1: 2.00 asyn -> AggA1; kaggasyn1 * asyn * (asyn - 1) * 0.5
+Aggregationasyn2: asyn + AggA1 -> AggA2; kaggasyn2 * asyn * AggA1
+Aggregationasyn3: asyn + AggA2 -> AggA3; kaggasyn2 * asyn * AggA2
+Aggregationasyn4: asyn + AggA3 -> AggA4; kaggasyn2 * asyn * AggA3
+Aggregationasyn5: asyn + AggA4 -> AggA5; kaggasyn2 * asyn * AggA4
+DisAggregationasyn1: AggA5 -> AggA4 + asyn; kdisaggasyn5 * AggA5
+DisAggregationasyn2: AggA4 -> AggA3 + asyn; kdisaggasyn4 * AggA4
+DisAggregationasyn3: AggA3 -> AggA2 + asyn; kdisaggasyn3 * AggA3
+DisAggregationasyn4: AggA2 -> AggA1 + asyn; kdisaggasyn2 * AggA2
+DisAggregationasyn5: AggA1 -> 2.00 asyn; kdisaggasyn1 * AggA1
+AggA1ProteasomeInhibition: AggA1 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggA1 * Proteasome
+AggA2ProteasomeInhibition: AggA2 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggA2 * Proteasome
+AggA3ProteasomeInhibition: AggA3 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggA3 * Proteasome
+AggA4ProteasomeInhibition: AggA4 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggA4 * Proteasome
+AggA5ProteasomeInhibition: AggA5 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggA5 * Proteasome
+AsynInclusionFormation: asyn + AggA5 -> SeqAggProt + 7.00 aggasyn; kaggasyn2 * asyn * AggA5
+AsynInclusionGrowth: SeqAggProt + asyn -> 2.00 SeqAggProt + aggasyn; kigrowth1 * SeqAggProt * asyn
+ROSgenerationSmallAggA1: AggA1 -> AggA1 + ROS; kgenROSAggProt * AggA1
+ROSgenerationSmallAggA2: AggA2 -> AggA2 + ROS; kgenROSAggProt * AggA2
+ROSgenerationSmallAggA3: AggA3 -> AggA3 + ROS; kgenROSAggProt * AggA3
+ROSgenerationSmallAggA4: AggA4 -> AggA4 + ROS; kgenROSAggProt * AggA4
+ROSgenerationSmallAggA5: AggA5 -> AggA5 + ROS; kgenROSAggProt * AggA5
+AggregationAsynDam1: 2.00 asyn__dam -> AggD1; kagg1dam * asyn__dam * (asyn__dam - 1) * 0.5
+AggregationAsynDam2: asyn__dam + AggD1 -> AggD2; kagg2dam * asyn__dam * AggD1
+AggregationAsynDam3: asyn__dam + AggD2 -> AggD3; kagg2dam * asyn__dam * AggD2
+AggregationAsynDam4: asyn__dam + AggD3 -> AggD4; kagg2dam * asyn__dam * AggD3
+AggregationAsynDam5: asyn__dam + AggD4 -> AggD5; kagg2dam * asyn__dam * AggD4
+DisaggregationAsynDam1: AggD5 -> AggD4 + asyn__dam; kdisaggasyndam5 * AggD5
+DisaggregationAsynDam2: AggD4 -> AggD3 + asyn__dam; kdisaggasyndam4 * AggD4
+DisaggregationAsynDam3: AggD3 -> AggD2 + asyn__dam; kdisaggasyndam3 * AggD3
+DisaggregationAsynDam4: AggD2 -> AggD1 + asyn__dam; kdisaggasyndam2 * AggD2
+DisaggregationAsynDam5: AggD1 -> 2.00 asyn__dam; kdisaggasyndam1 * AggD1
+AggD1ProteasomeInhibition: AggD1 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggD1 * Proteasome
+AggD2ProteasomeInhibition: AggD2 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggD2 * Proteasome
+AggD3ProteasomeInhibition: AggD3 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggD3 * Proteasome
+AggD4ProteasomeInhibition: AggD4 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggD4 * Proteasome
+AggD5ProteasomeInhibition: AggD5 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggD5 * Proteasome
+AsynDamInclusionFormation: asyn__dam + AggD5 -> SeqAggProt + 7.00 aggasyndam; kagg2dam * asyn__dam * AggD5
+AsynDamInclusionGrowth1: SeqAggProt + asyn__dam -> 2.00 SeqAggProt + aggasyndam; kigrowth1 * SeqAggProt * asyn__dam
+AsynDamInclusionGrowth2: SeqAggProt + Parkin__asyn__dam -> 2.00 SeqAggProt + aggasyndam + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam
+AsynDamInclusionGrowth3: SeqAggProt + Parkin__asyn__dam__Ub -> 2.00 SeqAggProt + aggasyndam + aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub
+AsynDamInclusionGrowth4: SeqAggProt + Parkin__asyn__dam__Ub2 -> 2.00 SeqAggProt + aggasyndam + 2.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub2
+AsynDamInclusionGrowth5: SeqAggProt + Parkin__asyn__dam__Ub3 -> 2.00 SeqAggProt + aggasyndam + 3.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub3
+AsynDamInclusionGrowth6: SeqAggProt + Parkin__asyn__dam__Ub4 -> 2.00 SeqAggProt + aggasyndam + 4.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub4
+AsynDamInclusionGrowth7: SeqAggProt + Parkin__asyn__dam__Ub5 -> 2.00 SeqAggProt + aggasyndam + 5.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub5
+AsynDamInclusionGrowth8: SeqAggProt + Parkin__asyn__dam__Ub6 -> 2.00 SeqAggProt + aggasyndam + 6.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub6
+AsynDamInclusionGrowth9: SeqAggProt + Parkin__asyn__dam__Ub7 -> 2.00 SeqAggProt + aggasyndam + 7.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub7
+AsynDamInclusionGrowth10: SeqAggProt + Parkin__asyn__dam__Ub8 -> 2.00 SeqAggProt + aggasyndam + 8.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub8
+AsynDamInclusionGrowth11: SeqAggProt + Parkin__asyn__dam__Ub__DUB -> 2.00 SeqAggProt + aggasyndam + aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub__DUB
+AsynDamInclusionGrowth12: SeqAggProt + Parkin__asyn__dam__Ub2__DUB -> 2.00 SeqAggProt + aggasyndam + 2.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub2__DUB
+AsynDamInclusionGrowth13: SeqAggProt + Parkin__asyn__dam__Ub3__DUB -> 2.00 SeqAggProt + aggasyndam + 3.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub3__DUB
+AsynDamInclusionGrowth14: SeqAggProt + Parkin__asyn__dam__Ub4__DUB -> 2.00 SeqAggProt + aggasyndam + 4.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub4__DUB
+AsynDamInclusionGrowth15: SeqAggProt + Parkin__asyn__dam__Ub5__DUB -> 2.00 SeqAggProt + aggasyndam + 5.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub5__DUB
+AsynDamInclusionGrowth16: SeqAggProt + Parkin__asyn__dam__Ub6__DUB -> 2.00 SeqAggProt + aggasyndam + 6.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub6__DUB
+AsynDamInclusionGrowth17: SeqAggProt + Parkin__asyn__dam__Ub7__DUB -> 2.00 SeqAggProt + aggasyndam + 7.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub7__DUB
+AsynDamInclusionGrowth18: SeqAggProt + Parkin__asyn__dam__Ub8__DUB -> 2.00 SeqAggProt + aggasyndam + 8.00 aggUb + aggParkin; kigrowth2 * SeqAggProt * Parkin__asyn__dam__Ub8__DUB
+ROSgenerationSmallAggD1: AggD1 -> AggD1 + ROS; kgenROSAggProt * AggD1
+ROSgenerationSmallAggD2: AggD2 -> AggD2 + ROS; kgenROSAggProt * AggD2
+ROSgenerationSmallAggD3: AggD3 -> AggD3 + ROS; kgenROSAggProt * AggD3
+ROSgenerationSmallAggD4: AggD4 -> AggD4 + ROS; kgenROSAggProt * AggD4
+ROSgenerationSmallAggD5: AggD5 -> AggD5 + ROS; kgenROSAggProt * AggD5
+AggregationUCHL1Dam1: 2.00 UCHL1__damaged -> AggU1; kagg1dam * UCHL1__damaged * (UCHL1__damaged - 1) * 0.5
+AggregationUCHL1Dam2: UCHL1__damaged + AggU1 -> AggU2; kagg2dam * UCHL1__damaged * AggU1
+AggregationUCHL1Dam3: UCHL1__damaged + AggU2 -> AggU3; kagg2dam * UCHL1__damaged * AggU2
+AggregationUCHL1Dam4: UCHL1__damaged + AggU3 -> AggU4; kagg2dam * UCHL1__damaged * AggU3
+AggregationUCHL1Dam5: UCHL1__damaged + AggU4 -> AggU5; kagg2dam * UCHL1__damaged * AggU4
+DisaggregationUCHL1Dam1: AggU5 -> AggU4 + UCHL1__damaged; kdisagguchl1dam5 * AggU5
+DisaggregationUCHL1Dam2: AggU4 -> AggU3 + UCHL1__damaged; kdisagguchl1dam4 * AggU4
+DisaggregationUCHL1Dam3: AggU3 -> AggU2 + UCHL1__damaged; kdisagguchl1dam3 * AggU3
+DisaggregationUCHL1Dam4: AggU2 -> AggU1 + UCHL1__damaged; kdisagguchl1dam2 * AggU2
+DisaggregationUCHL1Dam5: AggU1 -> 2.00 UCHL1__damaged; kdisagguchl1dam1 * AggU1
+AggU1ProteasomeInhibition: AggU1 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggU1 * Proteasome
+AggU2ProteasomeInhibition: AggU2 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggU2 * Proteasome
+AggU3ProteasomeInhibition: AggU3 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggU3 * Proteasome
+AggU4ProteasomeInhibition: AggU4 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggU4 * Proteasome
+AggU5ProteasomeInhibition: AggU5 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggU5 * Proteasome
+UCHL1DamInclusionFormation: UCHL1__damaged + AggU5 -> SeqAggProt + 7.00 aggUchl1dam; kagg2dam * UCHL1__damaged * AggU5
+UCHL1DamagedSequestering: SeqAggProt + UCHL1__damaged -> 2.00 SeqAggProt + aggUchl1dam; kigrowth1 * SeqAggProt * UCHL1__damaged
+UCHL1DamagedLamp2aSequestering: SeqAggProt + Lamp2a__UCHL1__damaged -> 2.00 SeqAggProt + aggUchl1dam; kigrowth1 * SeqAggProt * Lamp2a__UCHL1__damaged
+ROSgenerationSmallAggU1: AggU1 -> AggU1 + ROS; kgenROSAggProt * AggU1
+ROSgenerationSmallAggU2: AggU2 -> AggU2 + ROS; kgenROSAggProt * AggU2
+ROSgenerationSmallAggU3: AggU3 -> AggU3 + ROS; kgenROSAggProt * AggU3
+ROSgenerationSmallAggU4: AggU4 -> AggU4 + ROS; kgenROSAggProt * AggU4
+ROSgenerationSmallAggU5: AggU5 -> AggU5 + ROS; kgenROSAggProt * AggU5
+SUBAggregation1: 2.00 SUB__misfolded -> AggS1; kaggSUB1 * SUB__misfolded * (SUB__misfolded - 1) * 0.5
+SUBAggregation2: SUB__misfolded + AggS1 -> AggS2; kaggSUB2 * SUB__misfolded * AggS1
+SUBAggregation3: SUB__misfolded + AggS2 -> AggS3; kaggSUB2 * SUB__misfolded * AggS2
+SUBAggregation4: SUB__misfolded + AggS3 -> AggS4; kaggSUB2 * SUB__misfolded * AggS3
+SUBAggregation5: SUB__misfolded + AggS4 -> AggS5; kaggSUB2 * SUB__misfolded * AggS4
+SUBDisaggregation1: AggS5 -> AggS4 + SUB__misfolded; kdisaggSUB5 * AggS5
+SUBDisaggregation2: AggS4 -> AggS3 + SUB__misfolded; kdisaggSUB4 * AggS4
+SUBDisaggregation3: AggS3 -> AggS2 + SUB__misfolded; kdisaggSUB3 * AggS3
+SUBDisaggregation4: AggS2 -> AggS1 + SUB__misfolded; kdisaggSUB2 * AggS2
+SUBDisaggregation5: AggS1 -> 2.00 SUB__misfolded; kdisaggSUB1 * AggS1
+AggS1ProteasomeInhibition: AggS1 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggS1 * Proteasome
+AggS2ProteasomeInhibition: AggS2 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggS2 * Proteasome
+AggS3ProteasomeInhibition: AggS3 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggS3 * Proteasome
+AggS4ProteasomeInhibition: AggS4 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggS4 * Proteasome
+AggS5ProteasomeInhibition: AggS5 + Proteasome -> AggProt__Proteasome; kbinAggProtrot * AggS5 * Proteasome
+SUBInclusionFormation: AggS5 + SUB__misfolded -> SeqAggProt + 7.00 aggSUB; kaggSUB2 * AggS5 * SUB__misfolded
+SUBInclusionGrowth0: SeqAggProt + SUB__misfolded -> 2.00 SeqAggProt + aggSUB; kigrowth1 * SeqAggProt * SUB__misfolded
+SUBInclusionGrowth1: E3SUB__SUB__misfolded + SeqAggProt -> 2.00 SeqAggProt + aggSUB; kigrowth2 * E3SUB__SUB__misfolded * SeqAggProt
+SUBInclusionGrowth2: E3SUB__SUB__misfolded__Ub + SeqAggProt -> 2.00 SeqAggProt + aggSUB + aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub * SeqAggProt
+SUBInclusionGrowth3: E3SUB__SUB__misfolded__Ub2 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + 2.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub2 * SeqAggProt
+SUBInclusionGrowth4: E3SUB__SUB__misfolded__Ub3 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + 3.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub3 * SeqAggProt
+SUBInclusionGrowth5: E3SUB__SUB__misfolded__Ub4 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + 4.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub4 * SeqAggProt
+SUBInclusionGrowth6: E3SUB__SUB__misfolded__Ub5 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + 5.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub5 * SeqAggProt
+SUBInclusionGrowth7: E3SUB__SUB__misfolded__Ub6 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + 6.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub6 * SeqAggProt
+SUBInclusionGrowth8: E3SUB__SUB__misfolded__Ub7 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + 7.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub7 * SeqAggProt
+SUBInclusionGrowth9: E3SUB__SUB__misfolded__Ub8 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + 8.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub8 * SeqAggProt
+SUBInclusionGrowth10: E3SUB__SUB__misfolded__Ub__UCHL1 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + aggUchl1 + aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub__UCHL1 * SeqAggProt
+SUBInclusionGrowth11: E3SUB__SUB__misfolded__Ub2__UCHL1 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + aggUchl1 + 2.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub2__UCHL1 * SeqAggProt
+SUBInclusionGrowth12: E3SUB__SUB__misfolded__Ub3__UCHL1 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + aggUchl1 + 3.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub3__UCHL1 * SeqAggProt
+SUBInclusionGrowth13: E3SUB__SUB__misfolded__Ub4__UCHL1 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + aggUchl1 + 4.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub4__UCHL1 * SeqAggProt
+SUBInclusionGrowth14: E3SUB__SUB__misfolded__Ub5__UCHL1 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + aggUchl1 + 5.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub5__UCHL1 * SeqAggProt
+SUBInclusionGrowth15: E3SUB__SUB__misfolded__Ub6__UCHL1 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + aggUchl1 + 6.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub6__UCHL1 * SeqAggProt
+SUBInclusionGrowth16: E3SUB__SUB__misfolded__Ub7__UCHL1 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + aggUchl1 + 7.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub7__UCHL1 * SeqAggProt
+SUBInclusionGrowth17: E3SUB__SUB__misfolded__Ub8__UCHL1 + SeqAggProt -> 2.00 SeqAggProt + aggSUB + aggUchl1 + 8.00 aggUb; kigrowth2 * E3SUB__SUB__misfolded__Ub8__UCHL1 * SeqAggProt
+ROSgenerationSmallAggS1: AggS1 -> AggS1 + ROS; kgenROSAggProt * AggS1
+ROSgenerationSmallAggS2: AggS2 -> AggS2 + ROS; kgenROSAggProt * AggS2
+ROSgenerationSmallAggS3: AggS3 -> AggS3 + ROS; kgenROSAggProt * AggS3
+ROSgenerationSmallAggS4: AggS4 -> AggS4 + ROS; kgenROSAggProt * AggS4
+ROSgenerationSmallAggS5: AggS5 -> AggS5 + ROS; kgenROSAggProt * AggS5
+radicalFormation: Source -> ROS; kgenROS * Source
+radicalScavenging: ROS -> Sink; kremROS * ROS

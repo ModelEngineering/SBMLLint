@@ -1,6 +1,7 @@
 """Provides comparisons of moieties."""
 
 from SBMLLint.common import constants as cn
+from SBMLLint.common import config
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
@@ -81,19 +82,32 @@ class MoietyComparator(object):
         column Value: counts of moieties present in 0 
         and not in second. Negative values are present in 1 and
         not in 0.
+    Handles boundary reactions, when one set of moieties
+    is all zeroes.
     """
     def addDFIndex(df, index):
       # Adds missing indices to df
       missing = set(index).difference(df.index)
       for item in missing:
         df.loc[item] = 0
+    def isZeroColumn(df):
+      col = df.columns[0]
+      return df[col].sum() == 0
     #
     dfs = self._makeDFS()
     addDFIndex(dfs[0], dfs[1].index)
     addDFIndex(dfs[1], dfs[0].index)
-    df = dfs[0] - dfs[1]
-    drops = set(self._implicits).intersection(df.index)
-    return df.drop(drops)
+    drops = set(self._implicits).intersection(dfs[0].index)
+    df0 = dfs[0].drop(drops)
+    df1 = dfs[1].drop(drops)
+    df = df0 - df1
+    # Handle boundaries
+    config_dict = config.getConfiguration()
+    if not config_dict[cn.CFG_PROCESS_BOUNDARY_REACTIONS]:
+      if isZeroColumn(df0) or isZeroColumn(df1):
+        df[df.columns[0]] = 0
+    #
+    return df
 
   def reportDifference(self):
     """
@@ -103,6 +117,7 @@ class MoietyComparator(object):
     if self.isSame():
       return NULL_STR
     df = self.difference()
+    #
     def appendNewline(stg):
       if len(stg) > 0:
         return "%s\n" % stg
