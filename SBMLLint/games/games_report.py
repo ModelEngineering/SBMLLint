@@ -174,24 +174,25 @@ class GAMESReport(object):
                      )
     return som_path
 
-  def getMoleculeEqualityPathReport(self, molecule_name1, molecule_name2):
+  def getMoleculeEqualityPathReport(self, molecule_name1, molecule_name2, reaction_count, explain_details):
     """
     Print out shortest path between two molecules within a 
     same SOM. Molecule names (str) are arguments. 
     :param str molecule_name1:
     :param str molecule_name2:
+    :param int reaction_count:
+    :param bool explain_details:
     :return bool/str: path_report
     :return int: reaction_count
     """
     path_report = NULL_STR
-    reaction_count = 0
     som1 = self.mesgraph.getNode(self.mesgraph.simple.getMolecule(molecule_name1))
     som2 = self.mesgraph.getNode(self.mesgraph.simple.getMolecule(molecule_name2))
     if som1 != som2:
       return False
     else:
       # in case molecule_name1 == molecule_name2, for example A -> A + B
-      if molecule_name1 == molecule_name2:
+      if molecule_name1 == molecule_name2 and explain_details:
         path_report = path_report + "Clearly, %s %s %s\n" % (
             molecule_name1, cn.EQUAL, molecule_name2)
       else:
@@ -199,14 +200,15 @@ class GAMESReport(object):
                        self.mesgraph.simple.getMolecule(molecule_name1), 
                        self.mesgraph.simple.getMolecule(molecule_name2))
         for pat in som_path:
-          path_report = path_report + "\n%s %s %s by reaction(s):\n" % (pat.node1, cn.EQUAL, pat.node2)
+          if explain_details:
+            path_report = path_report + "\n%s %s %s by reaction(s):\n" % (pat.node1, cn.EQUAL, pat.node2)
           for r in pat.reactions:
             som_reaction = self.mesgraph.simple.getReaction(r)
             reaction_count += 1
             path_report = path_report + "%d. %s\n" % (reaction_count, som_reaction.makeIdentifier(is_include_kinetics=False))
       return reaction_count, path_report
 
-  def getMoleculeInequalityPathReport(self, molecule_name1, molecule_name2, reaction_names, reaction_count):
+  def getMoleculeInequalityPathReport(self, molecule_name1, molecule_name2, reaction_names, reaction_count, explain_details):
   	"""
   	Print the reactions that infer inequality between molecules. 
   	Molecule name are given as arguments.
@@ -215,18 +217,20 @@ class GAMESReport(object):
   	:param str molecule_name2:
   	:param list-str reaction_names:
   	:param int reaction_count:
+  	:param bool explain_details
   	:return str: path_report
   	:return int reaction_count:
   	"""
   	path_report = NULL_STR
-  	path_report = path_report + "%s %s %s by reaction(s):\n" % (molecule_name1, cn.LESSTHAN, molecule_name2)
+  	if explain_details:
+  	  path_report = path_report + "%s %s %s by reaction(s):\n" % (molecule_name1, cn.LESSTHAN, molecule_name2)
   	for reaction_name in reaction_names:
   	  reaction_count += 1
   	  reaction = self.mesgraph.simple.getReaction(reaction_name)
   	  path_report = path_report + "%d. %s\n" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
   	return reaction_count, path_report
 
-  def reportTypeOneError(self, type_one_errors):
+  def reportTypeOneError(self, type_one_errors, explain_details=False):
     """
     Generate report for Type I Errors. 
     Type I error occurs when there is a reaction
@@ -234,22 +238,30 @@ class GAMESReport(object):
     while the molecules are already included
     in the same SOM.
     :param list-PathComponents type_one_errors:
+    :param bool explain_details:
     :return str: type_one_report
+    :return list-int: error_num
     """
     report = NULL_STR
+    error_num = []
+    if len(type_one_errors) == 0:
+      return report, error_num
     for pc in type_one_errors:
-      report = report + "We detected a mass imbalance from the following reactions:\n"
+      report = report + "We detected a mass imbalance from the following reactions:\n\n"
       mole1 = pc.node1
       mole2 = pc.node2
       reactions = pc.reactions
-      reaction_count, equality_report = self.getMoleculeEqualityPathReport(mole1, mole2)
+      reaction_count = 0
+      reaction_count, equality_report = self.getMoleculeEqualityPathReport(mole1, mole2, reaction_count, explain_details)
       report = report + equality_report
-      report = report + "\nHowever, "
-      reaction_count, inequality_report = self.getMoleculeInequalityPathReport(mole1, mole2, reactions, reaction_count)
+      if explain_details:
+        report = report + "\nHowever, "
+      reaction_count, inequality_report = self.getMoleculeInequalityPathReport(mole1, mole2, reactions, reaction_count, explain_details)
       report = report + inequality_report
       report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+      error_num.append(reaction_count)
     report = report + "\n%s\n" % (REPORT_DIVIDER)
-    return report
+    return report, error_num
 
   def decompostSOMCycle(self, cycle):
   	"""
@@ -309,8 +321,8 @@ class GAMESReport(object):
   	    reaction_label = [reaction.label]
   	  subg.add_edge(node1, node2, reaction=reaction_label)
   	path = [short_p for short_p in nx.shortest_path(subg,
-  	                                                source=molecule1.name,
-  	                                                target=molecule2.name)]
+  	                                                source=molecule1,
+  	                                                target=molecule2)]
   	som_path = []
   	for idx in range(len(path)-1):
   	  edge_reactions = subg.get_edge_data(path[idx], path[idx+1])[cn.REACTION]
@@ -319,52 +331,62 @@ class GAMESReport(object):
   	                                    reactions=edge_reactions))
   	return som_path
 
-  def reportTypeTwoError(self, type_two_errors):
+  def reportTypeTwoError(self, type_two_errors, explain_details=False):
   	"""
   	Generate report for Type II Errors.
   	Type II Error occurs when there is
   	a cycle between SOMs, which
   	should not happen.
   	:param list-(list-SOMs) type_two_errors:
+  	:param bool explain_details:
   	:return str: type_two_report
+  	:return list-int: error_num
   	"""
   	report = NULL_STR
+  	error_num = []
+  	if len(type_two_errors) == 0:
+  	  return report, error_num
   	for cycle in type_two_errors:
-  	  error_cycle = self.decompostSOMCycle(cycle)
-  	  last_node = None
-  	  for one_path in error_cycle:
-  	  	comb = zip(one_path.node1, one_path.node2, one_path.reactions)
-  	  	som_path_report = NULL_STR
-  	  	if last_node is None:
-  	  	  first_molecule = one_path.node1[0]
-  	  	  last_node = one_path.node2[0]
-  	  	else:
-  	  	  if last_node in one_path.node1:
-  	  	  	pass
-  	  	  else:
-  	  	    som = self.mesgraph.getNode(self.mesgraph.simple.getMolecule(last_node))
-  	  	    som_path = self.getSOMPath(som, last_node, one_path.node1[0])
-  	  	    som_path_report = som_path_report + self.reportSOMPath(som_path)
-  	  	for tup in comb:
-  	  	  report = report + "\n%s %s %s by\n" % (tup[0], cn.LESSTHAN, tup[1])
-  	  	  reaction = self.mesgraph.simple.getReaction(tup[2])
-  	  	  report = report + "%s\n" % (reaction.makeIdentifier(is_include_kinetics=False))
-  	  	if len(one_path.node1) > 1:
-  	  	  for node1, node2 in zip(one_path.node1, one_path.node1[1:]):
-  	  	    mole1 = self.mesgraph.simple.getMolecule(node1)
-  	  	    mole2 = self.mesgraph.simple.getMolecule(node2)
-  	  	    som = self.mesgraph.getNode(mole1)
-  	  	    som_path = self.getSOMPath(som, node1, node2)
-  	  	    report = report + self.reportSOMPath(som_path)
-  	  	report = report + som_path_report
-  	  last_molecule = tup[1]
-  	  if first_molecule != last_molecule:
-  	  	som = self.mesgraph.getNode(self.mesgraph.simple.getMolecule(first_molecule))
-  	  	som_path = self.getSOMPath(som, first_molecule, last_molecule)
-  	  	report = report + self.reportSOMPath(som_path)
-  	  report = report + "*"*NUM_STAR + "\n\n"
-  	report = report + "\n" + "-"*NUM_STAR + "\n"
-  	return report
+  	  all_soms = set()
+  	  reaction_count = 0
+  	  report = report + "We detected a mass imbalance from the following reactions:\n"
+  	  if explain_details:
+  	    report = report + "\nThese uni-uni reactions created mass-equivalence.\n"
+  	  for som in cycle:
+  	  	all_soms.add(som)
+  	  	for reaction in list(som.reactions):  	  	  	
+  	  	  reaction_count += 1
+  	  	  report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+  	  if explain_details:
+  	  	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+  	  	report = report + "The following reactions create mass-inequality.\n"
+  	  inequality_reactions = []
+  	  for som_pair in zip(cycle, cycle[1:] + [cycle[0]]):
+  	    inequality_reactions = inequality_reactions + self.mesgraph.get_edge_data(som_pair[0], som_pair[1])[cn.REACTION]
+  	  for r in inequality_reactions:
+  	    reaction = self.mesgraph.simple.getReaction(r)
+  	    reaction_count += 1
+  	    report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+  	  if explain_details:
+  	    report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+  	  if explain_details:
+  	  	reaction_count = reaction_count - len(inequality_reactions) 	
+  	  	# now explain the mass equivalent pseudo reactions and the resulting sets
+  	  	report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions.\n"
+  	  	for r in inequality_reactions:
+  	  	  reaction = self.mesgraph.simple.getReaction(r)
+  	  	  som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
+  	  	  reaction_count += 1
+  	  	  report = report + "\n(pseudo %d.) %s" % (reaction_count, som_reaction.identifier)
+  	  	report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
+  	  	report = report + "However, the above pseudo reactions imply the following inequalities:\n\n"
+  	  	for som in cycle:
+  	  	  report = report + "%s %s " % (som.identifier, cn.LESSTHAN)
+  	  	report = report + "%s\n" % (cycle[0].identifier)
+  	  	report = report + "\nThis indicates a mass conflict between reactions."
+  	  error_num.append(reaction_count)
+  	  report = report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
+  	return report, error_num
 
   def reportSOMPath(self, som_path):
   	"""
@@ -579,7 +601,6 @@ class GAMESReport(object):
   # 	report = report + "We detected a mass imbalance from the following reactions:\n"
 
 
-
   def reportTypeThreeError(self, type_three_errors, explain_details=False):
   	"""
   	Generate a report for Type III errors.
@@ -589,89 +610,95 @@ class GAMESReport(object):
   	:param list-SOMReaction type_three_errors:
   	:param bool explain_details:
   	:return False/str: report
+  	:return list-int: error_num
   	"""
   	report = NULL_STR
+  	error_num = []
+  	if len(type_three_errors) == 0:
+  	  return report, error_num
   	reaction_count = 0
-  	type3_error = type_three_errors[0]
-  	if type3_error.category != cn.REACTION_1_1:
-  	  print("This canot be a type three error!")
-  	  return False
-  	else:
-  	  reaction_label = type3_error.label
-  	  reactant_som = type3_error.reactants[0].som
-  	  product_som = type3_error.products[0].som
-  	  operation_df = self.getOperationMatrix()
-  	  operation_series = operation_df.T[reaction_label]
-  	  reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
-  	  inferred_reaction = self.getInferredReaction(reaction_operations)
-  	  inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
-  	  reactant_som = inferred_som_reaction.reactants[0].som
-  	  product_som = inferred_som_reaction.products[0].som
-  	  inequality_reactions = []
-  	  if self.mesgraph.has_edge(reactant_som, product_som):
-  	  	inequality_reactions = inequality_reactions + self.mesgraph.get_edge_data(reactant_som, product_som)[cn.REACTION]
-  	  if self.mesgraph.has_edge(product_som, reactant_som):
-  	  	inequality_reactions = inequality_reactions + self.mesgraph.get_edge_data(product_som, reactant_som)[cn.REACTION]
-  	  #
-  	  report = report + "We detected a mass imbalance from the following reactions:\n"
-  	  soms = set()
-  	  som_reactions = []
-  	  for r in reaction_operations:
-  	    reaction = self.mesgraph.simple.getReaction(r.reaction)
-  	    reaction_count += 1
-  	    report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-  	    som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
-  	    som_reactions.append(som_reaction)
-  	    soms = soms.union({r.som for r in som_reaction.reactants})
-  	    soms = soms.union({p.som for p in som_reaction.products})
-  	  if explain_details:
-  	  	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	report = report + "These uni-uni reactions created mass-equivalence.\n"  	  	
-  	  for som in soms:
-  	  	for reaction in list(som.reactions):
+  	for type3_error in type_three_errors:
+  	  if type3_error.category != cn.REACTION_1_1:
+  	    print("This canot be a type three error!")
+  	    return False
+  	  else:
+  	  	reaction_label = type3_error.label
+  	  	reactant_som = type3_error.reactants[0].som
+  	  	product_som = type3_error.products[0].som
+  	  	operation_df = self.getOperationMatrix()
+  	  	operation_series = operation_df.T[reaction_label]
+  	  	reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
+  	  	inferred_reaction = self.getInferredReaction(reaction_operations)
+  	  	inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
+  	  	reactant_som = inferred_som_reaction.reactants[0].som
+  	  	product_som = inferred_som_reaction.products[0].som
+  	  	inequality_reactions = []
+  	  	if self.mesgraph.has_edge(reactant_som, product_som):
+  	  	  inequality_reactions = inequality_reactions + self.mesgraph.get_edge_data(reactant_som, product_som)[cn.REACTION]
+  	  	if self.mesgraph.has_edge(product_som, reactant_som):
+  	  	  inequality_reactions = inequality_reactions + self.mesgraph.get_edge_data(product_som, reactant_som)[cn.REACTION]
+  	  	#
+  	  	report = report + "We detected a mass imbalance from the following reactions:\n"
+  	  	soms = set()
+  	  	som_reactions = []
+  	  	for r in reaction_operations:
+  	  	  reaction = self.mesgraph.simple.getReaction(r.reaction)
   	  	  reaction_count += 1
   	  	  report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-  	  if explain_details:
-  	    report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	    report = report + "These multi-uni (uni-multi) reactions created mass-inequality.\n"   	  
-  	  for r in inequality_reactions:
-  	  	reaction = self.mesgraph.simple.getReaction(r)
-  	  	reaction_count += 1
-  	  	report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-  	  reaction_count = reaction_count - len(inequality_reactions)
-  	  if explain_details:
-  	  	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions.\n"
-  	  	pseudo_reaction_count = 0
-  	  	for sr in som_reactions:
-  	  	  pseudo_reaction_count += 1
-  	  	  report = report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
-  	  	report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	report = report + "An operation between pseudo reactions:\n"
-  	  	report = report + "\n%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
-  	  	for ro in reaction_operations[1:]:
-  	  	  if ro.operation < 0:
-  	  	    report = report + " - "
-  	  	  else:
-  	  	    report = report + " + "
-  	  	  report = report + "%.2f * %s\n" % (abs(ro.operation), ro.reaction)
-  	  	report = report + "\n\nwill result in a uni-uni reaction:\n"
-  	  	report = report + "\n%s\n" % (inferred_som_reaction.identifier)
-  	  	report = report + "\n\nmeaning %s and %s have equal mass.\n" % (reactant_som, product_som)
-  	  	report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	report = report + "However, the following mass-equivalent pseudo reaction(s):\n"
+  	  	  som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
+  	  	  som_reactions.append(som_reaction)
+  	  	  soms = soms.union({r.som for r in som_reaction.reactants})
+  	  	  soms = soms.union({p.som for p in som_reaction.products})
+  	  	# calculated the reported number of reactions that constitute a type III error
+  	  	error_num.append(reaction_count + len(inequality_reactions))
+  	  	if explain_details:
+  	  	  report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+  	  	  report = report + "These uni-uni reactions created mass-equivalence.\n"  	  	
+  	  	for som in soms:
+  	  	  for reaction in list(som.reactions):
+  	  	  	reaction_count += 1
+  	  	  	report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+  	  	if explain_details:
+  	  	  report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+  	  	  report = report + "These multi-uni (uni-multi) reactions created mass-inequality.\n"   	  
   	  	for r in inequality_reactions:
   	  	  reaction = self.mesgraph.simple.getReaction(r)
   	  	  reaction_count += 1
   	  	  report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-  	  	  som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
-  	  	  report = report + "\n(pseudo %d.) %s" % (reaction_count, som_reaction.identifier)
-  	  	report = report + "\n\nincidates the masses of %s and %s are unequal.\n" % (reactant_som, product_som)
-  	  	##
-  	  	report = report + "\nThis creates a mass conflict between reactions."
-  	  	report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-
-  	  return report
+  	  	reaction_count = reaction_count - len(inequality_reactions)
+  	  	if explain_details:
+  	  	  report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+  	  	  report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions.\n"
+  	  	  pseudo_reaction_count = 0
+  	  	  for sr in som_reactions:
+  	  	    pseudo_reaction_count += 1
+  	  	    report = report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
+  	  	  report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
+  	  	  report = report + "An operation between pseudo reactions:\n"
+  	  	  report = report + "\n%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
+  	  	  for ro in reaction_operations[1:]:
+  	  	    if ro.operation < 0:
+  	  	      report = report + " - "
+  	  	    else:
+  	  	      report = report + " + "
+  	  	    report = report + "%.2f * %s\n" % (abs(ro.operation), ro.reaction)
+  	  	  report = report + "\n\nwill result in a uni-uni reaction:\n"
+  	  	  report = report + "\n%s\n" % (inferred_som_reaction.identifier)
+  	  	  report = report + "\n\nmeaning %s and %s have equal mass.\n" % (reactant_som, product_som)
+  	  	  report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
+  	  	  report = report + "However, the following mass-equivalent pseudo reaction(s):\n"
+  	  	  for r in inequality_reactions:
+  	  	    reaction = self.mesgraph.simple.getReaction(r)
+  	  	    reaction_count += 1
+  	  	    report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+  	  	    som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
+  	  	    report = report + "\n(pseudo %d.) %s" % (reaction_count, som_reaction.identifier)
+  	  	  report = report + "\n\nincidates the masses of %s and %s are unequal.\n" % (reactant_som, product_som)
+  	  	  ##
+  	  	  report = report + "\nThis creates a mass conflict between reactions."
+  	  	  report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
+  	  	report = report + "\n%s\n" % (REPORT_DIVIDER) 
+  	  return report, error_num
 
   def reportEchelonError(self, echelon_errors, explain_details=False):
     """
@@ -684,12 +711,15 @@ class GAMESReport(object):
     :param list-SOMReaction echelon_errors:
     :param bool explain_details:
     :return str: echelon_report
+    :return list-int: error_num
     """
-    operation_df = self.getOperationMatrix()
     echelon_report = NULL_STR
+    error_num = []
+    if len(echelon_errors) == 0:
+      return echelon_report, error_num
+    operation_df = self.getOperationMatrix()
     error_report = NULL_STR
     reaction_count = 0
-    error_statistics = []
     for reaction in echelon_errors:
       reaction_label = reaction.label
       operation_series = operation_df.T[reaction_label]
@@ -712,7 +742,7 @@ class GAMESReport(object):
       	reaction = self.mesgraph.simple.getReaction(r)
       	reaction_count += 1
       	echelon_report = echelon_report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-      error_statistics.append(r)
+      error_num.append(reaction_count)
       #
       # part 2: SOMs that were canceled by the operation
       canceled_soms = set()
@@ -756,7 +786,8 @@ class GAMESReport(object):
       	echelon_report = echelon_report + "\n%s\n" % (inferred_som_reaction.identifier)
       	echelon_report = echelon_report + "\nThis indicates a mass conflict between reactions."
       	echelon_report = echelon_report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-    return echelon_report
+      echelon_report = echelon_report + "\n%s\n" % (REPORT_DIVIDER)
+    return echelon_report, error_num
 
   def reportCancelingError(self, canceling_errors, explain_details=False):
   	"""
@@ -765,8 +796,12 @@ class GAMESReport(object):
   	an imbalanced net stoichiometry.
   	:param list-SOMReaction:
   	:return str: report
+  	:return list-int: error_num
   	"""
   	report = NULL_STR
+  	error_num = []
+  	if len(canceling_errors) == 0:
+  	  return report, error_num
   	for error in canceling_errors:
   	  reaction_count = 0
   	  report = report + "We detected a mass imbalance from the following reactions:\n"
@@ -799,10 +834,11 @@ class GAMESReport(object):
   	    one_side = "product"
   	  report = report + "\n\nTherefore, they will result in empty %s with zero mass:\n" % (one_side)
   	  report = report + "\n%s\n" % (simplified_reaction.identifier)
-  	  report = report + "\nThis indicates a mass conflict between reactions."  	  	
+  	  report = report + "\nThis indicates a mass conflict between reactions."  
+  	  error_num.append(reaction_count)	  	
   	  report = report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
   	report = report + "\n%s\n" % (REPORT_DIVIDER)
-  	return report
+  	return report, error_num
 
 
 
