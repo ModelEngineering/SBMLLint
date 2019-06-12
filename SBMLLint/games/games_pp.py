@@ -16,7 +16,14 @@ from scipy.linalg import lu, inv
 
 GAMESErrors = collections.namedtuple("GAMESErrors", 
     "type_one")
+ErrorSummary = collections.namedtuple("ErrorSummnary",
+    "type errors")
 TOLERANCE = 0.0001
+TYPE_I = "type1"
+TYPE_II = "type2"
+TYPE_III = "type3"
+CANCELING = "canceling"
+ECHELON = "echelon"
 
 class SOMStoichiometry(object):
 
@@ -180,6 +187,8 @@ class GAMES_PP(nx.DiGraph):
     self.type_three_errors = []
     # Cant't add arcs using SOMs (after LU decomposition)
     self.type_one_som_errors = set()
+    # for error return:
+    self.error_summary = []
   
   def __repr__(self):
     return self.identifier
@@ -841,7 +850,17 @@ class GAMES_PP(nx.DiGraph):
       print("Type III error: ", self.type_three_errors)
       print("Type I-SOM error: " , self.type_one_som_errors)    
     if self.echelon_errors or self.type_one_errors or self.type_two_errors \
-        or self.canceling_errors or self.type_three_errors or self.type_one_som_errors:
+        or self.canceling_errors or self.type_three_errors:
+      if self.type_one_errors:
+        self.error_summary.append(ErrorSummary(type=TYPE_I, errors=self.type_one_errors))
+      if self.type_two_errors:
+        self.error_summary.append(ErrorSummary(type=TYPE_II, errors=self.type_two_errors))
+      if self.type_three_errors:
+        self.error_summary.append(ErrorSummary(type=TYPE_III, errors=self.type_three_errors))
+      if self.canceling_errors:
+        self.error_summary.append(ErrorSummary(type=CANCELING, errors=self.canceling_errors))
+      if self.echelon_errors:
+        self.error_summary.append(ErrorSummary(type=ECHELON, errors=self.echelon_errors))
       return True
     else:
       return False

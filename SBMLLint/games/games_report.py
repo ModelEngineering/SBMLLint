@@ -133,7 +133,7 @@ class GAMESReport(object):
   	self.errors = errors
   	self.report_type_one_errors = NULL_STR
 
-  def getMoleculeEqualityPath(self, som, mole1, mole2):
+  def getMoleculeEqualityPath(self, som, molecule1, molecule2):
     """
     Create an undirected graph between
     two molecules within a SOM
@@ -143,8 +143,8 @@ class GAMESReport(object):
     :param Molecule mole2:
     :return PathComponents: som_path
     """   
-    molecule1 = mole1.name
-    molecule2 = mole2.name
+    # molecule1 = mole1.name
+    # molecule2 = mole2.name
     # construct undirected graph
     subg = nx.Graph()
     # here, every reaction is 1-1 reaction
@@ -192,13 +192,16 @@ class GAMESReport(object):
       return False
     else:
       # in case molecule_name1 == molecule_name2, for example A -> A + B
-      if molecule_name1 == molecule_name2 and explain_details:
-        path_report = path_report + "Clearly, %s %s %s\n" % (
-            molecule_name1, cn.EQUAL, molecule_name2)
+      if molecule_name1 == molecule_name2:
+      	if explain_details:
+          path_report = path_report + "Clearly, %s %s %s\n" % (
+              molecule_name1, cn.EQUAL, molecule_name2)
       else:
-        som_path = self.getMoleculeEqualityPath(som1, 
-                       self.mesgraph.simple.getMolecule(molecule_name1), 
-                       self.mesgraph.simple.getMolecule(molecule_name2))
+      	# for now
+        # som_path = self.getMoleculeEqualityPath(som1, 
+        #                self.mesgraph.simple.getMolecule(molecule_name1), 
+        #                self.mesgraph.simple.getMolecule(molecule_name2))
+        som_path = self.getMoleculeEqualityPath(som1, molecule_name1, molecule_name2)
         for pat in som_path:
           if explain_details:
             path_report = path_report + "\n%s %s %s by reaction(s):\n" % (pat.node1, cn.EQUAL, pat.node2)
