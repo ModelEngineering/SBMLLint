@@ -538,8 +538,8 @@ class GAMESReport(object):
   	for op in reaction_operations:
   	  reaction = self.mesgraph.simple.getReaction(op.reaction)
   	  reactions.append(reaction)
-  	  species = species.union({r.molecule for r in reaction.reactants})
-  	  species = species.union({p.molecule for p in reaction.products})
+  	  species = species.union({r.molecule.name for r in reaction.reactants})
+  	  species = species.union({p.molecule.name for p in reaction.products})
   	operations = np.array([val.operation for val in reaction_operations])
   	stoichiometry_df = self.mesgraph.getStoichiometryMatrix(reactions, list(species))
   	return stoichiometry_df
@@ -727,8 +727,8 @@ class GAMESReport(object):
       reaction_label = reaction.label
       operation_series = operation_df.T[reaction_label]
       result_series = self.getResultingSeries(reaction_label)
-      operation_df = self.getOperationMatrix()
-      operation_series = operation_df.T[reaction_label]
+      #operation_df = self.getOperationMatrix()
+      #operation_series = operation_df.T[reaction_label]
       reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
       inferred_reaction = self.getInferredReaction(reaction_operations)
       inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
@@ -781,6 +781,9 @@ class GAMESReport(object):
       	  	echelon_report = echelon_report + " + "
       	  echelon_report = echelon_report + "%.2f * %s" % (abs(ro.operation), ro.reaction)
       	#
+      	##
+      	one_side = "--undetermined--"
+      	##
       	if inferred_som_reaction.reactants==[]:
       	  one_side = "reactant"
       	elif inferred_som_reaction.products==[]:
