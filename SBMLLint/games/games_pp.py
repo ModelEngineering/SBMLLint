@@ -383,7 +383,9 @@ class GAMES_PP(nx.DiGraph):
       reaction_series = echelon_df[colname]
       # Find the first nonzero values
       # Deprecation: instead of np.nonzero(Series), use Series.to_numpy().nonzero()
-      nonzero_idx = echelon_df[colname].to_numpy().nonzero()[0]
+      # to fix error on GitHub - not use to_numpy here
+      ##nonzero_idx = echelon_df[colname].to_numpy().nonzero()[0]
+      nonzero_idx = np.array([idx for idx, val in enumerate(echelon_df[colname]) if val != 0])
       # Skip if there is no nonzero value or if it is first reaction
       if not nonzero_idx.any() or idx == 0:
         continue

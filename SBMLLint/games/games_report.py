@@ -620,7 +620,7 @@ class GAMESReport(object):
     reactions = list(som.reactions)
     molecules.append(reactions[0].reactants[0].molecule.name)
     molecules.append(reactions[0].products[0].molecule.name)
-    report = report + "\n%d. %s;   %s\n" % (reaction_count,
+    report = report + "\n%d. %s;   %s" % (reaction_count,
                                             reactions[0].makeIdentifier(is_include_kinetics=False),
                                             '{' + '='.join(molecules) + '}') 
     res = reactions[1:]
@@ -643,7 +643,7 @@ class GAMESReport(object):
         if reactant in molecules and product in molecules:
           pass
         reaction_count += 1
-        report = report + "\n%d. %s;   %s\n" % (reaction_count,
+        report = report + "\n%d. %s;   %s" % (reaction_count,
                                                 reaction.makeIdentifier(is_include_kinetics=False),
                                                 '{' + '='.join(molecules) + '}') 
         res.remove(reaction)
@@ -702,7 +702,7 @@ class GAMESReport(object):
   	  	if explain_details:
   	  	  report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
   	  	  report = report + "These uni-uni reactions created mass-equivalence.\n" 
-  	  	  report = report + "(The molecules within a curly bracket are inferred to have the same atomic mass.)\n"  	  	
+  	  	  report = report + "(The molecules within a curly bracket have the same atomic mass.)\n"  	  	
   	  	for som in soms:
   	  	  sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
   	  	  report = report + sub_report
@@ -806,7 +806,7 @@ class GAMESReport(object):
       if explain_details:
       	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
       	report = report + "These uni-uni reactions created mass-equivalence.\n"
-      	report = report + "(The molecules within a curly bracket are inferred to have the same atomic mass.)\n"
+      	report = report + "(The molecules within a curly bracket have the same atomic mass.)\n"
       for som in canceled_soms:
       	sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
       	report = report + sub_report
