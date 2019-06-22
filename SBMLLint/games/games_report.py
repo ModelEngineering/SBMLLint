@@ -603,6 +603,51 @@ class GAMESReport(object):
   # 	reaction_count = 0
   # 	report = report + "We detected a mass imbalance from the following reactions:\n"
 
+  def reportReactionsInSOM(self, som, reaction_count=0):
+    """
+    Generate report on reactions created a SOM,
+    in order to demonstrate how the SOM was constructed.
+    :param som SOM:
+    :param int reaction_count:
+    :return str: report
+    :return int: reaction_count
+    """
+    report = cn.NULL_STR
+    if not som.reactions:
+      return report, reaction_count
+    reaction_count += 1
+    molecules = []
+    reactions = list(som.reactions)
+    molecules.append(reactions[0].reactants[0].molecule.name)
+    molecules.append(reactions[0].products[0].molecule.name)
+    report = report + "\n%d. %s;   %s\n" % (reaction_count,
+                                            reactions[0].makeIdentifier(is_include_kinetics=False),
+                                            '{' + '='.join(molecules) + '}') 
+    res = reactions[1:]
+    flag = 0
+    while res:
+      flag += 1
+      if flag > 50:
+        break
+      reaction = res[0]
+      reactant = reaction.reactants[0].molecule.name
+      product = reaction.products[0].molecule.name
+      if (reactant not in molecules) and (product not in molecules):
+        res.remove(reaction)
+        res.append(reaction)
+      else:
+        if reactant not in molecules and product in molecules:
+          molecules.append(reactant)
+        if reactant in molecules and product not in molecules:
+          molecules.append(product)
+        if reactant in molecules and product in molecules:
+          pass
+        reaction_count += 1
+        report = report + "\n%d. %s;   %s\n" % (reaction_count,
+                                                reaction.makeIdentifier(is_include_kinetics=False),
+                                                '{' + '='.join(molecules) + '}') 
+        res.remove(reaction)
+    return report, reaction_count
 
   def reportTypeThreeError(self, type_three_errors, explain_details=False):
   	"""
@@ -619,8 +664,8 @@ class GAMESReport(object):
   	error_num = []
   	if len(type_three_errors) == 0:
   	  return report, error_num
-  	reaction_count = 0
   	for type3_error in type_three_errors:
+  	  reaction_count = 0
   	  if type3_error.category != cn.REACTION_1_1:
   	    print("This canot be a type three error!")
   	    return False
@@ -656,14 +701,17 @@ class GAMESReport(object):
   	  	error_num.append(reaction_count + len(inequality_reactions))
   	  	if explain_details:
   	  	  report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	  report = report + "These uni-uni reactions created mass-equivalence.\n"  	  	
+  	  	  report = report + "These uni-uni reactions created mass-equivalence.\n" 
+  	  	  report = report + "(The molecules within a curly bracket are inferred to have the same atomic mass.)\n"  	  	
   	  	for som in soms:
-  	  	  for reaction in list(som.reactions):
-  	  	  	reaction_count += 1
-  	  	  	report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+  	  	  sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
+  	  	  report = report + sub_report
+  	  	  # for reaction in list(som.reactions):
+  	  	  # 	reaction_count += 1
+  	  	  # 	report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
   	  	if explain_details:
   	  	  report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	  report = report + "These multi-uni (uni-multi) reactions created mass-inequality.\n"   	  
+  	  	  report = report + "These multi-uni (uni-multi) reactions created mass-inequality.\n"  	  
   	  	for r in inequality_reactions:
   	  	  reaction = self.mesgraph.simple.getReaction(r)
   	  	  reaction_count += 1
@@ -713,28 +761,26 @@ class GAMESReport(object):
     and rref_df.dot(lower_inverse) if RREF created errors. 
     :param list-SOMReaction echelon_errors:
     :param bool explain_details:
-    :return str: echelon_report
+    :return str: report
     :return list-int: error_num
     """
-    echelon_report = NULL_STR
+    report = NULL_STR
     error_num = []
     if len(echelon_errors) == 0:
-      return echelon_report, error_num
+      return report, error_num
     operation_df = self.getOperationMatrix()
     error_report = NULL_STR
-    reaction_count = 0
     for reaction in echelon_errors:
+      reaction_count = 0
       reaction_label = reaction.label
       operation_series = operation_df.T[reaction_label]
       result_series = self.getResultingSeries(reaction_label)
-      #operation_df = self.getOperationMatrix()
-      #operation_series = operation_df.T[reaction_label]
       reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
       inferred_reaction = self.getInferredReaction(reaction_operations)
       inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
       #
-      echelon_report = echelon_report + "\nWe detected a mass imbalance\n%s\n" % inferred_reaction.identifier
-      echelon_report = echelon_report + "\nfrom the following reactions.\n"
+      report = report + "\nWe detected a mass imbalance\n%s\n" % inferred_reaction.identifier
+      report = report + "\nfrom the following reactions.\n"
       nonzero_result_series = result_series[result_series.to_numpy().nonzero()[0]]
       #
       # part 1: reactions that caused mass balance errors
@@ -744,7 +790,7 @@ class GAMESReport(object):
       for r in reported_reactions:
       	reaction = self.mesgraph.simple.getReaction(r)
       	reaction_count += 1
-      	echelon_report = echelon_report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+      	report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
       error_num.append(reaction_count)
       #
       # part 2: SOMs that were canceled by the operation
@@ -758,42 +804,47 @@ class GAMESReport(object):
       canceled_soms = canceled_soms.difference({p.som for p in inferred_som_reaction.products})
       #
       if explain_details:
-      	echelon_report = echelon_report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-      	echelon_report = echelon_report + "These uni-uni reactions created mass-equivalence."
+      	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+      	report = report + "These uni-uni reactions created mass-equivalence.\n"
+      	report = report + "(The molecules within a curly bracket are inferred to have the same atomic mass.)\n"
       for som in canceled_soms:
-      	for reaction in list(som.reactions):
-      	  reaction_count += 1
-      	  echelon_report = echelon_report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+      	sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
+      	report = report + sub_report
+      	# for reaction in list(som.reactions):
+      	#   reaction_count += 1
+      	#   report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
       if explain_details:
-      	echelon_report = echelon_report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-      	echelon_report = echelon_report + "Based on the reactions above, we have mass-equivalent pseudo reactions."
+      	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+      	report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions."
       	pseudo_reaction_count = 0
       	for sr in reported_som_reactions:
       	  pseudo_reaction_count += 1
-      	  echelon_report = echelon_report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
-      	echelon_report = echelon_report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
-      	echelon_report = echelon_report + "An operation between pseudo reactions:\n"
-      	echelon_report = echelon_report + "%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
+      	  report = report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
+      	report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
+      	report = report + "An operation between pseudo reactions:\n"
+      	report = report + "%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
       	for ro in reaction_operations[1:]:
       	  if ro.operation < 0:
-      	    echelon_report = echelon_report + " - "
+      	    report = report + " - "
       	  else:
-      	  	echelon_report = echelon_report + " + "
-      	  echelon_report = echelon_report + "%.2f * %s" % (abs(ro.operation), ro.reaction)
+      	  	report = report + " + "
+      	  report = report + "%.2f * %s" % (abs(ro.operation), ro.reaction)
       	#
-      	##
       	one_side = "--undetermined--"
       	##
       	if inferred_som_reaction.reactants==[]:
       	  one_side = "reactant"
       	elif inferred_som_reaction.products==[]:
       	  one_side = "product"
-      	echelon_report = echelon_report + "\n\nwill result in empty %s with zero mass:\n" % (one_side)
-      	echelon_report = echelon_report + "\n%s\n" % (inferred_som_reaction.identifier)
-      	echelon_report = echelon_report + "\nThis indicates a mass conflict between reactions."
-      	echelon_report = echelon_report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-      echelon_report = echelon_report + "\n%s\n" % (REPORT_DIVIDER)
-    return echelon_report, error_num
+      	report = report + "\n\nwill result in empty %s with zero mass:\n" % (one_side)
+      	report = report + "\n%s\n" % (inferred_som_reaction.identifier)
+      	report = report + "\nThis indicates a mass conflict between reactions."
+      	report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
+      	if one_side == "--undetermined--":
+      	  report = False
+      	  break
+      report = report + "\n%s\n" % (REPORT_DIVIDER)
+    return report, error_num
 
   def reportCancelingError(self, canceling_errors, explain_details=False):
   	"""
