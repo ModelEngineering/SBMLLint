@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - numpy
+  - numpy=1.16.3
   - pandas=0.22
   - python=3.6.7
   - urllib3
