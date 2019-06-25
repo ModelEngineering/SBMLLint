@@ -298,14 +298,12 @@ class TestGAMESReport(unittest.TestCase):
   	report, error_num = gr.reportEchelonError(m.echelon_errors, explain_details=True)
   	self.assertEqual(error_num, [3])
   	extended_report = NULL_STR
-  	extended_report = extended_report + "An operation between pseudo reactions:\n"
-  	extended_report = extended_report + "1.00 * statPhosphorylation + 0.50 * PstatDimerisation - 0.50 * PstatDimerisationNuc\n\n"
   	extended_report = extended_report + "will result in empty reactant with zero mass:\n\n:  -> {species_test}\n\n"
   	extended_report = extended_report + "This indicates a mass conflict between reactions.\n"
   	extended_report = extended_report + "\n----------------------------------------------------------------------\n"
   	extended_report = extended_report + "\n----------------------------------------------------------------------\n\n"
   	extended_report = extended_report + "\n\n**********************************************************************\n\n"
-  	self.assertEqual(report[-462:], extended_report)
+  	self.assertEqual(report[-338:], extended_report)
 
   def testReportTypeThreeError(self):
     if IGNORE_TEST:
@@ -315,15 +313,15 @@ class TestGAMESReport(unittest.TestCase):
     gr = GAMESReport(m)
     report, error_num = gr.reportTypeThreeError(m.type_three_errors, explain_details=True)
     self.assertEqual(error_num, [3])
-    extended_report = NULL_STR
-    extended_report = extended_report + "6. statPhosphorylation: stat_sol -> Pstat_sol + species_test\n"
-    extended_report = extended_report + "(pseudo 6.) statPhosphorylation: {Pstat_nuc=stat_nuc=stat_sol} -> {species_test} + {Pstat_sol}\n\n"
-    extended_report = extended_report + "incidates the masses of {Pstat_sol} and {Pstat_nuc=stat_nuc=stat_sol} are unequal.\n\n"
-    extended_report = extended_report + "This creates a mass conflict between reactions.\n"
-    extended_report = extended_report + "\n----------------------------------------------------------------------\n"
-    extended_report = extended_report + "\n----------------------------------------------------------------------\n\n"
-    extended_report = extended_report + "\n\n**********************************************************************\n\n"
-    self.assertEqual(report[-508:], extended_report)
+    pseudo_inequality_report = NULL_STR
+    pseudo_inequality_report = pseudo_inequality_report + "6. statPhosphorylation: stat_sol -> Pstat_sol + species_test\n"
+    pseudo_inequality_report = pseudo_inequality_report + "(pseudo 6.) statPhosphorylation: {Pstat_nuc=stat_nuc=stat_sol} -> "
+    pseudo_inequality_report1 = pseudo_inequality_report + "{species_test} + {Pstat_sol}"
+    pseudo_inequality_report2 = pseudo_inequality_report + "{Pstat_sol} + {species_test}"
+    inference_report1 = "the masses of {Pstat_sol} and {Pstat_nuc=stat_nuc=stat_sol} are unequal."
+    inference_report2 = "the masses of {Pstat_nuc=stat_nuc=stat_sol} and {Pstat_sol} are unequal."
+    self.assertTrue(report[-508:-353]==pseudo_inequality_report1 or report[-508:-353]==pseudo_inequality_report2)
+    self.assertTrue(report[-341:-269]==inference_report1 or report[-341:-269]==inference_report2)
 
 
 
