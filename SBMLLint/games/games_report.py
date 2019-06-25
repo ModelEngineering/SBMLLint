@@ -266,73 +266,73 @@ class GAMESReport(object):
     report = report + "\n%s\n" % (REPORT_DIVIDER)
     return report, error_num
 
-  def decompostSOMCycle(self, cycle):
-  	"""
-  	Create list of PathComponents
-  	using a cycle of SOMs
-  	:param list-SOM cycle:
-  	:return list-PathComponents: error_cycle
-  	"""
-  	error_cycle = []
-  	cycle2 = cycle[1:] + [cycle[0]]
-  	for first, second in zip(cycle, cycle2):
-  	  som1_moles = {m.name for m in list(first.molecules)}
-  	  som2_moles = {m.name for m in list(second.molecules)}
-  	  reaction_data = self.mesgraph.get_edge_data(first, second)[cn.REACTION]
-  	  nodes1 = []
-  	  nodes2 = []
-  	  reaction_labels = []  
-  	  for r in reaction_data:
-  	  	reaction = self.mesgraph.simple.getReaction(r)
-  	  	if reaction.category == cn.REACTION_n_1:
-  	  	  sources = {r.molecule.name for r in reaction.reactants}
-  	  	  destinations = {p.molecule.name for p in reaction.products}
-  	  	elif reaction.category == cn.REACTION_1_n:
-  	  	  sources = {p.molecule.name for p in reaction.products}
-  	  	  destinations = {r.molecule.name for r in reaction.reactants}
-  	  	node2 = list(destinations.intersection(som2_moles))[0]
-  	  	for node1 in list(sources.intersection(som1_moles)):
-  	  	  nodes1.append(node1)
-  	  	  nodes2.append(node2)
-  	  	  reaction_labels.append(reaction.label)
-  	  error_cycle.append(cn.PathComponents(node1=nodes1,
-  	  	                                   node2=nodes2,
-  	  	                                   reactions=reaction_labels))
-  	return error_cycle
+  # def decompostSOMCycle(self, cycle):
+  # 	"""
+  # 	Create list of PathComponents
+  # 	using a cycle of SOMs
+  # 	:param list-SOM cycle:
+  # 	:return list-PathComponents: error_cycle
+  # 	"""
+  # 	error_cycle = []
+  # 	cycle2 = cycle[1:] + [cycle[0]]
+  # 	for first, second in zip(cycle, cycle2):
+  # 	  som1_moles = {m.name for m in list(first.molecules)}
+  # 	  som2_moles = {m.name for m in list(second.molecules)}
+  # 	  reaction_data = self.mesgraph.get_edge_data(first, second)[cn.REACTION]
+  # 	  nodes1 = []
+  # 	  nodes2 = []
+  # 	  reaction_labels = []  
+  # 	  for r in reaction_data:
+  # 	  	reaction = self.mesgraph.simple.getReaction(r)
+  # 	  	if reaction.category == cn.REACTION_n_1:
+  # 	  	  sources = {r.molecule.name for r in reaction.reactants}
+  # 	  	  destinations = {p.molecule.name for p in reaction.products}
+  # 	  	elif reaction.category == cn.REACTION_1_n:
+  # 	  	  sources = {p.molecule.name for p in reaction.products}
+  # 	  	  destinations = {r.molecule.name for r in reaction.reactants}
+  # 	  	node2 = list(destinations.intersection(som2_moles))[0]
+  # 	  	for node1 in list(sources.intersection(som1_moles)):
+  # 	  	  nodes1.append(node1)
+  # 	  	  nodes2.append(node2)
+  # 	  	  reaction_labels.append(reaction.label)
+  # 	  error_cycle.append(cn.PathComponents(node1=nodes1,
+  # 	  	                                   node2=nodes2,
+  # 	  	                                   reactions=reaction_labels))
+  # 	return error_cycle
 
-  def getSOMPath(self, som, molecule1, molecule2):
-  	"""
-  	Create an undirected graph 
-  	between two molecules within a SOM
-  	and find the shortest path
-  	:param SOM som:
-  	:param str molecule1:
-  	:param str molecule2:
-  	:return list-PathComponents: som_path
-  	"""
-  	# undirected graph
-  	subg = nx.Graph()
-  	for reaction in list(som.reactions):
-  	  node1 = reaction.reactants[0].molecule.name
-  	  node2 = reaction.products[0].molecule.name
-  	  if subg.has_edge(node1, node2):
-  	    reaction_label = subg.get_edge_data(node1, node2)[cn.REACTION]
-  	    # if reaction.label is not already included in the attribute
-  	    if reaction.label not in set(reaction_label):
-  	      reaction_label = reaction_label + [reaction.label]
-  	  else:
-  	    reaction_label = [reaction.label]
-  	  subg.add_edge(node1, node2, reaction=reaction_label)
-  	path = [short_p for short_p in nx.shortest_path(subg,
-  	                                                source=molecule1,
-  	                                                target=molecule2)]
-  	som_path = []
-  	for idx in range(len(path)-1):
-  	  edge_reactions = subg.get_edge_data(path[idx], path[idx+1])[cn.REACTION]
-  	  som_path.append(cn.PathComponents(node1=path[idx],
-  	                                    node2=path[idx+1],
-  	                                    reactions=edge_reactions))
-  	return som_path
+  # def getSOMPath(self, som, molecule1, molecule2):
+  # 	"""
+  # 	Create an undirected graph 
+  # 	between two molecules within a SOM
+  # 	and find the shortest path
+  # 	:param SOM som:
+  # 	:param str molecule1:
+  # 	:param str molecule2:
+  # 	:return list-PathComponents: som_path
+  # 	"""
+  # 	# undirected graph
+  # 	subg = nx.Graph()
+  # 	for reaction in list(som.reactions):
+  # 	  node1 = reaction.reactants[0].molecule.name
+  # 	  node2 = reaction.products[0].molecule.name
+  # 	  if subg.has_edge(node1, node2):
+  # 	    reaction_label = subg.get_edge_data(node1, node2)[cn.REACTION]
+  # 	    # if reaction.label is not already included in the attribute
+  # 	    if reaction.label not in set(reaction_label):
+  # 	      reaction_label = reaction_label + [reaction.label]
+  # 	  else:
+  # 	    reaction_label = [reaction.label]
+  # 	  subg.add_edge(node1, node2, reaction=reaction_label)
+  # 	path = [short_p for short_p in nx.shortest_path(subg,
+  # 	                                                source=molecule1,
+  # 	                                                target=molecule2)]
+  # 	som_path = []
+  # 	for idx in range(len(path)-1):
+  # 	  edge_reactions = subg.get_edge_data(path[idx], path[idx+1])[cn.REACTION]
+  # 	  som_path.append(cn.PathComponents(node1=path[idx],
+  # 	                                    node2=path[idx+1],
+  # 	                                    reactions=edge_reactions))
+  # 	return som_path
 
   def reportTypeTwoError(self, type_two_errors, explain_details=False):
   	"""

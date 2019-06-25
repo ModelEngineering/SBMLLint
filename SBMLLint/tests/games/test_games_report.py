@@ -112,6 +112,29 @@ class TestGAMESReport(unittest.TestCase):
     m = GAMES_PP(self.simple2)
     m.analyze(error_details=False)
     gr = GAMESReport(m)
+    som = m.getNode(self.simple2.getMolecule(G2K))
+    equality_path = gr.getMoleculeEqualityPath(som, G2K, PG2R)
+    self.assertTrue(len(equality_path) == 2)
+    self.assertEqual(type(equality_path[0]), cn.PathComponents)
+    self.assertEqual(equality_path[0].node1, G2K)
+    self.assertEqual(equality_path[0].reactions, [CDC2PHOS])
+    self.assertEqual(equality_path[1].node2, PG2R)
+    self.assertEqual(equality_path[1].reactions, [RUM1DEGINPG2R]) 
+
+  def testGetMoleculeEqualityPathReport(self):
+    if IGNORE_TEST:
+      return
+    m = GAMES_PP(self.simple2)
+    m.analyze(error_details=False)
+    gr = GAMESReport(m)
+    count, report1 = gr.getMoleculeEqualityPathReport(G2K, PG2R, 0, explain_details=False)
+    self.assertEqual(count, 2)
+    self.assertEqual(report1,
+    	             "1. Cdc2Phos: G2K -> PG2\n2. Rum1DegInPG2R: PG2R -> PG2\n")
+    count, report2 = gr.getMoleculeEqualityPathReport(G2K, PG2R, 0, explain_details=True)
+    self.assertEqual(count, 2)
+    self.assertEqual(report2,
+    	             "\nG2K = PG2 by reaction(s):\n1. Cdc2Phos: G2K -> PG2\n\nPG2 = PG2R by reaction(s):\n2. Rum1DegInPG2R: PG2R -> PG2\n")
 
 
 
