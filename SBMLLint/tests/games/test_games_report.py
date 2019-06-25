@@ -209,14 +209,16 @@ class TestGAMESReport(unittest.TestCase):
   	m = GAMES_PP(self.simple4)
   	m.analyze(error_details=False)
   	gr = GAMESReport(m)
-  	op = pd.Series([1.0, 0.5, 1.0], index = [STATPHOSPHRYLATION, PSTATDIMERISATION, PSTATDIMERISATIONNUC])
+  	op = pd.Series([1.0, 0.5, 0.0], index = [STATPHOSPHRYLATION, PSTATDIMERISATION, PSTATDIMERISATIONNUC])
   	ro = gr.convertOperationSeriesToReactionOperations(op)
+  	self.assertEqual(len(ro), 2)
   	self.assertEqual(ro[0].reaction, STATPHOSPHRYLATION)
   	self.assertEqual(ro[0].operation, 1.0)
   	self.assertEqual(ro[1].reaction, PSTATDIMERISATION)
   	self.assertEqual(ro[1].operation, 0.5)
-  	self.assertEqual(ro[2].reaction, PSTATDIMERISATIONNUC)
-  	self.assertEqual(ro[2].operation, 1.0)
+  	# self.assertEqual(ro[2].reaction, PSTATDIMERISATIONNUC)
+  	# self.assertEqual(ro[2].operation, 1.0)
+
 
 
 

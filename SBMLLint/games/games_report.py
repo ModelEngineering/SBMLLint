@@ -417,7 +417,9 @@ class GAMESReport(object):
     :return list-ReactionOperation: operations
     """
     operations = []
-    nonzero_idx = operation.to_numpy().nonzero()[0]
+    # 
+    ## nonzero_idx = operation.to_numpy().nonzero()[0]
+    nonzero_idx = np.array([idx for idx, val in enumerate(operation) if val != 0.0])
     nonzero_op = operation[nonzero_idx]
     for idx in range(len(nonzero_op)):
       reaction_op = ReactionOperation(reaction=nonzero_op.index[idx],
@@ -443,60 +445,60 @@ class GAMESReport(object):
   # 	  	  return node
   # 	return None
 
-  def getMoleculeLinkage(self, som, reactions):
-  	"""
-  	Create two lists. 
-  	1. molecules in the reactions that are in the same som
-  	2. reactions used to merge the molecules
-  	:param SOM som:
-  	:param list-str reactions:
-  	:return list-str: linked_molecules
-  	:return list-str: linked_reactions
-  	"""
-  	molecules = {m.name for m in som.molecules}
-  	# linked_molecules: molecules within both the SOM and given reactions
-  	linked_molecules = set()
-  	for r in reactions:
-  	  reaction = self.mesgraph.simple.getReaction(r)
-  	  reactants = {m.molecule.name for m in reaction.reactants}
-  	  products = {m.molecule.name for m in reaction.products}
-  	  som_molecules = molecules.intersection(reactants)
-  	  som_molecules = som_molecules.union(molecules.intersection(products))
-  	  linked_molecules = linked_molecules.union(som_molecules)
-  	linked_reactions = []
-  	for sr in som.reactions:
-  	  sreactants = {m.molecule.name for m in sr.reactants}
-  	  sproducts = {m.molecule.name for m in sr.products}
-  	  if sreactants.intersection(linked_molecules) or \
-  	      sproducts.intersection(linked_molecules):
-  	    linked_reactions.append(sr.label)
-  	return list(linked_molecules), linked_reactions
+  # def getMoleculeLinkage(self, som, reactions):
+  # 	"""
+  # 	Create two lists. 
+  # 	1. molecules in the reactions that are in the same som
+  # 	2. reactions used to merge the molecules
+  # 	:param SOM som:
+  # 	:param list-str reactions:
+  # 	:return list-str: linked_molecules
+  # 	:return list-str: linked_reactions
+  # 	"""
+  # 	molecules = {m.name for m in som.molecules}
+  # 	# linked_molecules: molecules within both the SOM and given reactions
+  # 	linked_molecules = set()
+  # 	for r in reactions:
+  # 	  reaction = self.mesgraph.simple.getReaction(r)
+  # 	  reactants = {m.molecule.name for m in reaction.reactants}
+  # 	  products = {m.molecule.name for m in reaction.products}
+  # 	  som_molecules = molecules.intersection(reactants)
+  # 	  som_molecules = som_molecules.union(molecules.intersection(products))
+  # 	  linked_molecules = linked_molecules.union(som_molecules)
+  # 	linked_reactions = []
+  # 	for sr in som.reactions:
+  # 	  sreactants = {m.molecule.name for m in sr.reactants}
+  # 	  sproducts = {m.molecule.name for m in sr.products}
+  # 	  if sreactants.intersection(linked_molecules) or \
+  # 	      sproducts.intersection(linked_molecules):
+  # 	    linked_reactions.append(sr.label)
+  # 	return list(linked_molecules), linked_reactions
 
-  def reportLinkage(self, linked_molecules, linked_reactions):
-  	"""
-  	Generate a report for linked molecules.
-  	Molecules are linked within a SOM
-  	by appropriate reations. 
-  	:param list-str linked_molecules:
-  	:param list-str linked_reactions:
-  	:return str: linkage_report
-  	"""
-  	linkage_report = NULL_STR
-  	linkage_report = linkage_report + "\n" + "->"*int((NUM_STAR/2))
-  	if len(linked_molecules) == 1:
-  	  m = linked_molecules[0]
-  	  linkage_report = linkage_report + "\n%s is a common element in multiple reactions above.\n" % m
-  	else:
-  	  linkage_report = linkage_report + "\nThe following molecules,\n"
-  	  for m in linked_molecules:
-  	    linkage_report = linkage_report + m + "\n"
-  	  linkage_report = linkage_report + "Have equal mass by the following reaction(s).\n"
-  	  for r in linked_reactions:
-  	  	reaction = self.mesgraph.simple.getReaction(r)
-  	  	linkage_report = linkage_report + reaction.makeIdentifier(is_include_kinetics=False)
-  	  	linkage_report = linkage_report + "\n"
-  	linkage_report = linkage_report + "<-"*int((NUM_STAR/2)) + "\n"
-  	return linkage_report
+  # def reportLinkage(self, linked_molecules, linked_reactions):
+  # 	"""
+  # 	Generate a report for linked molecules.
+  # 	Molecules are linked within a SOM
+  # 	by appropriate reations. 
+  # 	:param list-str linked_molecules:
+  # 	:param list-str linked_reactions:
+  # 	:return str: linkage_report
+  # 	"""
+  # 	linkage_report = NULL_STR
+  # 	linkage_report = linkage_report + "\n" + "->"*int((NUM_STAR/2))
+  # 	if len(linked_molecules) == 1:
+  # 	  m = linked_molecules[0]
+  # 	  linkage_report = linkage_report + "\n%s is a common element in multiple reactions above.\n" % m
+  # 	else:
+  # 	  linkage_report = linkage_report + "\nThe following molecules,\n"
+  # 	  for m in linked_molecules:
+  # 	    linkage_report = linkage_report + m + "\n"
+  # 	  linkage_report = linkage_report + "Have equal mass by the following reaction(s).\n"
+  # 	  for r in linked_reactions:
+  # 	  	reaction = self.mesgraph.simple.getReaction(r)
+  # 	  	linkage_report = linkage_report + reaction.makeIdentifier(is_include_kinetics=False)
+  # 	  	linkage_report = linkage_report + "\n"
+  # 	linkage_report = linkage_report + "<-"*int((NUM_STAR/2)) + "\n"
+  # 	return linkage_report
 
   def getOperationMatrix(self):
   	"""
@@ -781,7 +783,10 @@ class GAMESReport(object):
       #
       report = report + "\nWe detected a mass imbalance\n%s\n" % inferred_reaction.identifier
       report = report + "\nfrom the following reactions.\n"
-      nonzero_result_series = result_series[result_series.to_numpy().nonzero()[0]]
+      # Remove to_numpy() method
+      ## nonzero_result_series = result_series[result_series.to_numpy().nonzero()[0]]
+      nonzero_idx = np.array([idx for idx, val in enumerate(result_series) if val != 0.0])
+      nonzero_result_series = result_series[nonzero_idx]
       #
       # part 1: reactions that caused mass balance errors
       reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
