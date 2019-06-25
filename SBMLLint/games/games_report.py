@@ -197,10 +197,6 @@ class GAMESReport(object):
           path_report = path_report + "Clearly, %s %s %s\n" % (
               molecule_name1, cn.EQUAL, molecule_name2)
       else:
-      	# for now
-        # som_path = self.getMoleculeEqualityPath(som1, 
-        #                self.mesgraph.simple.getMolecule(molecule_name1), 
-        #                self.mesgraph.simple.getMolecule(molecule_name2))
         som_path = self.getMoleculeEqualityPath(som1, molecule_name1, molecule_name2)
         for pat in som_path:
           if explain_details:
@@ -266,74 +262,6 @@ class GAMESReport(object):
     report = report + "\n%s\n" % (REPORT_DIVIDER)
     return report, error_num
 
-  # def decompostSOMCycle(self, cycle):
-  # 	"""
-  # 	Create list of PathComponents
-  # 	using a cycle of SOMs
-  # 	:param list-SOM cycle:
-  # 	:return list-PathComponents: error_cycle
-  # 	"""
-  # 	error_cycle = []
-  # 	cycle2 = cycle[1:] + [cycle[0]]
-  # 	for first, second in zip(cycle, cycle2):
-  # 	  som1_moles = {m.name for m in list(first.molecules)}
-  # 	  som2_moles = {m.name for m in list(second.molecules)}
-  # 	  reaction_data = self.mesgraph.get_edge_data(first, second)[cn.REACTION]
-  # 	  nodes1 = []
-  # 	  nodes2 = []
-  # 	  reaction_labels = []  
-  # 	  for r in reaction_data:
-  # 	  	reaction = self.mesgraph.simple.getReaction(r)
-  # 	  	if reaction.category == cn.REACTION_n_1:
-  # 	  	  sources = {r.molecule.name for r in reaction.reactants}
-  # 	  	  destinations = {p.molecule.name for p in reaction.products}
-  # 	  	elif reaction.category == cn.REACTION_1_n:
-  # 	  	  sources = {p.molecule.name for p in reaction.products}
-  # 	  	  destinations = {r.molecule.name for r in reaction.reactants}
-  # 	  	node2 = list(destinations.intersection(som2_moles))[0]
-  # 	  	for node1 in list(sources.intersection(som1_moles)):
-  # 	  	  nodes1.append(node1)
-  # 	  	  nodes2.append(node2)
-  # 	  	  reaction_labels.append(reaction.label)
-  # 	  error_cycle.append(cn.PathComponents(node1=nodes1,
-  # 	  	                                   node2=nodes2,
-  # 	  	                                   reactions=reaction_labels))
-  # 	return error_cycle
-
-  # def getSOMPath(self, som, molecule1, molecule2):
-  # 	"""
-  # 	Create an undirected graph 
-  # 	between two molecules within a SOM
-  # 	and find the shortest path
-  # 	:param SOM som:
-  # 	:param str molecule1:
-  # 	:param str molecule2:
-  # 	:return list-PathComponents: som_path
-  # 	"""
-  # 	# undirected graph
-  # 	subg = nx.Graph()
-  # 	for reaction in list(som.reactions):
-  # 	  node1 = reaction.reactants[0].molecule.name
-  # 	  node2 = reaction.products[0].molecule.name
-  # 	  if subg.has_edge(node1, node2):
-  # 	    reaction_label = subg.get_edge_data(node1, node2)[cn.REACTION]
-  # 	    # if reaction.label is not already included in the attribute
-  # 	    if reaction.label not in set(reaction_label):
-  # 	      reaction_label = reaction_label + [reaction.label]
-  # 	  else:
-  # 	    reaction_label = [reaction.label]
-  # 	  subg.add_edge(node1, node2, reaction=reaction_label)
-  # 	path = [short_p for short_p in nx.shortest_path(subg,
-  # 	                                                source=molecule1,
-  # 	                                                target=molecule2)]
-  # 	som_path = []
-  # 	for idx in range(len(path)-1):
-  # 	  edge_reactions = subg.get_edge_data(path[idx], path[idx+1])[cn.REACTION]
-  # 	  som_path.append(cn.PathComponents(node1=path[idx],
-  # 	                                    node2=path[idx+1],
-  # 	                                    reactions=edge_reactions))
-  # 	return som_path
-
   def reportTypeTwoError(self, type_two_errors, explain_details=False):
   	"""
   	Generate report for Type II Errors.
@@ -391,21 +319,6 @@ class GAMESReport(object):
   	  report = report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
   	return report, error_num
 
-  # def reportSOMPath(self, som_path):
-  # 	"""
-  # 	Generate a path report between molecules.
-  # 	:param list-PathComponents som_path:
-  # 	:return str: path_report
-  # 	"""
-  # 	path_report = NULL_STR
-  # 	# path_report = path_report + "\nThe equality between molecules are as follows:\n"
-  # 	for one_path in som_path:
-  # 	  path_report = path_report + "\n%s %s %s by\n" % (one_path.node1, cn.EQUAL, one_path.node2)
-  # 	  for r in one_path.reactions:
-  # 	  	reaction = self.mesgraph.simple.getReaction(r)
-  # 	  	path_report = path_report + "%s\n" % (reaction.makeIdentifier(is_include_kinetics=False))
-  # 	return path_report
-
   def convertOperationSeriesToReactionOperations(self, operation):
     """
     Convert an operation series to 
@@ -427,78 +340,6 @@ class GAMESReport(object):
       	                              )
       operations.append(reaction_op)
     return operations
-
-  # def findSOM(self, som_info):
-  # 	"""
-  # 	Return a SOM by given informatino.
-  # 	som_info can be either som identifier,
-  # 	or one of the molecules within the som. 
-  # 	:param str/SOM som:
-  # 	:return SOM/None:
-  # 	"""
-  # 	for node in self.mesgraph.nodes:
-  # 	  if type(som_info) == str:
-  # 	  	if node.identifier == som_info:
-  # 	  	  return node
-  # 	  elif type(som_info) == Molecule:
-  # 	  	if som_info in node.molecules:
-  # 	  	  return node
-  # 	return None
-
-  # def getMoleculeLinkage(self, som, reactions):
-  # 	"""
-  # 	Create two lists. 
-  # 	1. molecules in the reactions that are in the same som
-  # 	2. reactions used to merge the molecules
-  # 	:param SOM som:
-  # 	:param list-str reactions:
-  # 	:return list-str: linked_molecules
-  # 	:return list-str: linked_reactions
-  # 	"""
-  # 	molecules = {m.name for m in som.molecules}
-  # 	# linked_molecules: molecules within both the SOM and given reactions
-  # 	linked_molecules = set()
-  # 	for r in reactions:
-  # 	  reaction = self.mesgraph.simple.getReaction(r)
-  # 	  reactants = {m.molecule.name for m in reaction.reactants}
-  # 	  products = {m.molecule.name for m in reaction.products}
-  # 	  som_molecules = molecules.intersection(reactants)
-  # 	  som_molecules = som_molecules.union(molecules.intersection(products))
-  # 	  linked_molecules = linked_molecules.union(som_molecules)
-  # 	linked_reactions = []
-  # 	for sr in som.reactions:
-  # 	  sreactants = {m.molecule.name for m in sr.reactants}
-  # 	  sproducts = {m.molecule.name for m in sr.products}
-  # 	  if sreactants.intersection(linked_molecules) or \
-  # 	      sproducts.intersection(linked_molecules):
-  # 	    linked_reactions.append(sr.label)
-  # 	return list(linked_molecules), linked_reactions
-
-  # def reportLinkage(self, linked_molecules, linked_reactions):
-  # 	"""
-  # 	Generate a report for linked molecules.
-  # 	Molecules are linked within a SOM
-  # 	by appropriate reations. 
-  # 	:param list-str linked_molecules:
-  # 	:param list-str linked_reactions:
-  # 	:return str: linkage_report
-  # 	"""
-  # 	linkage_report = NULL_STR
-  # 	linkage_report = linkage_report + "\n" + "->"*int((NUM_STAR/2))
-  # 	if len(linked_molecules) == 1:
-  # 	  m = linked_molecules[0]
-  # 	  linkage_report = linkage_report + "\n%s is a common element in multiple reactions above.\n" % m
-  # 	else:
-  # 	  linkage_report = linkage_report + "\nThe following molecules,\n"
-  # 	  for m in linked_molecules:
-  # 	    linkage_report = linkage_report + m + "\n"
-  # 	  linkage_report = linkage_report + "Have equal mass by the following reaction(s).\n"
-  # 	  for r in linked_reactions:
-  # 	  	reaction = self.mesgraph.simple.getReaction(r)
-  # 	  	linkage_report = linkage_report + reaction.makeIdentifier(is_include_kinetics=False)
-  # 	  	linkage_report = linkage_report + "\n"
-  # 	linkage_report = linkage_report + "<-"*int((NUM_STAR/2)) + "\n"
-  # 	return linkage_report
 
   def getOperationMatrix(self):
   	"""
@@ -579,34 +420,6 @@ class GAMESReport(object):
   		                                   self.mesgraph)
   	inferred_reaction.reduceBySOMs()
   	return inferred_reaction
-
-  def getCommonSOMs(self, reactions):
-    """
-    Get SOMs that are common in all reactions.
-    :param list-str reactions:
-    :return list-SOM: soms
-    """
-    soms = set(self.mesgraph.nodes)
-    for r in reactions:
-      reaction = self.mesgraph.simple.getReaction(r)
-      som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
-      reactant_soms = {r.som for r in som_reaction.reactants}
-      product_soms = {p.som for p in som_reaction.products}
-      reaction_soms = reactant_soms.union(product_soms)
-      soms = soms.intersection(reaction_soms)
-    return list(soms)
-
-  # def reportErrorReactionsAndOperation(self, reaction=[], soms=[], explain_details):
-  # 	"""
-  # 	Generate a report to explain multi-multi reactions, 
-  # 	transformed by uni-uni reactions and SOMs. 
-  # 	:param list-str reactions:
-  # 	:param list-som soms:
-  # 	:return str:
-  # 	"""
-  # 	report = NULL_STR
-  # 	reaction_count = 0
-  # 	report = report + "We detected a mass imbalance from the following reactions:\n"
 
   def reportReactionsInSOM(self, som, reaction_count=0):
     """
