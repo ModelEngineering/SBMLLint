@@ -36,9 +36,13 @@ MTHFR = "MTHFR"
 CH3FH4 = "CH3FH4"
 FH4 = "FH4"
 # For Echelon, Type III Error
-STATPHOSPHRYLATION = "statPhosphorylation"
+STATPHOSPHORYLATION = "statPhosphorylation"
 PSTATDIMERISATION = "PstatDimerisation"
 PSTATDIMERISATIONNUC = "PstatDimerisationNuc"
+SPECIES_TEST = "species_test"
+PSTAT_SOL = "Pstat_sol"
+PSTATDIMER_NUC = "PstatDimer_nuc"
+PSTAT_NUC = "Pstat_nuc"
 
 
 #############################
@@ -112,14 +116,6 @@ class TestGAMESReport(unittest.TestCase):
   	extended_report = extended_report + "This indicates a mass conflict between reactions."
   	extended_report = extended_report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
   	extended_report = extended_report + "\n%s\n" % REPORT_DIVIDER
-  	print("len auto error", len(report))
-  	print("len manual error", len(extended_report))
-  	for idx, val in enumerate(report):
-  	  if val!=extended_report[idx]:
-  	    print("index: ", idx)
-  	    print("automatic report says::::", report[idx-20:idx+20])
-  	    print("manual report says::::", extended_report[idx-20:idx+20])
-  	    break
   	self.assertEqual(extended_report, report)
   	self.assertEqual(error_num, [2])
 
@@ -209,15 +205,81 @@ class TestGAMESReport(unittest.TestCase):
   	m = GAMES_PP(self.simple4)
   	m.analyze(error_details=False)
   	gr = GAMESReport(m)
-  	op = pd.Series([1.0, 0.5, 0.0], index = [STATPHOSPHRYLATION, PSTATDIMERISATION, PSTATDIMERISATIONNUC])
+  	op = pd.Series([1.0, 0.5, 0.0], index = [STATPHOSPHORYLATION, PSTATDIMERISATION, PSTATDIMERISATIONNUC])
   	ro = gr.convertOperationSeriesToReactionOperations(op)
   	self.assertEqual(len(ro), 2)
-  	self.assertEqual(ro[0].reaction, STATPHOSPHRYLATION)
+  	self.assertEqual(ro[0].reaction, STATPHOSPHORYLATION)
   	self.assertEqual(ro[0].operation, 1.0)
   	self.assertEqual(ro[1].reaction, PSTATDIMERISATION)
   	self.assertEqual(ro[1].operation, 0.5)
-  	# self.assertEqual(ro[2].reaction, PSTATDIMERISATIONNUC)
-  	# self.assertEqual(ro[2].operation, 1.0)
+
+  def testGetOperationMatrix(self):
+    if IGNORE_TEST:
+      return
+    m1 = GAMES_PP(self.simple1)
+    m1.analyze(error_details=False)
+    gr1 = GAMESReport(m1)
+    self.assertTrue(gr1.getOperationMatrix() is None)
+    m4 = GAMES_PP(self.simple4)
+    m4.analyze(error_details=False)
+    gr4 = GAMESReport(m4)
+    op_mat = gr4.getOperationMatrix()
+    self.assertEqual(op_mat.loc[STATPHOSPHORYLATION, STATPHOSPHORYLATION], 1.0)
+    self.assertEqual(op_mat.loc[PSTATDIMERISATION, PSTATDIMERISATION], 1.0)
+    self.assertEqual(op_mat.loc[PSTATDIMERISATIONNUC, PSTATDIMERISATIONNUC], 1.0)
+    self.assertEqual(op_mat.loc[PSTATDIMERISATIONNUC, STATPHOSPHORYLATION], 0.0)
+    self.assertEqual(op_mat.loc[STATPHOSPHORYLATION, PSTATDIMERISATIONNUC], -0.5)
+
+  def testGetResultingSeries(self):
+    if IGNORE_TEST:
+      return
+    m = GAMES_PP(self.simple4)
+    m.analyze(error_details=False)
+    gr = GAMESReport(m)
+    resulting_series = gr.getResultingSeries(STATPHOSPHORYLATION)
+    print(resulting_series)
+    self.assertEqual(resulting_series["{" + SPECIES_TEST + "}"], 1.0)
+    self.assertEqual(resulting_series["{" + PSTAT_SOL + "}"], 0.0)
+    self.assertEqual(resulting_series[m.getNode(m.simple.getMolecule(PSTATDIMER_NUC)).identifier], 0.0)
+    self.assertEqual(resulting_series[m.getNode(m.simple.getMolecule(PSTAT_NUC)).identifier], 0.0)
+
+  def testGetOperationStoichiometryMatrix(self):
+    if IGNORE_TEST:
+      return
+    m = GAMES_PP(self.simple4)
+    m.analyze(error_details=False)
+    gr = GAMESReport(m)
+    op = pd.Series([1.0, 0.5, 0.0], index = [STATPHOSPHORYLATION, PSTATDIMERISATION, PSTATDIMERISATIONNUC])
+    ro = gr.convertOperationSeriesToReactionOperations(op)
+    osm = gr.getOperationStoichiometryMatrix(ro)
+    self.assertEqual(osm.loc[SPECIES_TEST, STATPHOSPHORYLATION], 1.0)
+    self.assertEqual(osm.loc[SPECIES_TEST, PSTATDIMERISATION], 0.0)
+    self.assertEqual(osm.loc[PSTAT_SOL, STATPHOSPHORYLATION], 1.0)
+    self.assertEqual(osm.loc[PSTAT_SOL, PSTATDIMERISATION], -2.0)
+
+  def testGeInferredReaction(self):
+    if IGNORE_TEST:
+      return
+    
+
+
+# SPECIES_TEST = "species_test"
+# PSTAT_SOL = "Pstat_sol"
+# PSTATDIMER_NUC = "PstatDimer_nuc"
+# PSTAT_NUC = "Pstat_nuc"
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

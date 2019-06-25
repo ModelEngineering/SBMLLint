@@ -506,7 +506,10 @@ class GAMESReport(object):
   	on the transposed stoichiometry matrix
   	:return pandas.DataFrame: operation_df
   	"""
-  	if self.mesgraph.rref_df is None:
+  	operation_df = None
+  	if self.mesgraph.rref_operation is None:
+  	  pass
+  	elif self.mesgraph.rref_df is None:
   	  operation_df = self.mesgraph.lower_inverse
   	else:
   	  operation_df = self.mesgraph.rref_operation.dot(self.mesgraph.lower_inverse)
