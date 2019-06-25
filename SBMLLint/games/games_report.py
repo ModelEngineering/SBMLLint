@@ -391,20 +391,20 @@ class GAMESReport(object):
   	  report = report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
   	return report, error_num
 
-  def reportSOMPath(self, som_path):
-  	"""
-  	Generate a path report between molecules.
-  	:param list-PathComponents som_path:
-  	:return str: path_report
-  	"""
-  	path_report = NULL_STR
-  	# path_report = path_report + "\nThe equality between molecules are as follows:\n"
-  	for one_path in som_path:
-  	  path_report = path_report + "\n%s %s %s by\n" % (one_path.node1, cn.EQUAL, one_path.node2)
-  	  for r in one_path.reactions:
-  	  	reaction = self.mesgraph.simple.getReaction(r)
-  	  	path_report = path_report + "%s\n" % (reaction.makeIdentifier(is_include_kinetics=False))
-  	return path_report
+  # def reportSOMPath(self, som_path):
+  # 	"""
+  # 	Generate a path report between molecules.
+  # 	:param list-PathComponents som_path:
+  # 	:return str: path_report
+  # 	"""
+  # 	path_report = NULL_STR
+  # 	# path_report = path_report + "\nThe equality between molecules are as follows:\n"
+  # 	for one_path in som_path:
+  # 	  path_report = path_report + "\n%s %s %s by\n" % (one_path.node1, cn.EQUAL, one_path.node2)
+  # 	  for r in one_path.reactions:
+  # 	  	reaction = self.mesgraph.simple.getReaction(r)
+  # 	  	path_report = path_report + "%s\n" % (reaction.makeIdentifier(is_include_kinetics=False))
+  # 	return path_report
 
   def convertOperationSeriesToReactionOperations(self, operation):
     """
@@ -426,22 +426,22 @@ class GAMESReport(object):
       operations.append(reaction_op)
     return operations
 
-  def findSOM(self, som_info):
-  	"""
-  	Return a SOM by given informatino.
-  	som_info can be either som identifier,
-  	or one of the molecules within the som. 
-  	:param str/SOM som:
-  	:return SOM/None:
-  	"""
-  	for node in self.mesgraph.nodes:
-  	  if type(som_info) == str:
-  	  	if node.identifier == som_info:
-  	  	  return node
-  	  elif type(som_info) == Molecule:
-  	  	if som_info in node.molecules:
-  	  	  return node
-  	return None
+  # def findSOM(self, som_info):
+  # 	"""
+  # 	Return a SOM by given informatino.
+  # 	som_info can be either som identifier,
+  # 	or one of the molecules within the som. 
+  # 	:param str/SOM som:
+  # 	:return SOM/None:
+  # 	"""
+  # 	for node in self.mesgraph.nodes:
+  # 	  if type(som_info) == str:
+  # 	  	if node.identifier == som_info:
+  # 	  	  return node
+  # 	  elif type(som_info) == Molecule:
+  # 	  	if som_info in node.molecules:
+  # 	  	  return node
+  # 	return None
 
   def getMoleculeLinkage(self, som, reactions):
   	"""
