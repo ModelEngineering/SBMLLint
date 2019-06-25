@@ -43,6 +43,8 @@ SPECIES_TEST = "species_test"
 PSTAT_SOL = "Pstat_sol"
 PSTATDIMER_NUC = "PstatDimer_nuc"
 PSTAT_NUC = "Pstat_nuc"
+STAT_SOL = "stat_sol"
+PSTATDIMER_SOL = "PstatDimer_sol"
 
 
 #############################
@@ -260,29 +262,68 @@ class TestGAMESReport(unittest.TestCase):
   def testGeInferredReaction(self):
     if IGNORE_TEST:
       return
-    
+    m = GAMES_PP(self.simple4)
+    m.analyze(error_details=False)
+    gr = GAMESReport(m)
+    op = pd.Series([1.0, 0.5, 0.0], index = [STATPHOSPHORYLATION, PSTATDIMERISATION, PSTATDIMERISATIONNUC])
+    ro = gr.convertOperationSeriesToReactionOperations(op)
+    inferred_reaction = gr.getInferredReaction(ro)
+    self.assertEqual(len(inferred_reaction.reactants), 1)
+    self.assertEqual(len(inferred_reaction.products), 2) 
+    self.assertEqual(inferred_reaction.reactants[0].molecule.name, STAT_SOL)
+    self.assertTrue(inferred_reaction.products[0].molecule.name in {PSTATDIMER_SOL, SPECIES_TEST})
+    self.assertTrue(inferred_reaction.products[1].molecule.name in {PSTATDIMER_SOL, SPECIES_TEST})
+    self.assertEqual(inferred_reaction.reactants[0].stoichiometry, 1.0)
+    self.assertEqual({p.stoichiometry for p in inferred_reaction.products}, {0.5, 1.0})
 
+  def testReportReactionsInSOM(self):
+  	if IGNORE_TEST:
+  	  return
+  	m = GAMES_PP(self.simple4)
+  	m.analyze(error_details=False)
+  	gr = GAMESReport(m)
+  	som = m.getNode(m.simple.getMolecule(PSTATDIMER_NUC))
+  	report, error_num = gr.reportReactionsInSOM(som, 0)
+  	self.assertEqual(error_num, 1)
+  	self.assertEqual(report,
+  		             "\n1. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc;   {PstatDimer_sol=PstatDimer_nuc}"
+  		             )
 
-# SPECIES_TEST = "species_test"
-# PSTAT_SOL = "Pstat_sol"
-# PSTATDIMER_NUC = "PstatDimer_nuc"
-# PSTAT_NUC = "Pstat_nuc"
+  def testReportEchelonError(self):
+  	if IGNORE_TEST:
+  	  return
+  	m = GAMES_PP(self.simple4)
+  	m.analyze(error_details=False)
+  	gr = GAMESReport(m)
+  	report, error_num = gr.reportEchelonError(m.echelon_errors, explain_details=True)
+  	self.assertEqual(error_num, [3])
+  	extended_report = NULL_STR
+  	extended_report = extended_report + "An operation between pseudo reactions:\n"
+  	extended_report = extended_report + "1.00 * statPhosphorylation + 0.50 * PstatDimerisation - 0.50 * PstatDimerisationNuc\n\n"
+  	extended_report = extended_report + "will result in empty reactant with zero mass:\n\n:  -> {species_test}\n\n"
+  	extended_report = extended_report + "This indicates a mass conflict between reactions.\n"
+  	extended_report = extended_report + "\n----------------------------------------------------------------------\n"
+  	extended_report = extended_report + "\n----------------------------------------------------------------------\n\n"
+  	extended_report = extended_report + "\n\n**********************************************************************\n\n"
+  	self.assertEqual(report[-462:], extended_report)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  def testReportTypeThreeError(self):
+    if IGNORE_TEST:
+      return
+    m = GAMES_PP(self.simple4)
+    m.analyze(error_details=False)
+    gr = GAMESReport(m)
+    report, error_num = gr.reportTypeThreeError(m.type_three_errors, explain_details=True)
+    self.assertEqual(error_num, [3])
+    extended_report = NULL_STR
+    extended_report = extended_report + "6. statPhosphorylation: stat_sol -> Pstat_sol + species_test\n"
+    extended_report = extended_report + "(pseudo 6.) statPhosphorylation: {Pstat_nuc=stat_nuc=stat_sol} -> {species_test} + {Pstat_sol}\n\n"
+    extended_report = extended_report + "incidates the masses of {Pstat_sol} and {Pstat_nuc=stat_nuc=stat_sol} are unequal.\n\n"
+    extended_report = extended_report + "This creates a mass conflict between reactions.\n"
+    extended_report = extended_report + "\n----------------------------------------------------------------------\n"
+    extended_report = extended_report + "\n----------------------------------------------------------------------\n\n"
+    extended_report = extended_report + "\n\n**********************************************************************\n\n"
+    self.assertEqual(report[-508:], extended_report)
 
 
 
