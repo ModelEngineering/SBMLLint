@@ -35,6 +35,10 @@ MTR = "MTR"
 MTHFR = "MTHFR"
 CH3FH4 = "CH3FH4"
 FH4 = "FH4"
+# For Echelon, Type III Error
+STATPHOSPHRYLATION = "statPhosphorylation"
+PSTATDIMERISATION = "PstatDimerisation"
+PSTATDIMERISATIONNUC = "PstatDimerisationNuc"
 
 
 #############################
@@ -81,12 +85,15 @@ class TestGAMESReport(unittest.TestCase):
     self.simple1 = SimpleSBML()
     self.simple2 = SimpleSBML()
     self.simple3 = SimpleSBML()
+    self.simple4 = SimpleSBML()
     # BIOMD0000000248 - canceling_error
     self.simple1.initialize(cn.TEST_FILE_GAMESREPORT1)
     # BIOMD0000000007 - Type I error
     self.simple2.initialize(cn.TEST_FILE_GAMESREPORT2)
     # BIOMD0000000018 - Type II error
     self.simple3.initialize(cn.TEST_FILE_GAMES_PP2)
+    # BIOMD0000000167 - Echelon, Type III error
+    self.simple4.initialize(cn.TEST_FILE_GAMESREPORT3)
 
   def testReportCancelingError(self):
   	if IGNORE_TEST:
@@ -196,7 +203,21 @@ class TestGAMESReport(unittest.TestCase):
   	extended_report = extended_report + "%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
   	self.assertEqual(report[-LOC_START:], extended_report)
 
-  def test
+  def testConvertOperationSeriesToReactionOperations(self):
+  	if IGNORE_TEST:
+  	  return
+  	m = GAMES_PP(self.simple4)
+  	m.analyze(error_details=False)
+  	gr = GAMESReport(m)
+  	op = pd.Series([1.0, 0.5, 1.0], index = [STATPHOSPHRYLATION, PSTATDIMERISATION, PSTATDIMERISATIONNUC])
+  	ro = gr.convertOperationSeriesToReactionOperations(op)
+  	self.assertEqual(ro[0].reaction, STATPHOSPHRYLATION)
+  	self.assertEqual(ro[0].operation, 1.0)
+  	self.assertEqual(ro[1].reaction, PSTATDIMERISATION)
+  	self.assertEqual(ro[1].operation, 0.5)
+  	self.assertEqual(ro[2].reaction, PSTATDIMERISATIONNUC)
+  	self.assertEqual(ro[2].operation, 1.0)
+
 
 
 
