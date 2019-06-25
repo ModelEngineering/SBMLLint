@@ -540,7 +540,7 @@ class MESGraph(nx.DiGraph):
     same SOM.
     :param str molecule_name1:
     :param str molecule_name2:
-    :return true
+    :return bool/str:
     """
     path_report = NULL_STR
     som1 = self.getNode(self.simple.getMolecule(molecule_name1))
@@ -646,9 +646,9 @@ class MESGraph(nx.DiGraph):
           nodes1.append(node1)
           nodes2.append(node2)
           reaction_labels.append(reaction.label)
-      error_cycle.append(cn.PathComponents(node1=nodes1, 
-                                           node2=nodes2,
-                                           reactions=reaction_labels))
+    error_cycle.append(cn.PathComponents(node1=nodes1, 
+                                         node2=nodes2,
+                                         reactions=reaction_labels))
     som1 = cycle[-1]
     som2 = cycle[0]
     som1_moles = {mole.name for mole in list(som1.molecules)}

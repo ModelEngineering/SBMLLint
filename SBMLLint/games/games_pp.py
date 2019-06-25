@@ -14,9 +14,16 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import lu, inv
 
-# BIOMD 383 will test the validity of Gaussian Elimination to find errors, 
-# before proceeding to building SOMGraph
-
+GAMESErrors = collections.namedtuple("GAMESErrors", 
+    "type_one")
+ErrorSummary = collections.namedtuple("ErrorSummnary",
+    "type errors")
+TOLERANCE = 0.0001
+TYPE_I = "type1"
+TYPE_II = "type2"
+TYPE_III = "type3"
+CANCELING = "canceling"
+ECHELON = "echelon"
 
 class SOMStoichiometry(object):
 
@@ -167,7 +174,8 @@ class GAMES_PP(nx.DiGraph):
     self.identifier = self.makeId()
     #
     # List of errors
-    # Mass balance error from U matrix
+    # Mass balance error from U matrix (LP decomposition)
+    # If not error was detected from U, the error is from RREF
     self.echelon_errors = []
     # Can't add arc
     self.type_one_errors = []
@@ -179,6 +187,8 @@ class GAMES_PP(nx.DiGraph):
     self.type_three_errors = []
     # Cant't add arcs using SOMs (after LU decomposition)
     self.type_one_som_errors = set()
+    # for error return:
+    self.error_summary = []
   
   def __repr__(self):
     return self.identifier
@@ -275,14 +285,19 @@ class GAMES_PP(nx.DiGraph):
     """
     Creates a full stoichiometry matrix
     using non-boundary reactions.
+    Due to the issue with multiple Molecules with same name, 
+    species can also be a list of str - in this case, 
+    each component must be molecule.name. 
     Helped by https://gist.github.com/lukauskas/d1e30bdccc5b801d341d
     :param list-Reaction/SOMReaction reactions:
-    :param list-Molecule/SOM species:
+    :param list-str/Molecule/SOM species:
     :return pd.DataFrame:
     """
     reaction_labels = [r.label for r in reactions]
     if som:
       species_names = [s.identifier for s in species]
+    elif type(species[0]) == str:
+      species_names = species
     else:
       species_names = [m.name for m in species]
     stoichiometry_matrix = pd.DataFrame(
@@ -367,7 +382,10 @@ class GAMES_PP(nx.DiGraph):
     for idx, colname in enumerate(echelon_df.columns):
       reaction_series = echelon_df[colname]
       # Find the first nonzero values
-      nonzero_idx = np.nonzero(echelon_df[colname])[0]
+      # Deprecation: instead of np.nonzero(Series), use Series.to_numpy().nonzero()
+      # to fix error on GitHub - not use to_numpy here
+      ##nonzero_idx = echelon_df[colname].to_numpy().nonzero()[0]
+      nonzero_idx = np.array([idx for idx, val in enumerate(echelon_df[colname]) if val != 0])
       # Skip if there is no nonzero value or if it is first reaction
       if not nonzero_idx.any() or idx == 0:
         continue
@@ -400,13 +418,13 @@ class GAMES_PP(nx.DiGraph):
           np.round(abs(reaction_elements[som_label]), 3)
           ) \
           for som_label in reaction_elements.index \
-          if reaction_elements[som_label]<-0.0001]
+          if reaction_elements[som_label]<TOLERANCE*(-1)]
       products = [SOMStoichiometry(
           self.getNode(som_label),
           np.round(abs(reaction_elements[som_label]), 3)
           ) \
           for som_label in reaction_elements.index \
-          if reaction_elements[som_label]>0.0001]
+          if reaction_elements[som_label]>TOLERANCE]
       reactions.append(SOMReaction(
           reactants=reactants,
           products=products,
@@ -756,6 +774,7 @@ class GAMES_PP(nx.DiGraph):
     :param bool error_details:
     :return bool:
     """
+    multimulti_error_found = False
     if reactions is None:
       reactions = self.simple.reactions
     # Associate the reaction category with the function
@@ -767,63 +786,61 @@ class GAMES_PP(nx.DiGraph):
         cn.REACTION_n_1: self.processMultiUniReaction,
         cn.REACTION_n_n: self.addReaction,
         }
-    # Process each type of reaction
+    # Process each type of reaction - Type I error will be detected here
     for category in reaction_dic.keys():
       for reaction in [r for r in reactions if r.category == category]:
         func = reaction_dic[category]
         func(reaction)
+    # detect type II error
+    self.checkTypeTwoError()
+    #########################
+    # if we find type I or II errors, we make it a simple_game
+    if self.type_one_errors or self.type_two_errors:
+      simple_games = True
+    ########################
     # if simple_games, we only run elementary operations
     if not simple_games:
+      # reaction_lu are reactions for LU decomposition, i.e. multi-multi reactions
       if self.reactions_lu:
-        # convert reactions to somreactions
         for reaction in self.reactions_lu:
           self.som_reactions_lu.append(
               self.convertReactionToSOMReaction(reaction)
               )
         # Now, step 1: creates SOMStoichiometryMatrix
         self.som_stoichiometry_matrix = self.getStoichiometryMatrix(self.som_reactions_lu, list(self.nodes), som=True)
-        # step 2: reconvert it into SOMReactions and examine canceling errors
+        # step 2: reconvert it into SOMReactions and examine 'canceling errors'
         initial_reduced_som_reactions = self.convertMatrixToSOMReactions(self.som_stoichiometry_matrix)
         dropping_reactions = []
         for r in initial_reduced_som_reactions:
           if r.category == cn.REACTION_ERROR:
             self.canceling_errors.append(r)
             dropping_reactions.append(r.label)
-        if dropping_reactions:
-          self.som_stoichiometry_matrix = self.som_stoichiometry_matrix.drop(columns=dropping_reactions)
-          if error_details:
-            print("Columns Dropped!")
-            print(dropping_reactions)
-        # step 3: decompose and examine rref errors
-        echelon_df = self.decomposeMatrix(self.som_stoichiometry_matrix)
-        self.reduced_som_reactions = self.convertMatrixToSOMReactions(echelon_df)
-        # step 4: using the rest, update the graph (remaining and 1_n, n_1), check errors
-        som_reaction_dic = {
-            cn.REACTION_ERROR: self.processErrorReaction,
-            cn.REACTION_1_1: self.processEqualSOMReaction,
-            cn.REACTION_1_n: self.processUnequalSOMReaction,
-            cn.REACTION_n_1: self.processUnequalSOMReaction,
-            }
-        for category in som_reaction_dic.keys():
-          for reaction in [r for r in self.reduced_som_reactions if r.category == category]:
-            func = som_reaction_dic[category]
-            func(reaction)
-
-        error_reactions = []
-        for r in self.reduced_som_reactions:
-          if r.category == cn.REACTION_ERROR:
-            error_reactions.append(r.label)
-        # Get reduced row echelon matrix, BUT ONLY IF there is no error found in echelon matrix
-        if rref and not error_reactions and not self.type_one_som_errors and not self.type_three_errors:
+            multimulti_error_found = True
+        # step 3: decompose using LU decompositon and check errors (echelon, type_three)
+        if not multimulti_error_found:
+          echelon_df = self.decomposeMatrix(self.som_stoichiometry_matrix)
+          self.reduced_som_reactions = self.convertMatrixToSOMReactions(echelon_df)
+          som_reaction_dic = {
+              cn.REACTION_ERROR: self.processErrorReaction,
+              cn.REACTION_1_1: self.processEqualSOMReaction,
+              cn.REACTION_1_n: self.processUnequalSOMReaction,
+              cn.REACTION_n_1: self.processUnequalSOMReaction,
+              }
+          for category in som_reaction_dic.keys():
+            for reaction in [r for r in self.reduced_som_reactions if r.category == category]:
+              func = som_reaction_dic[category]
+              func(reaction)
+          # checking if there was any error by LU decompoistion
+          if self.echelon_errors or self.type_three_errors:
+            multimulti_error_found = True
+        # step 4: get RREF and check errors (same as LU decomposition case)
+        if not multimulti_error_found:
           rref_df = self.getRREFMatrix(self.echelon_df)
           self.rref_som_reactions = self.convertMatrixToSOMReactions(rref_df)
           for category in som_reaction_dic.keys():
             for reaction in [r for r in self.rref_som_reactions if r.category == category]:
               func = som_reaction_dic[category]
               func(reaction)
-    # Check type two errors
-    self.checkTypeTwoError()
-    #
     if error_details:
       print("We just analyzed the data...")
       print("Type I error: ", self.type_one_errors)
@@ -833,7 +850,17 @@ class GAMES_PP(nx.DiGraph):
       print("Type III error: ", self.type_three_errors)
       print("Type I-SOM error: " , self.type_one_som_errors)    
     if self.echelon_errors or self.type_one_errors or self.type_two_errors \
-        or self.canceling_errors or self.type_three_errors or self.type_one_som_errors:
+        or self.canceling_errors or self.type_three_errors:
+      if self.type_one_errors:
+        self.error_summary.append(ErrorSummary(type=TYPE_I, errors=self.type_one_errors))
+      if self.type_two_errors:
+        self.error_summary.append(ErrorSummary(type=TYPE_II, errors=self.type_two_errors))
+      if self.type_three_errors:
+        self.error_summary.append(ErrorSummary(type=TYPE_III, errors=self.type_three_errors))
+      if self.canceling_errors:
+        self.error_summary.append(ErrorSummary(type=CANCELING, errors=self.canceling_errors))
+      if self.echelon_errors:
+        self.error_summary.append(ErrorSummary(type=ECHELON, errors=self.echelon_errors))
       return True
     else:
       return False

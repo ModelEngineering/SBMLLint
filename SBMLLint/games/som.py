@@ -38,7 +38,7 @@ class SOM(object):
     def joinMoleculeNames(molecules):
       names = [m.name for m in molecules]
       names.sort()
-      return ', '.join(names)
+      return '='.join(names)
     #
     identifier = "%s%s%s" % (
         BRACKET_OPEN, 
