@@ -577,9 +577,9 @@ class GAMES_PP(nx.DiGraph):
     """
     Process a 1-1 SOMReaction to check 
     mergeability of nodes.
-    Because there are existing arcs, some nodes
+    If there are existing arcs, two nodes
     cannot be merged which will lead to a 
-    type_one_som_errors
+    type_three_error.
     :param SOMReaction reaction:
     """
     if reaction.category != cn.REACTION_1_1:
