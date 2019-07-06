@@ -468,106 +468,107 @@ class GAMESReport(object):
     return report, reaction_count
 
   def reportTypeThreeError(self, type_three_errors, explain_details=False):
-  	"""
-  	Generate a report for Type III errors.
-  	A Type III error occurs when there is 
-  	a 1-1 SOMReaction, while there is a preexisting
-  	MESGraph node between them. 
-  	:param list-SOMReaction type_three_errors:
-  	:param bool explain_details:
-  	:return False/str: report
-  	:return list-int: error_num
-  	"""
-  	report = NULL_STR
-  	error_num = []
-  	if len(type_three_errors) == 0:
-  	  return report, error_num
-  	for type3_error in type_three_errors:
-  	  reaction_count = 0
-  	  if type3_error.category != cn.REACTION_1_1:
-  	    print("This canot be a type three error!")
-  	    return False
-  	  else:
-  	  	reaction_label = type3_error.label
-  	  	reactant_som = type3_error.reactants[0].som
-  	  	product_som = type3_error.products[0].som
-  	  	operation_df = self.getOperationMatrix()
-  	  	operation_series = operation_df.T[reaction_label]
-  	  	reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
-  	  	inferred_reaction = self.getInferredReaction(reaction_operations)
-  	  	inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
-  	  	reactant_som = inferred_som_reaction.reactants[0].som
-  	  	product_som = inferred_som_reaction.products[0].som
-  	  	inequality_reactions = []
-  	  	if self.mesgraph.has_edge(reactant_som, product_som):
-  	  	  inequality_reactions = inequality_reactions + self.mesgraph.get_edge_data(reactant_som, product_som)[cn.REACTION]
-  	  	if self.mesgraph.has_edge(product_som, reactant_som):
-  	  	  inequality_reactions = inequality_reactions + self.mesgraph.get_edge_data(product_som, reactant_som)[cn.REACTION]
-  	  	#
-  	  	report = report + "We detected a mass imbalance from the following reactions:\n"
-  	  	soms = set()
-  	  	som_reactions = []
-  	  	for r in reaction_operations:
-  	  	  reaction = self.mesgraph.simple.getReaction(r.reaction)
-  	  	  reaction_count += 1
-  	  	  report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-  	  	  som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
-  	  	  som_reactions.append(som_reaction)
-  	  	  soms = soms.union({r.som for r in som_reaction.reactants})
-  	  	  soms = soms.union({p.som for p in som_reaction.products})
-  	  	# calculated the reported number of reactions that constitute a type III error
-  	  	error_num.append(reaction_count + len(inequality_reactions))
-  	  	if explain_details:
-  	  	  report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	  report = report + "These uni-uni reactions created mass-equivalence.\n" 
-  	  	  report = report + "(The molecules within a curly bracket have the same atomic mass.)\n"  	  	
-  	  	for som in soms:
-  	  	  sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
-  	  	  report = report + sub_report
-  	  	  # for reaction in list(som.reactions):
-  	  	  # 	reaction_count += 1
-  	  	  # 	report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-  	  	if explain_details:
-  	  	  report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	  report = report + "These multi-uni (uni-multi) reactions created mass-inequality.\n"  	  
-  	  	for r in inequality_reactions:
-  	  	  reaction = self.mesgraph.simple.getReaction(r)
-  	  	  reaction_count += 1
-  	  	  report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-  	  	reaction_count = reaction_count - len(inequality_reactions)
-  	  	if explain_details:
-  	  	  report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	  report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions.\n"
-  	  	  pseudo_reaction_count = 0
-  	  	  for sr in som_reactions:
-  	  	    pseudo_reaction_count += 1
-  	  	    report = report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
-  	  	  report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	  report = report + "An operation between pseudo reactions:\n"
-  	  	  report = report + "\n%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
-  	  	  for ro in reaction_operations[1:]:
-  	  	    if ro.operation < 0:
-  	  	      report = report + " - "
-  	  	    else:
-  	  	      report = report + " + "
-  	  	    report = report + "%.2f * %s\n" % (abs(ro.operation), ro.reaction)
-  	  	  report = report + "\n\nwill result in a uni-uni reaction:\n"
-  	  	  report = report + "\n%s\n" % (inferred_som_reaction.identifier)
-  	  	  report = report + "\n\nmeaning %s and %s have equal mass.\n" % (reactant_som, product_som)
-  	  	  report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
-  	  	  report = report + "However, the following mass-equivalent pseudo reaction(s):\n"
-  	  	  for r in inequality_reactions:
-  	  	    reaction = self.mesgraph.simple.getReaction(r)
-  	  	    reaction_count += 1
-  	  	    report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-  	  	    som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
-  	  	    report = report + "\n(pseudo %d.) %s" % (reaction_count, som_reaction.identifier)
-  	  	  report = report + "\n\nincidates the masses of %s and %s are unequal.\n" % (reactant_som, product_som)
-  	  	  ##
-  	  	  report = report + "\nThis creates a mass conflict between reactions."
-  	  	  report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-  	  	report = report + "\n%s\n" % (REPORT_DIVIDER) 
-  	  return report, error_num
+    """
+    Generate a report for Type III errors.
+    A Type III error occurs when there is 
+    a 1-1 SOMReaction, while there is a preexisting
+    MESGraph node between them. 
+    :param list-SOMReaction type_three_errors:
+    :param bool explain_details:
+    :return False/str: report
+    :return list-int: error_num
+    """
+    report = NULL_STR
+    error_num = []
+    if len(type_three_errors) == 0:
+      return report, error_num
+    for type3_error in type_three_errors:
+      reaction_count = 0
+      if type3_error.category != cn.REACTION_1_1:
+        print("This canot be a type three error!")
+        report = False
+        break
+      else:
+        reaction_label = type3_error.label
+        reactant_som = type3_error.reactants[0].som
+        product_som = type3_error.products[0].som
+        operation_df = self.getOperationMatrix()
+        operation_series = operation_df.T[reaction_label]
+        reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
+        inferred_reaction = self.getInferredReaction(reaction_operations)
+        inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
+        if inferred_som_reaction.getCategory() != cn.REACTION_1_1:
+          report = False
+          break
+        reactant_som = inferred_som_reaction.reactants[0].som
+        product_som = inferred_som_reaction.products[0].som
+        inequality_reactions = []
+        if self.mesgraph.has_edge(reactant_som, product_som):
+          inequality_reactions = inequality_reactions + self.mesgraph.get_edge_data(reactant_som, product_som)[cn.REACTION]
+        if self.mesgraph.has_edge(product_som, reactant_som):
+          inequality_reactions = inequality_reactions + self.mesgraph.get_edge_data(product_som, reactant_som)[cn.REACTION]
+        #
+        report = report + "We detected a mass imbalance from the following reactions:\n"
+        soms = set()
+        som_reactions = []
+        for r in reaction_operations:
+          reaction = self.mesgraph.simple.getReaction(r.reaction)
+          reaction_count += 1
+          report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+          som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
+          som_reactions.append(som_reaction)
+          soms = soms.union({r.som for r in som_reaction.reactants})
+          soms = soms.union({p.som for p in som_reaction.products})
+        # calculated the reported number of reactions that constitute a type III error
+        error_num.append(reaction_count + len(inequality_reactions))
+        if explain_details:
+          report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "These uni-uni reactions created mass-equivalence.\n" 
+          report = report + "(The molecules within a curly bracket have the same atomic mass.)\n"  	  	
+        for som in soms:
+          sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
+          report = report + sub_report
+        if explain_details:
+          report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "These multi-uni (uni-multi) reactions created mass-inequality.\n"  	  
+        for r in inequality_reactions:
+          reaction = self.mesgraph.simple.getReaction(r)
+          reaction_count += 1
+          report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+        reaction_count = reaction_count - len(inequality_reactions)
+        if explain_details:
+          report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions.\n"
+          pseudo_reaction_count = 0
+          for sr in som_reactions:
+            pseudo_reaction_count += 1
+            report = report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
+          report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "An operation between pseudo reactions:\n"
+          report = report + "\n%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
+          for ro in reaction_operations[1:]:
+            if ro.operation < 0:
+              report = report + " - "
+            else:
+              report = report + " + "
+            report = report + "%.2f * %s\n" % (abs(ro.operation), ro.reaction)
+          report = report + "\n\nwill result in a uni-uni reaction:\n"
+          report = report + "\n%s\n" % (inferred_som_reaction.identifier)
+          report = report + "\n\nmeaning %s and %s have equal mass.\n" % (reactant_som, product_som)
+          report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "However, the following mass-equivalent pseudo reaction(s):\n"
+          for r in inequality_reactions:
+            reaction = self.mesgraph.simple.getReaction(r)
+            reaction_count += 1
+            report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+            som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
+            report = report + "\n(pseudo %d.) %s" % (reaction_count, som_reaction.identifier)
+          report = report + "\n\nincidates the masses of %s and %s are unequal.\n" % (reactant_som, product_som)
+          ##
+          report = report + "\nThis creates a mass conflict between reactions."
+          report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
+        report = report + "\n%s\n" % (REPORT_DIVIDER) 
+    return report, error_num
 
   def reportEchelonError(self, echelon_errors, explain_details=False):
     """
@@ -631,9 +632,6 @@ class GAMESReport(object):
       for som in canceled_soms:
       	sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
       	report = report + sub_report
-      	# for reaction in list(som.reactions):
-      	#   reaction_count += 1
-      	#   report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
       if explain_details:
       	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
       	report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions."
