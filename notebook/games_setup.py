@@ -24,7 +24,7 @@ print("Current Directory:", cwd)
 def load_file_from_games(num):
 
   format_num = format(num, '03d')
-  file = os.path.join(os.getcwd(), os.pardir, 'SBMLLint/games/data/curated_' + format_num + '.xml')
+  file = os.path.join(os.getcwd(), os.pardir, 'data/biomodels/BIOMD0000000' + format_num + '_url.xml')
   simple = SimpleSBML()
   simple.initialize(file)
   return simple
