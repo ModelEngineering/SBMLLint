@@ -277,17 +277,18 @@ class TestGAMESReport(unittest.TestCase):
     self.assertEqual({p.stoichiometry for p in inferred_reaction.products}, {0.5, 1.0})
 
   def testReportReactionsInSOM(self):
-  	if IGNORE_TEST:
-  	  return
-  	m = GAMES_PP(self.simple4)
-  	m.analyze(error_details=False)
-  	gr = GAMESReport(m)
-  	som = m.getNode(m.simple.getMolecule(PSTATDIMER_NUC))
-  	report, error_num = gr.reportReactionsInSOM(som, 0)
-  	self.assertEqual(error_num, 1)
-  	self.assertEqual(report,
-  		             "\n1. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc;   {PstatDimer_sol=PstatDimer_nuc}"
-  		             )
+    if IGNORE_TEST:
+      return
+    m = GAMES_PP(self.simple4)
+    m.analyze(error_details=False)
+    gr = GAMESReport(m)
+    som = m.getNode(m.simple.getMolecule(PSTATDIMER_NUC))
+    report, error_num = gr.reportReactionsInSOM(som, 0)
+    common_part = " is inferred by:\n1. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc\n"
+    case1 = "\n{PstatDimer_sol=PstatDimer_nuc}"
+    case2 = "\n{PstatDimer_nuc=PstatDimer_sol}"
+    self.assertEqual(error_num, 1)
+    self.assertTrue(report == (case1 + common_part) or report == (case2 + common_part))
 
   def testReportEchelonError(self):
   	if IGNORE_TEST:

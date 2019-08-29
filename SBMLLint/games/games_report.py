@@ -608,7 +608,7 @@ class GAMESReport(object):
       inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
       #
       report = report + "\nWe detected a mass imbalance\n%s\n" % inferred_reaction.identifier
-      report = report + "\nfrom the following reactions.\n"
+      report = report + "\nfrom the following isolation set.\n"
       # Remove to_numpy() method
       ## nonzero_result_series = result_series[result_series.to_numpy().nonzero()[0]]
       nonzero_idx = np.array([idx for idx, val in enumerate(result_series) if val != 0.0])
@@ -637,19 +637,19 @@ class GAMESReport(object):
       if explain_details:
       	report = report + "\n\n%s%s\n" % ("-"*NUM_STAR, PARAGRAPH_DIVIDER)
       	report = report + "These uni-uni reactions created mass-equivalence.\n"
-      	report = report + "(The species within a curly bracket have the same atomic mass.)\n"
+      	report = report + "(The chemical species within a curly bracket have the same atomic mass.)\n"
       for som in canceled_soms:
       	sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
       	report = report + sub_report
       if explain_details:
-      	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-      	report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions."
+      	report = report + "%s\n" % (PARAGRAPH_DIVIDER)
+      	report = report + "Based on the uni-uni reactions above, we create mass-equivalent pseudo reactions."
       	pseudo_reaction_count = 0
       	for sr in reported_som_reactions:
       	  pseudo_reaction_count += 1
       	  report = report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
       	report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
-      	report = report + "An operation between pseudo reactions:\n"
+      	report = report + "An operation between the pseudo reactions:\n"
       	report = report + "%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
       	for ro in reaction_operations[1:]:
       	  if ro.operation < 0:
