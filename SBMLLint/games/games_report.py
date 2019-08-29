@@ -433,13 +433,11 @@ class GAMESReport(object):
     report = cn.NULL_STR
     if not som.reactions:
       return report, reaction_count
-    report = report + "\n%s is inferred by:" % som.makeId()
     reactions = list(som.reactions)
     for r in reactions:
       reaction_count += 1
-      report = report + "\n%d. %s" % (reaction_count,
+      report = report + "%d. %s\n" % (reaction_count,
                                       r.makeIdentifier(is_include_kinetics=False))
-    report = report + "\n"
     #### The following is the previous version - each reactino with expanding SOMs
     # reaction_count += 1
     # molecules = []
@@ -638,39 +636,45 @@ class GAMESReport(object):
       	report = report + "\n\n%s%s\n" % ("-"*NUM_STAR, PARAGRAPH_DIVIDER)
       	report = report + "These uni-uni reactions created mass-equivalence.\n"
       	report = report + "(The chemical species within a curly bracket have the same atomic mass.)\n"
+      else:
+        report = report + "\n"
       for som in canceled_soms:
-      	sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
-      	report = report + sub_report
+        if explain_details and som.reactions:
+          report = report + "\n%s is inferred by:\n" % som.makeId()
+        sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
+        # if explain_details:
+        #   report = report + "\n"
+        report = report + sub_report
       if explain_details:
-      	report = report + "%s\n" % (PARAGRAPH_DIVIDER)
-      	report = report + "Based on the uni-uni reactions above, we create mass-equivalent pseudo reactions."
-      	pseudo_reaction_count = 0
-      	for sr in reported_som_reactions:
-      	  pseudo_reaction_count += 1
-      	  report = report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
-      	report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
-      	report = report + "An operation between the pseudo reactions:\n"
-      	report = report + "%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
-      	for ro in reaction_operations[1:]:
-      	  if ro.operation < 0:
-      	    report = report + " - "
-      	  else:
-      	  	report = report + " + "
-      	  report = report + "%.2f * %s" % (abs(ro.operation), ro.reaction)
-      	#
-      	one_side = "--undetermined--"
-      	##
-      	if inferred_som_reaction.reactants==[]:
-      	  one_side = "reactant"
-      	elif inferred_som_reaction.products==[]:
-      	  one_side = "product"
-      	report = report + "\n\nwill result in empty %s with zero mass:\n" % (one_side)
-      	report = report + "\n%s\n" % (inferred_som_reaction.identifier)
-      	#report = report + "\nThis indicates a mass conflict between reactions."
-      	report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-      	if one_side == "--undetermined--":
-      	  report = False
-      	  break
+        report = report + "%s\n" % (PARAGRAPH_DIVIDER)
+        report = report + "Based on the uni-uni reactions above, we create mass-equivalent pseudo reactions."
+        pseudo_reaction_count = 0
+        for sr in reported_som_reactions:
+          pseudo_reaction_count += 1
+          report = report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
+        report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
+        report = report + "An operation between the pseudo reactions:\n"
+        report = report + "%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
+        for ro in reaction_operations[1:]:
+          if ro.operation < 0:
+            report = report + " - "
+          else:
+            report = report + " + "
+          report = report + "%.2f * %s" % (abs(ro.operation), ro.reaction)
+        #
+        one_side = "--undetermined--"
+        ##
+        if inferred_som_reaction.reactants==[]:
+          one_side = "reactant"
+        elif inferred_som_reaction.products==[]:
+          one_side = "product"
+        report = report + "\n\nwill result in empty %s with zero mass:\n" % (one_side)
+        report = report + "\n%s\n" % (inferred_som_reaction.identifier)
+        #report = report + "\nThis indicates a mass conflict between reactions."
+        report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
+        if one_side == "--undetermined--":
+          report = False
+          break
       report = report + "\n%s\n" % (REPORT_DIVIDER)
     return report, error_num
 
