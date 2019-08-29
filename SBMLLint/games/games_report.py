@@ -529,22 +529,26 @@ class GAMESReport(object):
         # calculated the reported number of reactions that constitute a type III error
         error_num.append(reaction_count + len(inequality_reactions))
         if explain_details:
-          report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "\n\n%s%s\n" % ("-"*NUM_STAR, PARAGRAPH_DIVIDER)
           report = report + "These uni-uni reactions created mass-equivalence.\n" 
-          report = report + "(The molecules within a curly bracket have the same atomic mass.)\n"  	  	
+          report = report + "(The chemical species within a curly bracket have the same atomic mass.)\n"
+        else:
+          report = report + "\n"  	  	
         for som in soms:
+          if explain_details and som.reactions:
+            report = report + "\n%s is inferred by:\n" % som.makeId()
           sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
           report = report + sub_report
         if explain_details:
-          report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-          report = report + "These multi-uni (uni-multi) reactions created mass-inequality.\n"  	  
+          report = report + "%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "These multi-uni reactions created mass-inequality.\n\n"  	  
         for r in inequality_reactions:
           reaction = self.mesgraph.simple.getReaction(r)
           reaction_count += 1
-          report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+          report = report + "%d. %s\n" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
         reaction_count = reaction_count - len(inequality_reactions)
         if explain_details:
-          report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "%s\n" % (PARAGRAPH_DIVIDER)
           report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions.\n"
           pseudo_reaction_count = 0
           for sr in som_reactions:
@@ -562,7 +566,7 @@ class GAMESReport(object):
           report = report + "\n\nwill result in a uni-uni reaction:\n"
           report = report + "\n%s\n" % (inferred_som_reaction.identifier)
           report = report + "\n\nmeaning %s and %s have equal mass.\n" % (reactant_som, product_som)
-          report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report +  "%s\n" % (PARAGRAPH_DIVIDER)
           report = report + "However, the following mass-equivalent pseudo reaction(s):\n"
           for r in inequality_reactions:
             reaction = self.mesgraph.simple.getReaction(r)
@@ -571,8 +575,7 @@ class GAMESReport(object):
             som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
             report = report + "\n(pseudo %d.) %s" % (reaction_count, som_reaction.identifier)
           report = report + "\n\nincidates the masses of %s and %s are unequal.\n" % (reactant_som, product_som)
-          ##
-          report = report + "\nThis creates a mass conflict between reactions."
+          #
           report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
         report = report + "\n%s\n" % (REPORT_DIVIDER) 
     return report, error_num
