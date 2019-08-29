@@ -284,11 +284,11 @@ class TestGAMESReport(unittest.TestCase):
     gr = GAMESReport(m)
     som = m.getNode(m.simple.getMolecule(PSTATDIMER_NUC))
     report, error_num = gr.reportReactionsInSOM(som, 0)
-    common_part = " is inferred by:\n1. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc\n"
-    case1 = "\n{PstatDimer_sol=PstatDimer_nuc}"
-    case2 = "\n{PstatDimer_nuc=PstatDimer_sol}"
+    common_part = "1. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc\n"
+    # case1 = "\n{PstatDimer_sol=PstatDimer_nuc}"
+    # case2 = "\n{PstatDimer_nuc=PstatDimer_sol}"
     self.assertEqual(error_num, 1)
-    self.assertTrue(report == (case1 + common_part) or report == (case2 + common_part))
+    self.assertTrue(report == common_part)
 
   def testReportEchelonError(self):
   	if IGNORE_TEST:
@@ -300,11 +300,10 @@ class TestGAMESReport(unittest.TestCase):
   	self.assertEqual(error_num, [3])
   	extended_report = NULL_STR
   	extended_report = extended_report + "will result in empty reactant with zero mass:\n\n:  -> {species_test}\n\n"
-  	extended_report = extended_report + "This indicates a mass conflict between reactions.\n"
   	extended_report = extended_report + "\n----------------------------------------------------------------------\n"
   	extended_report = extended_report + "\n----------------------------------------------------------------------\n\n"
   	extended_report = extended_report + "\n\n**********************************************************************\n\n"
-  	self.assertEqual(report[-338:], extended_report)
+  	self.assertEqual(report[-288:], extended_report)
 
   def testReportTypeThreeError(self):
     if IGNORE_TEST:
