@@ -433,38 +433,47 @@ class GAMESReport(object):
     report = cn.NULL_STR
     if not som.reactions:
       return report, reaction_count
-    reaction_count += 1
-    molecules = []
+    report = report + "\n%s is inferred by:" % som.makeId()
     reactions = list(som.reactions)
-    molecules.append(reactions[0].reactants[0].molecule.name)
-    molecules.append(reactions[0].products[0].molecule.name)
-    report = report + "\n%d. %s;   %s" % (reaction_count,
-                                            reactions[0].makeIdentifier(is_include_kinetics=False),
-                                            '{' + '='.join(molecules) + '}') 
-    res = reactions[1:]
-    flag = 0
-    while res:
-      flag += 1
-      if flag > 50:
-        break
-      reaction = res[0]
-      reactant = reaction.reactants[0].molecule.name
-      product = reaction.products[0].molecule.name
-      if (reactant not in molecules) and (product not in molecules):
-        res.remove(reaction)
-        res.append(reaction)
-      else:
-        if reactant not in molecules and product in molecules:
-          molecules.append(reactant)
-        if reactant in molecules and product not in molecules:
-          molecules.append(product)
-        if reactant in molecules and product in molecules:
-          pass
-        reaction_count += 1
-        report = report + "\n%d. %s;   %s" % (reaction_count,
-                                                reaction.makeIdentifier(is_include_kinetics=False),
-                                                '{' + '='.join(molecules) + '}') 
-        res.remove(reaction)
+    for r in reactions:
+      reaction_count += 1
+      report = report + "\n%d. %s" % (reaction_count,
+                                      r.makeIdentifier(is_include_kinetics=False))
+    report = report + "\n"
+    #### The following is the previous version - each reactino with expanding SOMs
+    # reaction_count += 1
+    # molecules = []
+    # reactions = list(som.reactions)
+    # molecules.append(reactions[0].reactants[0].molecule.name)
+    # molecules.append(reactions[0].products[0].molecule.name)
+    # report = report + "\n%d. %s;   %s" % (reaction_count,
+    #                                         reactions[0].makeIdentifier(is_include_kinetics=False),
+    #                                         '{' + '='.join(molecules) + '}') 
+    # res = reactions[1:]
+    # flag = 0
+    # while res:
+    #   flag += 1
+    #   if flag > 50:
+    #     break
+    #   reaction = res[0]
+    #   reactant = reaction.reactants[0].molecule.name
+    #   product = reaction.products[0].molecule.name
+    #   if (reactant not in molecules) and (product not in molecules):
+    #     res.remove(reaction)
+    #     res.append(reaction)
+    #   else:
+    #     if reactant not in molecules and product in molecules:
+    #       molecules.append(reactant)
+    #     if reactant in molecules and product not in molecules:
+    #       molecules.append(product)
+    #     if reactant in molecules and product in molecules:
+    #       pass
+    #     reaction_count += 1
+    #     report = report + "\n%d. %s;   %s" % (reaction_count,
+    #                                             reaction.makeIdentifier(is_include_kinetics=False),
+    #                                             '{' + '='.join(molecules) + '}') 
+    #     res.remove(reaction)
+    #### uncomment above if want to go back to the previous version
     return report, reaction_count
 
   def reportTypeThreeError(self, type_three_errors, explain_details=False):
@@ -626,9 +635,9 @@ class GAMESReport(object):
       canceled_soms = canceled_soms.difference({p.som for p in inferred_som_reaction.products})
       #
       if explain_details:
-      	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+      	report = report + "\n\n%s%s\n" % ("-"*NUM_STAR, PARAGRAPH_DIVIDER)
       	report = report + "These uni-uni reactions created mass-equivalence.\n"
-      	report = report + "(The molecules within a curly bracket have the same atomic mass.)\n"
+      	report = report + "(The species within a curly bracket have the same atomic mass.)\n"
       for som in canceled_soms:
       	sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
       	report = report + sub_report
@@ -657,7 +666,7 @@ class GAMESReport(object):
       	  one_side = "product"
       	report = report + "\n\nwill result in empty %s with zero mass:\n" % (one_side)
       	report = report + "\n%s\n" % (inferred_som_reaction.identifier)
-      	report = report + "\nThis indicates a mass conflict between reactions."
+      	#report = report + "\nThis indicates a mass conflict between reactions."
       	report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
       	if one_side == "--undetermined--":
       	  report = False

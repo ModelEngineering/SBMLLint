@@ -339,6 +339,9 @@ class GAMES_PP(nx.DiGraph):
         mat_t["_" + str(i)] = np.zeros(mat_t.shape[0])
     # LU decomposition
     perm, lower, upper = lu(mat_t)
+    # #### Trying to round up lower and upper, to avoid precision issue related to 0.0
+    # lower = np.round(lower_raw, 3)
+    # upper = np.round(upper_raw, 3)
     perm_inverse = perm.T
     permuted_m = (perm_inverse).dot(mat_t)
     pivot_index = [list(k).index(1) for k in perm_inverse]
