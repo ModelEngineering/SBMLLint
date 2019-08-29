@@ -277,17 +277,18 @@ class TestGAMESReport(unittest.TestCase):
     self.assertEqual({p.stoichiometry for p in inferred_reaction.products}, {0.5, 1.0})
 
   def testReportReactionsInSOM(self):
-  	if IGNORE_TEST:
-  	  return
-  	m = GAMES_PP(self.simple4)
-  	m.analyze(error_details=False)
-  	gr = GAMESReport(m)
-  	som = m.getNode(m.simple.getMolecule(PSTATDIMER_NUC))
-  	report, error_num = gr.reportReactionsInSOM(som, 0)
-  	self.assertEqual(error_num, 1)
-  	self.assertEqual(report,
-  		             "\n1. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc;   {PstatDimer_sol=PstatDimer_nuc}"
-  		             )
+    if IGNORE_TEST:
+      return
+    m = GAMES_PP(self.simple4)
+    m.analyze(error_details=False)
+    gr = GAMESReport(m)
+    som = m.getNode(m.simple.getMolecule(PSTATDIMER_NUC))
+    report, error_num = gr.reportReactionsInSOM(som, 0)
+    common_part = "1. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc\n"
+    # case1 = "\n{PstatDimer_sol=PstatDimer_nuc}"
+    # case2 = "\n{PstatDimer_nuc=PstatDimer_sol}"
+    self.assertEqual(error_num, 1)
+    self.assertTrue(report == common_part)
 
   def testReportEchelonError(self):
   	if IGNORE_TEST:
@@ -299,11 +300,10 @@ class TestGAMESReport(unittest.TestCase):
   	self.assertEqual(error_num, [3])
   	extended_report = NULL_STR
   	extended_report = extended_report + "will result in empty reactant with zero mass:\n\n:  -> {species_test}\n\n"
-  	extended_report = extended_report + "This indicates a mass conflict between reactions.\n"
   	extended_report = extended_report + "\n----------------------------------------------------------------------\n"
   	extended_report = extended_report + "\n----------------------------------------------------------------------\n\n"
   	extended_report = extended_report + "\n\n**********************************************************************\n\n"
-  	self.assertEqual(report[-338:], extended_report)
+  	self.assertEqual(report[-288:], extended_report)
 
   def testReportTypeThreeError(self):
     if IGNORE_TEST:
@@ -320,8 +320,8 @@ class TestGAMESReport(unittest.TestCase):
     pseudo_inequality_report2 = pseudo_inequality_report + "{Pstat_sol} + {species_test}"
     inference_report1 = "the masses of {Pstat_sol} and {Pstat_nuc=stat_nuc=stat_sol} are unequal."
     inference_report2 = "the masses of {Pstat_nuc=stat_nuc=stat_sol} and {Pstat_sol} are unequal."
-    self.assertTrue(report[-508:-353]==pseudo_inequality_report1 or report[-508:-353]==pseudo_inequality_report2)
-    self.assertTrue(report[-341:-269]==inference_report1 or report[-341:-269]==inference_report2)
+    self.assertTrue(report[-460:-305]==pseudo_inequality_report1 or report[-460:-305]==pseudo_inequality_report2)
+    self.assertTrue(report[-293:-221]==inference_report1 or report[-293:-221]==inference_report2)
 
 
 

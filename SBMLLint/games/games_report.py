@@ -433,38 +433,45 @@ class GAMESReport(object):
     report = cn.NULL_STR
     if not som.reactions:
       return report, reaction_count
-    reaction_count += 1
-    molecules = []
     reactions = list(som.reactions)
-    molecules.append(reactions[0].reactants[0].molecule.name)
-    molecules.append(reactions[0].products[0].molecule.name)
-    report = report + "\n%d. %s;   %s" % (reaction_count,
-                                            reactions[0].makeIdentifier(is_include_kinetics=False),
-                                            '{' + '='.join(molecules) + '}') 
-    res = reactions[1:]
-    flag = 0
-    while res:
-      flag += 1
-      if flag > 50:
-        break
-      reaction = res[0]
-      reactant = reaction.reactants[0].molecule.name
-      product = reaction.products[0].molecule.name
-      if (reactant not in molecules) and (product not in molecules):
-        res.remove(reaction)
-        res.append(reaction)
-      else:
-        if reactant not in molecules and product in molecules:
-          molecules.append(reactant)
-        if reactant in molecules and product not in molecules:
-          molecules.append(product)
-        if reactant in molecules and product in molecules:
-          pass
-        reaction_count += 1
-        report = report + "\n%d. %s;   %s" % (reaction_count,
-                                                reaction.makeIdentifier(is_include_kinetics=False),
-                                                '{' + '='.join(molecules) + '}') 
-        res.remove(reaction)
+    for r in reactions:
+      reaction_count += 1
+      report = report + "%d. %s\n" % (reaction_count,
+                                      r.makeIdentifier(is_include_kinetics=False))
+    #### The following is the previous version - each reactino with expanding SOMs
+    # reaction_count += 1
+    # molecules = []
+    # reactions = list(som.reactions)
+    # molecules.append(reactions[0].reactants[0].molecule.name)
+    # molecules.append(reactions[0].products[0].molecule.name)
+    # report = report + "\n%d. %s;   %s" % (reaction_count,
+    #                                         reactions[0].makeIdentifier(is_include_kinetics=False),
+    #                                         '{' + '='.join(molecules) + '}') 
+    # res = reactions[1:]
+    # flag = 0
+    # while res:
+    #   flag += 1
+    #   if flag > 50:
+    #     break
+    #   reaction = res[0]
+    #   reactant = reaction.reactants[0].molecule.name
+    #   product = reaction.products[0].molecule.name
+    #   if (reactant not in molecules) and (product not in molecules):
+    #     res.remove(reaction)
+    #     res.append(reaction)
+    #   else:
+    #     if reactant not in molecules and product in molecules:
+    #       molecules.append(reactant)
+    #     if reactant in molecules and product not in molecules:
+    #       molecules.append(product)
+    #     if reactant in molecules and product in molecules:
+    #       pass
+    #     reaction_count += 1
+    #     report = report + "\n%d. %s;   %s" % (reaction_count,
+    #                                             reaction.makeIdentifier(is_include_kinetics=False),
+    #                                             '{' + '='.join(molecules) + '}') 
+    #     res.remove(reaction)
+    #### uncomment above if want to go back to the previous version
     return report, reaction_count
 
   def reportTypeThreeError(self, type_three_errors, explain_details=False):
@@ -522,22 +529,26 @@ class GAMESReport(object):
         # calculated the reported number of reactions that constitute a type III error
         error_num.append(reaction_count + len(inequality_reactions))
         if explain_details:
-          report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "\n\n%s%s\n" % ("-"*NUM_STAR, PARAGRAPH_DIVIDER)
           report = report + "These uni-uni reactions created mass-equivalence.\n" 
-          report = report + "(The molecules within a curly bracket have the same atomic mass.)\n"  	  	
+          report = report + "(The chemical species within a curly bracket have the same atomic mass.)\n"
+        else:
+          report = report + "\n"  	  	
         for som in soms:
+          if explain_details and som.reactions:
+            report = report + "\n%s is inferred by:\n" % som.makeId()
           sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
           report = report + sub_report
         if explain_details:
-          report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-          report = report + "These multi-uni (uni-multi) reactions created mass-inequality.\n"  	  
+          report = report + "%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "These multi-uni reactions created mass-inequality.\n\n"  	  
         for r in inequality_reactions:
           reaction = self.mesgraph.simple.getReaction(r)
           reaction_count += 1
-          report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+          report = report + "%d. %s\n" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
         reaction_count = reaction_count - len(inequality_reactions)
         if explain_details:
-          report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report + "%s\n" % (PARAGRAPH_DIVIDER)
           report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions.\n"
           pseudo_reaction_count = 0
           for sr in som_reactions:
@@ -555,7 +566,7 @@ class GAMESReport(object):
           report = report + "\n\nwill result in a uni-uni reaction:\n"
           report = report + "\n%s\n" % (inferred_som_reaction.identifier)
           report = report + "\n\nmeaning %s and %s have equal mass.\n" % (reactant_som, product_som)
-          report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
+          report = report +  "%s\n" % (PARAGRAPH_DIVIDER)
           report = report + "However, the following mass-equivalent pseudo reaction(s):\n"
           for r in inequality_reactions:
             reaction = self.mesgraph.simple.getReaction(r)
@@ -564,8 +575,7 @@ class GAMESReport(object):
             som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
             report = report + "\n(pseudo %d.) %s" % (reaction_count, som_reaction.identifier)
           report = report + "\n\nincidates the masses of %s and %s are unequal.\n" % (reactant_som, product_som)
-          ##
-          report = report + "\nThis creates a mass conflict between reactions."
+          #
           report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
         report = report + "\n%s\n" % (REPORT_DIVIDER) 
     return report, error_num
@@ -599,7 +609,7 @@ class GAMESReport(object):
       inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
       #
       report = report + "\nWe detected a mass imbalance\n%s\n" % inferred_reaction.identifier
-      report = report + "\nfrom the following reactions.\n"
+      report = report + "\nfrom the following isolation set.\n"
       # Remove to_numpy() method
       ## nonzero_result_series = result_series[result_series.to_numpy().nonzero()[0]]
       nonzero_idx = np.array([idx for idx, val in enumerate(result_series) if val != 0.0])
@@ -626,42 +636,48 @@ class GAMESReport(object):
       canceled_soms = canceled_soms.difference({p.som for p in inferred_som_reaction.products})
       #
       if explain_details:
-      	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
+      	report = report + "\n\n%s%s\n" % ("-"*NUM_STAR, PARAGRAPH_DIVIDER)
       	report = report + "These uni-uni reactions created mass-equivalence.\n"
-      	report = report + "(The molecules within a curly bracket have the same atomic mass.)\n"
+      	report = report + "(The chemical species within a curly bracket have the same atomic mass.)\n"
+      else:
+        report = report + "\n"
       for som in canceled_soms:
-      	sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
-      	report = report + sub_report
+        if explain_details and som.reactions:
+          report = report + "\n%s is inferred by:\n" % som.makeId()
+        sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
+        # if explain_details:
+        #   report = report + "\n"
+        report = report + sub_report
       if explain_details:
-      	report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
-      	report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions."
-      	pseudo_reaction_count = 0
-      	for sr in reported_som_reactions:
-      	  pseudo_reaction_count += 1
-      	  report = report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
-      	report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
-      	report = report + "An operation between pseudo reactions:\n"
-      	report = report + "%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
-      	for ro in reaction_operations[1:]:
-      	  if ro.operation < 0:
-      	    report = report + " - "
-      	  else:
-      	  	report = report + " + "
-      	  report = report + "%.2f * %s" % (abs(ro.operation), ro.reaction)
-      	#
-      	one_side = "--undetermined--"
-      	##
-      	if inferred_som_reaction.reactants==[]:
-      	  one_side = "reactant"
-      	elif inferred_som_reaction.products==[]:
-      	  one_side = "product"
-      	report = report + "\n\nwill result in empty %s with zero mass:\n" % (one_side)
-      	report = report + "\n%s\n" % (inferred_som_reaction.identifier)
-      	report = report + "\nThis indicates a mass conflict between reactions."
-      	report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-      	if one_side == "--undetermined--":
-      	  report = False
-      	  break
+        report = report + "%s\n" % (PARAGRAPH_DIVIDER)
+        report = report + "Based on the uni-uni reactions above, we create mass-equivalent pseudo reactions."
+        pseudo_reaction_count = 0
+        for sr in reported_som_reactions:
+          pseudo_reaction_count += 1
+          report = report + "\n(pseudo %d.) %s" % (pseudo_reaction_count, sr.identifier)
+        report = report +  "\n%s\n" % (PARAGRAPH_DIVIDER)
+        report = report + "An operation between the pseudo reactions:\n"
+        report = report + "%.2f * %s" % (reaction_operations[0].operation, reaction_operations[0].reaction)
+        for ro in reaction_operations[1:]:
+          if ro.operation < 0:
+            report = report + " - "
+          else:
+            report = report + " + "
+          report = report + "%.2f * %s" % (abs(ro.operation), ro.reaction)
+        #
+        one_side = "--undetermined--"
+        ##
+        if inferred_som_reaction.reactants==[]:
+          one_side = "reactant"
+        elif inferred_som_reaction.products==[]:
+          one_side = "product"
+        report = report + "\n\nwill result in empty %s with zero mass:\n" % (one_side)
+        report = report + "\n%s\n" % (inferred_som_reaction.identifier)
+        #report = report + "\nThis indicates a mass conflict between reactions."
+        report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
+        if one_side == "--undetermined--":
+          report = False
+          break
       report = report + "\n%s\n" % (REPORT_DIVIDER)
     return report, error_num
 

@@ -154,6 +154,8 @@ class GAMES_PP(nx.DiGraph):
     self.reduced_som_reactions = []
     # RREF SOMReactions after LU -> RREF
     self.rref_som_reactions = []
+    # L matrix from LU decomposition
+    self.lower = None
     # L^-1 matrix from LU decomposition
     self.lower_inverse  = None
     # P matrix from 'P'LU decomposition
@@ -186,7 +188,7 @@ class GAMES_PP(nx.DiGraph):
     # Can't merge nodes
     self.type_three_errors = []
     # Cant't add arcs using SOMs (after LU decomposition)
-    self.type_one_som_errors = set()
+    #self.type_one_som_errors = set()
     # for error return:
     self.error_summary = []
   
@@ -337,11 +339,15 @@ class GAMES_PP(nx.DiGraph):
         mat_t["_" + str(i)] = np.zeros(mat_t.shape[0])
     # LU decomposition
     perm, lower, upper = lu(mat_t)
+    # #### Trying to round up lower and upper, to avoid precision issue related to 0.0
+    # lower = np.round(lower_raw, 3)
+    # upper = np.round(upper_raw, 3)
     perm_inverse = perm.T
     permuted_m = (perm_inverse).dot(mat_t)
     pivot_index = [list(k).index(1) for k in perm_inverse]
     new_idx_mat_t = [idx_mat_t[idx] for idx in pivot_index]
     # we save as; lower_inverse * perm_df = echelon_df
+    # if we added zero columns previously, delete them. 
     if diff:
       perm_df = pd.DataFrame(permuted_m,
           index=new_idx_mat_t,
@@ -361,6 +367,7 @@ class GAMES_PP(nx.DiGraph):
           columns=new_idx_mat_t)
     self.perm_inverse = perm_inverse
     self.permuted_matrix = perm_df
+    self.lower = lower
     self.lower_inverse = lower_inverse
     self.echelon_df = echelon_df
     return echelon_df
@@ -610,7 +617,8 @@ class GAMES_PP(nx.DiGraph):
       arcs = itertools.product(source, destination)
       for arc in arcs:
         if arc[0] == arc[1]:
-          self.type_one_som_errors = self.type_one_som_errors.add(reaction.label)
+          #self.type_one_som_errors = self.type_one_som_errors.add(reaction.label)
+          raise ValueError("SOM Unequal reaction leads an arc between two soms")
         else:
           self.addArc(arc[0], arc[1], reaction)
       self.identifier = self.makeId()
@@ -848,7 +856,7 @@ class GAMES_PP(nx.DiGraph):
       print("Canceling error: ", self.canceling_errors)
       print("Echelon error: ", self.echelon_errors)
       print("Type III error: ", self.type_three_errors)
-      print("Type I-SOM error: " , self.type_one_som_errors)    
+      #print("Type I-SOM error: " , self.type_one_som_errors)    
     if self.echelon_errors or self.type_one_errors or self.type_two_errors \
         or self.canceling_errors or self.type_three_errors:
       if self.type_one_errors:
