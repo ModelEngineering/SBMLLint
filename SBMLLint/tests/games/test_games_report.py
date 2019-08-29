@@ -320,8 +320,8 @@ class TestGAMESReport(unittest.TestCase):
     pseudo_inequality_report2 = pseudo_inequality_report + "{Pstat_sol} + {species_test}"
     inference_report1 = "the masses of {Pstat_sol} and {Pstat_nuc=stat_nuc=stat_sol} are unequal."
     inference_report2 = "the masses of {Pstat_nuc=stat_nuc=stat_sol} and {Pstat_sol} are unequal."
-    self.assertTrue(report[-508:-353]==pseudo_inequality_report1 or report[-508:-353]==pseudo_inequality_report2)
-    self.assertTrue(report[-341:-269]==inference_report1 or report[-341:-269]==inference_report2)
+    self.assertTrue(report[-460:-305]==pseudo_inequality_report1 or report[-460:-305]==pseudo_inequality_report2)
+    self.assertTrue(report[-293:-221]==inference_report1 or report[-293:-221]==inference_report2)
 
 
 
