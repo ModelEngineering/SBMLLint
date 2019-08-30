@@ -650,7 +650,7 @@ class GAMESReport(object):
         report = report + sub_report
       if explain_details:
         report = report + "%s\n" % (PARAGRAPH_DIVIDER)
-        report = report + "Based on the uni-uni reactions above, we create mass-equivalent pseudo reactions."
+        report = report + "Based on the uni-uni reactions above, we create mass-equivalent pseudo reactions.\n"
         pseudo_reaction_count = 0
         for sr in reported_som_reactions:
           pseudo_reaction_count += 1
