@@ -682,55 +682,52 @@ class GAMESReport(object):
     return report, error_num
 
   def reportCancelingError(self, canceling_errors, explain_details=False):
-  	"""
-  	Generate a report for canceling errors.
-  	A canceling error occurs when a som_reaction has
-  	an imbalanced net stoichiometry.
-  	:param list-SOMReaction:
-  	:return str: report
-  	:return list-int: error_num
-  	"""
-  	report = NULL_STR
-  	error_num = []
-  	if len(canceling_errors) == 0:
-  	  return report, error_num
-  	for error in canceling_errors:
-  	  reaction_count = 0
-  	  report = report + "We detected a mass imbalance from the following reactions:\n"
-  	  label = error.label
-  	  reaction = self.mesgraph.simple.getReaction(label)
-  	  simplified_reaction = SimplifiedReaction(reaction.reactants, reaction.products, label, self.mesgraph)
-  	  simplified_reaction.reduceBySOMs()
-  	  som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
-  	  som_reactants = {r.som for r in som_reaction.reactants}
-  	  som_products = {p.som for p in som_reaction.products}
-  	  canceled_soms = list(som_reactants.intersection(som_products))
-  	  reaction_count += 1
-  	  report = report + "\n%d. %s\n" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-  	  for som in canceled_soms:
-  	  	if len(som.molecules) == 1 and explain_details:
-  	  	  molecule = list(som.molecules)[0]
-  	  	  report = report + "\n*%s is a common molecule in reactants and products, so can be canceled\n" % (molecule.name)
-
-  	  	for reaction in list(som.reactions):
-  	  	  reaction_count += 1
-  	  	  reactant = reaction.reactants[0].molecule
-  	  	  product = reaction.products[0].molecule
-  	  	  report = report + "\n%d. %s\n" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
-  	  	  if explain_details:
-  	  	    report = report + "\n*%s and %s have the same mass according to the above reaction\n" % (reactant.name, product.name)
-
-  	  if error.reactants==[]:
-  	    one_side = "reactant"
-  	  elif error.products==[]:
-  	    one_side = "product"
-  	  report = report + "\n\nTherefore, they will result in empty %s with zero mass:\n" % (one_side)
-  	  report = report + "\n%s\n" % (simplified_reaction.identifier)
-  	  report = report + "\nThis indicates a mass conflict between reactions."  
-  	  error_num.append(reaction_count)	  	
-  	  report = report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-  	report = report + "\n%s\n" % (REPORT_DIVIDER)
-  	return report, error_num
+    """
+    Generate a report for canceling errors.
+    A canceling error occurs when a som_reaction has
+    an imbalanced net stoichiometry.
+    :param list-SOMReaction:
+    :return str: report
+    :return list-int: error_num
+    """
+    report = NULL_STR
+    error_num = []
+    if len(canceling_errors) == 0:
+      return report, error_num
+    for error in canceling_errors:
+      reaction_count = 0
+      # report = report + "We detected a mass imbalance from the following reactions:\n"
+      label = error.label
+      reaction = self.mesgraph.simple.getReaction(label)
+      simplified_reaction = SimplifiedReaction(reaction.reactants, reaction.products, label, self.mesgraph)
+      simplified_reaction.reduceBySOMs()
+      som_reaction = self.mesgraph.convertReactionToSOMReaction(reaction)
+      som_reactants = {r.som for r in som_reaction.reactants}
+      som_products = {p.som for p in som_reaction.products}
+      canceled_soms = list(som_reactants.intersection(som_products))
+      reaction_count += 1
+      report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+      for som in canceled_soms:
+        if len(som.molecules) == 1 and explain_details:
+          molecule = list(som.molecules)[0]
+          report = report + "\n*%s is a common chemical species in reactants and products, so can be canceled\n" % (molecule.name)
+        for reaction in list(som.reactions):
+          reaction_count += 1
+          reactant = reaction.reactants[0].molecule
+          product = reaction.products[0].molecule
+          report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
+          if explain_details:
+            report = report + "\n*%s and %s have the same mass according to the above reaction\n" % (reactant.name, product.name)
+      if error.reactants==[]:
+        one_side = "reactant"
+      elif error.products==[]:
+        one_side = "product"
+      report = "We detected a mass imbalance\n: %s\n\nfrom the followign isolation set:\n" % (simplified_reaction.identifier) + report
+      # report = report + "\n%s\n" % (simplified_reaction.identifier) 
+      error_num.append(reaction_count)      
+      report = report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
+    report = report + "\n%s\n" % (REPORT_DIVIDER)
+    return report, error_num
 
 
 
