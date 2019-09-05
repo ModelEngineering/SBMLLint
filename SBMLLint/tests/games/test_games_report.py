@@ -102,24 +102,23 @@ class TestGAMESReport(unittest.TestCase):
     self.simple4.initialize(cn.TEST_FILE_GAMESREPORT3)
 
   def testReportCancelingError(self):
-  	if IGNORE_TEST:
-  	  return
-  	m = GAMES_PP(self.simple1)
-  	m.analyze(error_details=False)
-  	gr = GAMESReport(m)
-  	report, error_num = gr.reportCancelingError(m.canceling_errors, explain_details=True)
-  	extended_report = NULL_STR
-  	extended_report = extended_report + "We detected a mass imbalance from the following reactions:\n\n"
-  	extended_report = extended_report + "1. OxidativePhosphorylation: 6.00 ADP + CTtis -> 6.00 ATP\n\n"
-  	extended_report = extended_report + "2. ATPase: ATP -> ADP\n\n"
-  	extended_report = extended_report + "*ATP and ADP have the same mass according to the above reaction\n\n\n"
-  	extended_report = extended_report + "Therefore, they will result in empty product with zero mass:\n\n"
-  	extended_report = extended_report + "OxidativePhosphorylation: CTtis -> \n\n"
-  	extended_report = extended_report + "This indicates a mass conflict between reactions."
-  	extended_report = extended_report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-  	extended_report = extended_report + "\n%s\n" % REPORT_DIVIDER
-  	self.assertEqual(extended_report, report)
-  	self.assertEqual(error_num, [2])
+    if IGNORE_TEST:
+      return
+    m = GAMES_PP(self.simple1)
+    m.analyze(error_details=False)
+    gr = GAMESReport(m)
+    report, error_num = gr.reportCancelingError(m.canceling_errors, explain_details=True)
+    extended_report = NULL_STR
+    extended_report = extended_report + "We detected a mass imbalance\n"
+    extended_report = extended_report + ": OxidativePhosphorylation: CTtis -> \n\n"
+    extended_report = extended_report + "from the following isolation set:\n\n"
+    extended_report = extended_report + "1. OxidativePhosphorylation: 6.00 ADP + CTtis -> 6.00 ATP\n"
+    extended_report = extended_report + "2. ATPase: ATP -> ADP\n"
+    extended_report = extended_report + "*ATP and ADP have the same mass according to the above reaction\n"
+    extended_report = extended_report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
+    extended_report = extended_report + "\n%s\n" % REPORT_DIVIDER
+    self.assertEqual(extended_report, report)
+    self.assertEqual(error_num, [2])
 
   def testGetMoleculeEqualityPath(self):
     if IGNORE_TEST:
