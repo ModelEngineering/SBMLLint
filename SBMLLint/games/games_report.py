@@ -722,7 +722,7 @@ class GAMESReport(object):
         one_side = "reactant"
       elif error.products==[]:
         one_side = "product"
-      report = "We detected a mass imbalance\n: %s\n\nfrom the followign isolation set:\n" % (simplified_reaction.identifier) + report
+      report = "We detected a mass imbalance\n: %s\n\nfrom the following isolation set:\n" % (simplified_reaction.identifier) + report
       # report = report + "\n%s\n" % (simplified_reaction.identifier) 
       error_num.append(reaction_count)      
       report = report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
