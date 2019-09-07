@@ -246,7 +246,7 @@ class GAMESReport(object):
     if len(type_one_errors) == 0:
       return report, error_num
     for pc in type_one_errors:
-      report = report + "We detected a mass imbalance from the following reactions:\n\n"
+      # report = report + "We detected a mass imbalance from the following reactions:\n\n"
       mole1 = pc.node1
       mole2 = pc.node2
       reactions = pc.reactions
@@ -438,40 +438,6 @@ class GAMESReport(object):
       reaction_count += 1
       report = report + "%d. %s\n" % (reaction_count,
                                       r.makeIdentifier(is_include_kinetics=False))
-    #### The following is the previous version - each reactino with expanding SOMs
-    # reaction_count += 1
-    # molecules = []
-    # reactions = list(som.reactions)
-    # molecules.append(reactions[0].reactants[0].molecule.name)
-    # molecules.append(reactions[0].products[0].molecule.name)
-    # report = report + "\n%d. %s;   %s" % (reaction_count,
-    #                                         reactions[0].makeIdentifier(is_include_kinetics=False),
-    #                                         '{' + '='.join(molecules) + '}') 
-    # res = reactions[1:]
-    # flag = 0
-    # while res:
-    #   flag += 1
-    #   if flag > 50:
-    #     break
-    #   reaction = res[0]
-    #   reactant = reaction.reactants[0].molecule.name
-    #   product = reaction.products[0].molecule.name
-    #   if (reactant not in molecules) and (product not in molecules):
-    #     res.remove(reaction)
-    #     res.append(reaction)
-    #   else:
-    #     if reactant not in molecules and product in molecules:
-    #       molecules.append(reactant)
-    #     if reactant in molecules and product not in molecules:
-    #       molecules.append(product)
-    #     if reactant in molecules and product in molecules:
-    #       pass
-    #     reaction_count += 1
-    #     report = report + "\n%d. %s;   %s" % (reaction_count,
-    #                                             reaction.makeIdentifier(is_include_kinetics=False),
-    #                                             '{' + '='.join(molecules) + '}') 
-    #     res.remove(reaction)
-    #### uncomment above if want to go back to the previous version
     return report, reaction_count
 
   def reportTypeThreeError(self, type_three_errors, explain_details=False):
