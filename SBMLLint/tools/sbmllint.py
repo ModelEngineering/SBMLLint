@@ -13,6 +13,12 @@ import os
 import sys
 import tesbml
 
+TYPE_I = "type1"
+TYPE_II = "type2"
+TYPE_III = "type3"
+CANCELING = "canceling"
+ECHELON = "echelon"
+
 
 def lint(model_reference, file_out=sys.stdout,
     mass_balance_check="structured_names",
@@ -52,8 +58,20 @@ def lint(model_reference, file_out=sys.stdout,
     games_result = m.analyze(simple.reactions)
     if games_result and is_report:
       gr = GAMESReport(m)
-      report, _ = gr.reportTypeOneError(m.type_one_errors, explain_details=True)
-      print(report)
+      errortype_dic = {TYPE_I: gr.reportTypeOneError,
+                       TYPE_II: gr.reportTypeTwoError,
+                       TYPE_III: gr.reportTypeThreeError,
+                       CANCELING: gr.reportCancelingError,
+                       ECHELON: gr.reportEchelonError
+                      }
+      for errors in m.error_summary:
+        for category in errortype_dic.keys():
+          if errors.type == category:
+            func = errortype_dic[category]            
+            report, _ = func(errors.errors, explain_details=True)
+            print(report)
+      # report, _ = gr.reportTypeOneError(m.type_one_errors, explain_details=True)
+      # print(report)
     return games_result
   else:
     print ("Specified method doesn't exist")
