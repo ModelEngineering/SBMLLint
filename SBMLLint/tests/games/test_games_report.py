@@ -175,7 +175,6 @@ class TestGAMESReport(unittest.TestCase):
   	report, error_num = gr.reportTypeOneError(error, explain_details=True)
   	self.assertEqual(error_num, [2])
   	extended_report = NULL_STR
-  	extended_report = extended_report + "We detected a mass imbalance from the following reactions:\n\n"
   	extended_report = extended_report + "\nG2K = G2R by reaction(s):\n1. Rum1DegInG2R: G2R -> G2K\n\n"
   	extended_report = extended_report + "However, G2K < G2R by reaction(s):\n2. G2R_Creation: G2K + R -> G2R\n\n"
   	extended_report = extended_report + "\n----------------------------------------------------------------------\n\n"
