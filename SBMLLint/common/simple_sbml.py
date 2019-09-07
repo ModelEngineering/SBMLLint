@@ -147,6 +147,18 @@ class SimpleSBML(object):
     if len(new_list) > len(this_list):
       this_list.append(element)
     
+  def remove(self, element):
+    """
+    Removes an element of the type to its list
+    """
+    type_list = {
+        Moiety: self.moietys,
+        Molecule: self.molecules,
+        Reaction: self.reactions,
+        }
+    this_list = type_list[element.__class__]
+    if element in this_list:
+      this_list.remove(element)
 
 ###################### FUNCTIONS #############################
 def readURL(url):

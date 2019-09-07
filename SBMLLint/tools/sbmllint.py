@@ -70,8 +70,6 @@ def lint(model_reference, file_out=sys.stdout,
             func = errortype_dic[category]            
             report, _ = func(errors.errors, explain_details=True)
             print(report)
-      # report, _ = gr.reportTypeOneError(m.type_one_errors, explain_details=True)
-      # print(report)
     return games_result
   else:
     print ("Specified method doesn't exist")
