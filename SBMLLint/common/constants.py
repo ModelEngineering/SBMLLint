@@ -36,6 +36,8 @@ TEST_FILE10 = os.path.join(TEST_DIR, "test_file10.xml")
 TEST_FILE11 = os.path.join(TEST_DIR, "test_file11.xml")
 # test_file12: originally "BIOMD0000000281_url.xml"
 TEST_FILE12 = os.path.join(TEST_DIR, "test_file12.xml")
+# test_file13: originally "BIOMD0000000035_url.xml"
+TEST_FILE12 = os.path.join(TEST_DIR, "test_file13.xml")
 # test_file_games_pp1: originally "BIOMD0000000383_url.xml"
 TEST_FILE_GAMES_PP1 = os.path.join(TEST_DIR, "test_file_games_pp1.xml")
 # test_file_games_pp2: originally "BIOMD0000000018_url.xml"

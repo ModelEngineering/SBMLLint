@@ -868,7 +868,7 @@ class GAMES_PP(nx.DiGraph):
         self.error_summary.append(ErrorSummary(type=CANCELING, errors=self.canceling_errors))
       if self.echelon_errors:
         self.error_summary.append(ErrorSummary(type=ECHELON, errors=self.echelon_errors))
-      print("At least one error found.")
+      print("At least one error found.\n")
       return True
     else:
       print("No error found.")
