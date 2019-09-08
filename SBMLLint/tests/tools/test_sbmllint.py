@@ -75,6 +75,7 @@ class TestFunctions(unittest.TestCase):
     B -> B + DUMMYIMPLICIT;1
     A = 0
     B = 0
+    DUMMYIMPLICIT = 0
     """
     with open(TEST_OUT_PATH, 'w') as fd:
       result = sbmllint.lint(model,
