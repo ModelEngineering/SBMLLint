@@ -37,7 +37,7 @@ TEST_FILE11 = os.path.join(TEST_DIR, "test_file11.xml")
 # test_file12: originally "BIOMD0000000281_url.xml"
 TEST_FILE12 = os.path.join(TEST_DIR, "test_file12.xml")
 # test_file13: originally "BIOMD0000000035_url.xml"
-TEST_FILE12 = os.path.join(TEST_DIR, "test_file13.xml")
+TEST_FILE13 = os.path.join(TEST_DIR, "test_file13.xml")
 # test_file_games_pp1: originally "BIOMD0000000383_url.xml"
 TEST_FILE_GAMES_PP1 = os.path.join(TEST_DIR, "test_file_games_pp1.xml")
 # test_file_games_pp2: originally "BIOMD0000000018_url.xml"
@@ -157,7 +157,7 @@ ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
 CFG_IMPLICITS = "implicits"
 CFG_PROCESS_BOUNDARY_REACTIONS = "process_boundary_reactions"
 CFG_DEFAULTS = {}
-CFG_DEFAULTS[CFG_IMPLICITS] = ['DUMMYIMPLICIT']
+CFG_DEFAULTS[CFG_IMPLICITS] = ['DUMMYIMPLICIT', 'MA', 'MR', 'R']
 CFG_DEFAULTS[CFG_PROCESS_BOUNDARY_REACTIONS] = False
 CFG_DEFAULT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CFG_DEFAULT_PATH = os.path.join(CFG_DEFAULT_PATH, ".sbmllint_cfg")
