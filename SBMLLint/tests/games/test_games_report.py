@@ -102,24 +102,23 @@ class TestGAMESReport(unittest.TestCase):
     self.simple4.initialize(cn.TEST_FILE_GAMESREPORT3)
 
   def testReportCancelingError(self):
-  	if IGNORE_TEST:
-  	  return
-  	m = GAMES_PP(self.simple1)
-  	m.analyze(error_details=False)
-  	gr = GAMESReport(m)
-  	report, error_num = gr.reportCancelingError(m.canceling_errors, explain_details=True)
-  	extended_report = NULL_STR
-  	extended_report = extended_report + "We detected a mass imbalance from the following reactions:\n\n"
-  	extended_report = extended_report + "1. OxidativePhosphorylation: 6.00 ADP + CTtis -> 6.00 ATP\n\n"
-  	extended_report = extended_report + "2. ATPase: ATP -> ADP\n\n"
-  	extended_report = extended_report + "*ATP and ADP have the same mass according to the above reaction\n\n\n"
-  	extended_report = extended_report + "Therefore, they will result in empty product with zero mass:\n\n"
-  	extended_report = extended_report + "OxidativePhosphorylation: CTtis -> \n\n"
-  	extended_report = extended_report + "This indicates a mass conflict between reactions."
-  	extended_report = extended_report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-  	extended_report = extended_report + "\n%s\n" % REPORT_DIVIDER
-  	self.assertEqual(extended_report, report)
-  	self.assertEqual(error_num, [2])
+    if IGNORE_TEST:
+      return
+    m = GAMES_PP(self.simple1)
+    m.analyze(error_details=False)
+    gr = GAMESReport(m)
+    report, error_num = gr.reportCancelingError(m.canceling_errors, explain_details=True)
+    extended_report = NULL_STR
+    extended_report = extended_report + "We detected a mass imbalance\n"
+    extended_report = extended_report + ": OxidativePhosphorylation: CTtis -> \n\n"
+    extended_report = extended_report + "from the following isolation set:\n\n"
+    extended_report = extended_report + "1. OxidativePhosphorylation: 6.00 ADP + CTtis -> 6.00 ATP\n"
+    extended_report = extended_report + "2. ATPase: ATP -> ADP\n"
+    extended_report = extended_report + "*ATP and ADP have the same mass according to the above reaction\n"
+    extended_report = extended_report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
+    extended_report = extended_report + "\n%s\n" % REPORT_DIVIDER
+    self.assertEqual(extended_report, report)
+    self.assertEqual(error_num, [2])
 
   def testGetMoleculeEqualityPath(self):
     if IGNORE_TEST:
@@ -176,7 +175,6 @@ class TestGAMESReport(unittest.TestCase):
   	report, error_num = gr.reportTypeOneError(error, explain_details=True)
   	self.assertEqual(error_num, [2])
   	extended_report = NULL_STR
-  	extended_report = extended_report + "We detected a mass imbalance from the following reactions:\n\n"
   	extended_report = extended_report + "\nG2K = G2R by reaction(s):\n1. Rum1DegInG2R: G2R -> G2K\n\n"
   	extended_report = extended_report + "However, G2K < G2R by reaction(s):\n2. G2R_Creation: G2K + R -> G2R\n\n"
   	extended_report = extended_report + "\n----------------------------------------------------------------------\n\n"
@@ -277,17 +275,18 @@ class TestGAMESReport(unittest.TestCase):
     self.assertEqual({p.stoichiometry for p in inferred_reaction.products}, {0.5, 1.0})
 
   def testReportReactionsInSOM(self):
-  	if IGNORE_TEST:
-  	  return
-  	m = GAMES_PP(self.simple4)
-  	m.analyze(error_details=False)
-  	gr = GAMESReport(m)
-  	som = m.getNode(m.simple.getMolecule(PSTATDIMER_NUC))
-  	report, error_num = gr.reportReactionsInSOM(som, 0)
-  	self.assertEqual(error_num, 1)
-  	self.assertEqual(report,
-  		             "\n1. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc;   {PstatDimer_sol=PstatDimer_nuc}"
-  		             )
+    if IGNORE_TEST:
+      return
+    m = GAMES_PP(self.simple4)
+    m.analyze(error_details=False)
+    gr = GAMESReport(m)
+    som = m.getNode(m.simple.getMolecule(PSTATDIMER_NUC))
+    report, error_num = gr.reportReactionsInSOM(som, 0)
+    common_part = "1. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc\n"
+    # case1 = "\n{PstatDimer_sol=PstatDimer_nuc}"
+    # case2 = "\n{PstatDimer_nuc=PstatDimer_sol}"
+    self.assertEqual(error_num, 1)
+    self.assertTrue(report == common_part)
 
   def testReportEchelonError(self):
   	if IGNORE_TEST:
@@ -299,11 +298,10 @@ class TestGAMESReport(unittest.TestCase):
   	self.assertEqual(error_num, [3])
   	extended_report = NULL_STR
   	extended_report = extended_report + "will result in empty reactant with zero mass:\n\n:  -> {species_test}\n\n"
-  	extended_report = extended_report + "This indicates a mass conflict between reactions.\n"
   	extended_report = extended_report + "\n----------------------------------------------------------------------\n"
   	extended_report = extended_report + "\n----------------------------------------------------------------------\n\n"
   	extended_report = extended_report + "\n\n**********************************************************************\n\n"
-  	self.assertEqual(report[-338:], extended_report)
+  	self.assertEqual(report[-288:], extended_report)
 
   def testReportTypeThreeError(self):
     if IGNORE_TEST:
@@ -320,8 +318,8 @@ class TestGAMESReport(unittest.TestCase):
     pseudo_inequality_report2 = pseudo_inequality_report + "{Pstat_sol} + {species_test}"
     inference_report1 = "the masses of {Pstat_sol} and {Pstat_nuc=stat_nuc=stat_sol} are unequal."
     inference_report2 = "the masses of {Pstat_nuc=stat_nuc=stat_sol} and {Pstat_sol} are unequal."
-    self.assertTrue(report[-508:-353]==pseudo_inequality_report1 or report[-508:-353]==pseudo_inequality_report2)
-    self.assertTrue(report[-341:-269]==inference_report1 or report[-341:-269]==inference_report2)
+    self.assertTrue(report[-460:-305]==pseudo_inequality_report1 or report[-460:-305]==pseudo_inequality_report2)
+    self.assertTrue(report[-293:-221]==inference_report1 or report[-293:-221]==inference_report2)
 
 
 

@@ -3,6 +3,10 @@
 # in either the reactants or products.
 implicits:
 - DUMMYIMPLICIT   # an implicit molecule
+- MA              # another implicit molecule
+- A
+- MR
+- R
 
 # Indicates if boundary reactions are checked
 process_boundary_reactions: False

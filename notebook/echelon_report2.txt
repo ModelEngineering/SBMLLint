@@ -1,0 +1,53 @@
+
+We detected a mass imbalance
+:  -> species_test
+
+from the following isolation set.
+
+1. statPhosphorylation: stat_sol -> Pstat_sol + species_test
+2. PstatDimerisation: 2.00 Pstat_sol -> PstatDimer_sol
+3. PstatDimerisationNuc: 2.00 Pstat_nuc -> PstatDimer_nuc
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+These uni-uni reactions created mass-equivalence.
+(The chemical species within a curly bracket have the same atomic mass.)
+
+{Pstat_nuc=stat_nuc=stat_sol} is inferred by:
+4. stat_export: stat_sol -> stat_nuc
+5. statDephosphorylation: Pstat_nuc -> stat_nuc
+
+{PstatDimer_nuc=PstatDimer_sol} is inferred by:
+6. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc
+
+----------------------------------------------------------------------
+
+Based on the uni-uni reactions above, we create 
+mass-equivalent pseudo reactions.
+(pseudo 1.) statPhosphorylation: 
+           {Pstat_nuc=stat_nuc=stat_sol} -> {Pstat_sol} + {species_test}
+(pseudo 2.) PstatDimerisation: 2.00 
+                          {Pstat_sol} -> {PstatDimer_nuc=PstatDimer_sol}
+(pseudo 3.) PstatDimerisationNuc: 2.00 
+        {Pstat_nuc=stat_nuc=stat_sol} -> {PstatDimer_nuc=PstatDimer_sol}
+
+----------------------------------------------------------------------
+
+An operation between the pseudo reactions:
+1.00 * statPhosphorylation + 0.50 * PstatDimerisation - 
+0.50 * PstatDimerisationNuc
+
+will result in empty reactant with zero mass:
+
+:  -> {species_test}
+
+
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+
+
+
+**********************************************************************
+

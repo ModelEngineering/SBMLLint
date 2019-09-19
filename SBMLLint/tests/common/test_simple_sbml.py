@@ -64,6 +64,16 @@ class TestSimpleSBML(unittest.TestCase):
     self.simple.add(reaction1)
     test()
 
+  def testRemove(self):
+    num_reactions = len(self.simple.reactions)
+    reaction0 = self.simple.reactions[0]
+    reaction1 = self.simple.reactions[1]
+    self.simple.remove(reaction0)
+    self.assertTrue(reaction0 not in self.simple.reactions)
+    self.assertTrue(reaction1 in self.simple.reactions)
+    self.simple.add(reaction0)
+    self.assertTrue(len(self.simple.reactions), num_reactions)
+
   def testGetReaction(self):
     if IGNORE_TEST:
       return

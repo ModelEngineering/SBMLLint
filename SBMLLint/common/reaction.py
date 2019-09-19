@@ -45,7 +45,7 @@ class Reaction(object):
       self.kinetics_law = None
     self.label = libsbml_reaction.getId()
     self.identifier = self.makeIdentifier(is_include_kinetics=True)
-    self.category = self._getCategory()
+    self.category = self.getCategory()
     self.kinetics_terms = self.getKineticsTerms(libsbml_reaction)
 
   def makeMoleculeStoichiometrys(self, func_get_one, func_get_num):
@@ -126,7 +126,7 @@ class Reaction(object):
   def __repr__(self):
     return self.identifier
 
-  def _getCategory(self):
+  def getCategory(self):
     """
     :return str: reaction category
     """

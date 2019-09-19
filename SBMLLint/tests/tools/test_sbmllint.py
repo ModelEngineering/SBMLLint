@@ -1,5 +1,6 @@
 from SBMLLint.common import constants as cn
 from SBMLLint.common.runner import Runner
+from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.tools import sbmllint
 
 
@@ -67,6 +68,43 @@ class TestFunctions(unittest.TestCase):
       result = sbmllint.lint(model, file_out=fd)
     self.assertEqual(result.num_reactions, 1)
     self.assertEqual(result.num_imbalances, 0)
+
+  def testLint5(self):
+    model = """
+    A -> B; 1
+    B -> B + DUMMYIMPLICIT;1
+    A = 0
+    B = 0
+    DUMMYIMPLICIT = 0
+    """
+    with open(TEST_OUT_PATH, 'w') as fd:
+      result = sbmllint.lint(model,
+                             file_out=fd,
+                             mass_balance_check="games",
+                             implicit_games=False
+                             )
+    self.assertTrue(result)
+    with open(TEST_OUT_PATH, 'w') as fd:
+      result = sbmllint.lint(model,
+                             file_out=fd,
+                             mass_balance_check="games",
+                             implicit_games=True
+                             )    
+    self.assertFalse(result)
+
+  def testRemoveImplicit(self):
+    implicit = "MA"
+    path = os.path.join(cn.BIOMODELS_DIR, cn.TEST_FILE13)
+    simple = SimpleSBML()
+    simple.initialize(path)
+    simple = sbmllint.removeImplicit(simple, implicit)
+    implicit_reactions = []
+    for r in simple.reactions:
+      reactants = [reactant.molecule.name for reactant in r.reactants]
+      products = [product.molecule.name for product in r.products]
+      if (implicit in reactants) or (implicit in products):
+        implicit_reactions.append(r.label)
+    self.assertTrue(len(implicit_reactions) == 0)
 
   def testMain(self):
     return
