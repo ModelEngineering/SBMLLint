@@ -47,15 +47,3 @@ To do GAMES analysis from the command line for a file path:
    - To run moiety analysi for a file in this directory, use
 ``python SBMLLint/tools/moiety\_analysis.py data/biomodels/\<file name\>
 1. Deactivate the virtual environment using ``conda deactivate``
-
-
-## Future Directions
-
-Features under consideration for future versions include:
-
-- Use of parameters or species that are uninitialized (and
-not present on the right hand side of a reaction)
-- Correctly constructed kinetics laws
-- Parameters that are unreferenced
-- Mass conservation
-
