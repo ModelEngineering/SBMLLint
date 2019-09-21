@@ -49,7 +49,7 @@ To do GAMES and moiety analysis from the command line for a file path:
 1. There are copies of several BioModels files in ``data/biomodels`` or ``data\biomodels`` in Windows.
 Use ``/`` or ``\``  as appropriate for your system in the following instructions.
    - To run games for a file in this directory, use
-``python SBMLLint/tools/games.py data/biomodels/\<file name\>
+``python SBMLLint/tools/games.py data/biomodels/\<file name\>``
    - To run moiety analysi for a file in this directory, use
-``python SBMLLint/tools/moiety\_analysis.py data/biomodels/\<file name\>
+``python SBMLLint/tools/moiety\_analysis.py data/biomodels/\<file name\>``
 1. Deactivate the virtual environment using ``conda deactivate``
