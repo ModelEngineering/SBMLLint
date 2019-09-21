@@ -40,10 +40,10 @@ The following is an example of using the ``structured_names`` and ``games`` algo
    -  ``unzip BIOMODELS.zip``
    - ``cd ..`` and ``cd ..``
 1. Create a miniconda virtual environment  with dependencies
+using ``conda env create -f environment.yml``
 1. Start a new terminal session and change directory to ``SBMLLint``.
 1. Activate the virtual environment using ``conda activate sbmllint``
 1. Install Tellurium using ``pip install tellurium``
-using ``conda env create -f environment.yml``
 1. Deactivate the virtual environment using ``conda deactivate``
 
 To do GAMES and moiety analysis from the command line for a file path:
