@@ -10,4 +10,5 @@ dependencies:
   - networkx
   - xlrd
   - nose
+  - pyyaml
 prefix: /home//anaconda3/envs/sbmllint
