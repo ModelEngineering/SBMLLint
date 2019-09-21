@@ -34,18 +34,18 @@ The following is an example of using the ``structured_names`` and ``games`` algo
    - Type ``git --version``. If a git version number is returned, then git is installed.
 1. Install [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
 1. Clone the repository using ``git clone https://ModelEngineering/SBMLLint.git``
-1. Change directories to the repo using ``cd SBMLLint``
+1. Change directory to the repo using ``cd SBMLLint``.
 1. Create a miniconda virtual environment  with dependencies
 using ``conda env create --f environment.yml``
 
 To do GAMES analysis from the command line for a file path:
-1. Change directories to the cloned repository.
+1. Change directory to the cloned repository.
 1. Activate the virtual environment using ``conda activate sbmllint``.
 1. There are copies of several BioModels files in data/biomodels.
    - To run games for a file in this directory, use
-``python SBMLLint/tools/games.py data/biomodels/<file name>
+``python SBMLLint/tools/games.py data/biomodels/\<file name\>
    - To run moiety analysi for a file in this directory, use
-``python SBMLLint/tools/moiety\_analysis.py data/biomodels/<file name>
+``python SBMLLint/tools/moiety\_analysis.py data/biomodels/\<file name\>
 1. Deactivate the virtual environment using ``conda deactivate``
 
 
