@@ -38,7 +38,7 @@ The following is an example of using the ``structured_names`` and ``games`` algo
 1. Create a miniconda virtual environment  with dependencies
 using ``conda env create --f environment.yml``
 
-To do GAMES analysis from the command line for a file path:
+To do GAMES and moiety analysis from the command line for a file path:
 1. Change directory to the cloned repository.
 1. Activate the virtual environment using ``conda activate sbmllint``.
 1. There are copies of several BioModels files in data/biomodels.
