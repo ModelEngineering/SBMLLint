@@ -33,7 +33,7 @@ The following is an example of using the ``structured_names`` and ``games`` algo
    - Open a terminal session.
    - Type ``git --version``. If a git version number is returned, then git is installed.
 1. Install [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
-1. Clone the repository using ``git clone https://ModelEngineering/SBMLLint.git``
+1. Clone the repository using ``git clone https://github.com/ModelEngineering/SBMLLint.git``
 1. Change directory to the repo using ``cd SBMLLint``
 1. Decompress the BioModels files by:
    - ``cd data`` and ``cd biomodels``
