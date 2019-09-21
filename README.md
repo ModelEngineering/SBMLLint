@@ -35,18 +35,16 @@ The following is an example of using the ``structured_names`` and ``games`` algo
 1. Change directories to the repo using ``cd SBMLLint``
 1. Create a miniconda virtual environment  with dependencies
 using ``conda env create --f environment.yml``
-1. Activate the virtual environment using ``conda activate sbmllint``.
-1. Deactivate the virtual environment using ``conda deactivate``
 
 To do GAMES analysis from the command line for a file path:
 1. Change directories to the cloned repository.
-1. Activate the previously created conda virtual environment
-using ``conda activate sbmllint``
+1. Activate the virtual environment using ``conda activate sbmllint``.
 1. There are copies of several BioModels files in data/biomodels.
    - To run games for a file in this directory, use
 ``python SBMLLint/tools/games.py data/biomodels/<file name>
    - To run moiety analysi for a file in this directory, use
 ``python SBMLLint/tools/moiety\_analysis.py data/biomodels/<file name>
+1. Deactivate the virtual environment using ``conda deactivate``
 
 
 ## Future Directions
