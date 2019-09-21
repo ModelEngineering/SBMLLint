@@ -36,7 +36,7 @@ def lint(model_reference, file_out=sys.stdout,
   :param str mass_balance_check: how check for mass balance
   :param str config_path: path to configuration file
   :param bool is_report: print result
-  :return MoietyComparatorResult/bull/None:
+  :return MoietyComparatorResult/null/None:
   """
   config.setConfiguration(path=config_path)
   config_dict = config.getConfiguration()
