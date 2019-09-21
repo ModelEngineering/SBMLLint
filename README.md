@@ -52,6 +52,7 @@ Use ``/`` or ``\``  as appropriate for your system in the following instructions
 ``python SBMLLint/tools/games.py data/biomodels/<file name>``
    - To run moiety analysi for a file in this directory, use
 ``python SBMLLint/tools/moiety\_analysis.py data/biomodels/<file name>``
+
 Note: to change implicit molecules or moieties, edit the file
 ``.sbmllint_cfg`` in the subfolder ``SBMLLint``.
 1. Deactivate the virtual environment using ``conda deactivate``
