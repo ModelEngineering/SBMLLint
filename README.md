@@ -46,7 +46,8 @@ To do GAMES and moiety analysis from the command line for a file path:
 1. Start a new terminal session.
 1. Change directory to the cloned repository.
 1. Activate the virtual environment using ``conda activate sbmllint``
-1. There are copies of several BioModels files in data/biomodels.
+1. There are copies of several BioModels files in ``data/biomodels`` or ``data\biomodels`` in Windows.
+Use ``/`` or ``\``  as appropriate for your system in the following instructions.
    - To run games for a file in this directory, use
 ``python SBMLLint/tools/games.py data/biomodels/\<file name\>
    - To run moiety analysi for a file in this directory, use
