@@ -26,9 +26,28 @@ The following is an example of using the ``structured_names`` and ``games`` algo
 
 <img src="games_example.png" width="700"/>
 
-## Installation
+## Installation and Usage
 
-``SBMLLint`` is currently under development and so is not availabe for installation. An alpha version is expected in April, 2019.
+1. Install python 3.6 or higher
+1. Install git
+1. Install miniconda
+1. Clone the repository using ``git clone https://ModelEngineering/SBMLLint.git``
+1. Change directories to the repo using ``cd SBMLLint``
+1. Create a miniconda virtual environment  with dependencies
+using ``conda env create --f environment.yml``
+1. Activate the virtual environment using ``conda activate sbmllint``.
+1. Deactivate the virtual environment using ``conda deactivate``
+
+To do GAMES analysis from the command line for a file path:
+1. Change directories to the cloned repository.
+1. Activate the previously created conda virtual environment
+using ``conda activate sbmllint``
+1. There are copies of several BioModels files in data/biomodels.
+   - To run games for a file in this directory, use
+``python SBMLLint/tools/games.py data/biomodels/<file name>
+   - To run moiety analysi for a file in this directory, use
+``python SBMLLint/tools/moiety\_analysis.py data/biomodels/<file name>
+
 
 ## Future Directions
 

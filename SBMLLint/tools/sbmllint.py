@@ -1,4 +1,5 @@
-"""Checks for static errors in a model."""
+"""Script for running mass balance checking tools."""
+
 
 from SBMLLint.common import config
 from SBMLLint.common import constants as cn
@@ -8,7 +9,6 @@ from SBMLLint.games.games_pp import GAMES_PP
 from SBMLLint.games.games_report import GAMESReport
 from SBMLLint.structured_names.moiety_comparator import MoietyComparator
 
-import argparse
 import os
 import sys
 import tesbml
@@ -18,17 +18,20 @@ TYPE_II = "type2"
 TYPE_III = "type3"
 CANCELING = "canceling"
 ECHELON = "echelon"
+GAMES = "games"
+STRUCTURED_NAMES = "structured_names"
 
 
 def lint(model_reference, file_out=sys.stdout,
-    mass_balance_check="structured_names",
+    mass_balance_check=GAMES,
     config_path=None,
     is_report=True,
     implicit_games=False):
   """
   Reports on errors found in a model
   :param str model_reference: 
-      libsbml_model, file, antimony string, xml string
+      libsbml_model file in
+      file, antimony string, xml string
   :param TextIOWrapper file_out:
   :param str mass_balance_check: how check for mass balance
   :param str config_path: path to configuration file
@@ -45,16 +48,25 @@ def lint(model_reference, file_out=sys.stdout,
     document = reader.readSBMLFromString(xml)
     util.checkSBMLDocument(document)
     model = document.getModel()
+  #
+  if mass_balance_check==STRUCTURED_NAMES:
+    name = "moiety analysis"
+  else:
+    name = "%s analysis" % GAMES
+  print("***")
+  print("***Running %s" % name)
+  print("***")
+  #
   simple = SimpleSBML()
   simple.initialize(model)
-  if mass_balance_check == "structured_names":
+  if mass_balance_check == STRUCTURED_NAMES:
     result = MoietyComparator.analyzeReactions(simple,
         implicits=config_dict['implicits'])
     if is_report:
       for line in result.report.split('\n'):
           file_out.write("%s\n" % line)
     return result
-  elif mass_balance_check == "games":
+  elif mass_balance_check == GAMES:
     if implicit_games:
       for implicit in config_dict['implicits']:
         simple = removeImplicit(simple, implicit)
@@ -106,14 +118,3 @@ def removeImplicit(simple, implicit):
     if modified:
       modified_reactions.append(r)
   return simple
-
-
-def main():
-  parser = argparse.ArgumentParser(description='SBML XML file.')
-  parser.add_argument('filename', type=str, help='SBML file')
-  args = parser.parse_args()
-  lint(args.filename)
-
-
-if __name__ == '__main__':
-  main()
