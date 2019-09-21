@@ -29,8 +29,10 @@ The following is an example of using the ``structured_names`` and ``games`` algo
 ## Installation and Usage
 
 1. Install python 3.6 or higher
-1. Install git
-1. Install miniconda
+1. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). To see if git is already installed on your machine:
+   - Open a terminal session.
+   - Type ``git --version``. If a git version number is returned, then git is installed.
+1. Install [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
 1. Clone the repository using ``git clone https://ModelEngineering/SBMLLint.git``
 1. Change directories to the repo using ``cd SBMLLint``
 1. Create a miniconda virtual environment  with dependencies
