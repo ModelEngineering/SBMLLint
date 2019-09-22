@@ -3,6 +3,7 @@ Runs moiety analysis for a local XML file.
 Usage: moiety_analysis <filepath>
 """
 
+import add_path
 from SBMLLint.tools import sbmllint
 
 import argparse

@@ -3,6 +3,7 @@ Runs the GAMES algorithm for a local XML file.
 Usage: games <filepath>
 """
 
+import add_path
 from SBMLLint.tools import sbmllint
 
 import argparse
