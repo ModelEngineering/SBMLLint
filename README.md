@@ -35,9 +35,9 @@ The following is an example of using the ``structured_names`` and ``games`` algo
 1. Install [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
 1. Clone the repository using ``git clone https://github.com/ModelEngineering/SBMLLint.git``
 1. Change directory to the repo using ``cd SBMLLint``
-1. Decompress the BioModels files by:
+1. Decompress the BioModels files. On Windows, use ``winzip``. On mac and linux, use:
    - ``cd data`` and ``cd biomodels``
-   -  ``unzip BIOMODELS.zip``
+   - ``unzip BIOMODELS.zip``
    - ``cd ..`` and ``cd ..``
 1. Create a miniconda virtual environment  with dependencies
 using ``conda env create -f environment.yml``
