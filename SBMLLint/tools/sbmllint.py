@@ -46,7 +46,7 @@ def lint(model_reference, file_out=sys.stdout,
     xml = util.getXML(model_reference)
     reader = tesbml.SBMLReader()
     document = reader.readSBMLFromString(xml)
-    util.checkSBMLDocument(document)
+    util.checkSBMLDocument(document, model_reference)
     model = document.getModel()
   #
   if mass_balance_check==STRUCTURED_NAMES:
