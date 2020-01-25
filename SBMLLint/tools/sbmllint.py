@@ -11,7 +11,7 @@ from SBMLLint.structured_names.moiety_comparator import MoietyComparator
 
 import os
 import sys
-import tesbml
+import libsbml
 
 TYPE_I = "type1"
 TYPE_II = "type2"
@@ -44,7 +44,7 @@ def lint(model_reference, file_out=sys.stdout,
     model = model_reference
   else:
     xml = util.getXML(model_reference)
-    reader = tesbml.SBMLReader()
+    reader = libsbml.SBMLReader()
     document = reader.readSBMLFromString(xml)
     util.checkSBMLDocument(document)
     model = document.getModel()

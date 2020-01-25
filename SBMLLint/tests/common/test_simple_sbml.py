@@ -9,7 +9,7 @@ from SBMLLint.common import util
 
 import numpy as np
 import os
-import tesbml
+import libsbml
 import unittest
 
 
@@ -95,7 +95,7 @@ class TestFunctions(unittest.TestCase):
     for item in itr:
       model = item.model
       self.assertTrue(isinstance(model.getSpecies(0),
-          tesbml.libsbml.Species))
+          libsbml.Species))
     COUNT = 20
     itr = simple_sbml.modelIterator(final=COUNT)
     item_number = -1

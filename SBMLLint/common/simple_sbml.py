@@ -18,7 +18,7 @@ import collections
 import os.path
 import numpy as np
 import sys
-import tesbml
+import libsbml
 import urllib3
 import warnings
 
@@ -37,7 +37,7 @@ IteratorItem = collections.namedtuple('IteratorItem',
 
 class SimpleSBML(object):
   """
-  This class address stability of the underlying tesbml 
+  This class address stability of the underlying libsbml 
   (libsbml) library that seems not to survive garbage collection
   by python (e.g., returning a libsbml object to a caller.) As
   a result, no libsbml object is maintained by SimpleSBML instances.
@@ -61,7 +61,7 @@ class SimpleSBML(object):
       model = model_reference
     else:
       xml = util.getXML(model_reference)
-      reader = tesbml.SBMLReader()
+      reader = libsbml.SBMLReader()
       document = reader.readSBMLFromString(xml)
       util.checkSBMLDocument(document, model_reference=model_reference)
       model = document.getModel()
@@ -194,7 +194,7 @@ def modelIterator(initial=0, final=1000, data_dir=cn.BIOMODELS_DIR):
     num += 1
     with open(path, 'r') as fd:
       lines = ''.join(fd.readlines())
-      reader = tesbml.libsbml.SBMLReader()
+      reader = libsbml.SBMLReader()
       document = reader.readSBMLFromString(lines)
       model = document.getModel()
     iterator_item = IteratorItem(filename=filename,
