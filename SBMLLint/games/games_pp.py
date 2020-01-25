@@ -771,7 +771,7 @@ class GAMES_PP(nx.DiGraph):
     ## help us track the operations that lead to this error 
     return True
   
-  def analyze(self, reactions=None, simple_games=False, rref=True, error_details=False):
+  def analyze(self, reactions=None, simple_games=False, rref=True, error_details=False, suppress_message=False):
     """
     Using the stoichiometry matrix, compute
     row reduced echelon form and create SOMGraph
@@ -780,6 +780,7 @@ class GAMES_PP(nx.DiGraph):
     :param list-Reaction reactions:
     :param bool rref:
     :param bool error_details:
+    :param bool suppress_message:
     :return bool:
     """
     multimulti_error_found = False
@@ -849,7 +850,8 @@ class GAMES_PP(nx.DiGraph):
             for reaction in [r for r in self.rref_som_reactions if r.category == category]:
               func = som_reaction_dic[category]
               func(reaction)
-    print("Model analyzed...")
+    if not suppress_message:
+      print("Model analyzed...")
     if error_details:
       print("Type I error: ", self.type_one_errors)
       print("Type II error: " , self.type_two_errors)
@@ -868,10 +870,12 @@ class GAMES_PP(nx.DiGraph):
         self.error_summary.append(ErrorSummary(type=CANCELING, errors=self.canceling_errors))
       if self.echelon_errors:
         self.error_summary.append(ErrorSummary(type=ECHELON, errors=self.echelon_errors))
-      print("At least one error found.\n")
+      if not suppress_message:
+        print("At least one error found.\n")
       return True
     else:
-      print("No error found.")
+      if not suppress_message:
+        print("No error found.")
       return False
 
 
