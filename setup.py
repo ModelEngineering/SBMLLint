@@ -18,6 +18,7 @@ setup(
         "xlrd",
         "nose",
         "pyyaml",
+        "libsbml",
         "tellurium",
         ],
     )
