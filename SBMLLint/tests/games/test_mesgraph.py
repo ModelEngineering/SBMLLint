@@ -11,7 +11,6 @@ from SBMLLint.common import simple_sbml
 import numpy as np
 import os
 import re
-import tesbml
 import unittest
 
 IGNORE_TEST = False

@@ -13,7 +13,6 @@ import collections
 import networkx as nx
 import numpy as np
 import pandas as pd
-import tesbml
 
 NULL_STR = ""
 ReactionOperation = collections.namedtuple("ReactionOperation", 

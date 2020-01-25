@@ -8,7 +8,6 @@ from SBMLLint.common import util
 import itertools
 import numpy as np
 import os
-import tesbml
 import unittest
 
 

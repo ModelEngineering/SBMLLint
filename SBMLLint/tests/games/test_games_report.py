@@ -14,7 +14,6 @@ import numpy as np
 import pandas as pd
 import os
 import re
-import tesbml
 import unittest
 
 IGNORE_TEST = False
