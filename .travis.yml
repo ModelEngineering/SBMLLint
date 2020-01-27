@@ -18,5 +18,4 @@ install:
   - pip install tellurium python-libsbml
 
 script:
-  - cd data/biomodels; unzip *.zip > t.out; cd ..; cd ..
-  - nosetests SBMLLint/tests
+  - nosetests tests
