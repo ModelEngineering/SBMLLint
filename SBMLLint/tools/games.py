@@ -1,3 +1,4 @@
+#!python
 """
 Runs the GAMES algorithm for a local XML file.
 Usage: games <filepath>

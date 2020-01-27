@@ -14,8 +14,10 @@ FRAC_BALANCED_REACTIONS = "frac_balanced_reactions"
 FRAC_BOUNDARY_REACTIONS = "frac_Boundary_reactions"
 
 ############### TESTS #####################
-TEST_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TEST_DIR = os.path.join(TEST_DIR, "tests")
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+for _ in range(2):
+  PROJECT_DIR = os.path.dirname(PROJECT_DIR)
+TEST_DIR = os.path.join(PROJECT_DIR, "tests")
 TEST_FILE = os.path.join(TEST_DIR, "test_file.xml")
 TEST_FILE2 = os.path.join(TEST_DIR, "test_file2.xml")
 # test_file3: originally curated_017
@@ -144,10 +146,8 @@ NULL_STR = ""
 
 # Directories and files
 # Where data files are stored by default
-PROJECT_DIR = os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__)))
-PROJECT_DIR = os.path.dirname(PROJECT_DIR)
 BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data/biomodels")
+BIOMODELS_ZIP_FILENAME = "biomodels.zip"
 BIGG_DIR = os.path.join(PROJECT_DIR, "data/bigg")
 ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(PROJECT_DIR, "analysis")
 ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(

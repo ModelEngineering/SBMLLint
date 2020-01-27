@@ -11,6 +11,7 @@ import numpy as np
 import os
 import libsbml
 import unittest
+import zipfile
 
 
 IGNORE_TEST = False
@@ -88,22 +89,41 @@ class TestFunctions(unittest.TestCase):
   def testReadURL(self):
     pass
 
-  def testModelIterator(self):
+  def _testIterator(self, itr):
+     for item in itr:
+       model = item.model
+       self.assertTrue(isinstance(model.getSpecies(0),
+           libsbml.Species))
+     COUNT = 20
+     itr = simple_sbml.modelIterator(final=COUNT)
+     item_number = -1
+     for item in itr:
+       self.assertTrue(isinstance(item.filename, str))
+       self.assertTrue(util.isSBMLModel(item.model))
+       item_number = item.number
+     self.assertEqual(item_number, COUNT - 1)
+
+  def testModelIterator1(self):
     if IGNORE_TEST:
       return
-    itr = simple_sbml.modelIterator(final=1)
-    for item in itr:
-      model = item.model
-      self.assertTrue(isinstance(model.getSpecies(0),
-          libsbml.Species))
-    COUNT = 20
-    itr = simple_sbml.modelIterator(final=COUNT)
-    item_number = -1
-    for item in itr:
-      self.assertTrue(isinstance(item.filename, str))
-      self.assertTrue(util.isSBMLModel(item.model))
-      item_number = item.number
-    self.assertEqual(item_number, COUNT - 1)
+    self._testIterator(simple_sbml.modelIterator(final=1))
+
+  def testModelIterator2(self):
+    if IGNORE_TEST:
+      return
+    self._testIterator(simple_sbml.modelIterator(
+        final=1, zip_filename=None))
+
+  def testGetZipfilePath(self):
+    if IGNORE_TEST:
+      return
+    ffiles, zipper = simple_sbml.getZipfilePaths()
+    for ffile in ffiles:
+      try:
+        fid = zipper.open(ffile)
+        fid.close()
+      except:
+        assertTrue(False)
     
 
 if __name__ == '__main__':

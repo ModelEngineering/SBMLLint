@@ -1,5 +1,6 @@
 from SBMLLint.common import constants as cn
 from SBMLLint.common.tellurium_sandbox import TelluriumSandbox
+from SBMLLint.common import tellurium_sandbox as ts
 
 
 import numpy as np
@@ -33,6 +34,10 @@ class TestTelluriumSandbox(unittest.TestCase):
     self.assertEqual(sandbox.return_code, 0)
     self.assertEqual(sandbox.output, INPUT)
 
+  def testInstalledPackages(self):
+    pkgs = ts.getInstalledPackages()
+    self.assertTrue("matplotlib" in pkgs)
+  
   def testGetSBMLFromAntimony(self):
     sandbox = TelluriumSandbox()
     sandbox.run("getSBMLFromAntimony", ANTIMONY_STG)
