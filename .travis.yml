@@ -15,6 +15,8 @@ install:
 
 script:
   - cd ..; nosetests SBMLLint/tests
-  - cd SBMLLint
-  - SBMLLint/tools/games
+  - cp SBMLLint/data/biomodels/biomodels.zip .
+  - unzip biomodels.zip
+  - games BIOMD0000000232_url.xml
+  - moiety_analysis BIOMD0000000232_url.xml
   - SBMLLint/tools/moiety_analysis
