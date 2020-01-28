@@ -19,4 +19,3 @@ script:
   - unzip biomodels.zip
   - games BIOMD0000000232_url.xml
   - moiety_analysis BIOMD0000000232_url.xml
-  - SBMLLint/tools/moiety_analysis
