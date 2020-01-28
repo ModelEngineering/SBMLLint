@@ -29,6 +29,8 @@ def sbmllint_setup(install_requires):
       url='https://github.com/ModelEngineering/SBMLLint',
       description='Linter for SBML models.',
       long_description=open('README.md').read(),
+      package_dir={'SBMLLint': 'SBMLLint'},
+      package_data={'SBMLLint': ['data/biomodels/*.zip']},
       install_requires=install_requires,
       )
 

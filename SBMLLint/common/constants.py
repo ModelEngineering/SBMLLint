@@ -1,6 +1,8 @@
-"""Constants for SBMLLint."""
+"""Constants for Project."""
 import collections
 import os
+
+PROJECT_NAME = "SBMLLint"
 
 
 ############### COLUMN NAMES ##############
@@ -13,11 +15,22 @@ NUM_BALANCED_REACTIONS = "num_balanced_reactions"
 FRAC_BALANCED_REACTIONS = "frac_balanced_reactions"
 FRAC_BOUNDARY_REACTIONS = "frac_Boundary_reactions"
 
-############### TESTS #####################
+################ DIRECTORIES #################
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 for _ in range(2):
   PROJECT_DIR = os.path.dirname(PROJECT_DIR)
+CODE_DIR = os.path.join(PROJECT_DIR, PROJECT_NAME)
 TEST_DIR = os.path.join(PROJECT_DIR, "tests")
+
+################ DATA DIRECTORIES #################
+BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data/biomodels")
+BIOMODELS_ZIP_FILENAME = "biomodels.zip"
+BIGG_DIR = os.path.join(PROJECT_DIR, "data/bigg")
+ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(PROJECT_DIR, "analysis")
+ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
+    ANALYSIS_STRUCTURED_NAMES_DIR, "structured_names")
+
+############### TEST FILES #####################
 TEST_FILE = os.path.join(TEST_DIR, "test_file.xml")
 TEST_FILE2 = os.path.join(TEST_DIR, "test_file2.xml")
 # test_file3: originally curated_017
@@ -144,15 +157,6 @@ PathComponents = collections.namedtuple('PathComponents',
 # used for creating a report
 NULL_STR = ""
 
-# Directories and files
-# Where data files are stored by default
-BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data/biomodels")
-BIOMODELS_ZIP_FILENAME = "biomodels.zip"
-BIGG_DIR = os.path.join(PROJECT_DIR, "data/bigg")
-ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(PROJECT_DIR, "analysis")
-ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
-    ANALYSIS_STRUCTURED_NAMES_DIR, "structured_names")
-
 # Configuration related
 CFG_IMPLICITS = "implicits"
 CFG_PROCESS_BOUNDARY_REACTIONS = "process_boundary_reactions"
@@ -160,4 +164,4 @@ CFG_DEFAULTS = {}
 CFG_DEFAULTS[CFG_IMPLICITS] = ['DUMMYIMPLICIT']
 CFG_DEFAULTS[CFG_PROCESS_BOUNDARY_REACTIONS] = False
 CFG_DEFAULT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CFG_DEFAULT_PATH = os.path.join(CFG_DEFAULT_PATH, ".sbmllint_cfg")
+CFG_DEFAULT_PATH = os.path.join(CFG_DEFAULT_PATH, ".sbmllint_cfg.yml")

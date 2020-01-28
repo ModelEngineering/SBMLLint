@@ -24,7 +24,7 @@ STRUCTURED_NAMES = "structured_names"
 
 def lint(model_reference, file_out=sys.stdout,
     mass_balance_check=GAMES,
-    config_path=None,
+    config_path=cn.CFG_DEFAULT_PATH,
     is_report=True,
     implicit_games=False):
   """
