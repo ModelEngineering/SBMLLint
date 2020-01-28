@@ -6,7 +6,7 @@ from SBMLLint.common import util
 
 import argparse
 import sys
-import tesbml
+import libsbml
 
 
 def prettyPrint(model_reference, file_out=sys.stdout, **kwargs):
@@ -16,7 +16,7 @@ def prettyPrint(model_reference, file_out=sys.stdout, **kwargs):
   :param dict kwargs: arguments to Reaction.getId
   """
   xml = util.getXML(model_reference)
-  reader = tesbml.SBMLReader()
+  reader = libsbml.SBMLReader()
   document = reader.readSBMLFromString(xml)
   util.checkSBMLDocument(document)
   model = document.getModel()

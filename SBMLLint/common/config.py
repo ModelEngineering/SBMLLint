@@ -5,8 +5,11 @@ Provides two functions.
   getConfiguration() - returns the current value of the configuration dictionary.
 """
 
+import os
+import yaml
 
-CONFIG_PATH = "SBMLLint/.sbmllint_cfg"
+import SBMLLint.common.constants as cn
+
 _config_dict = None  # Configuration dictionary
 
 """Reads yaml configuration file for SBMLLint."""
@@ -15,11 +18,9 @@ _config_dict = None  # Configuration dictionary
 #    and placement of .smbllint_cfg
 # 2. Incorporate implicits into structured_names
 
-import yaml
 
-import SBMLLint.common.constants as cn
 
-def setConfiguration(path=None):
+def setConfiguration(path=cn.CFG_DEFAULT_PATH):
   """
   :param str path: path to configuration file
   Updates _config_dict
@@ -29,8 +30,6 @@ def setConfiguration(path=None):
   """
   # TODO: Consider that .sbmllint_cfg may be in home directory
   global _config_dict
-  if path is None:
-    path = CONFIG_PATH
   with open(path, "r") as fd:
     lines = fd.readlines()
   lines = '\n'.join(lines)

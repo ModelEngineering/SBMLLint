@@ -166,7 +166,7 @@ class Reaction(object):
   def getKineticsTerms(self, libsbml_reaction):
     """
     Gets the terms used in the kinetics law for the reaction
-    :param tesbml.libsbml.Reaction libsbml_reaction:
+    :param libsbml.Reaction libsbml_reaction:
     :return list-of-str: names of the terms
     """
     terms = []

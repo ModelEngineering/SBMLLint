@@ -13,6 +13,19 @@ S1 = 0
 S2 = 0
 ''' % (NUM_S1, NUM_S2)
 
+
+def getInstalledPackages():
+  """
+  Returns list of installed packages.
+  :return list-str"
+  """
+  reqs = subprocess.check_output([sys.executable,
+      '-m', 'pip', 'freeze'])
+  installed_packages = [r.decode().split('==')[0]
+      for r in reqs.split()]
+  return installed_packages
+
+
 class TelluriumSandbox(object):
   """
   Runs python code in a separate process (sandbox).
@@ -27,6 +40,9 @@ class TelluriumSandbox(object):
   """
 
   def __init__(self):
+    pkgs = getInstalledPackages()
+    if not "tellurium" in pkgs:
+      raise ValueError("***Operation aborted. Tellurium is not installed.")
     self.return_code = None
     self.output = None
 

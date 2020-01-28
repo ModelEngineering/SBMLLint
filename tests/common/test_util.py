@@ -1,13 +1,6 @@
-"""
-Notes
-  1. libsbml (tesbml) is fragile; will segmentation fault if return
-     a model object. Each test must separately construct libsbml
-     objects.
-"""
-
 from SBMLLint.common import constants as cn
 from SBMLLint.common import util
-import tesbml
+import libsbml
 
 
 import numpy as np
@@ -32,7 +25,7 @@ class TestFunctions(unittest.TestCase):
 
   def testGetXMLString(self):
     def test(xml):
-      reader = tesbml.SBMLReader()
+      reader = libsbml.SBMLReader()
       document = reader.readSBMLFromString(xml)
       util.checkSBMLDocument(document)
       model = document.getModel()
@@ -49,7 +42,7 @@ class TestFunctions(unittest.TestCase):
   def testGetXMLFromAntimony(self):
     xml = util.getXMLFromAntimony(ANTIMONY_STG)
     self.assertTrue(isinstance(xml, str))
-    reader = tesbml.libsbml.SBMLReader()
+    reader = libsbml.SBMLReader()
     libsbml_document = reader.readSBMLFromString(xml)
     util.checkSBMLDocument(libsbml_document)
     model = libsbml_document.getModel()
@@ -71,7 +64,7 @@ class TestFunctions(unittest.TestCase):
     return
     self.assertFalse(util.isSBMLModel("dummy"))
     xml = util.getXML(cn.TEST_FILE2)
-    reader = tesbml.SBMLReader()
+    reader = libsbml.SBMLReader()
     document = reader.readSBMLFromString(xml)
     util.checkSBMLDocument(document)
     model = document.getModel()

@@ -12,7 +12,6 @@ to manually verify whether a model is stoichiometrically inconsistent.
 """
 
 
-import tesbml
 
 def print_model(model):
     """Print reactants and products of all reactions in a model.

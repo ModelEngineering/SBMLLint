@@ -18,8 +18,6 @@ def getXML(model_reference):
       if it is a model string, it may be an xml string or antimony.
   :raises IOError: Error encountered reading the SBML document
   :return str SBML xml"
-  Returning an SBML document seems to avoid a segementation
-  fault from the interations of tesbml and tellurium.
   """
   # Check for a file path
   if os.path.isfile(model_reference):

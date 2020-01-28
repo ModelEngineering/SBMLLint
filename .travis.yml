@@ -9,14 +9,13 @@ install:
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update --quiet conda
-  - conda info --all
-  - conda env create --quiet --name sbmllint --file environment.yml
-  - source activate sbmllint
-  - pip install --upgrade pip
-  - pip install matplotlib numpy pandas urllib3 networkx tellurium nose pyyaml
+  - python3 -m venv test-sbmllint
+  - source test-sbmllint/bin/activate
+  - python setup.py install
 
 script:
-  - cd data/biomodels; unzip *.zip > t.out; cd ..; cd ..
-  - nosetests SBMLLint/tests
+  - cd ..; nosetests SBMLLint/tests
+  - cp SBMLLint/data/biomodels/biomodels.zip .
+  - unzip biomodels.zip
+  - games BIOMD0000000232_url.xml
+  - moiety_analysis BIOMD0000000232_url.xml
