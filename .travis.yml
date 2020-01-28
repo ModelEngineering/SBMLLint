@@ -9,13 +9,9 @@ install:
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update --quiet conda
-  - conda info --all
-  - conda env create --quiet --name sbmllint --file environment.yml
-  - source activate sbmllint
-  - pip install --upgrade pip
-  - pip install tellurium python-libsbml
+  - python3 -m venv test-sbmllint
+  - source test-sbmllint/bin/activate
+  - python setup.py install
 
 script:
-  - nosetests tests
+  - cd ..; nosetests SBMLLint/tests
