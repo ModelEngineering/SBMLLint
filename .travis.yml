@@ -15,3 +15,6 @@ install:
 
 script:
   - cd ..; nosetests SBMLLint/tests
+  - cd SBMLLint
+  - SBMLLint/tools/games
+  - SBMLLint/tools/moiety_analysis

@@ -23,15 +23,18 @@ def sbmllint_setup(install_requires):
       version='1.0.0',
       author='Woosub Shin, Joseph L. Hellerstein',
       author_email='jlheller@uw.edu',
-      packages=find_packages(),
+      packages=find_packages(exclude=['tests', 'analysis',
+          'notebook', 'docs']),
       scripts=[
           'SBMLLint/tools/games', 'SBMLLint/tools/moiety_analysis'],
       url='https://github.com/ModelEngineering/SBMLLint',
       description='Linter for SBML models.',
       long_description=open('README.md').read(),
       package_dir={'SBMLLint': 'SBMLLint'},
-      package_data={'SBMLLint': ['data/biomodels/*.zip']},
       install_requires=install_requires,
+      include_package_data=True,
+      data_files=[('data/biomodels',
+          ['data/biomodels/biomodels.zip'])]
       )
 
 try:
