@@ -22,9 +22,9 @@ The second algorithm, ``games`` (Graphical Analysis with Mass Equality Sets) doe
 The following is an example of using the ``structured_names`` and ``games`` algorithms to check for mass balance in a Jupyter Notebook.
 ``SBMLLint`` can also be run from the command line, taking as input a file with either SBML or Antimony. 
 
-<img src="structured_names_example.png" width="800"/>
+<img src="https://github.com/ModelEngineering/SBMLLint/blob/master/structured_names_example.png" width="800"/>
 
-<img src="games_example.png" width="700"/>
+<img src="https://github.com/ModelEngineering/SBMLLint/blob/master/games_example.png" width="700"/>
 
 ## Installation and Usage
 

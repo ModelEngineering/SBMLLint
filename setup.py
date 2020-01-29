@@ -38,7 +38,7 @@ def sbmllint_setup(install_requires):
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Intended Audience :: Developers',      # Define that your audience are developers
-          'Topic :: Systems Biology :: Verify reaction models',
+          'Topic :: Scientific/Engineering :: Bio-Informatics',
           'License :: OSI Approved :: MIT License',   # Again, pick a license
           'Programming Language :: Python :: 3.6',
         ],
