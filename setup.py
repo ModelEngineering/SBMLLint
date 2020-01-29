@@ -16,7 +16,6 @@ INSTALL_FULL = [
 INSTALL_PARTIAL = list(INSTALL_FULL)
 INSTALL_PARTIAL.remove("tellurium")
 
-
 def sbmllint_setup(install_requires):
   setup(
       name='SBMLLint',
@@ -30,11 +29,19 @@ def sbmllint_setup(install_requires):
       url='https://github.com/ModelEngineering/SBMLLint',
       description='Linter for SBML models.',
       long_description=open('README.md').read(),
+      long_description_content_type='text/markdown',
       package_dir={'SBMLLint': 'SBMLLint'},
       install_requires=install_requires,
       include_package_data=True,
       data_files=[('data/biomodels',
-          ['data/biomodels/biomodels.zip'])]
+          ['data/biomodels/biomodels.zip'])],
+      classifiers=[
+          'Development Status :: 3 - Alpha',
+          'Intended Audience :: Developers',      # Define that your audience are developers
+          'Topic :: Systems Biology :: Verify reaction models',
+          'License :: OSI Approved :: MIT License',   # Again, pick a license
+          'Programming Language :: Python :: 3.6',
+        ],
       )
 
 try:
