@@ -40,7 +40,11 @@ def sbmllint_setup(install_requires):
           'Intended Audience :: Developers',      # Define that your audience are developers
           'Topic :: Scientific/Engineering :: Bio-Informatics',
           'License :: OSI Approved :: MIT License',   # Again, pick a license
+          'Programming Language :: Python :: 3.4',
+          'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
+          'Programming Language :: Python :: 3.8',
         ],
       )
 
