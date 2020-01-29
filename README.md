@@ -12,70 +12,56 @@ Because of this huge growth in the complexity, software engineers developed soph
 
 ## The Tool
 
-``SBMLLint`` is a tool that lints reactions. The initial focus is detecting mass balance errors. The tool takes as input a model expressed in either SBML ([Systems Biology Markup Language](http://sbml.org/Main_Page), a standard format for biochemical models) or the [Antimony language](http://antimony.sourceforge.net/) (a human readable representation of chemical reaction models).
+``SBMLLint`` is a tool that lints reactions. The initial focus is detecting mass balance errors. The tool takes as input a model expressed in either SBML ([Systems Biology Markup Language](http://sbml.org/Main_Pagemodeller), a standard format for biochemical models) or the [Antimony language](http://antimony.sourceforge.net/) (a human readable representation of chemical reaction models).
 
 ``SBMLLint`` implements two algorithms for linting reactions. The first, **moiety analysis**, checks for balance in
 the moiety structure of reactions.
 For example ``ATP`` has the moeities adenosine with three inorganic phosphates.
 Moiety analysis requires that modelers following a naming convention that exposes the moiety structure.
 There is no restriction on the choice of moiety names (other than compliance with SBML naming standards), but there is
-a requirement as to how moiety names are expressed.
+a requirement as to how moiety names are exposed.
 For example, the modeler could use ``A`` to indicate a adenosine moiety and ``Pi`` for inorganic phosphate.
 Moiety analysis requires that moieties be separated by an underscore (``\_``).
 That is, ``ATP`` would be written as ``A_Pi_Pi_Pi``
 Similarly, ``GluP`` would be written as ``Glu_Pi``. Thus, the above reaction is 
 written as ``Glu + A_Pi_Pi_Pi -> Glu_Pi + A_Pi_Pi``.
 Moiety analysis checks that the count of each moiety in the reactants is the same as the count of each moiety in the products.
-Although moiety analysis places a burden on the modeller to use the underscore convention,
+Although moiety analysis places a burden on the modeler to use the underscore convention,
 we note that about 20% of the models in the [BioModels](http://www.ebi.ac.uk/biomodels/) repository already use names that are close
 to this structured.
 
-The second algorithm, ``games`` (Graphical Analysis with Mass Equality Sets) does not impose any requirements on
+The second algorithm, **GAMES** (Graphical Analysis with Mass Equality Sets) does not impose any requirements on
 the structure of the molecule names.
-However, ``games`` checks for a weaker condition called *stoichiometric inconsistency*.
-A collection of reactions is stoichiometrically inconsistent if the set of reactions infers that a molecule has more than one relative mass. To illustrate this, consider two reactions ``A -> B + C`` and ``C -> A``. The first reaction implies that the mass of ``A`` is greater than the mass of ``C``. But the second reaction implies that ``A`` and ``C`` have the same mass.
+GAMES checks for *stoichiometric inconsistency*, which is a weaker condition
+than mass balance.
+A collection of reactions is stoichiometrically inconsistent if the set of reactions infers that a molecule has a mass of zero. To illustrate this, consider a model consisting of two reactions: ``A -> B`` and ``A -> B + C``. The first reaction implies that the mass of ``A`` is the same as ``B``. The second reaction implies that the mass of ``A`` equals the sum of the masses and ``B`` and ``C``. Both statements can be true only if the mass of ``C`` is zero, and so the model has a stoichiometric inconsistency.
 
 ## Examples
-The following is an example of using the ``structured_names`` and ``games`` algorithms to check for mass balance in a Jupyter Notebook.
+The following is an example of using the ``structured_names`` and ``games` algorithms to check for mass balance in a Jupyter Notebook.
 
-<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/structured_names_example.png" width="800"/>
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/moiety_analysis_example.png" width="800"/>
 
 <img src="https://github.com/ModelEngineering/SBMLLint/raw/master/games_example.png" width="700"/>
 
-``SBMLLint`` can also be run from the command line, taking as input a file with either SBML or Antimony (if you
-install Tellurium). 
+``SBMLLint`` can also be run from the command line, taking as input a model file expressed in SBML or Antimony (if you
+install Tellurium).
+Below are examples.
+
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/moiety_analysis_from_command_line.png" width="800"/>
+
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/games_from_command_line.png" width="800"/>
 
 ## Installation and Usage
 
-1. Install python 3.6 or higher
-1. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). To see if git is already installed on your machine:
-   - Open a terminal session.
-   - Type ``git --version``. If a git version number is returned, then git is installed.
-1. Install [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
+SBMLLint is distributed through PyPI. You can install using ``pip install SBMLLint``.
+
+To verify the installation:
+
 1. Clone the repository using ``git clone https://github.com/ModelEngineering/SBMLLint.git``
-1. Change directory to the repo using ``cd SBMLLint``
-1. Decompress the BioModels files. On Windows, use ``winzip``. On mac and linux, use:
-   - ``cd data/biomodels``
-   - ``unzip BIOMODELS.zip``
-   - ``cd ../..``
-1. Create a miniconda virtual environment  with dependencies
-using ``conda env create -f environment.yml``
-1. Start a new terminal session and change directory to ``SBMLLint``.
-1. Activate the virtual environment using ``conda activate sbmllint``
-1. Install Tellurium using ``pip install tellurium``
-1. Deactivate the virtual environment using ``conda deactivate``
+1. ``nosetests SBMLLint/tests`` on Mac and Linux; ``nosetests SBMLLint\tests`` on Windows.
 
-To do GAMES and moiety analysis from the command line for a file path:
-1. Start a new terminal session.
-1. Change directory to the cloned repository.
-1. Activate the virtual environment
-1. There are copies of several BioModels files in ``data/biomodels`` or ``data\biomodels`` in Windows.
-Use ``/`` or ``\``  as appropriate for your system in the following instructions.
-   - To run games for a file in this directory, use
-``python SBMLLint/tools/games.py data/biomodels/<file name>``
-   - To run moiety analysi for a file in this directory, use
-``python SBMLLint/tools/moiety\_analysis.py data/biomodels/<file name>``
-1. Deactivate the virtual environment
+Depending on your environment, you may see some warning messages, but there should be no errors.
 
-Note: to change implicit molecules or moieties, edit the file
+Note: to change implicit molecules or moieties, copy and modify
+the configuration file
 ``.sbmllint_cfg`` in the subfolder ``SBMLLint``.
