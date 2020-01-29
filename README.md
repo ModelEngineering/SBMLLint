@@ -14,17 +14,36 @@ Because of this huge growth in the complexity, software engineers developed soph
 
 ``SBMLLint`` is a tool that lints reactions. The initial focus is detecting mass balance errors. The tool takes as input a model expressed in either SBML ([Systems Biology Markup Language](http://sbml.org/Main_Page), a standard format for biochemical models) or the [Antimony language](http://antimony.sourceforge.net/) (a human readable representation of chemical reaction models).
 
-``SBMLLint`` implements two algorithms for linting reactions. The first, ``structured_names``, requires the modeller to give the tool hints by naming molecules in terms of their underlying moieties (sub-parts). For example, ``ATP`` would be written as ``A_P_P_P`` to indicate that there is one adenosine molecule and three phosphate molecules. Similarly, ``GluP`` would be written as ``Glu_P``. Thus, the above reaction is written as ``Glu + A_P_P_P -> Glu_P + A_P_P``. ``structured_names`` checks that the count of each moiety in the reactants is the same as the count of each moiety in the products. Although ``structured_names`` places a burden on the modeller, we note that about 20% of the models in the [BioModels](http://www.ebi.ac.uk/biomodels/) repository already use names structured in the manner required by this tool. 
+``SBMLLint`` implements two algorithms for linting reactions. The first, **moiety analysis**, checks for balance in
+the moiety structure of reactions.
+For example ``ATP`` has the moeities adenosine with three inorganic phosphates.
+Moiety analysis requires that modelers following a naming convention that exposes the moiety structure.
+There is no restriction on the choice of moiety names (other than compliance with SBML naming standards), but there is
+a requirement as to how moiety names are expressed.
+For example, the modeler could use ``A`` to indicate a adenosine moiety and ``Pi`` for inorganic phosphate.
+Moiety analysis requires that moieties be separated by an underscore (``\_``).
+That is, ``ATP`` would be written as ``A_Pi_Pi_Pi``
+Similarly, ``GluP`` would be written as ``Glu_Pi``. Thus, the above reaction is 
+written as ``Glu + A_Pi_Pi_Pi -> Glu_Pi + A_Pi_Pi``.
+Moiety analysis checks that the count of each moiety in the reactants is the same as the count of each moiety in the products.
+Although moiety analysis places a burden on the modeller to use the underscore convention,
+we note that about 20% of the models in the [BioModels](http://www.ebi.ac.uk/biomodels/) repository already use names that are close
+to this structured.
 
-The second algorithm, ``games`` (Graphical Analysis with Mass Equality Sets) does not impose any requirements on the structure of the molecule names. However, ``games`` checks for a weaker condition called *stoichiometric inconsistency*. A collection of reactions is stoichiometrically inconsistent if the set of reactions infers that a molecule has more than one relative mass. To illustrate this, consider two reactions ``A -> B + C`` and ``C -> A``. The first reaction implies that the mass of ``A`` is greater than the mass of ``C``. But the second reaction implies that ``A`` and ``C`` have the same mass.
+The second algorithm, ``games`` (Graphical Analysis with Mass Equality Sets) does not impose any requirements on
+the structure of the molecule names.
+However, ``games`` checks for a weaker condition called *stoichiometric inconsistency*.
+A collection of reactions is stoichiometrically inconsistent if the set of reactions infers that a molecule has more than one relative mass. To illustrate this, consider two reactions ``A -> B + C`` and ``C -> A``. The first reaction implies that the mass of ``A`` is greater than the mass of ``C``. But the second reaction implies that ``A`` and ``C`` have the same mass.
 
 ## Examples
 The following is an example of using the ``structured_names`` and ``games`` algorithms to check for mass balance in a Jupyter Notebook.
-``SBMLLint`` can also be run from the command line, taking as input a file with either SBML or Antimony. 
 
 <img src="https://github.com/ModelEngineering/SBMLLint/raw/master/structured_names_example.png" width="800"/>
 
 <img src="https://github.com/ModelEngineering/SBMLLint/raw/master/games_example.png" width="700"/>
+
+``SBMLLint`` can also be run from the command line, taking as input a file with either SBML or Antimony (if you
+install Tellurium). 
 
 ## Installation and Usage
 
