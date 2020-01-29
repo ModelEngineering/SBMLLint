@@ -62,6 +62,13 @@ To verify the installation:
 
 Depending on your environment, you may see some warning messages, but there should be no errors.
 
-Note: to change implicit molecules or moieties, copy and modify
+When doing moiety analysis, it is sometimes useful to ignore some
+moieties. For example, sometimes modelers do attempt to ensure
+mass balance for molecules that are *implicit*
+if the they are omnipresent (e.g., water in cellular reactions).
+Moiety analysis has provisions to ignore selected moieties.
+This can be done by modifying
 the configuration file
-``.sbmllint_cfg`` in the subfolder ``SBMLLint``.
+``.sbmllint_cfg`` in the subfolder ``SBMLLint`` and using the
+``-c`` option on the commmand line (or the ``config_file`` option
+in ``sbmllint.lint``).
