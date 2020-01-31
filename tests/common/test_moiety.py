@@ -48,12 +48,24 @@ class TestMoietyStoichiometry(unittest.TestCase):
         self.assertEqual(result.stoichiometry, expected[1])
 
   def testGetMoietys(self):
+    if IGNORE_TEST:
+      return
     m_ss = []
     for stgs in MOIETY_STOICHIOMETRY_STGS.values():
       m_ss.extend([MoietyStoichiometry.make(s) for s in stgs])
     moietys = MoietyStoichiometry.getMoietys(m_ss)
     self.assertEqual(len(MOIETY_STOICHIOMETRY_STGS.keys()),
         len(moietys))
+
+  def testMakeFromDct(self):
+    if IGNORE_TEST:
+      return
+    dct = {"A": 1, "P": 3}
+    mss1 = MoietyStoichiometry.makeFromDct(dct)
+    mss2 = [MoietyStoichiometry("A", 1),
+        MoietyStoichiometry("P", 3)]
+    self.assertTrue(all([m1.isEqual(m2)
+         for m1, m2 in zip(mss1, mss2)]))
 
 
 if __name__ == '__main__':

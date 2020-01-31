@@ -103,3 +103,19 @@ class MoietyStoichiometry(object):
           "Invalid number in moiety stoichiometry string: %s"
           % moiety_stoich_stg)
     return cls(Moiety(name), stoich)
+
+  @classmethod
+  def makeFromDct(cls, moiety_stoich_dct):
+    """
+    Makes a MoietyStoichiometry from a dictionary.
+    :param dict moiety_stoich_dct: 
+        key: moiety name
+        value: stoichiometry
+    :return list-MoietyStoichiometry:
+    """
+    result = []
+    names = list(moiety_stoich_dct.keys())
+    names.sort()
+    for key in names:
+      result.append(cls(key, moiety_stoich_dct[key]))
+    return result

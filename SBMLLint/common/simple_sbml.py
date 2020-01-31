@@ -100,7 +100,7 @@ class SimpleSBML(object):
     for molecule in self.molecules:
       try:
         new_moietys = ([m_s.moiety 
-          for m_s in molecule.getMoietyStoichiometrys()])
+          for m_s in molecule.moiety_stoichiometrys])
       except ValueError:
         new_moietys = [Moiety(molecule.name)]
       moietys.extend(new_moietys)
