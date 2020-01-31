@@ -1,0 +1,8 @@
+# Configuration for SBMLLint
+# Implicit molecules are molecules that may be implicit
+# in either the reactants or products.
+implicits:
+- DUMMYIMPLICIT   # an implicit molecule
+
+# Indicates if boundary reactions are checked
+process_boundary_reactions: False

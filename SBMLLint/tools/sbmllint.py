@@ -22,7 +22,8 @@ GAMES = "games"
 MOIETY_ANALYSIS = "moiety_analysis"
 
 
-def lint(model_reference, file_out=sys.stdout,
+def lint(model_reference=None, 
+    file_out=sys.stdout,
     mass_balance_check=GAMES,
     config_fid=None,
     is_report=True,
@@ -32,6 +33,7 @@ def lint(model_reference, file_out=sys.stdout,
   :param str model_reference: 
       libsbml_model file in
       file, antimony string, xml string
+  :param TextIOWrapper model_fid: fid for an XML file
   :param TextIOWrapper file_out:
   :param str mass_balance_check: how check for mass balance
   :param TextIOWrapper config_fid: readable stream

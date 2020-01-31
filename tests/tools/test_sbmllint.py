@@ -36,7 +36,15 @@ class TestFunctions(unittest.TestCase):
       lines = fd.readlines()
     self.assertGreater(len(lines), 0)
 
-  def testLintWithFid(self):
+  def testLintWithXMLFileFid(self):
+    fid = open(cn.TEST_FILE4, "r")
+    with open(TEST_OUT_PATH, 'w') as fd:
+      result = sbmllint.lint(model_reference=fid, file_out=fd,
+          mass_balance_check=sbmllint.MOIETY_ANALYSIS)
+    fid.close()
+    self.assertGreater(len(result), 0)
+
+  def testLintWithConfigFid(self):
     def get(config_fid=None):
       with open(TEST_OUT_PATH, 'w') as fd:
         result = sbmllint.lint(cn.TEST_FILE4, file_out=fd,
