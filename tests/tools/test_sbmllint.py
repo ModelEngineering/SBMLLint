@@ -13,6 +13,8 @@ import unittest
 IGNORE_TEST = False
 TEST_FILE = "test_sbmllint.txt"
 TEST_OUT_PATH = os.path.join(cn.TEST_DIR, TEST_FILE)
+TEST_CONFIG_PATH = os.path.join(cn.TEST_DIR,
+    "test_sbmllint_cfg.yml")
 
 
 #############################
@@ -23,6 +25,30 @@ class TestFunctions(unittest.TestCase):
   def tearDown(self):
     if os.path.isfile(TEST_OUT_PATH):
       os.remove(TEST_OUT_PATH)
+
+  def testLint(self):
+    with open(TEST_OUT_PATH, 'w') as fd:
+      result = sbmllint.lint(cn.TEST_FILE4, file_out=fd,
+          mass_balance_check=sbmllint.MOIETY_ANALYSIS)
+    self.assertGreaterEqual(
+        result.num_reactions, result.num_imbalances)
+    with open(TEST_OUT_PATH, 'r') as fd:
+      lines = fd.readlines()
+    self.assertGreater(len(lines), 0)
+
+  def testLintWithFid(self):
+    def get(config_fid=None):
+      with open(TEST_OUT_PATH, 'w') as fd:
+        result = sbmllint.lint(cn.TEST_FILE4, file_out=fd,
+            config_fid=config_fid,
+            mass_balance_check=sbmllint.MOIETY_ANALYSIS)
+      return result
+    #
+    result1 = get()
+    fid = open(cn.CFG_DEFAULT_PATH)
+    result2 = get(config_fid=fid)
+    self.assertEqual(result1, result2)
+    fid.close()
 
   def testLint(self):
     with open(TEST_OUT_PATH, 'w') as fd:

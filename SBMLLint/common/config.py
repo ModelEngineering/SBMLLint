@@ -13,18 +13,20 @@ import SBMLLint.common.constants as cn
 _config_dict = None  # Configuration dictionary
 
 
-def setConfiguration(path=cn.CFG_DEFAULT_PATH):
+def setConfiguration(path=cn.CFG_DEFAULT_PATH, fid=None):
   """
   :param str path: path to configuration file
+  :param TextIOWrapper: overrides the path if present
   Updates _config_dict
   Notes:
     1. Changes string "True", "False" to booleans
     2. Inserts defaults for missing configuration keys
   """
-  # TODO: Consider that .sbmllint_cfg may be in home directory
   global _config_dict
-  with open(path, "r") as fd:
-    lines = fd.readlines()
+  if fid is None:
+    fid = open(path, "r")
+  lines = fid.readlines()
+  fid.close()
   lines = '\n'.join(lines)
   result = yaml.safe_load(lines)
   for k, v in result.items():

@@ -24,7 +24,7 @@ MOIETY_ANALYSIS = "moiety_analysis"
 
 def lint(model_reference, file_out=sys.stdout,
     mass_balance_check=GAMES,
-    config_path=cn.CFG_DEFAULT_PATH,
+    config_fid=None,
     is_report=True,
     implicit_games=False):
   """
@@ -34,11 +34,11 @@ def lint(model_reference, file_out=sys.stdout,
       file, antimony string, xml string
   :param TextIOWrapper file_out:
   :param str mass_balance_check: how check for mass balance
-  :param str config_path: path to configuration file
+  :param TextIOWrapper config_fid: readable stream
   :param bool is_report: print result
   :return MoietyComparatorResult/null/None:
   """
-  config.setConfiguration(path=config_path)
+  config.setConfiguration(fid=config_fid)
   config_dict = config.getConfiguration()
   if util.isSBMLModel(model_reference):
     model = model_reference
