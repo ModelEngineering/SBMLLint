@@ -110,7 +110,7 @@ def calcStats(initial=0, final=50, out_path=OUTPUT_PATH,
       if any([isStructuredName(m.name) for m in molecules]):
           row[cn.IS_STRUCTURED] = [True]
     try:
-      mcr = sbmllint.lint(item.model, is_report=False)
+      mcr = sbmllint.lint(model_reference=item.model, is_report=False)
       row[cn.TOTAL_REACTIONS] = [mcr.num_reactions if mcr.num_reactions > 0 else np.nan]
       row[cn.NUM_IMBALANCED_REACTIONS] = [mcr.num_imbalances]
     except:

@@ -28,7 +28,7 @@ class TestFunctions(unittest.TestCase):
 
   def testLint(self):
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(cn.TEST_FILE4, file_out=fd,
+      result = sbmllint.lint(model_reference=cn.TEST_FILE4, file_out=fd,
           mass_balance_check=sbmllint.MOIETY_ANALYSIS)
     self.assertGreaterEqual(
         result.num_reactions, result.num_imbalances)
@@ -47,7 +47,7 @@ class TestFunctions(unittest.TestCase):
   def testLintWithConfigFid(self):
     def get(config_fid=None):
       with open(TEST_OUT_PATH, 'w') as fd:
-        result = sbmllint.lint(cn.TEST_FILE4, file_out=fd,
+        result = sbmllint.lint(model_reference=cn.TEST_FILE4, file_out=fd,
             config_fid=config_fid,
             mass_balance_check=sbmllint.MOIETY_ANALYSIS)
       return result
@@ -60,7 +60,7 @@ class TestFunctions(unittest.TestCase):
 
   def testLint(self):
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(cn.TEST_FILE4, file_out=fd,
+      result = sbmllint.lint(model_reference=cn.TEST_FILE4, file_out=fd,
           mass_balance_check=sbmllint.MOIETY_ANALYSIS)
     self.assertGreaterEqual(
         result.num_reactions, result.num_imbalances)
@@ -70,7 +70,7 @@ class TestFunctions(unittest.TestCase):
 
   def testLint2(self):
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(cn.TEST_FILE2, file_out=fd,
+      result = sbmllint.lint(model_reference=cn.TEST_FILE2, file_out=fd,
           mass_balance_check=sbmllint.MOIETY_ANALYSIS)
     self.assertGreaterEqual(
         result.num_reactions, result.num_imbalances)
@@ -87,7 +87,7 @@ class TestFunctions(unittest.TestCase):
     A_P_P = 0
     """
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(model, file_out=fd,
+      result = sbmllint.lint(model_reference=model, file_out=fd,
           mass_balance_check=sbmllint.MOIETY_ANALYSIS)
     self.assertEqual(result.num_reactions, 1)
     self.assertEqual(result.num_imbalances, 0)
@@ -102,7 +102,7 @@ class TestFunctions(unittest.TestCase):
     A = 0
     """
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(model, file_out=fd,
+      result = sbmllint.lint(model_reference=model, file_out=fd,
           mass_balance_check=sbmllint.MOIETY_ANALYSIS)
     self.assertEqual(result.num_reactions, 1)
     self.assertEqual(result.num_imbalances, 0)
@@ -116,14 +116,14 @@ class TestFunctions(unittest.TestCase):
     DUMMYIMPLICIT = 0
     """
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(model,
+      result = sbmllint.lint(model_reference=model,
                              file_out=fd,
                              mass_balance_check="games",
                              implicit_games=False
                              )
     self.assertTrue(result)
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(model,
+      result = sbmllint.lint(model_reference=model,
                              file_out=fd,
                              mass_balance_check="games",
                              implicit_games=True
