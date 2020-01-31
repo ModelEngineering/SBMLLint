@@ -37,7 +37,7 @@ than mass balance.
 A collection of reactions is stoichiometrically inconsistent if the set of reactions infers that a molecule has a mass of zero. To illustrate this, consider a model consisting of two reactions: ``A -> B`` and ``A -> B + C``. The first reaction implies that the mass of ``A`` is the same as ``B``. The second reaction implies that the mass of ``A`` equals the sum of the masses and ``B`` and ``C``. Both statements can be true only if the mass of ``C`` is zero, and so the model has a stoichiometric inconsistency.
 
 ## Examples
-The following is an example of using the ``structured_names`` and ``games` algorithms to check for mass balance in a Jupyter Notebook.
+The following is an example of using the ``moiety_analysis`` and ``games` algorithms to check for mass balance in a Jupyter Notebook.
 
 <img src="https://github.com/ModelEngineering/SBMLLint/raw/master/moiety_analysis_example.png" width="800"/>
 

@@ -26,9 +26,9 @@ TEST_DIR = os.path.join(PROJECT_DIR, "tests")
 BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data/biomodels")
 BIOMODELS_ZIP_FILENAME = "biomodels.zip"
 BIGG_DIR = os.path.join(PROJECT_DIR, "data/bigg")
-ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(PROJECT_DIR, "analysis")
-ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
-    ANALYSIS_STRUCTURED_NAMES_DIR, "structured_names")
+ANALYSIS_MOIETY_ANALYSIS_DIR = os.path.join(PROJECT_DIR, "analysis")
+ANALYSIS_MOIETY_ANALYSIS_DIR = os.path.join(
+    ANALYSIS_MOIETY_ANALYSIS_DIR, "moiety_analysis")
 
 ############### TEST FILES #####################
 TEST_FILE = os.path.join(TEST_DIR, "test_file.xml")

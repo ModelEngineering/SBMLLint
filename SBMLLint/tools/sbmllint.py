@@ -7,7 +7,7 @@ from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import util
 from SBMLLint.games.games_pp import GAMES_PP
 from SBMLLint.games.games_report import GAMESReport
-from SBMLLint.structured_names.moiety_comparator import MoietyComparator
+from SBMLLint.moiety_analysis.moiety_comparator import MoietyComparator
 
 import os
 import sys
@@ -19,7 +19,7 @@ TYPE_III = "type3"
 CANCELING = "canceling"
 ECHELON = "echelon"
 GAMES = "games"
-STRUCTURED_NAMES = "structured_names"
+MOIETY_ANALYSIS = "moiety_analysis"
 
 
 def lint(model_reference, file_out=sys.stdout,
@@ -49,7 +49,7 @@ def lint(model_reference, file_out=sys.stdout,
     util.checkSBMLDocument(document)
     model = document.getModel()
   #
-  if mass_balance_check==STRUCTURED_NAMES:
+  if mass_balance_check==MOIETY_ANALYSIS:
     name = "moiety analysis"
   else:
     name = "%s analysis" % GAMES
@@ -59,7 +59,7 @@ def lint(model_reference, file_out=sys.stdout,
   #
   simple = SimpleSBML()
   simple.initialize(model)
-  if mass_balance_check == STRUCTURED_NAMES:
+  if mass_balance_check == MOIETY_ANALYSIS:
     result = MoietyComparator.analyzeReactions(simple,
         implicits=config_dict['implicits'])
     if is_report:

@@ -6,7 +6,7 @@ from SBMLLint.common import config
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import util
-from SBMLLint.structured_names.moiety_comparator  \
+from SBMLLint.moiety_analysis.moiety_comparator  \
      import MoietyComparator
 
 import copy

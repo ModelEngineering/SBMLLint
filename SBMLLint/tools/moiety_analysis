@@ -11,6 +11,8 @@ import argparse
 def main():
   parser = argparse.ArgumentParser(description='SBML XML file.')
   parser.add_argument('filename', type=str, help='SBML file')
+  parser.add_argument('--config', type=open,
+      help="SBMLLint configuration information")
   args = parser.parse_args()
   sbmllint.lint(args.filename,
       mass_balance_check=sbmllint.STRUCTURED_NAMES)

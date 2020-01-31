@@ -1,5 +1,5 @@
-"""Access to SBMLLint configuration data."""
-"""
+"""Access to SBMLLint configuration data.
+
 Provides two functions.
   setConfiguration(<path>) - sets the value of the configuration dictionary.
   getConfiguration() - returns the current value of the configuration dictionary.
@@ -11,13 +11,6 @@ import yaml
 import SBMLLint.common.constants as cn
 
 _config_dict = None  # Configuration dictionary
-
-"""Reads yaml configuration file for SBMLLint."""
-# TODO:
-# 1. Provide standard interface to accessing configuration files
-#    and placement of .smbllint_cfg
-# 2. Incorporate implicits into structured_names
-
 
 
 def setConfiguration(path=cn.CFG_DEFAULT_PATH):
