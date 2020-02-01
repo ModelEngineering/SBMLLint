@@ -6,3 +6,13 @@ implicits:
 
 # Indicates if boundary reactions are checked
 process_boundary_reactions: False
+
+####
+# Explicit declaration of moiety structures
+# Remove the comments to activate this declaration of moiety structure
+####
+#moiety_structure:
+#- ATP:  # Adenosine triphosphate
+  # Moiety, stoichiometry
+#  - A, 1
+#  - P, 3
