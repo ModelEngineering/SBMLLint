@@ -157,9 +157,12 @@ PathComponents = collections.namedtuple('PathComponents',
 # used for creating a report
 NULL_STR = ""
 
-# Configuration related
+# Top level keys in configuration file
 CFG_IMPLICITS = "implicits"
+CFG_MOIETY_STRUCTURE = "moiety_structure"
 CFG_PROCESS_BOUNDARY_REACTIONS = "process_boundary_reactions"
+
+# Default values for configuration file
 CFG_DEFAULTS = {}
 CFG_DEFAULTS[CFG_IMPLICITS] = ['DUMMYIMPLICIT']
 CFG_DEFAULTS[CFG_PROCESS_BOUNDARY_REACTIONS] = False

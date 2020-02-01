@@ -16,8 +16,16 @@ Examples of
 from SBMLLint.common import constants as cn
 from SBMLLint.common import util
 
+from collections import namedtuple
+import numpy as np
+import pandas as pd
+
+
+NameCount = namedtuple("NameCount", "name count")
+
 
 NULL_STR = ''
+SEP = ","  # Separator between moiety name and stoichiometry
 
 
 ############## CLASSES ##################
@@ -105,17 +113,19 @@ class MoietyStoichiometry(object):
     return cls(Moiety(name), stoich)
 
   @classmethod
-  def makeFromDct(cls, moiety_stoich_dct):
+  def makeFromDct(cls, ms_strs):
     """
-    Makes a MoietyStoichiometry from a dictionary.
-    :param dict moiety_stoich_dct: 
-        key: moiety name
-        value: stoichiometry
+    Makes a MoietyStoichiometry from the YAML extracted
+    for the key cn.CFG_MOIETY_STRUCTURE.
+    :param list-str ms_strs: list of moiety stroichiometry strings
     :return list-MoietyStoichiometry:
     """
     result = []
-    names = list(moiety_stoich_dct.keys())
-    names.sort()
-    for key in names:
-      result.append(cls(key, moiety_stoich_dct[key]))
-    return result
+    names = []
+    for ms_str in ms_strs:
+      terms = [v.strip() for v in ms_str.split(SEP)]
+      result.append(MoietyStoichiometry(terms[0], int(terms[1])))
+      names.append(terms[0])
+    indicies = sorted(range(len(names)), key=lambda k: names[k])
+    arr = np.array(result)
+    return list(arr[indicies])

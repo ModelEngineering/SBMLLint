@@ -15,6 +15,7 @@ MOLECULE           MOIETY, STOICHIOMETRY
 """
 
 from SBMLLint.common import constants as cn
+from SBMLLint.common import config
 from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
 from SBMLLint.common import util
 
@@ -24,23 +25,32 @@ import numpy as np
 
 class Molecule(object):
 
-  def __init__(self, name, moiety_stoichiometrys=None):
+  def __init__(self, name):
     """
     :param str name:
-    :param list-MoietyStoichiometry moiety_stoichiometrys:
     """
     self.name = name
-    self._moiety_stoichiometrys = moiety_stoichiometrys
+    self._moiety_stoichiometrys = None
 
   @property
   def moiety_stoichiometrys(self):
+    done = False
     if self._moiety_stoichiometrys is None:
+      config_dct = config.getConfiguration()
+      if cn.CFG_MOIETY_STRUCTURE in config_dct:
+        dct = {}
+        {dct.update(v) for v in config_dct[cn.CFG_MOIETY_STRUCTURE]}
+        if self.name in dct:
+          self._moiety_stoichiometrys =  \
+              MoietyStoichiometry.makeFromDct(dct[self.name])
+          done = True
+    if not done:
       new_name = self._reformat()
       stgs = new_name.split(cn.MOIETY_DOUBLE_SEPARATOR)
       result = [MoietyStoichiometry.make(ms) for ms in stgs]
       result.sort()
-      self._moiety_stoichimetrys = result
-    return self._moiety_stoichimetrys
+      self._moiety_stoichiometrys = result
+    return self._moiety_stoichiometrys
 
   def __repr__(self):
     return self.name
