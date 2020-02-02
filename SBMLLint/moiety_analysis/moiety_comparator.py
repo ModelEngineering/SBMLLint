@@ -95,6 +95,8 @@ class MoietyComparator(object):
       return df[col].sum() == 0
     #
     dfs = self._makeDFS()
+    if "IkBeIKKNFkB" in dfs[0].index:
+      import pdb; pdb.set_trace()
     addDFIndex(dfs[0], dfs[1].index)
     addDFIndex(dfs[1], dfs[0].index)
     drops = set(self._implicits).intersection(dfs[0].index)

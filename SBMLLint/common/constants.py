@@ -4,6 +4,8 @@ import os
 
 PROJECT_NAME = "SBMLLint"
 
+MOIETY_ANALYSIS = "moiety_analysis"
+GAMES = "games"
 
 ############### COLUMN NAMES ##############
 FILENAME = "filename"

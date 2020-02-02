@@ -44,6 +44,8 @@ class Molecule(object):
           self._moiety_stoichiometrys =  \
               MoietyStoichiometry.makeFromDct(dct[self.name])
           done = True
+    else:
+      done = True
     if not done:
       new_name = self._reformat()
       stgs = new_name.split(cn.MOIETY_DOUBLE_SEPARATOR)
