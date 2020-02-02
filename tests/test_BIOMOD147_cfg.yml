@@ -1,0 +1,23 @@
+# Configuration for SBMLLint
+# Implicit molecules are molecules that may be implicit
+# in either the reactants or products.
+implicits:
+- cytoplasm
+- nucleus
+  
+
+# Indicates if boundary reactions are checked
+process_boundary_reactions: False
+
+####
+# Explicit declaration of moiety structures
+####
+moiety_structure:
+# Molecule name
+- IkBeIKKNFkB:
+  - NFkB, 1
+  - IkBe, 1
+  - IKK, 1
+- IkBeIKK:
+  - IkBe, 1
+  - IKK, 1
