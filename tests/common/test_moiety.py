@@ -66,7 +66,7 @@ class TestMoietyStoichiometry(unittest.TestCase):
       return
     config.setConfiguration(TEST_CFG_FILE)
     config_dct = config.getConfiguration()
-    dct = config_dct[cn.CFG_MOIETY_STRUCTURE][0]
+    dct = config_dct[cn.CFG_MOIETY_STRUCTURE]
     mss1 = MoietyStoichiometry.makeFromDct(dct["ATP"])
     mss2 = [MoietyStoichiometry("A", 1),
         MoietyStoichiometry("P", 3)]

@@ -12,14 +12,14 @@ process_boundary_reactions: False
 ####
 moiety_structure:
 # Molecule name
-- ATP:  # Adenosine triphosphate
+  ATP:  # Adenosine triphosphate
   # Moiety, stoichiometry
   - A, 1
   - P, 3
 # Other molecules
-- Glu6P:  # Glucose 6-phosphate
+  Glu6P:  # Glucose 6-phosphate
   - P, 1
   - Glu, 1
-- ADP:  # Adenosine triphosphate
+  ADP:  # Adenosine triphosphate
   - A, 1
   - P, 2

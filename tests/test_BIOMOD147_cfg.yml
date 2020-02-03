@@ -14,10 +14,10 @@ process_boundary_reactions: False
 ####
 moiety_structure:
 # Molecule name
-- IkBeIKKNFkB:
-  - NFkB, 1
-  - IkBe, 1
-  - IKK, 1
-- IkBeIKK:
-  - IkBe, 1
-  - IKK, 1
+  IkBeIKKNFkB:
+    - NFkB, 1
+    - IkBe, 1
+    - IKK, 1
+  IkBeIKK:
+    - IkBe, 1
+    - IKK, 1

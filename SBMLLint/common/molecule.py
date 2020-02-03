@@ -38,9 +38,8 @@ class Molecule(object):
     if self._moiety_stoichiometrys is None:
       config_dct = config.getConfiguration()
       if cn.CFG_MOIETY_STRUCTURE in config_dct:
-        dct = {}
-        {dct.update(v) for v in config_dct[cn.CFG_MOIETY_STRUCTURE]}
-        if self.name in dct:
+        dct = config_dct[cn.CFG_MOIETY_STRUCTURE]
+        if self.name in dct.keys():
           self._moiety_stoichiometrys =  \
               MoietyStoichiometry.makeFromDct(dct[self.name])
           done = True
