@@ -21,12 +21,18 @@ process_boundary_reactions: False
 # Explicit declaration of moiety structures
 """
 
-# Molecules contain one or more of the names in MOIETIES.
+# Molecules contain one or more of the names in MOIETIES,
+# and moiety stoichiometries are always 1.
 MOIETIES = ["IkBa", "IkBb", "IkBe", "IKK", 
              "NFkB", "nucleus", "cytoplasm"]
 DEFAULT_CONFIG_FILE = "config.yml"
 
 def main(xml_fid, config_file):
+  """
+  Creates the YAML configuration file.
+  :param IOWrappter xml_fid: xml file
+  :param str config_file: file created
+  """
   config_dct = {} 
   simple = SimpleSBML()
   simple.initialize(xml_fid)
