@@ -167,7 +167,8 @@ CFG_PROCESS_BOUNDARY_REACTIONS = "process_boundary_reactions"
 
 # Default values for configuration file
 CFG_DEFAULTS = {}
-CFG_DEFAULTS[CFG_IGNORED_MOIETIES] = ['DUMMYIMPLICIT']
+CFG_DEFAULTS[CFG_IGNORED_MOIETIES] = ['DUMMYMOIETY']
+CFG_DEFAULTS[CFG_IGNORED_MOLECULES] = ['DUMMYMOLECULE']
 CFG_DEFAULTS[CFG_PROCESS_BOUNDARY_REACTIONS] = False
 CFG_DEFAULT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CFG_DEFAULT_PATH = os.path.join(CFG_DEFAULT_PATH, ".sbmllint_cfg.yml")
