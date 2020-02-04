@@ -18,11 +18,10 @@ def getMoieties(moiety_fid):
   """
   Creates the YAML configuration file.
   :param IOWrappter moiety_fid: 
-  :return list-str: list of moieties
+  :return list-str: list of moiety names
   :raises ValueError: if one moiety is a substring of another
   """
-  moiety_dct = yaml.load(moiety_fid)
-  names = list(set([m for m in moiety_dct.keys()]))
+  names = yaml.load(moiety_fid)
   names.sort()
   # look for substrings
   length = len(names)
@@ -33,7 +32,7 @@ def getMoieties(moiety_fid):
     if len(embeddeds) > 0:
       raise ValueError("Moiety %s is a substring of other moieties."
           % this)
-  return moieties
+  return names
 
 def main(xml_fid, moiety_fid, config_file):
   """
@@ -50,8 +49,9 @@ def main(xml_fid, moiety_fid, config_file):
   simple.initialize(xml_fid)
   for molecule in simple.molecules:
     config_dct[molecule.name] =  \
-        ["%s, %d" % (m, molecule.name.count(m)
+        ["%s, %d" % (m, molecule.name.count(m))
         for m in moieties if m in molecule.name]
+    import pdb; pdb.set_trace()
   dct = {"moiety_structure": config_dct}
   with open(config_file, "w") as fd:
     yaml.dump(dct, fd)
