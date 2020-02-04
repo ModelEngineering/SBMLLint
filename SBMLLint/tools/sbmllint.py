@@ -63,15 +63,16 @@ def lint(model_reference=None,
   simple.initialize(model)
   if mass_balance_check == MOIETY_ANALYSIS:
     result = MoietyComparator.analyzeReactions(simple,
-        implicits=config_dict['implicits'])
+        ignored_molecules=config_dict[cn.CFG_IGNORED_MOLECULES],
+        ignored_moieties=config_dict[cn.CFG_IGNORED_MOIETIES])
     if is_report:
       for line in result.report.split('\n'):
           file_out.write("%s\n" % line)
     return result
   elif mass_balance_check == GAMES:
     if implicit_games:
-      for implicit in config_dict['implicits']:
-        simple = removeImplicit(simple, implicit)
+      for ignored in config_dict[cn.CFG_IGNORED_MOLECULES]:
+        simple = removeIgnored(simple, ignored)
       # print("implicit - results")
       # for r in simple.reactions:
       #   print(r.makeIdentifier(is_include_kinetics=False))
@@ -96,12 +97,12 @@ def lint(model_reference=None,
     print ("Specified method doesn't exist")
     return None
 
-def removeImplicit(simple, implicit):
+def removeIgnored(simple, ignored):
   """
-  Remove an implicit molecule
+  Remove an ignored molecule
   from all reactions in a simpleSBML model.
   :param SimpleSBML simple:
-  :param str implicit:
+  :param str ignored: a molecule name
   :return SimpleSBML:
   """
   modified_reactions = []
@@ -109,11 +110,13 @@ def removeImplicit(simple, implicit):
     modified = False
     reactant_names = [reactant.molecule.name for reactant in r.reactants]
     product_names = [product.molecule.name for product in r.products]
-    if implicit in reactant_names:
-      r.reactants = [ms for ms in r.reactants if ms.molecule.name != implicit]
+    if ignored in reactant_names:
+      r.reactants = [ms for ms in r.reactants 
+          if ms.molecule.name != ignored]
       modified = True
-    if implicit in product_names:
-      r.products = [ms for ms in r.products if ms.molecule.name != implicit]
+    if ignored in product_names:
+      r.products = [ms for ms in r.products
+           if ms.molecule.name != ignored]
       modified = True
     r.identifier = r.makeIdentifier()
     r.category = r.getCategory()

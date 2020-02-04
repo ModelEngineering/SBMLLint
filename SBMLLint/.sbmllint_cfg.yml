@@ -1,8 +1,12 @@
 # Configuration for SBMLLint
-# Implicit molecules are molecules that may be implicit
-# in either the reactants or products.
-implicits:
-- DUMMYIMPLICIT   # an implicit molecule
+
+# Moieties and molecules may be ignored in the analysis. This is done
+# to handle implicit moieties/molecules and as part of analyzing
+# a model.
+IGNORED_MOIETIES:
+- DUMMY   # no ignored moiety
+IGNORED_MOLECULES:
+- DUMMY   # no ignored moiety
 
 # Indicates if boundary reactions are checked
 process_boundary_reactions: False

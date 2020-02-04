@@ -1,9 +1,11 @@
 # Configuration for SBMLLint
 # Implicit molecules are molecules that may be implicit
 # in either the reactants or products.
-implicits:
+ignored_moieties:
 - cytoplasm
 - nucleus
+ignored_molecules:
+- dummy
   
 
 # Indicates if boundary reactions are checked

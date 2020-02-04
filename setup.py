@@ -25,7 +25,10 @@ def sbmllint_setup(install_requires):
       packages=find_packages(exclude=['tests', 'analysis',
           'notebook', 'docs']),
       scripts=[
-          'SBMLLint/tools/games', 'SBMLLint/tools/moiety_analysis'],
+          'SBMLLint/tools/games',
+          'SBMLLint/tools/moiety_analysis',
+          'SBMLLint/tools/make_moiety_structure',
+          ],
       url='https://github.com/ModelEngineering/SBMLLint',
       description='Linter for SBML models.',
       long_description=open('README.md').read(),

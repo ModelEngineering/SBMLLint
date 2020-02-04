@@ -94,3 +94,9 @@ def checkSBMLDocument(document, model_reference=""):
   if (document.getNumErrors() > 0):
     raise ValueError("Errors in SBML document\n%s" 
         % model_reference)
+
+def setList(a_list):
+  if a_list is None:
+    return []
+  else:
+    return a_list

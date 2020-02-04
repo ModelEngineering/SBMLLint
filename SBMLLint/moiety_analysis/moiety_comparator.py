@@ -2,6 +2,7 @@
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common import config
+from SBMLLint.common import util
 from SBMLLint.common.reaction import Reaction
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
@@ -25,12 +26,13 @@ class MoietyComparator(object):
 
   def __init__(self, mol_stoichs1, mol_stoichs2, 
       names=["reactants", "products"],
-      implicits=None):
+      ignored_molecules=None, ignored_moieties=None):
     """
     :param set-MoleculeStoichiometry mol_stoichs1:
     :param set-MoleculeStoichiometry mol_stoichs2:
     :param list-str names: names to refer to the two sets
-    :param list-moieties implicits: implicit moieties
+    :param list-str ignored_molecules: molecules to ignore
+    :param list-str ignored_moietys: moietys to ignore
     """
     def checkType(objs):
       trues = [isinstance(o, MoleculeStoichiometry)
@@ -41,17 +43,29 @@ class MoietyComparator(object):
           % str(MoleculeStoichiometry))
     checkType(mol_stoichs1)
     checkType(mol_stoichs2)
+    self._ignored_molecules = util.setList(ignored_molecules)
+    self._ignored_moieties = util.setList(ignored_moieties)
     self.molecule_stoichiometry_collections = [
-        mol_stoichs1, 
-        mol_stoichs2,
+        self._removeIgnoredMolecules(mol_stoichs1), 
+        self._removeIgnoredMolecules(mol_stoichs2), 
         ]
     self.names = names
-    if implicits is None:
-      self._implicits = []
-    else:
-      self._implicits = implicits
+
+  def _removeIgnoredMolecules(self, mol_stoichs):
+    """
+    Removes ignored molecules from the molecule stoichmetries.
+    :param list-MoleculeStoichiometry mol_stoichs:
+    :return list-MoleculeStoichiometry:
+    """
+    return [ms for ms in mol_stoichs 
+        if not ms.molecule.name in self._ignored_molecules]
 
   def _makeDFS(self):
+    """
+    Constructs a list of dataframes containing counts of moieties.
+    :return list-pd.DataFrame: columns in DataFrame
+        cn.VALUE
+    """
     dfs = []
     for collection in self.molecule_stoichiometry_collections:
       if len(collection) > 0:
@@ -97,7 +111,7 @@ class MoietyComparator(object):
     dfs = self._makeDFS()
     addDFIndex(dfs[0], dfs[1].index)
     addDFIndex(dfs[1], dfs[0].index)
-    drops = set(self._implicits).intersection(dfs[0].index)
+    drops = set(self._ignored_moieties).intersection(dfs[0].index)
     df0 = dfs[0].drop(drops)
     df1 = dfs[1].drop(drops)
     df = df0 - df1
@@ -147,7 +161,8 @@ class MoietyComparator(object):
     return "%s%s" % (stg1, stg2)
 
   @classmethod
-  def analyzeReactions(cls, model_reference, implicits=None):
+  def analyzeReactions(cls, model_reference,
+      ignored_molecules=None, ignored_moieties=None):
     """
     Analyzes all reactions to detect moiety imbalances.
     :param libsbml.Model or SimpleSBML model:
@@ -163,7 +178,8 @@ class MoietyComparator(object):
     report = NULL_STR
     for reaction in simple.reactions:
       comparator = cls(reaction.reactants, reaction.products,
-          implicits=implicits)
+          ignored_molecules=ignored_molecules,
+          ignored_moieties=ignored_moieties)
       stg = comparator.reportDifference()
       if len(stg) > 0:
         num_imbalances += 1
