@@ -10,7 +10,7 @@ import sys
 import unittest
 
 
-IGNORE_TEST = True
+IGNORE_TEST = False
 TEST_FILE = "test_sbmllint.txt"
 TEST_OUT_PATH = os.path.join(cn.TEST_DIR, TEST_FILE)
 TEST_CONFIG_PATH = os.path.join(cn.TEST_DIR,
@@ -112,8 +112,8 @@ class TestFunctions(unittest.TestCase):
     if IGNORE_TEST:
       return
     model = """
-    2Glu_DUMMYIMPLICIT + 2A__P_3 -> 2Glu_P + 2A_P_P; 1
-    Glu_DUMMYIMPLICIT = 0
+    2Glu_DUMMYMOIETY + 2A__P_3 -> 2Glu_P + 2A_P_P; 1
+    Glu_DUMMYMOIETY = 0
     A_P_P = 0
     Glu_P = 0
     A__P_3 = 0
@@ -130,10 +130,10 @@ class TestFunctions(unittest.TestCase):
       return
     model = """
     A -> B; 1
-    B -> B + DUMMYIMPLICIT;1
+    B -> B + DUMMYMOLECULE;1
     A = 0
     B = 0
-    DUMMYIMPLICIT = 0
+    DUMMYMOLECULE = 0
     """
     with open(TEST_OUT_PATH, 'w') as fd:
       result = sbmllint.lint(model_reference=model,
@@ -150,14 +150,14 @@ class TestFunctions(unittest.TestCase):
                              )    
     self.assertFalse(result)
 
-  def testRemoveImplicit(self):
+  def testRemoveIgnored(self):
     if IGNORE_TEST:
       return
     implicit = "MA"
     path = os.path.join(cn.BIOMODELS_DIR, cn.TEST_FILE13)
     simple = SimpleSBML()
     simple.initialize(path)
-    simple = sbmllint.removeImplicit(simple, implicit)
+    simple = sbmllint.removeIgnored(simple, implicit)
     implicit_reactions = []
     for r in simple.reactions:
       reactants = [reactant.molecule.name for reactant in r.reactants]
@@ -180,7 +180,8 @@ class TestFunctions(unittest.TestCase):
     self.assertGreater(runner.output.count('\n'), 0)
 
   def testBIOMOD147(self):
-    # TESTING
+    if IGNORE_TEST:
+      return
     with open(TEST_OUT_PATH, 'w') as fd:
       result = sbmllint.lint(model_reference=TEST_147_SBML_FILE,
           config_fid=open(TEST_147_CFG_FILE, "r"),

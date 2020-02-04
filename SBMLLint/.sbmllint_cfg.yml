@@ -4,9 +4,9 @@
 # to handle implicit moieties/molecules and as part of analyzing
 # a model.
 ignored_molecules:
-- DUMMY   # no ignored moiety
+- DUMMYMOLECULE   # no ignored moiety
 ignored_moieties:
-- DUMMY   # no ignored moiety
+- DUMMYMOIETY   # no ignored moiety
 
 # Indicates if boundary reactions are checked
 process_boundary_reactions: False

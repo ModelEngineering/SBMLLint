@@ -8,7 +8,7 @@ import sys
 import unittest
 
 
-IGNORE_TEST = True
+IGNORE_TEST = False
 TEST_MOIETY_FILE = os.path.join(cn.TEST_DIR,
     "test_moieties.yml")
 TEST_CFG_FILE = os.path.join(cn.TEST_DIR,
@@ -39,7 +39,6 @@ class TestFunctions(unittest.TestCase):
   # TODO: 1. Test if substring
   def testGetMoieties(self):
     names = make_moiety_structure.getMoieties(self.moiety_fid)
-    import pdb; pdb.set_trace()
 
   def testMain(self):
     pass
