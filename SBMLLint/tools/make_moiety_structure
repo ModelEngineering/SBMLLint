@@ -22,12 +22,12 @@ def getMoieties(moiety_fid):
   :raises ValueError: if one moiety is a substring of another
   """
   names = yaml.load(moiety_fid)
-  names.sort()
+  sorted_names = sorted(names, key=lambda n: len(n))
   # look for substrings
-  length = len(names)
+  length = len(sorted_names)
   for idx in range(length):
-    this = names[idx]
-    others = names[idx+1:]
+    this = sorted_names[idx]
+    others = sorted_names[idx+1:]
     embeddeds = [o for o in others if this in o]
     if len(embeddeds) > 0:
       raise ValueError("Moiety %s is a substring of other moieties."
@@ -51,7 +51,6 @@ def main(xml_fid, moiety_fid, config_file):
     config_dct[molecule.name] =  \
         ["%s, %d" % (m, molecule.name.count(m))
         for m in moieties if m in molecule.name]
-    import pdb; pdb.set_trace()
   dct = {"moiety_structure": config_dct}
   with open(config_file, "w") as fd:
     yaml.dump(dct, fd)
