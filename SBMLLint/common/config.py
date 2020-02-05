@@ -28,7 +28,7 @@ def setConfiguration(path=cn.CFG_DEFAULT_PATH, fid=None):
   lines = fid.readlines()
   fid.close()
   lines = '\n'.join(lines)
-  result = yaml.safe_load(lines)
+  result = yaml.load(lines, Loader=yaml.FullLoader)
   for k, v in result.items():
     if v == "True":
       result[k] = True

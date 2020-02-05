@@ -62,9 +62,7 @@ def lint(model_reference=None,
   simple = SimpleSBML()
   simple.initialize(model)
   if mass_balance_check == MOIETY_ANALYSIS:
-    result = MoietyComparator.analyzeReactions(simple,
-        ignored_molecules=config_dict[cn.CFG_IGNORED_MOLECULES],
-        ignored_moieties=config_dict[cn.CFG_IGNORED_MOIETIES])
+    result = MoietyComparator.analyzeReactions(simple)
     if is_report:
       for line in result.report.split('\n'):
           file_out.write("%s\n" % line)

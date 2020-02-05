@@ -25,14 +25,11 @@ class MoietyComparator(object):
   """Analysis of moieties of molecules."""
 
   def __init__(self, mol_stoichs1, mol_stoichs2, 
-      names=["reactants", "products"],
-      ignored_molecules=None, ignored_moieties=None):
+      names=["reactants", "products"]):
     """
     :param set-MoleculeStoichiometry mol_stoichs1:
     :param set-MoleculeStoichiometry mol_stoichs2:
     :param list-str names: names to refer to the two sets
-    :param list-str ignored_molecules: molecules to ignore
-    :param list-str ignored_moietys: moietys to ignore
     """
     def checkType(objs):
       trues = [isinstance(o, MoleculeStoichiometry)
@@ -43,8 +40,15 @@ class MoietyComparator(object):
           % str(MoleculeStoichiometry))
     checkType(mol_stoichs1)
     checkType(mol_stoichs2)
-    self._ignored_molecules = util.setList(ignored_molecules)
-    self._ignored_moieties = util.setList(ignored_moieties)
+    config_dct = config.getConfiguration()
+    self._process_boundary_reactions =  \
+        util.getKey(config_dct, cn.CFG_PROCESS_BOUNDARY_REACTIONS)
+    if self._process_boundary_reactions is None:
+      self._process_boundary_reactions = False
+    self._ignored_molecules = util.setList(
+        util.getKey(config_dct, cn.CFG_IGNORED_MOLECULES))
+    self._ignored_moieties = util.setList(
+        util.getKey(config_dct, cn.CFG_IGNORED_MOIETIES))
     self.molecule_stoichiometry_collections = [
         self._removeIgnoredMolecules(mol_stoichs1), 
         self._removeIgnoredMolecules(mol_stoichs2), 
@@ -82,8 +86,8 @@ class MoietyComparator(object):
 
   def isSame(self):
     """
-    Determines if the two molecules have the same type and count
-    of moieties.
+    Determines if the two molecules for the comparator
+    have the same type and count of moieties.
     :return bool:
     """
     dfs = self._makeDFS()
@@ -116,8 +120,7 @@ class MoietyComparator(object):
     df1 = dfs[1].drop(drops)
     df = df0 - df1
     # Handle boundaries
-    config_dict = config.getConfiguration()
-    if not config_dict[cn.CFG_PROCESS_BOUNDARY_REACTIONS]:
+    if not self._process_boundary_reactions:
       if isZeroColumn(df0) or isZeroColumn(df1):
         df[df.columns[0]] = 0
     #
@@ -161,8 +164,7 @@ class MoietyComparator(object):
     return "%s%s" % (stg1, stg2)
 
   @classmethod
-  def analyzeReactions(cls, model_reference,
-      ignored_molecules=None, ignored_moieties=None):
+  def analyzeReactions(cls, model_reference):
     """
     Analyzes all reactions to detect moiety imbalances.
     :param libsbml.Model or SimpleSBML model:
@@ -177,9 +179,7 @@ class MoietyComparator(object):
     num_imbalances = 0
     report = NULL_STR
     for reaction in simple.reactions:
-      comparator = cls(reaction.reactants, reaction.products,
-          ignored_molecules=ignored_molecules,
-          ignored_moieties=ignored_moieties)
+      comparator = cls(reaction.reactants, reaction.products)
       stg = comparator.reportDifference()
       if len(stg) > 0:
         num_imbalances += 1

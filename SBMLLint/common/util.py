@@ -100,3 +100,12 @@ def setList(a_list):
     return []
   else:
     return a_list
+
+def getKey(dct, key):
+  """
+  Returns a value if the key is present or None.
+  """
+  if key in dct.keys():
+    return dct[key]
+  else:
+    return None

@@ -16,7 +16,7 @@ import os
 import unittest
 
 
-IGNORE_TEST = True
+IGNORE_TEST = False
 MOIETY_NAME1 = "first"
 MOIETY_NAME2 = "second"
 MOIETY_NAME3 = "third"
@@ -82,36 +82,51 @@ class TestMoietyComparator(unittest.TestCase):
     if IGNORE_TEST:
       return
     self.assertFalse(self.comparator.isSame())
-    comparator = MoietyComparator(self.molecules1,
-        self.molecules1)
+    comparator = MoietyComparator(self.molecules1, self.molecules1)
     self.assertTrue(comparator.isSame())
 
-  def testDifference(self):
-    # TESTING
-    df = self.comparator.difference()
+  def testDifference1(self):
+    if IGNORE_TEST:
+      return
+    comparator = MoietyComparator(self.molecules1, self.molecules2)
+    df = comparator.difference()
     self.assertLess(df.loc[MOIETY_NAME1].tolist()[0], 0)
-    #
+
+  def testDifference2(self):
+    if IGNORE_TEST:
+      return
+    config._config_dict[cn.CFG_IGNORED_MOIETIES] = [MOIETY_NAME1]
     comparator = MoietyComparator(self.molecules1,
-        self.molecules2, ignored_moieties=[MOIETY_NAME1])
+        self.molecules2)
     df = comparator.difference()
     self.assertFalse(MOIETY_NAME1 in df.index)
-    #
+
+  def testDifference3(self):
+    if IGNORE_TEST:
+      return
+    config._config_dict[cn.CFG_IGNORED_MOLECULES] = [MOIETY_NAME1]
     comparator = MoietyComparator(self.molecules1,
-        self.molecules2, ignored_molecules=[MOIETY_NAME1])
+        self.molecules2)
     df = comparator.difference()
     expected_count = sum([NUM1 if MOIETY_NAME1 in m else 0 
         for m in MOLECULE_NAMES1 if len(MOIETY_NAME1) != len(m)])
     expected_count -= sum([NUM2 if MOIETY_NAME1 in m else 0 
         for m in MOLECULE_NAMES2 if len(MOIETY_NAME1) != len(m)])
     self.assertEqual(df.loc[MOIETY_NAME1, cn.VALUE], expected_count)
-    #
+
+  def testDifference4(self):
+    if IGNORE_TEST:
+      return
     config._config_dict[cn.CFG_PROCESS_BOUNDARY_REACTIONS] = False
     molecules1 = [MoleculeStoichiometry(Molecule(n), 0)
         for n in MOLECULE_NAMES[:3]]
     comparator = MoietyComparator(molecules1, self.molecules2)
     df = comparator.difference()
     self.assertEqual(df[df.columns[0]].sum(), 0)
-    #
+
+  def testDifference5(self):
+    if IGNORE_TEST:
+      return
     config._config_dict[cn.CFG_PROCESS_BOUNDARY_REACTIONS] = True
     molecules1 = [MoleculeStoichiometry(Molecule(n), 0)
         for n in MOLECULE_NAMES[:3]]
