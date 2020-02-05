@@ -21,7 +21,7 @@ def getMoieties(moiety_fid):
   :return list-str: list of moiety names
   :raises ValueError: if one moiety is a substring of another
   """
-  names = yaml.load(moiety_fid, Loader=yaml.FullLoader)
+  names = yaml.load(moiety_fid)
   sorted_names = sorted(names, key=lambda n: len(n))
   # look for substrings
   length = len(sorted_names)
