@@ -41,7 +41,7 @@ def lint(model_reference=None,
   :return MoietyComparatorResult/null/None:
   """
   config.setConfiguration(fid=config_fid)
-  config_dict = config.getConfiguration()
+  config_dct = config.getConfiguration()
   if util.isSBMLModel(model_reference):
     model = model_reference
   else:
@@ -69,7 +69,7 @@ def lint(model_reference=None,
     return result
   elif mass_balance_check == GAMES:
     if implicit_games:
-      for ignored in config_dict[cn.CFG_IGNORED_MOLECULES]:
+      for ignored in config_dct[cn.CFG_IGNORED_MOLECULES]:
         simple = removeIgnored(simple, ignored)
       # print("implicit - results")
       # for r in simple.reactions:

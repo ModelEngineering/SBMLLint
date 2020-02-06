@@ -40,7 +40,7 @@ class MoietyComparator(object):
           % str(MoleculeStoichiometry))
     checkType(mol_stoichs1)
     checkType(mol_stoichs2)
-    config_dct = config.getConfiguration()
+    config_dct = dict(config.getConfiguration())
     self._process_boundary_reactions =  \
         util.getKey(config_dct, cn.CFG_PROCESS_BOUNDARY_REACTIONS)
     if self._process_boundary_reactions is None:
