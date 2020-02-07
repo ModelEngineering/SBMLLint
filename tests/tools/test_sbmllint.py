@@ -10,7 +10,7 @@ import sys
 import unittest
 
 
-IGNORE_TEST = True
+IGNORE_TEST = False
 TEST_FILE = "test_sbmllint.txt"
 TEST_OUT_PATH = os.path.join(cn.TEST_DIR, TEST_FILE)
 TEST_147_CFG_FILE2 = os.path.join(cn.TEST_DIR,
@@ -195,7 +195,8 @@ class TestFunctions(unittest.TestCase):
     self.assertFalse("%s:" % molecule_name in result.report)
 
   def testBIOMOD147_2(self):
-    # TESTING
+    if IGNORE_TEST:
+      return
     with open(TEST_OUT_PATH, 'w') as fd:
       result = sbmllint.lint(model_reference=TEST_147_SBML_FILE,
           config_fid=open(TEST_147_CFG_FILE2, "r"),

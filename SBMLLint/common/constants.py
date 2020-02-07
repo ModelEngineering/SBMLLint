@@ -164,6 +164,12 @@ CFG_IGNORED_MOIETIES = "ignored_moieties"
 CFG_IGNORED_MOLECULES = "ignored_molecules"
 CFG_MOIETY_STRUCTURE = "moiety_structure"
 CFG_PROCESS_BOUNDARY_REACTIONS = "process_boundary_reactions"
+CFG_SECTIONS = [
+    CFG_IGNORED_MOLECULES,
+    CFG_IGNORED_MOIETIES,
+    CFG_PROCESS_BOUNDARY_REACTIONS,
+    CFG_MOIETY_STRUCTURE,
+    ]
 
 # Default values for configuration file
 CFG_DEFAULTS = {}

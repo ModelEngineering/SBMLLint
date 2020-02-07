@@ -3,14 +3,15 @@
 # in either the reactants or products.
 ignored_molecules:
 - IkBa_mRNA
+- IkBb_mRNA
 - IkBe_mRNA
 
 ignored_moieties:
 - cytoplasm
 - nucleus
-- IkBa
-- IkBb
-- IkBe
+- IkBa  # Missing in product moieties
+- IkBb  # Missing in product moieties
+- IkBe  # Missing in product moieties
 
 # Indicates if boundary reactions are checked
 process_boundary_reactions: False

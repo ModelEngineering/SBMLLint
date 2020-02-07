@@ -1,0 +1,6 @@
+# Configuration file with an invalid section name.
+ignored_moieties:
+- cytoplasm
+- nucleus
+ignord_molecules:
+- dummy

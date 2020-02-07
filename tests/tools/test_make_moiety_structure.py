@@ -56,12 +56,8 @@ class TestFunctions(unittest.TestCase):
     with open(TEST_MOIETY_REDUN_FILE, "w") as fd:
       yaml.dump(MOIETIES_REDUN, fd)
     with open(TEST_MOIETY_REDUN_FILE, "r") as fd:
-      try:
+      with self.assertRaises(ValueError):
         names = make_moiety_structure.getMoieties(fd)
-        self.assertTrue(False)
-      except ValueError:
-        pass
-      except:
         self.assertTrue(False)
 
   def testMain(self):
@@ -72,7 +68,7 @@ class TestFunctions(unittest.TestCase):
         self.moiety_fid, TEST_CONFIG_FILE)
     self.assertTrue(os.path.isfile(TEST_CONFIG_FILE))
     with open(TEST_CONFIG_FILE, "r") as fd:
-      dct = yaml.load(fd)
+      dct = yaml.safe_load(fd)
     moiety_dct = dct[cn.CFG_MOIETY_STRUCTURE]
     missing = [m for m in MOIETIES 
         if not isSubstr(m, moiety_dct.keys())]
