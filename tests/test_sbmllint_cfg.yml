@@ -1,6 +1,6 @@
 ignored_molecules:
 - DUMMYIMPLICIT
-ignored_moities:
+ignored_moieties:
 - DUMMYIMPLICIT
 
 # Indicates if boundary reactions are checked
