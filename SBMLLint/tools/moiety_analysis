@@ -15,7 +15,7 @@ def main():
       help="SBMLLint configuration file")
   args = parser.parse_args()
   sbmllint.lint(model_reference=args.xml_file,
-      mass_balance_check=sbmllint.MOIETY_ANALYSIS,
+      mass_balance_check=cn.MOIETY_ANALYSIS,
       config_fid=args.config)
 
 
