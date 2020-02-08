@@ -4,6 +4,7 @@ Runs moiety analysis for a local XML file.
 Usage: moiety_analysis <filepath>
 """
 
+from SBMLLint.common import constants as cn
 from SBMLLint.tools import sbmllint
 
 import argparse
