@@ -229,7 +229,8 @@ def modelIterator(initial=0, final=1000, data_dir=cn.BIOMODELS_DIR,
   for filename in files[begin_num:end_num]:
     num += 1
     lines = read_func(filename)
-    lines = lines.decode("utf-8") 
+    if isinstance(lines, bytes):
+      lines = lines.decode("utf-8") 
     reader = libsbml.SBMLReader()
     document = reader.readSBMLFromString(lines)
     model = document.getModel()

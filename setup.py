@@ -28,6 +28,7 @@ def sbmllint_setup(install_requires):
           'SBMLLint/tools/games',
           'SBMLLint/tools/moiety_analysis',
           'SBMLLint/tools/make_moiety_structure',
+          'SBMLLint/tools/print_reactions',
           ],
       url='https://github.com/ModelEngineering/SBMLLint',
       description='Linter for SBML models.',

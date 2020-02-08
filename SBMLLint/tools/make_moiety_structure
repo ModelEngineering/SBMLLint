@@ -4,14 +4,19 @@ Creates the moiety_structure section of the SBMLLint
 configuration file. The user declares all moieties.
 The moiety structure for a molecule is the number of
 occurrences of each moiety string in the molecule.
+Substrings are handled by looking first for the longest
+moiety names.
 """
 
 import argparse
 import yaml
 from SBMLLint.common.simple_sbml import SimpleSBML
+from SBMLLint.common.moiety import MoietyStoichiometry
+from SBMLLint.common import msgs
 
 
 DEFAULT_CONFIG_FILE = "config.yml"
+MOIETY_COUNT_SEPARATOR = ", "
 
 
 def getMoieties(moiety_fid):
@@ -21,19 +26,35 @@ def getMoieties(moiety_fid):
   :return list-str: list of moiety names
   :raises ValueError: if one moiety is a substring of another
   """
-  names = yaml.safe_load(moiety_fid)
-  sorted_names = sorted(names, key=lambda n: len(n))
-  # look for substrings
-  length = len(sorted_names)
-  for idx in range(length):
-    this = sorted_names[idx]
-    others = sorted_names[idx+1:]
-    embeddeds = [o for o in others if this in o]
-    if len(embeddeds) > 0:
-      raise ValueError("Moiety %s is a substring of other moieties."
-          % this)
-  return names
+  return yaml.safe_load(moiety_fid)
 
+def findMoietyStoichiometries(molecule_name, moiety_names):
+  """
+  Finds the moieties and their stoichiometries for each molecule.
+  Handles substrings by looking for largest strings first.
+  :param str molecule:
+  :param list-str moiety_names:
+  :return list-MoietyStoichiometry:
+  """
+  result = []
+  sorted_moiety_names = sorted(moiety_names, key=lambda n: len(n),
+      reverse=True)
+  current_name = molecule_name
+  for moiety_name in sorted_moiety_names:
+    count = current_name.count(moiety_name)
+    if count > 0:
+      current_name = current_name.replace(moiety_name, "")
+      result.append(MoietyStoichiometry(moiety_name, count,
+          MOIETY_COUNT_SEPARATOR))
+  current_name = current_name.replace("_", "")
+  if len(current_name) > 0:
+    import pdb; pdb.set_trace()
+    msg = "Moieties specified do not completely express %s" % molecule_name
+    msgs.error(msg)
+  return result
+
+# TODO: Look for moieties from largest string to smallest,
+# eliminating those found.
 def main(xml_fid, moiety_fid, config_file):
   """
   Creates the YAML configuration file.
@@ -42,15 +63,16 @@ def main(xml_fid, moiety_fid, config_file):
   :param str config_file: file created
   """
   # Acquire and validate moieties
-  moieties = getMoieties(moiety_fid)
+  moiety_names = getMoieties(moiety_fid)
   # Create the configuration file
   config_dct = {} 
   simple = SimpleSBML()
   simple.initialize(xml_fid)
   for molecule in simple.molecules:
+    moiety_stoichiometries = findMoietyStoichiometries(
+       molecule.name, moiety_names)
     config_dct[molecule.name] =  \
-        ["%s, %d" % (m, molecule.name.count(m))
-        for m in moieties if m in molecule.name]
+        [str(ms) for ms in moiety_stoichiometries]
   dct = {"moiety_structure": config_dct}
   with open(config_file, "w") as fd:
     yaml.dump(dct, fd)

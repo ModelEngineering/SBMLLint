@@ -11,6 +11,7 @@ import unittest
 
 
 IGNORE_TEST = False
+IS_REPORT = False
 TEST_FILE = "test_sbmllint.txt"
 TEST_OUT_PATH = os.path.join(cn.TEST_DIR, TEST_FILE)
 TEST_147_CFG_FILE2 = os.path.join(cn.TEST_DIR,
@@ -34,8 +35,10 @@ class TestFunctions(unittest.TestCase):
     if IGNORE_TEST:
       return
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(model_reference=cn.TEST_FILE4, file_out=fd,
-          mass_balance_check=sbmllint.MOIETY_ANALYSIS)
+      result = sbmllint.lint(model_reference=cn.TEST_FILE4, 
+          file_out=fd,
+          is_report=IS_REPORT,
+          mass_balance_check=cn.MOIETY_ANALYSIS)
     self.assertGreaterEqual(
         result.num_reactions, result.num_imbalances)
     with open(TEST_OUT_PATH, 'r') as fd:
@@ -48,7 +51,7 @@ class TestFunctions(unittest.TestCase):
     fid = open(cn.TEST_FILE4, "r")
     with open(TEST_OUT_PATH, 'w') as fd:
       result = sbmllint.lint(model_reference=fid, file_out=fd,
-          mass_balance_check=sbmllint.MOIETY_ANALYSIS)
+          is_report=IS_REPORT, mass_balance_check=cn.MOIETY_ANALYSIS)
     fid.close()
     self.assertGreater(len(result), 0)
 
@@ -59,7 +62,8 @@ class TestFunctions(unittest.TestCase):
       with open(TEST_OUT_PATH, 'w') as fd:
         result = sbmllint.lint(model_reference=cn.TEST_FILE4, file_out=fd,
             config_fid=config_fid,
-            mass_balance_check=sbmllint.MOIETY_ANALYSIS)
+            is_report=IS_REPORT,
+            mass_balance_check=cn.MOIETY_ANALYSIS)
       return result
     #
     result1 = get()
@@ -72,8 +76,10 @@ class TestFunctions(unittest.TestCase):
     if IGNORE_TEST:
       return
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(model_reference=cn.TEST_FILE4, file_out=fd,
-          mass_balance_check=sbmllint.MOIETY_ANALYSIS)
+      result = sbmllint.lint(model_reference=cn.TEST_FILE4,
+          file_out=fd,
+          is_report=True,
+          mass_balance_check=cn.MOIETY_ANALYSIS)
     self.assertGreaterEqual(
         result.num_reactions, result.num_imbalances)
     with open(TEST_OUT_PATH, 'r') as fd:
@@ -84,8 +90,9 @@ class TestFunctions(unittest.TestCase):
     if IGNORE_TEST:
       return
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(model_reference=cn.TEST_FILE2, file_out=fd,
-          mass_balance_check=sbmllint.MOIETY_ANALYSIS)
+      result = sbmllint.lint(model_reference=cn.TEST_FILE2,
+          file_out=fd, is_report=True,
+          mass_balance_check=cn.MOIETY_ANALYSIS)
     self.assertGreaterEqual(
         result.num_reactions, result.num_imbalances)
     with open(TEST_OUT_PATH, 'r') as fd:
@@ -104,7 +111,8 @@ class TestFunctions(unittest.TestCase):
     """
     with open(TEST_OUT_PATH, 'w') as fd:
       result = sbmllint.lint(model_reference=model, file_out=fd,
-          mass_balance_check=sbmllint.MOIETY_ANALYSIS)
+          is_report=IS_REPORT,
+          mass_balance_check=cn.MOIETY_ANALYSIS)
     self.assertEqual(result.num_reactions, 1)
     self.assertEqual(result.num_imbalances, 0)
 
@@ -121,7 +129,8 @@ class TestFunctions(unittest.TestCase):
     """
     with open(TEST_OUT_PATH, 'w') as fd:
       result = sbmllint.lint(model_reference=model, file_out=fd,
-          mass_balance_check=sbmllint.MOIETY_ANALYSIS)
+          is_report=IS_REPORT,
+          mass_balance_check=cn.MOIETY_ANALYSIS)
     self.assertEqual(result.num_reactions, 1)
     self.assertEqual(result.num_imbalances, 0)
 
@@ -139,14 +148,16 @@ class TestFunctions(unittest.TestCase):
       result = sbmllint.lint(model_reference=model,
                              file_out=fd,
                              mass_balance_check="games",
-                             implicit_games=False
+                             implicit_games=False,
+                             is_report=IS_REPORT
                              )
     self.assertTrue(result)
     with open(TEST_OUT_PATH, 'w') as fd:
       result = sbmllint.lint(model_reference=model,
                              file_out=fd,
                              mass_balance_check="games",
-                             implicit_games=True
+                             implicit_games=True,
+                             is_report=IS_REPORT
                              )    
     self.assertFalse(result)
 
@@ -188,6 +199,7 @@ class TestFunctions(unittest.TestCase):
           file_out=fd,
           mass_balance_check=cn.MOIETY_ANALYSIS,
           implicit_games=False,
+          is_report=IS_REPORT,
           )
     # Verify that exclicit declaration is decomposed
     # into moieties
@@ -203,6 +215,7 @@ class TestFunctions(unittest.TestCase):
           file_out=fd,
           mass_balance_check=cn.MOIETY_ANALYSIS,
           implicit_games=False,
+          is_report=IS_REPORT,
           )
     # Verify that exclicit declaration is decomposed
     # into moieties

@@ -48,19 +48,32 @@ class TestFunctions(unittest.TestCase):
     self.moiety_fid.close()
 
   def testGetMoieties(self):
+    if IGNORE_TEST:
+      return
     names = make_moiety_structure.getMoieties(self.moiety_fid)
     diff = set(names).symmetric_difference(MOIETIES)
     self.assertEqual(len(diff), 0)
 
-  def testGetMoietiesSubstrings(self):
-    with open(TEST_MOIETY_REDUN_FILE, "w") as fd:
-      yaml.dump(MOIETIES_REDUN, fd)
-    with open(TEST_MOIETY_REDUN_FILE, "r") as fd:
-      with self.assertRaises(ValueError):
-        names = make_moiety_structure.getMoieties(fd)
-        self.assertTrue(False)
+  def testFindMoietyStoichiometries(self):
+    if IGNORE_TEST:
+      return
+    molecule_name = "AAB"
+    moiety_names = ["A", "AA", "B"]
+    result = make_moiety_structure.findMoietyStoichiometries(
+        molecule_name, moiety_names)
+    self.assertEqual(result[0].moiety.name, "AA")
+    self.assertEqual(result[0].stoichiometry, 1)
+    self.assertEqual(len(result), 2)
+    #
+    molecule_name = "AAAB"
+    result = make_moiety_structure.findMoietyStoichiometries(
+        molecule_name, moiety_names)
+    self.assertEqual(len(result), 3)
 
+  # TODO: Test with BIOMD11
   def testMain(self):
+    if IGNORE_TEST:
+      return
     def isSubstr(stg, stgs):
       return any([stg in s for s in stgs])
     #

@@ -19,7 +19,6 @@ TYPE_III = "type3"
 CANCELING = "canceling"
 ECHELON = "echelon"
 GAMES = "games"
-MOIETY_ANALYSIS = "moiety_analysis"
 
 
 def lint(model_reference=None, 
@@ -51,17 +50,9 @@ def lint(model_reference=None,
     util.checkSBMLDocument(document)
     model = document.getModel()
   #
-  if mass_balance_check==MOIETY_ANALYSIS:
-    name = "moiety analysis"
-  else:
-    name = "%s analysis" % GAMES
-  print("***")
-  print("***Running %s" % name)
-  print("***")
-  #
   simple = SimpleSBML()
   simple.initialize(model)
-  if mass_balance_check == MOIETY_ANALYSIS:
+  if mass_balance_check==cn.MOIETY_ANALYSIS:
     result = MoietyComparator.analyzeReactions(simple)
     if is_report:
       for line in result.report.split('\n'):

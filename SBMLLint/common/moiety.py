@@ -57,14 +57,15 @@ class Moiety(object):
 class MoietyStoichiometry(object):
   """A Moiety with its replication count."""
 
-  def __init__(self, moiety, stoichiometry):
+  def __init__(self, moiety, stoichiometry,
+      separator=cn.MOIETY_SEPARATOR):
     if isinstance(moiety, Moiety):
       self.moiety = moiety
     else:
       self.moiety = Moiety(str(moiety))
     self.stoichiometry = stoichiometry
     self.name = "%s%s%d" % (self.moiety.name,
-        cn.MOIETY_SEPARATOR, stoichiometry)
+        separator, stoichiometry)
 
   def __repr__(self):
     return self.name
