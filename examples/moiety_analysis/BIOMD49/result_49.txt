@@ -1,0 +1,417 @@
+
+72 of 150 reactions have imbalances.
+
+***re2: EGF + EGFR -> L_EGFR
+Excess moieties in reactants
+  EGF: 1.00
+
+
+***J5: L_EGFR_dimer -> L_dpEGFR
+Excess moieties in reactants
+  EGFR: 1.00
+
+
+***J8: pDok -> Dok
+Excess moieties in reactants
+  p: 1.00
+
+
+***J10: pSOS -> SOS
+Excess moieties in reactants
+  p: 1.00
+
+
+***J11: pSOS_Grb2 -> SOS_Grb2
+Excess moieties in reactants
+  p: 1.00
+
+
+***J13: Shc_dpEGFR -> pShc_dpEGFR
+Excess moieties in products
+  p: 1.00
+
+
+***J15: dpEGFR_c_Cbl_ubiq -> proteosome + c_Cbl
+Excess moieties in reactants
+  EGFR: 1.00
+
+
+***J18: Shc_dpEGFR_c_Cbl_ubiq -> proteosome + c_Cbl + Shc
+Excess moieties in reactants
+  EGFR: 1.00
+
+
+***J20: pShc_dpEGFR_c_Cbl_ubiq -> proteosome + c_Cbl + pShc
+Excess moieties in reactants
+  EGFR: 1.00
+
+
+***J21: Shc_dpEGFR_c_Cbl -> pShc_dpEGFR_c_Cbl
+Excess moieties in products
+  p: 1.00
+
+
+***J29: Grb2_SOS_pShc_dpEGFR_c_Cbl_ubiq -> proteosome + c_Cbl + Grb2_SOS_pShc
+Excess moieties in reactants
+  EGFR: 1.00
+
+
+***J30: Grb2_SOS_pShc -> Shc + SOS_Grb2
+Excess moieties in reactants
+  p: 1.00
+
+
+***J31: Dok -> pDok
+Excess moieties in products
+  p: 1.00
+
+
+***J32: pShc -> Shc
+Excess moieties in reactants
+  p: 1.00
+
+
+***J33: pFRS2 -> FRS2
+Excess moieties in reactants
+  p: 1.00
+
+
+***J37: FRS2_dpEGFR -> pFRS2_dpEGFR
+Excess moieties in products
+  p: 1.00
+
+
+***J43: FRS2_dpEGFR_c_Cbl -> pFRS2_dpEGFR_c_Cbl
+Excess moieties in products
+  p: 1.00
+
+
+***J46: FRS2_dpEGFR_c_Cbl_ubiq -> proteosome + c_Cbl + FRS2
+Excess moieties in reactants
+  EGFR: 1.00
+
+
+***J47: pFRS2_dpEGFR_c_Cbl_ubiq -> proteosome + c_Cbl + pFRS2
+Excess moieties in reactants
+  EGFR: 1.00
+
+
+***J50: SOS_Grb2 -> pSOS_Grb2
+Excess moieties in products
+  p: 1.00
+
+
+***J51: SOS -> pSOS
+Excess moieties in products
+  p: 1.00
+
+
+***J57: ppMEK -> pMEK
+Excess moieties in reactants
+  p: 1.00
+
+
+***J58: pMEK -> MEK
+Excess moieties in reactants
+  p: 1.00
+
+
+***J61: ppMEK_ERK -> pMEK_ERK
+Excess moieties in reactants
+  p: 1.00
+
+
+***J62: pMEK_ERK -> MEK_ERK
+Excess moieties in reactants
+  p: 1.00
+
+
+***J63: 2.00 ppERK -> dppERK
+Excess moieties in reactants
+  ERK: 1.00
+  p: 4.00
+
+Excess moieties in products
+  dpp: 1.00
+
+
+***J66: Ras_GTP -> Ras_GDP
+Excess moieties in reactants
+  GTP: 1.00
+
+Excess moieties in products
+  GDP: 1.00
+
+
+***J67: Rap1_GTP -> Rap1_GDP
+Excess moieties in reactants
+  GTP: 1.00
+
+Excess moieties in products
+  GDP: 1.00
+
+
+***J68: Rap1_GDP -> Rap1_GTP
+Excess moieties in reactants
+  GDP: 1.00
+
+Excess moieties in products
+  GTP: 1.00
+
+
+***J69: Ras_GDP -> Ras_GTP
+Excess moieties in reactants
+  GDP: 1.00
+
+Excess moieties in products
+  GTP: 1.00
+
+
+***J70: NGF + NGFR -> L_NGFR
+Excess moieties in reactants
+  NGF: 1.00
+
+
+***J71: L_NGFR -> pTrkA
+Excess moieties in reactants
+  NGFR: 1.00
+
+Excess moieties in products
+  TrkA: 1.00
+  p: 1.00
+
+
+***J81: Shc_pTrkA_endo -> pShc_pTrkA_endo
+Excess moieties in products
+  p: 1.00
+
+
+***J82: Shc_pTrkA -> pShc_pTrkA
+Excess moieties in products
+  p: 1.00
+
+
+***J83: FRS2_pTrkA -> pFRS2_pTrkA
+Excess moieties in products
+  p: 1.00
+
+
+***J86: FRS2_pTrkA_endo -> pFRS2_pTrkA_endo
+Excess moieties in products
+  p: 1.00
+
+
+***J87: FRS2_pTrkA -> degradation + FRS2
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J88: pFRS2_pTrkA -> degradation + pFRS2
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J89: Shc_pTrkA -> degradation + Shc
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J90: pShc_pTrkA -> degradation + pShc
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J92: FRS2_pTrkA_endo -> degradation + FRS2
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J93: Shc_pTrkA_endo -> degradation + Shc
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J94: pShc_pTrkA_endo -> degradation + pShc
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J107: Crk_C3G_pFRS2_pTrkA -> degradation + pFRS2 + Crk_C3G
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J108: Crk_C3G_pFRS2_pTrkA_endo -> degradation + Crk_C3G + pFRS2
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J109: Grb2_SOS_pShc_pTrkA -> degradation + Grb2_SOS_pShc
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J110: Grb2_SOS_pShc_pTrkA_endo -> degradation + Grb2_SOS_pShc
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J112: pFRS2_pTrkA_endo -> degradation + pFRS2
+Excess moieties in reactants
+  TrkA: 1.00
+  p: 1.00
+
+
+***J113: pro_TrkA -> NGFR
+Excess moieties in reactants
+  TrkA: 1.00
+
+Excess moieties in products
+  NGFR: 1.00
+
+
+***J121: Ras_GTP -> Ras_GDP
+Excess moieties in reactants
+  GTP: 1.00
+
+Excess moieties in products
+  GDP: 1.00
+
+
+***J122: Rap1_GTP -> Rap1_GDP
+Excess moieties in reactants
+  GTP: 1.00
+
+Excess moieties in products
+  GDP: 1.00
+
+
+***J123: Dok -> pDok
+Excess moieties in products
+  p: 1.00
+
+
+***J124: Grb2_SOS_pShc -> pShc + pSOS_Grb2
+Excess moieties in products
+  p: 1.00
+
+
+***J136: ppMEK_ERK -> ppERK + ppMEK
+Excess moieties in products
+  p: 2.00
+
+
+***J137: c_Raf_Ras_GTP -> c_Raf + Ras_GDP
+Excess moieties in reactants
+  GTP: 1.00
+
+Excess moieties in products
+  GDP: 1.00
+
+
+***J138: B_Raf_Ras_GTP -> B_Raf + Ras_GDP
+Excess moieties in reactants
+  GTP: 1.00
+
+Excess moieties in products
+  GDP: 1.00
+
+
+***J139: B_Raf_Rap1_GTP -> B_Raf + Rap1_GDP
+Excess moieties in reactants
+  GTP: 1.00
+
+Excess moieties in products
+  GDP: 1.00
+
+
+***J152: c_Raf_Ras_GTP_MEK -> c_Raf_Ras_GTP + pMEK
+Excess moieties in products
+  p: 1.00
+
+
+***J153: c_Raf_Ras_GTP_pMEK -> c_Raf_Ras_GTP + ppMEK
+Excess moieties in products
+  p: 1.00
+
+
+***J154: c_Raf_Ras_GTP_MEK_ERK -> c_Raf_Ras_GTP + pMEK_ERK
+Excess moieties in products
+  p: 1.00
+
+
+***J155: c_Raf_Ras_GTP_pMEK_ERK -> c_Raf_Ras_GTP + ppMEK_ERK
+Excess moieties in products
+  p: 1.00
+
+
+***J156: B_Raf_Ras_GTP_MEK -> B_Raf_Ras_GTP + pMEK
+Excess moieties in products
+  p: 1.00
+
+
+***J157: B_Raf_Ras_GTP_pMEK -> B_Raf_Ras_GTP + ppMEK
+Excess moieties in products
+  p: 1.00
+
+
+***J158: B_Raf_Ras_GTP_MEK_ERK -> B_Raf_Ras_GTP + pMEK_ERK
+Excess moieties in products
+  p: 1.00
+
+
+***J159: B_Raf_Ras_GTP_pMEK_ERK -> B_Raf_Ras_GTP + ppMEK_ERK
+Excess moieties in products
+  p: 1.00
+
+
+***J160: B_Raf_Rap1_GTP_MEK -> B_Raf_Rap1_GTP + pMEK
+Excess moieties in products
+  p: 1.00
+
+
+***J161: B_Raf_Rap1_GTP_pMEK -> B_Raf_Rap1_GTP + ppMEK
+Excess moieties in products
+  p: 1.00
+
+
+***J162: B_Raf_Rap1_GTP_MEK_ERK -> B_Raf_Rap1_GTP + pMEK_ERK
+Excess moieties in products
+  p: 1.00
+
+
+***J163: B_Raf_Rap1_GTP_pMEK_ERK -> B_Raf_Rap1_GTP + ppMEK_ERK
+Excess moieties in products
+  p: 1.00
+
+
+***J164: Crk_C3G_pFRS2_dpEGFR_c_Cbl_ubiq -> c_Cbl + pFRS2 + Crk_C3G
+Excess moieties in reactants
+  EGFR: 1.00
+
+
+***J167: ppERK_MKP3 -> ERK + MKP3
+Excess moieties in reactants
+  p: 2.00
+
+
+***J168: dppERK_MKP3 -> ppERK + ERK + MKP3
+Excess moieties in reactants
+  dpp: 1.00
+
+Excess moieties in products
+  ERK: 1.00
+  p: 2.00
+
+

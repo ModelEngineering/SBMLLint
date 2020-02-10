@@ -34,7 +34,7 @@ class Moiety(object):
   def __init__(self, name, other_moietys=[]):
     """
     :param str name:
-    :param list-Moiety other_moeitys:
+    :param list-Moiety other_moieties:
     Ensures unique names within other_moietys
     """
     self.name = name

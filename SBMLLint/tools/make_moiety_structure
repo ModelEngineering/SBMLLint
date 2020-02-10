@@ -28,7 +28,10 @@ def getMoieties(moiety_fid):
   """
   return yaml.safe_load(moiety_fid)
 
-def findMoietyStoichiometries(molecule_name, moiety_names):
+# TODO: Extend to do recursive checks of moiety names for
+# their substructures
+def findMoietyStoichiometries(molecule_name, moiety_names,
+    is_check_error=True):
   """
   Finds the moieties and their stoichiometries for each molecule.
   Handles substrings by looking for largest strings first.
@@ -47,8 +50,7 @@ def findMoietyStoichiometries(molecule_name, moiety_names):
       result.append(MoietyStoichiometry(moiety_name, count,
           MOIETY_COUNT_SEPARATOR))
   current_name = current_name.replace("_", "")
-  if len(current_name) > 0:
-    import pdb; pdb.set_trace()
+  if is_check_error and len(current_name) > 0:
     msg = "Moieties specified do not completely express %s" % molecule_name
     msgs.error(msg)
   return result
