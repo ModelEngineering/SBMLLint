@@ -8,8 +8,10 @@ ignored_moieties:
 - degradation
 - dimer
 - dp
+- dpp
 - endo
 - L
+- p
 - pro
 - proteosome
 - ubiq

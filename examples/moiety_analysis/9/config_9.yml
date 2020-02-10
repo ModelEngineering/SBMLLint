@@ -6,6 +6,8 @@ ignored_molecules:
 ignored_moieties:
 - B
 - K
+- PP
+- P
 - R
 
 # Indicates if boundary reactions are checked
