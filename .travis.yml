@@ -21,5 +21,5 @@ script:
   - moiety_analysis BIOMD0000000232_url.xml
   - cd SBMLLint/examples/moiety_analysis/147
   - print_reactions BIOMD0000000147_url.xml
-  - make_moiety_structure BIOMD0000000147_url.xml moieties.yml
+  - make_moiety_structure BIOMD0000000147_url.xml moieties_147.yml
 
