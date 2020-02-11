@@ -1,0 +1,159 @@
+moiety_structure:
+  IFN:
+  - IFN, 1
+  IFNR:
+  - IFN, 1
+  - R, 1
+  IFNRJ:
+  - IFN, 1
+  - J, 1
+  - R, 1
+  IFNRJ2:
+  - IFN, 1
+  - 2, 1
+  - J, 1
+  - R, 1
+  IFNRJ2_star:
+  - star, 1
+  - IFN, 1
+  - 2, 1
+  - J, 1
+  - R, 1
+  IFNRJ2_star_SHP2:
+  - SHP2, 1
+  - star, 1
+  - IFN, 1
+  - 2, 1
+  - J, 1
+  - R, 1
+  IFNRJ2_star_SHP2_SOCS1:
+  - SOCS1, 1
+  - SHP2, 1
+  - star, 1
+  - IFN, 1
+  - 2, 1
+  - J, 1
+  - R, 1
+  IFNRJ2_star_SHP2_SOCS1_STAT1c:
+  - SOCS1, 1
+  - STAT1, 1
+  - SHP2, 1
+  - star, 1
+  - IFN, 1
+  - 2, 1
+  - c, 1
+  - J, 1
+  - R, 1
+  IFNRJ2_star_SHP2_STAT1c:
+  - STAT1, 1
+  - SHP2, 1
+  - star, 1
+  - IFN, 1
+  - 2, 1
+  - c, 1
+  - J, 1
+  - R, 1
+  IFNRJ2_star_SOCS1:
+  - SOCS1, 1
+  - star, 1
+  - IFN, 1
+  - 2, 1
+  - J, 1
+  - R, 1
+  IFNRJ2_star_SOCS1_STAT1c:
+  - SOCS1, 1
+  - STAT1, 1
+  - star, 1
+  - IFN, 1
+  - 2, 1
+  - c, 1
+  - J, 1
+  - R, 1
+  IFNRJ2_star_STAT1c:
+  - STAT1, 1
+  - star, 1
+  - IFN, 1
+  - 2, 1
+  - c, 1
+  - J, 1
+  - R, 1
+  IFNRJ2_star_STAT1c_star:
+  - STAT1, 1
+  - star, 2
+  - IFN, 1
+  - 2, 1
+  - c, 1
+  - J, 1
+  - R, 1
+  JAK:
+  - AK, 1
+  - J, 1
+  PPN:
+  - PPN, 1
+  PPX:
+  - PPX, 1
+  R:
+  - R, 1
+  RJ:
+  - J, 1
+  - R, 1
+  SHP2:
+  - SHP2, 1
+  SOCS1:
+  - SOCS1, 1
+  STAT1c:
+  - STAT1, 1
+  - c, 1
+  STAT1c_STAT1c_star:
+  - STAT1, 2
+  - star, 1
+  - c, 2
+  STAT1c_star:
+  - STAT1, 1
+  - star, 1
+  - c, 1
+  STAT1c_star_PPX:
+  - STAT1, 1
+  - star, 1
+  - PPX, 1
+  - c, 1
+  STAT1c_star_STAT1c_star:
+  - STAT1, 2
+  - star, 2
+  - c, 2
+  STAT1c_star_STAT1c_star_PPX:
+  - STAT1, 2
+  - star, 2
+  - PPX, 1
+  - c, 2
+  STAT1n:
+  - STAT1, 1
+  - n, 1
+  STAT1n_STAT1n_star:
+  - STAT1, 2
+  - star, 1
+  - n, 2
+  STAT1n_star:
+  - STAT1, 1
+  - star, 1
+  - n, 1
+  STAT1n_star_PPN:
+  - STAT1, 1
+  - star, 1
+  - PPN, 1
+  - n, 1
+  STAT1n_star_STAT1n_star:
+  - STAT1, 2
+  - star, 2
+  - n, 2
+  STAT1n_star_STAT1n_star_PPN:
+  - STAT1, 2
+  - star, 2
+  - PPN, 1
+  - n, 2
+  mRNAc:
+  - mRNA, 1
+  - c, 1
+  mRNAn:
+  - mRNA, 1
+  - n, 1

@@ -40,10 +40,11 @@ def findMoietyStoichiometries(molecule_name, moiety_names,
   :return list-MoietyStoichiometry:
   """
   result = []
-  sorted_moiety_names = sorted(moiety_names, key=lambda n: len(n),
-      reverse=True)
+  sorted_moiety_names = sorted(
+      moiety_names, key=lambda n: len(str(n)), reverse=True)
   current_name = molecule_name
   for moiety_name in sorted_moiety_names:
+    moiety_name = str(moiety_name)
     count = current_name.count(moiety_name)
     if count > 0:
       current_name = current_name.replace(moiety_name, "")
