@@ -61,8 +61,10 @@ class MoietyComparator(object):
     :param list-MoleculeStoichiometry mol_stoichs:
     :return list-MoleculeStoichiometry:
     """
-    return [ms for ms in mol_stoichs 
+    names = [ms.molecule.name for ms in mol_stoichs]
+    result = [ms for ms in mol_stoichs 
         if not ms.molecule.name in self._ignored_molecules]
+    return result
 
   def _makeDFS(self):
     """

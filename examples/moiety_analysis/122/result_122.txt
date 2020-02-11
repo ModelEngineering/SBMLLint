@@ -1,0 +1,13 @@
+
+2 of 17 reactions have imbalances.
+
+***R13: 3.00 Ca_Cyt + Inact_C_Cyt -> Act_C_Cyt
+Excess moieties in reactants
+  Ca: 3.00
+
+
+***R14: 3.00 Ca_Nuc + Inact_C_Nuc -> Act_C_Nuc
+Excess moieties in reactants
+  Ca: 3.00
+
+

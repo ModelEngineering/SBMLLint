@@ -1,0 +1,75 @@
+# Configuration for SBMLLint
+# Implicit molecules are molecules that may be implicit
+# in either the reactants or products.
+ignored_molecules:
+
+ignored_moieties:
+- Act
+- Cyt
+- Inact
+- Nuc
+- Pi
+
+# Indicates if boundary reactions are checked
+process_boundary_reactions: False
+
+# Explicit declaration of moiety structures
+moiety_structure:
+  Act_C_Cyt:
+  - Act, 1
+  - Cyt, 1
+  - C, 1
+  Act_C_Nuc:
+  - Nuc, 1
+  - Act, 1
+  - C, 1
+  Ca_Cyt:
+  - Cyt, 1
+  - Ca, 1
+  Ca_Nuc:
+  - Nuc, 1
+  - Ca, 1
+  Inact_C_Cyt:
+  - Inact, 1
+  - Cyt, 1
+  - C, 1
+  Inact_C_Nuc:
+  - Inact, 1
+  - Nuc, 1
+  - C, 1
+  NFAT_Act_C_Cyt:
+  - NFAT, 1
+  - Act, 1
+  - Cyt, 1
+  - C, 1
+  NFAT_Act_C_Nuc:
+  - NFAT, 1
+  - Nuc, 1
+  - Act, 1
+  - C, 1
+  NFAT_Cyt:
+  - NFAT, 1
+  - Cyt, 1
+  NFAT_Nuc:
+  - NFAT, 1
+  - Nuc, 1
+  NFAT_Pi_Act_C_Cyt:
+  - NFAT, 1
+  - Act, 1
+  - Cyt, 1
+  - Pi, 1
+  - C, 1
+  NFAT_Pi_Act_C_Nuc:
+  - NFAT, 1
+  - Nuc, 1
+  - Act, 1
+  - Pi, 1
+  - C, 1
+  NFAT_Pi_Cyt:
+  - NFAT, 1
+  - Cyt, 1
+  - Pi, 1
+  NFAT_Pi_Nuc:
+  - NFAT, 1
+  - Nuc, 1
+  - Pi, 1

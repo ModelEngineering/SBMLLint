@@ -1,0 +1,3 @@
+Model ubiquintization of misfolded proteins.
+
+Limited success with modeling naming convention.
