@@ -1,4 +1,6 @@
-"""A Tool that creates data to analyze the use of structured names."""
+"""A Tool that creates data to analyze the use of names
+   that are structured to expose moieties.
+"""
 
 from SBMLLint.common import constants as cn
 from SBMLLint.common.molecule import Molecule
@@ -13,7 +15,7 @@ import numpy as np
 import pandas as pd
 
 # File paths
-OUTPUT_FILE = "analyze_structured_names.csv"
+OUTPUT_FILE = "analyze_moiety_analysis.csv"
 DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_PATH = os.path.join(DIR, OUTPUT_FILE)
 # Miscellaneous
@@ -22,7 +24,7 @@ EXCLUDE_SUFFIX = ["prime", "mrna", "prot"]
 
 def isStructuredName(name):
   """
-  Detects if the name is a candidate for a structured name.
+  Detects if the name is a candidate for a moiety structured name.
   The term "element" refers to substrings separated by "_".
   Not a structured name if any of the following are True:
     No "_" present
@@ -58,7 +60,7 @@ def calcStats(initial=0, final=50, out_path=OUTPUT_PATH,
   :param bool report_progress: report file being processed
   :param float min_frc: Filter to select only those models
       that have at least the specified fraction of reactions
-      balanced according to structured_names
+      balanced according to moiety_analysis
   """
   def writeDF(dfs):
     df_count = pd.concat(dfs)
@@ -108,7 +110,7 @@ def calcStats(initial=0, final=50, out_path=OUTPUT_PATH,
       if any([isStructuredName(m.name) for m in molecules]):
           row[cn.IS_STRUCTURED] = [True]
     try:
-      mcr = sbmllint.lint(item.model, is_report=False)
+      mcr = sbmllint.lint(model_reference=item.model, is_report=False)
       row[cn.TOTAL_REACTIONS] = [mcr.num_reactions if mcr.num_reactions > 0 else np.nan]
       row[cn.NUM_IMBALANCED_REACTIONS] = [mcr.num_imbalances]
     except:

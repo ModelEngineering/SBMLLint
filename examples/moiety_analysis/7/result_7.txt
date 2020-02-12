@@ -1,0 +1,11 @@
+
+1 of 25 reactions have imbalances.
+
+***Cdc2Phos: G2K -> PG2
+Excess moieties in reactants
+  G2: 1.00
+
+Excess moieties in products
+  PG2: 1.00
+
+

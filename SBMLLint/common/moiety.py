@@ -16,8 +16,16 @@ Examples of
 from SBMLLint.common import constants as cn
 from SBMLLint.common import util
 
+from collections import namedtuple
+import numpy as np
+import pandas as pd
+
+
+NameCount = namedtuple("NameCount", "name count")
+
 
 NULL_STR = ''
+SEP = ","  # Separator between moiety name and stoichiometry
 
 
 ############## CLASSES ##################
@@ -26,7 +34,7 @@ class Moiety(object):
   def __init__(self, name, other_moietys=[]):
     """
     :param str name:
-    :param list-Moiety other_moeitys:
+    :param list-Moiety other_moieties:
     Ensures unique names within other_moietys
     """
     self.name = name
@@ -49,14 +57,15 @@ class Moiety(object):
 class MoietyStoichiometry(object):
   """A Moiety with its replication count."""
 
-  def __init__(self, moiety, stoichiometry):
+  def __init__(self, moiety, stoichiometry,
+      separator=cn.MOIETY_SEPARATOR):
     if isinstance(moiety, Moiety):
       self.moiety = moiety
     else:
       self.moiety = Moiety(str(moiety))
     self.stoichiometry = stoichiometry
     self.name = "%s%s%d" % (self.moiety.name,
-        cn.MOIETY_SEPARATOR, stoichiometry)
+        separator, stoichiometry)
 
   def __repr__(self):
     return self.name
@@ -103,3 +112,21 @@ class MoietyStoichiometry(object):
           "Invalid number in moiety stoichiometry string: %s"
           % moiety_stoich_stg)
     return cls(Moiety(name), stoich)
+
+  @classmethod
+  def makeFromDct(cls, ms_strs):
+    """
+    Makes a MoietyStoichiometry from the YAML extracted
+    for the key cn.CFG_MOIETY_STRUCTURE.
+    :param list-str ms_strs: list of moiety stroichiometry strings
+    :return list-MoietyStoichiometry:
+    """
+    result = []
+    names = []
+    for ms_str in ms_strs:
+      terms = [v.strip() for v in ms_str.split(SEP)]
+      result.append(MoietyStoichiometry(terms[0], int(terms[1])))
+      names.append(terms[0])
+    indicies = sorted(range(len(names)), key=lambda k: names[k])
+    arr = np.array(result)
+    return list(arr[indicies])

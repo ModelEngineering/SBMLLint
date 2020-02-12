@@ -1,8 +1,22 @@
 # Configuration for SBMLLint
-# Implicit molecules are molecules that may be implicit
-# in either the reactants or products.
-implicits:
-- DUMMYIMPLICIT   # an implicit molecule
+
+# Moieties and molecules may be ignored in the analysis. This is done
+# to handle implicit moieties/molecules and as part of analyzing
+# a model.
+ignored_molecules:
+- DUMMYMOLECULE   # no ignored moiety
+ignored_moieties:
+- DUMMYMOIETY   # no ignored moiety
 
 # Indicates if boundary reactions are checked
 process_boundary_reactions: False
+
+####
+# Explicit declaration of moiety structures
+# Remove the comments to activate this declaration of moiety structure
+####
+#moiety_structure:
+#  ATP:  # Adenosine triphosphate
+  # Moiety, stoichiometry
+#  - A, 1
+#  - P, 3

@@ -1,0 +1,21 @@
+# Configuration for SBMLLint
+# Implicit molecules are molecules that may be implicit
+# in either the reactants or products.
+ignored_molecules:
+
+ignored_moieties:
+- degradation
+- endo
+- pro
+- proteosome
+
+# Indicates if boundary reactions are checked
+process_boundary_reactions: False
+
+# Explicit declaration of moiety structures
+moiety_structure:
+  L_EGFR:
+    - EGF, 1
+    - EGFR, 1
+  L_EGFR_dimer:
+    - L_EGFR, 2

@@ -1,0 +1,337 @@
+
+58 of 94 reactions have imbalances.
+
+***ProteasomeActivity1: MisP_Ub4_Proteasome + ATP -> 4.00 Ub + Proteasome + ADP + degUb4
+Excess moieties in reactants
+  P: 1.00
+
+
+***ProteasomeActivity2: MisP_Ub5_Proteasome + ATP -> 5.00 Ub + Proteasome + ADP + degUb5
+Excess moieties in reactants
+  P: 1.00
+
+
+***ProteasomeActivity3: MisP_Ub6_Proteasome + ATP -> 6.00 Ub + Proteasome + ADP + degUb6
+Excess moieties in reactants
+  P: 1.00
+
+
+***ProteasomeActivity4: MisP_Ub7_Proteasome + ATP -> 7.00 Ub + Proteasome + ADP + degUb7
+Excess moieties in reactants
+  P: 1.00
+
+
+***ProteasomeActivity5: MisP_Ub8_Proteasome + ATP -> 8.00 Ub + Proteasome + ADP + degUb8
+Excess moieties in reactants
+  P: 1.00
+
+
+***Aggregation1: 2.00 MisP -> AggP
+Excess moieties in reactants
+  P: 1.00
+
+
+***Aggregation3: 2.00 MisP_Ub -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 2.00
+
+
+***Aggregation4: 2.00 MisP_Ub2 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 4.00
+
+
+***Aggregation5: 2.00 MisP_Ub3 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 6.00
+
+
+***Aggregation6: 2.00 MisP_Ub4 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 8.00
+
+
+***Aggregation7: 2.00 MisP_Ub5 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 10.00
+
+
+***Aggregation8: 2.00 MisP_Ub6 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 12.00
+
+
+***Aggregation9: 2.00 MisP_Ub7 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 14.00
+
+
+***Aggregation10: 2.00 MisP_Ub8 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 16.00
+
+
+***Aggregation11: MisP_Ub + MisP -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 1.00
+
+
+***Aggregation12: MisP_Ub2 + MisP -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 2.00
+
+
+***Aggregation13: MisP_Ub3 + MisP -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 3.00
+
+
+***Aggregation14: MisP_Ub4 + MisP -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 4.00
+
+
+***Aggregation15: MisP_Ub5 + MisP -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 5.00
+
+
+***Aggregation16: MisP_Ub6 + MisP -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 6.00
+
+
+***Aggregation17: MisP_Ub7 + MisP -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 7.00
+
+
+***Aggregation18: MisP_Ub8 + MisP -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 8.00
+
+
+***Aggregation19: MisP_Ub + AggP -> 2.00 AggP
+Excess moieties in reactants
+  Ub: 1.00
+
+
+***Aggregation20: MisP_Ub2 + AggP -> 2.00 AggP
+Excess moieties in reactants
+  Ub: 2.00
+
+
+***Aggregation21: MisP_Ub3 + AggP -> 2.00 AggP
+Excess moieties in reactants
+  Ub: 3.00
+
+
+***Aggregation22: MisP_Ub4 + AggP -> 2.00 AggP
+Excess moieties in reactants
+  Ub: 4.00
+
+
+***Aggregation23: MisP_Ub5 + AggP -> 2.00 AggP
+Excess moieties in reactants
+  Ub: 5.00
+
+
+***Aggregation24: MisP_Ub6 + AggP -> 2.00 AggP
+Excess moieties in reactants
+  Ub: 6.00
+
+
+***Aggregation25: MisP_Ub7 + AggP -> 2.00 AggP
+Excess moieties in reactants
+  Ub: 7.00
+
+
+***Aggregation26: MisP_Ub8 + AggP -> 2.00 AggP
+Excess moieties in reactants
+  Ub: 8.00
+
+
+***Aggregation27: MisP_Ub + MisP_Ub2 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 3.00
+
+
+***Aggregation28: MisP_Ub + MisP_Ub3 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 4.00
+
+
+***Aggregation29: MisP_Ub + MisP_Ub4 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 5.00
+
+
+***Aggregation30: MisP_Ub + MisP_Ub5 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 6.00
+
+
+***Aggregation31: MisP_Ub + MisP_Ub6 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 7.00
+
+
+***Aggregation32: MisP_Ub + MisP_Ub7 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 8.00
+
+
+***Aggregation33: MisP_Ub + MisP_Ub8 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 9.00
+
+
+***Aggregation34: MisP_Ub2 + MisP_Ub3 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 5.00
+
+
+***Aggregation35: MisP_Ub2 + MisP_Ub4 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 6.00
+
+
+***Aggregation36: MisP_Ub2 + MisP_Ub5 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 7.00
+
+
+***Aggregation37: MisP_Ub2 + MisP_Ub6 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 8.00
+
+
+***Aggregation38: MisP_Ub2 + MisP_Ub7 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 9.00
+
+
+***Aggregation39: MisP_Ub2 + MisP_Ub8 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 10.00
+
+
+***Aggregation40: MisP_Ub3 + MisP_Ub4 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 7.00
+
+
+***Aggregation41: MisP_Ub3 + MisP_Ub5 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 8.00
+
+
+***Aggregation42: MisP_Ub3 + MisP_Ub6 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 9.00
+
+
+***Aggregation43: MisP_Ub3 + MisP_Ub7 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 10.00
+
+
+***Aggregation44: MisP_Ub3 + MisP_Ub8 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 11.00
+
+
+***Aggregation45: MisP_Ub4 + MisP_Ub5 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 9.00
+
+
+***Aggregation46: MisP_Ub4 + MisP_Ub6 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 10.00
+
+
+***Aggregation47: MisP_Ub4 + MisP_Ub7 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 11.00
+
+
+***Aggregation48: MisP_Ub4 + MisP_Ub8 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 12.00
+
+
+***Aggregation49: MisP_Ub5 + MisP_Ub6 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 11.00
+
+
+***Aggregation50: MisP_Ub5 + MisP_Ub7 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 12.00
+
+
+***Aggregation51: MisP_Ub5 + MisP_Ub8 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 13.00
+
+
+***Aggregation52: MisP_Ub6 + MisP_Ub7 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 13.00
+
+
+***Aggregation53: MisP_Ub6 + MisP_Ub8 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 14.00
+
+
+***Aggregation54: MisP_Ub7 + MisP_Ub8 -> AggP
+Excess moieties in reactants
+  P: 1.00
+  Ub: 15.00
+
+

@@ -15,6 +15,7 @@ MOLECULE           MOIETY, STOICHIOMETRY
 """
 
 from SBMLLint.common import constants as cn
+from SBMLLint.common import config
 from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
 from SBMLLint.common import util
 
@@ -27,9 +28,30 @@ class Molecule(object):
   def __init__(self, name):
     """
     :param str name:
-    :param libsbml.species species:
     """
     self.name = name
+    self._moiety_stoichiometrys = None
+
+  @property
+  def moiety_stoichiometrys(self):
+    done = False
+    if self._moiety_stoichiometrys is None:
+      config_dct = config.getConfiguration()
+      if cn.CFG_MOIETY_STRUCTURE in config_dct:
+        dct = config_dct[cn.CFG_MOIETY_STRUCTURE]
+        if self.name in dct.keys():
+          self._moiety_stoichiometrys =  \
+              MoietyStoichiometry.makeFromDct(dct[self.name])
+          done = True
+    else:
+      done = True
+    if not done:
+      new_name = self._reformat()
+      stgs = new_name.split(cn.MOIETY_DOUBLE_SEPARATOR)
+      result = [MoietyStoichiometry.make(ms) for ms in stgs]
+      result.sort()
+      self._moiety_stoichiometrys = result
+    return self._moiety_stoichiometrys
 
   def __repr__(self):
     return self.name
@@ -40,24 +62,12 @@ class Molecule(object):
   def isEqual(self, other):
     return self.name == other.name
 
-  def getMoietyStoichiometrys(self):
-    """
-    :return list-MoietyStoichiometry:
-    """
-    new_name = self._reformat()
-    stgs = new_name.split(cn.MOIETY_DOUBLE_SEPARATOR)
-    result = [MoietyStoichiometry.make(ms) for ms in stgs]
-    result.sort()
-    return result
-
   def getMoietys(self):
     """
     Extracts the unique moieties in the molecule.
     :return list-Moiety: Unique Moiety in molecule
     """
-    moiety_stoichiometrys = self.getMoietyStoichiometrys()
-    names = list(set([m_s.moiety.name 
-        for m_s in moiety_stoichiometrys]))
+    names = list(set([m_s.moiety.name for m_s in self.moiety_stoichiometrys]))
     names.sort()
     return [Moiety(n) for n in names]
 
@@ -122,7 +132,7 @@ class MoleculeStoichiometry(object):
     Counts the occurrence of moietys.
     :return pd.DataFrame: index is moiety, value is count
     """
-    moiety_stoichs = self.molecule.getMoietyStoichiometrys()
+    moiety_stoichs = self.molecule.moiety_stoichiometrys
     moietys = list([str(m.moiety) for m in moiety_stoichs])
     stoichs = list([m.stoichiometry for m in moiety_stoichs])
     df = pd.DataFrame({cn.MOIETY: moietys, cn.VALUE: stoichs})

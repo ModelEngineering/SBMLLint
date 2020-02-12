@@ -1,0 +1,467 @@
+# Configuration for SBMLLint
+# Implicit molecules are molecules that may be implicit
+# in either the reactants or products.
+ignored_molecules:
+- None
+
+ignored_moieties:
+- degradation
+- dimer
+- dp
+- dpp
+- endo
+- L
+- p
+- pro
+- proteosome
+- ubiq
+
+# Indicates if boundary reactions are checked
+process_boundary_reactions: False
+
+# Moiety structures
+moiety_structure:
+  B_Raf:
+  - Raf, 1
+  - B, 1
+  B_Raf_Rap1_GTP:
+  - Rap1, 1
+  - GTP, 1
+  - Raf, 1
+  - B, 1
+  B_Raf_Rap1_GTP_MEK:
+  - Rap1, 1
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - B, 1
+  B_Raf_Rap1_GTP_MEK_ERK:
+  - Rap1, 1
+  - ERK, 1
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - B, 1
+  B_Raf_Rap1_GTP_pMEK:
+  - Rap1, 1
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - B, 1
+  - p, 1
+  B_Raf_Rap1_GTP_pMEK_ERK:
+  - Rap1, 1
+  - ERK, 1
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - B, 1
+  - p, 1
+  B_Raf_Ras_GTP:
+  - GTP, 1
+  - Raf, 1
+  - Ras, 1
+  - B, 1
+  B_Raf_Ras_GTP_MEK:
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - Ras, 1
+  - B, 1
+  B_Raf_Ras_GTP_MEK_ERK:
+  - ERK, 1
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - Ras, 1
+  - B, 1
+  B_Raf_Ras_GTP_pMEK:
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - Ras, 1
+  - B, 1
+  - p, 1
+  B_Raf_Ras_GTP_pMEK_ERK:
+  - ERK, 1
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - Ras, 1
+  - B, 1
+  - p, 1
+  C3G:
+  - C3G, 1
+  Crk:
+  - Crk, 1
+  Crk_C3G:
+  - C3G, 1
+  - Crk, 1
+  Crk_C3G_pFRS2_dpEGFR:
+  - EGFR, 1
+  - FRS2, 1
+  - C3G, 1
+  - Crk, 1
+  - dp, 1
+  - p, 1
+  Crk_C3G_pFRS2_dpEGFR_c_Cbl:
+  - EGFR, 1
+  - FRS2, 1
+  - C3G, 1
+  - Cbl, 1
+  - Crk, 1
+  - dp, 1
+  - c, 1
+  - p, 1
+  Crk_C3G_pFRS2_dpEGFR_c_Cbl_ubiq:
+  - EGFR, 1
+  - FRS2, 1
+  - ubiq, 1
+  - C3G, 1
+  - Cbl, 1
+  - Crk, 1
+  - dp, 1
+  - c, 1
+  - p, 1
+  Crk_C3G_pFRS2_pTrkA:
+  - FRS2, 1
+  - TrkA, 1
+  - C3G, 1
+  - Crk, 1
+  - p, 2
+  Crk_C3G_pFRS2_pTrkA_endo:
+  - endo, 1
+  - FRS2, 1
+  - TrkA, 1
+  - C3G, 1
+  - Crk, 1
+  - p, 2
+  Dok:
+  - Dok, 1
+  EGF:
+  - EGF, 1
+  EGFR:
+  - EGFR, 1
+  ERK:
+  - ERK, 1
+  FRS2:
+  - FRS2, 1
+  FRS2_dpEGFR:
+  - EGFR, 1
+  - FRS2, 1
+  - dp, 1
+  FRS2_dpEGFR_c_Cbl:
+  - EGFR, 1
+  - FRS2, 1
+  - Cbl, 1
+  - dp, 1
+  - c, 1
+  FRS2_dpEGFR_c_Cbl_ubiq:
+  - EGFR, 1
+  - FRS2, 1
+  - ubiq, 1
+  - Cbl, 1
+  - dp, 1
+  - c, 1
+  FRS2_pTrkA:
+  - FRS2, 1
+  - TrkA, 1
+  - p, 1
+  FRS2_pTrkA_endo:
+  - endo, 1
+  - FRS2, 1
+  - TrkA, 1
+  - p, 1
+  Grb2:
+  - Grb2, 1
+  Grb2_SOS_pShc:
+  - Grb2, 1
+  - Shc, 1
+  - SOS, 1
+  - p, 1
+  Grb2_SOS_pShc_dpEGFR:
+  - EGFR, 1
+  - Grb2, 1
+  - Shc, 1
+  - SOS, 1
+  - dp, 1
+  - p, 1
+  Grb2_SOS_pShc_dpEGFR_c_Cbl:
+  - EGFR, 1
+  - Grb2, 1
+  - Cbl, 1
+  - Shc, 1
+  - SOS, 1
+  - dp, 1
+  - c, 1
+  - p, 1
+  Grb2_SOS_pShc_dpEGFR_c_Cbl_ubiq:
+  - EGFR, 1
+  - Grb2, 1
+  - ubiq, 1
+  - Cbl, 1
+  - Shc, 1
+  - SOS, 1
+  - dp, 1
+  - c, 1
+  - p, 1
+  Grb2_SOS_pShc_pTrkA:
+  - Grb2, 1
+  - TrkA, 1
+  - Shc, 1
+  - SOS, 1
+  - p, 2
+  Grb2_SOS_pShc_pTrkA_endo:
+  - endo, 1
+  - Grb2, 1
+  - TrkA, 1
+  - Shc, 1
+  - SOS, 1
+  - p, 2
+  L_EGFR:
+  - EGFR, 1
+  - L, 1
+  L_EGFR_dimer:
+  - dimer, 2
+  - EGFR, 2
+  - L, 2
+  L_NGFR:
+  - NGFR, 1
+  - L, 1
+  L_dpEGFR:
+  - EGFR, 1
+  - dp, 1
+  - L, 1
+  MEK:
+  - MEK, 1
+  MEK_ERK:
+  - ERK, 1
+  - MEK, 1
+  MKP3:
+  - MKP3, 1
+  NGF:
+  - NGF, 1
+  NGFR:
+  - NGFR, 1
+  Rap1_GDP:
+  - Rap1, 1
+  - GDP, 1
+  Rap1_GTP:
+  - Rap1, 1
+  - GTP, 1
+  RasGAP:
+  - GAP, 1
+  - Ras, 1
+  Ras_GDP:
+  - GDP, 1
+  - Ras, 1
+  Ras_GTP:
+  - GTP, 1
+  - Ras, 1
+  SOS:
+  - SOS, 1
+  SOS_Grb2:
+  - Grb2, 1
+  - SOS, 1
+  Shc:
+  - Shc, 1
+  Shc_dpEGFR:
+  - EGFR, 1
+  - Shc, 1
+  - dp, 1
+  Shc_dpEGFR_c_Cbl:
+  - EGFR, 1
+  - Cbl, 1
+  - Shc, 1
+  - dp, 1
+  - c, 1
+  Shc_dpEGFR_c_Cbl_ubiq:
+  - EGFR, 1
+  - ubiq, 1
+  - Cbl, 1
+  - Shc, 1
+  - dp, 1
+  - c, 1
+  Shc_pTrkA:
+  - TrkA, 1
+  - Shc, 1
+  - p, 1
+  Shc_pTrkA_endo:
+  - endo, 1
+  - TrkA, 1
+  - Shc, 1
+  - p, 1
+  c_Cbl:
+  - Cbl, 1
+  - c, 1
+  c_Raf:
+  - Raf, 1
+  - c, 1
+  c_Raf_Ras_GTP:
+  - GTP, 1
+  - Raf, 1
+  - Ras, 1
+  - c, 1
+  c_Raf_Ras_GTP_MEK:
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - Ras, 1
+  - c, 1
+  c_Raf_Ras_GTP_MEK_ERK:
+  - ERK, 1
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - Ras, 1
+  - c, 1
+  c_Raf_Ras_GTP_pMEK:
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - Ras, 1
+  - c, 1
+  - p, 1
+  c_Raf_Ras_GTP_pMEK_ERK:
+  - ERK, 1
+  - GTP, 1
+  - MEK, 1
+  - Raf, 1
+  - Ras, 1
+  - c, 1
+  - p, 1
+  degradation:
+  - degradation, 1
+  dpEGFR_c_Cbl:
+  - EGFR, 1
+  - Cbl, 1
+  - dp, 1
+  - c, 1
+  dpEGFR_c_Cbl_ubiq:
+  - EGFR, 1
+  - ubiq, 1
+  - Cbl, 1
+  - dp, 1
+  - c, 1
+  dppERK:
+  - dpp, 1
+  - ERK, 1
+  dppERK_MKP3:
+  - MKP3, 1
+  - dpp, 1
+  - ERK, 1
+  pDok:
+  - Dok, 1
+  - p, 1
+  pDok_RasGAP:
+  - Dok, 1
+  - GAP, 1
+  - Ras, 1
+  - p, 1
+  pFRS2:
+  - FRS2, 1
+  - p, 1
+  pFRS2_dpEGFR:
+  - EGFR, 1
+  - FRS2, 1
+  - dp, 1
+  - p, 1
+  pFRS2_dpEGFR_c_Cbl:
+  - EGFR, 1
+  - FRS2, 1
+  - Cbl, 1
+  - dp, 1
+  - c, 1
+  - p, 1
+  pFRS2_dpEGFR_c_Cbl_ubiq:
+  - EGFR, 1
+  - FRS2, 1
+  - ubiq, 1
+  - Cbl, 1
+  - dp, 1
+  - c, 1
+  - p, 1
+  pFRS2_pTrkA:
+  - FRS2, 1
+  - TrkA, 1
+  - p, 2
+  pFRS2_pTrkA_endo:
+  - endo, 1
+  - FRS2, 1
+  - TrkA, 1
+  - p, 2
+  pMEK:
+  - MEK, 1
+  - p, 1
+  pMEK_ERK:
+  - ERK, 1
+  - MEK, 1
+  - p, 1
+  pSOS:
+  - SOS, 1
+  - p, 1
+  pSOS_Grb2:
+  - Grb2, 1
+  - SOS, 1
+  - p, 1
+  pShc:
+  - Shc, 1
+  - p, 1
+  pShc_dpEGFR:
+  - EGFR, 1
+  - Shc, 1
+  - dp, 1
+  - p, 1
+  pShc_dpEGFR_c_Cbl:
+  - EGFR, 1
+  - Cbl, 1
+  - Shc, 1
+  - dp, 1
+  - c, 1
+  - p, 1
+  pShc_dpEGFR_c_Cbl_ubiq:
+  - EGFR, 1
+  - ubiq, 1
+  - Cbl, 1
+  - Shc, 1
+  - dp, 1
+  - c, 1
+  - p, 1
+  pShc_pTrkA:
+  - TrkA, 1
+  - Shc, 1
+  - p, 2
+  pShc_pTrkA_endo:
+  - endo, 1
+  - TrkA, 1
+  - Shc, 1
+  - p, 2
+  pTrkA:
+  - TrkA, 1
+  - p, 1
+  pTrkA_endo:
+  - endo, 1
+  - TrkA, 1
+  - p, 1
+  ppERK:
+  - ERK, 1
+  - p, 2
+  ppERK_MKP3:
+  - MKP3, 1
+  - ERK, 1
+  - p, 2
+  ppMEK:
+  - MEK, 1
+  - p, 2
+  ppMEK_ERK:
+  - ERK, 1
+  - MEK, 1
+  - p, 2
+  pro_EGFR:
+  - EGFR, 1
+  - pro, 1
+  pro_TrkA:
+  - TrkA, 1
+  - pro, 1
+  proteosome:
+  - proteosome, 1

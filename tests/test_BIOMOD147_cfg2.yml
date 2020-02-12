@@ -1,0 +1,100 @@
+# Configuration for SBMLLint
+# Implicit molecules are molecules that may be implicit
+# in either the reactants or products.
+ignored_molecules:
+- IkBa_mRNA
+- IkBb_mRNA
+- IkBe_mRNA
+
+ignored_moieties:
+- cytoplasm
+- nucleus
+- IkBa  # Missing in product moieties
+- IkBb  # Missing in product moieties
+- IkBe  # Missing in product moieties
+
+# Indicates if boundary reactions are checked
+process_boundary_reactions: False
+
+# Explicit declaration of moiety structures
+moiety_structure:
+  IKK:
+  - IKK, 1
+  IkBaIKK:
+  - IkBa, 1
+  - IKK, 1
+  IkBaIKKNFkB:
+  - IkBa, 1
+  - IKK, 1
+  - NFkB, 1
+  IkBaNFkB_cytoplasm:
+  - IkBa, 1
+  - NFkB, 1
+  - cytoplasm, 1
+  IkBaNFkB_nucleus:
+  - IkBa, 1
+  - NFkB, 1
+  - nucleus, 1
+  IkBa_cytoplasm:
+  - IkBa, 1
+  - cytoplasm, 1
+  IkBa_mRNA:
+  - IkBa, 1
+  - mRNA, 1
+  IkBa_nucleus:
+  - IkBa, 1
+  - nucleus, 1
+  IkBbIKK:
+  - IkBb, 1
+  - IKK, 1
+  IkBbIKKNFkB:
+  - IkBb, 1
+  - IKK, 1
+  - NFkB, 1
+  IkBbNFkB_cytoplasm:
+  - IkBb, 1
+  - NFkB, 1
+  - cytoplasm, 1
+  IkBbNFkB_nucleus:
+  - IkBb, 1
+  - NFkB, 1
+  - nucleus, 1
+  IkBb_cytoplasm:
+  - IkBb, 1
+  - cytoplasm, 1
+  IkBb_mRNA:
+  - IkBb, 1
+  - mRNA, 1
+  IkBb_nucleus:
+  - IkBb, 1
+  - nucleus, 1
+  IkBeIKK:
+  - IkBe, 1
+  - IKK, 1
+  IkBeIKKNFkB:
+  - IkBe, 1
+  - IKK, 1
+  - NFkB, 1
+  IkBeNFkB_cytoplasm:
+  - IkBe, 1
+  - NFkB, 1
+  - cytoplasm, 1
+  IkBeNFkB_nucleus:
+  - IkBe, 1
+  - NFkB, 1
+  - nucleus, 1
+  IkBe_cytoplasm:
+  - IkBe, 1
+  - cytoplasm, 1
+  IkBe_mRNA:
+  - IkBe, 1
+  - mRNA, 1
+  IkBe_nucleus:
+  - IkBe, 1
+  - nucleus, 1
+  NFkB_cytoplasm:
+  - NFkB, 1
+  - cytoplasm, 1
+  NFkB_nucleus:
+  - NFkB, 1
+  - nucleus, 1

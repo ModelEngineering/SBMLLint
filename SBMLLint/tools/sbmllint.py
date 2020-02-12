@@ -7,7 +7,7 @@ from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common import util
 from SBMLLint.games.games_pp import GAMES_PP
 from SBMLLint.games.games_report import GAMESReport
-from SBMLLint.structured_names.moiety_comparator import MoietyComparator
+from SBMLLint.moiety_analysis.moiety_comparator import MoietyComparator
 
 import os
 import sys
@@ -19,12 +19,12 @@ TYPE_III = "type3"
 CANCELING = "canceling"
 ECHELON = "echelon"
 GAMES = "games"
-STRUCTURED_NAMES = "structured_names"
 
 
-def lint(model_reference, file_out=sys.stdout,
+def lint(model_reference=None, 
+    file_out=sys.stdout,
     mass_balance_check=GAMES,
-    config_path=cn.CFG_DEFAULT_PATH,
+    config_fid=None,
     is_report=True,
     implicit_games=False):
   """
@@ -32,14 +32,15 @@ def lint(model_reference, file_out=sys.stdout,
   :param str model_reference: 
       libsbml_model file in
       file, antimony string, xml string
+  :param TextIOWrapper model_fid: fid for an XML file
   :param TextIOWrapper file_out:
   :param str mass_balance_check: how check for mass balance
-  :param str config_path: path to configuration file
+  :param TextIOWrapper config_fid: readable stream
   :param bool is_report: print result
   :return MoietyComparatorResult/null/None:
   """
-  config.setConfiguration(path=config_path)
-  config_dict = config.getConfiguration()
+  config.setConfiguration(fid=config_fid)
+  config_dct = config.getConfiguration()
   if util.isSBMLModel(model_reference):
     model = model_reference
   else:
@@ -49,27 +50,18 @@ def lint(model_reference, file_out=sys.stdout,
     util.checkSBMLDocument(document)
     model = document.getModel()
   #
-  if mass_balance_check==STRUCTURED_NAMES:
-    name = "moiety analysis"
-  else:
-    name = "%s analysis" % GAMES
-  print("***")
-  print("***Running %s" % name)
-  print("***")
-  #
   simple = SimpleSBML()
   simple.initialize(model)
-  if mass_balance_check == STRUCTURED_NAMES:
-    result = MoietyComparator.analyzeReactions(simple,
-        implicits=config_dict['implicits'])
+  if mass_balance_check==cn.MOIETY_ANALYSIS:
+    result = MoietyComparator.analyzeReactions(simple)
     if is_report:
       for line in result.report.split('\n'):
           file_out.write("%s\n" % line)
     return result
   elif mass_balance_check == GAMES:
     if implicit_games:
-      for implicit in config_dict['implicits']:
-        simple = removeImplicit(simple, implicit)
+      for ignored in config_dct[cn.CFG_IGNORED_MOLECULES]:
+        simple = removeIgnored(simple, ignored)
       # print("implicit - results")
       # for r in simple.reactions:
       #   print(r.makeIdentifier(is_include_kinetics=False))
@@ -94,12 +86,12 @@ def lint(model_reference, file_out=sys.stdout,
     print ("Specified method doesn't exist")
     return None
 
-def removeImplicit(simple, implicit):
+def removeIgnored(simple, ignored):
   """
-  Remove an implicit molecule
+  Remove an ignored molecule
   from all reactions in a simpleSBML model.
   :param SimpleSBML simple:
-  :param str implicit:
+  :param str ignored: a molecule name
   :return SimpleSBML:
   """
   modified_reactions = []
@@ -107,11 +99,13 @@ def removeImplicit(simple, implicit):
     modified = False
     reactant_names = [reactant.molecule.name for reactant in r.reactants]
     product_names = [product.molecule.name for product in r.products]
-    if implicit in reactant_names:
-      r.reactants = [ms for ms in r.reactants if ms.molecule.name != implicit]
+    if ignored in reactant_names:
+      r.reactants = [ms for ms in r.reactants 
+          if ms.molecule.name != ignored]
       modified = True
-    if implicit in product_names:
-      r.products = [ms for ms in r.products if ms.molecule.name != implicit]
+    if ignored in product_names:
+      r.products = [ms for ms in r.products
+           if ms.molecule.name != ignored]
       modified = True
     r.identifier = r.makeIdentifier()
     r.category = r.getCategory()

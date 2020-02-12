@@ -1,0 +1,75 @@
+
+9 of 17 reactions have imbalances.
+
+***React2: BLL -> ALL
+Excess moieties in reactants
+  B: 1.00
+
+Excess moieties in products
+  A: 1.00
+
+
+***React5: B -> A
+Excess moieties in reactants
+  B: 1.00
+
+Excess moieties in products
+  A: 1.00
+
+
+***React6: BL -> AL
+Excess moieties in reactants
+  B: 1.00
+
+Excess moieties in products
+  A: 1.00
+
+
+***React9: A -> I
+Excess moieties in reactants
+  A: 1.00
+
+Excess moieties in products
+  I: 1.00
+
+
+***React10: AL -> IL
+Excess moieties in reactants
+  A: 1.00
+
+Excess moieties in products
+  I: 1.00
+
+
+***React11: ALL -> ILL
+Excess moieties in reactants
+  A: 1.00
+
+Excess moieties in products
+  I: 1.00
+
+
+***React14: I -> D
+Excess moieties in reactants
+  I: 1.00
+
+Excess moieties in products
+  D: 1.00
+
+
+***React15: IL -> DL
+Excess moieties in reactants
+  I: 1.00
+
+Excess moieties in products
+  D: 1.00
+
+
+***React16: ILL -> DLL
+Excess moieties in reactants
+  I: 1.00
+
+Excess moieties in products
+  D: 1.00
+
+

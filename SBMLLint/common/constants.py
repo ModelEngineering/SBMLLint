@@ -4,6 +4,8 @@ import os
 
 PROJECT_NAME = "SBMLLint"
 
+MOIETY_ANALYSIS = "moiety_analysis"
+GAMES = "games"
 
 ############### COLUMN NAMES ##############
 FILENAME = "filename"
@@ -26,9 +28,9 @@ TEST_DIR = os.path.join(PROJECT_DIR, "tests")
 BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data/biomodels")
 BIOMODELS_ZIP_FILENAME = "biomodels.zip"
 BIGG_DIR = os.path.join(PROJECT_DIR, "data/bigg")
-ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(PROJECT_DIR, "analysis")
-ANALYSIS_STRUCTURED_NAMES_DIR = os.path.join(
-    ANALYSIS_STRUCTURED_NAMES_DIR, "structured_names")
+ANALYSIS_MOIETY_ANALYSIS_DIR = os.path.join(PROJECT_DIR, "analysis")
+ANALYSIS_MOIETY_ANALYSIS_DIR = os.path.join(
+    ANALYSIS_MOIETY_ANALYSIS_DIR, "moiety_analysis")
 
 ############### TEST FILES #####################
 TEST_FILE = os.path.join(TEST_DIR, "test_file.xml")
@@ -157,11 +159,22 @@ PathComponents = collections.namedtuple('PathComponents',
 # used for creating a report
 NULL_STR = ""
 
-# Configuration related
-CFG_IMPLICITS = "implicits"
+# Top level keys in configuration file
+CFG_IGNORED_MOIETIES = "ignored_moieties"
+CFG_IGNORED_MOLECULES = "ignored_molecules"
+CFG_MOIETY_STRUCTURE = "moiety_structure"
 CFG_PROCESS_BOUNDARY_REACTIONS = "process_boundary_reactions"
+CFG_SECTIONS = [
+    CFG_IGNORED_MOLECULES,
+    CFG_IGNORED_MOIETIES,
+    CFG_PROCESS_BOUNDARY_REACTIONS,
+    CFG_MOIETY_STRUCTURE,
+    ]
+
+# Default values for configuration file
 CFG_DEFAULTS = {}
-CFG_DEFAULTS[CFG_IMPLICITS] = ['DUMMYIMPLICIT']
+CFG_DEFAULTS[CFG_IGNORED_MOIETIES] = ['DUMMYMOIETY']
+CFG_DEFAULTS[CFG_IGNORED_MOLECULES] = ['DUMMYMOLECULE']
 CFG_DEFAULTS[CFG_PROCESS_BOUNDARY_REACTIONS] = False
 CFG_DEFAULT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CFG_DEFAULT_PATH = os.path.join(CFG_DEFAULT_PATH, ".sbmllint_cfg.yml")

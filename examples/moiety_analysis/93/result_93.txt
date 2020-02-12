@@ -1,0 +1,13 @@
+
+1 of 46 reactions have imbalances.
+
+***v3: 2.00 IFNRJ -> IFNRJ2
+Excess moieties in reactants
+  IFN: 1.00
+  J: 1.00
+  R: 1.00
+
+Excess moieties in products
+  2: 1.00
+
+

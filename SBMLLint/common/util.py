@@ -14,19 +14,27 @@ def getXML(model_reference):
   """
   :param str model_reference: 
       the input may be a file reference or a model string
+      or TextIOWrapper
           and the file may be an xml file or an antimony file.
       if it is a model string, it may be an xml string or antimony.
   :raises IOError: Error encountered reading the SBML document
   :return str SBML xml"
   """
   # Check for a file path
-  if os.path.isfile(model_reference):
-    with open(model_reference, 'r') as fd:
-      lines = fd.readlines()
-    model_str = ''.join(lines)
-  else:
-    # Must be a string representation of a model
-    model_str = model_reference
+  model_str = ""
+  if isinstance(model_reference, str):
+    if os.path.isfile(model_reference):
+      with open(model_reference, 'r') as fd:
+        lines = fd.readlines()
+      model_str = ''.join(lines)
+  if len(model_str) == 0:
+    if "readlines" in dir(model_reference):
+      lines = model_reference.readlines()
+      model_str = ''.join(lines)
+      model_reference.close()
+    else:
+      # Must be a string representation of a model
+      model_str = model_reference
   # Process model_str into a model  
   if not "<sbml" in model_str:
     # Antimony
@@ -86,3 +94,18 @@ def checkSBMLDocument(document, model_reference=""):
   if (document.getNumErrors() > 0):
     raise ValueError("Errors in SBML document\n%s" 
         % model_reference)
+
+def setList(a_list):
+  if a_list is None:
+    return []
+  else:
+    return a_list
+
+def getKey(dct, key):
+  """
+  Returns a value if the key is present or None.
+  """
+  if key in dct.keys():
+    return dct[key]
+  else:
+    return None

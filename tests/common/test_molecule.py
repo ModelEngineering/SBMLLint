@@ -2,6 +2,7 @@
 Tests for Molecule
 """
 from SBMLLint.common import constants as cn
+from SBMLLint.common import config
 from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
@@ -42,6 +43,7 @@ for item in iterator:
         name = "%s%s%s" % (name, cn.MOIETY_SEPARATOR, NAMES[idx])
   if len(name) > 0:
     MOLECULE_NAME_SET.append(name)
+TEST_CFG_FILE = os.path.join(cn.TEST_DIR, "test_sbmllint_cfg.yml")
 
 
 #############################
@@ -49,10 +51,15 @@ for item in iterator:
 #############################
 class TestMolecule(unittest.TestCase):
 
-  def setUp(self):
+  def _init(self):
     Molecule.molecules = []
     self.simple = SimpleSBML()
     self.simple = self.simple.initialize(cn.TEST_FILE)
+
+  def setUp(self):
+    if IGNORE_TEST:
+      return
+    self._init()
 
   def testConstructor(self):
     if IGNORE_TEST:
@@ -87,6 +94,18 @@ class TestMolecule(unittest.TestCase):
     molecule = Molecule(MOLECULE_NAME)
     self.assertTrue(molecule.hasMoiety(Moiety(MOIETY_NAME1)))
     self.assertTrue(molecule.hasMoiety(Moiety(MOIETY_NAME2)))
+
+  def testMoietyStoichiometrys(self):
+    if IGNORE_TEST:
+      return
+    config.setConfiguration(TEST_CFG_FILE)
+    #
+    molecule = Molecule("Glu6P")
+    self.assertEqual(molecule.moiety_stoichiometrys[0].moiety.name,
+        "Glu")
+    #
+    molecule = Molecule("ATP")
+    self.assertEqual(len(molecule.moiety_stoichiometrys), 2)
 
 
 class TestMoleculeStoichiometry(unittest.TestCase):

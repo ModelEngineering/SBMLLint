@@ -1,0 +1,94 @@
+
+# Configuration for SBMLLint
+# Implicit molecules are molecules that may be implicit
+# in either the reactants or products.
+ignored_molecules:
+
+ignored_moieties:
+- p
+
+# Indicates if boundary reactions are checked
+process_boundary_reactions: False
+
+# Explicit declaration of moiety structures
+moiety_structure:
+  MAPK:
+  - MAP, 1
+  - K, 1
+  MAPKMEKpp:
+  - MEK, 1
+  - MAP, 1
+  - K, 1
+  - p, 2
+  MAPKPH:
+  - MAP, 1
+  - PH, 1
+  - K, 1
+  MAPKp:
+  - MAP, 1
+  - K, 1
+  - p, 1
+  MAPKpMAPKPH:
+  - MAP, 2
+  - PH, 1
+  - K, 2
+  - p, 1
+  MAPKpMEKpp:
+  - MEK, 1
+  - MAP, 1
+  - K, 1
+  - p, 3
+  MAPKpp:
+  - MAP, 1
+  - K, 1
+  - p, 2
+  MAPKppMAPKPH:
+  - MAP, 2
+  - PH, 1
+  - K, 2
+  - p, 2
+  MEK:
+  - MEK, 1
+  MEKPH:
+  - MEK, 1
+  - PH, 1
+  MEKRAFp:
+  - RAF, 1
+  - MEK, 1
+  - p, 1
+  MEKp:
+  - MEK, 1
+  - p, 1
+  MEKpMEKPH:
+  - MEK, 2
+  - PH, 1
+  - p, 1
+  MEKpRAFp:
+  - RAF, 1
+  - MEK, 1
+  - p, 2
+  MEKpp:
+  - MEK, 1
+  - p, 2
+  MEKppMEKPH:
+  - MEK, 2
+  - PH, 1
+  - p, 2
+  RAF:
+  - RAF, 1
+  RAFK:
+  - RAF, 1
+  - K, 1
+  RAFPH:
+  - RAF, 1
+  - PH, 1
+  RAFRAFK:
+  - RAF, 2
+  - K, 1
+  RAFp:
+  - RAF, 1
+  - p, 1
+  RAFpRAFPH:
+  - RAF, 2
+  - PH, 1
+  - p, 1

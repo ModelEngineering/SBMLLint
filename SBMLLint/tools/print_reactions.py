@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Prints the reactions in a model."""
 
 from SBMLLint.common import constants as cn
