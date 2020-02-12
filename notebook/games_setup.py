@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import os
 import re
-import tellurium as te
-import tesbml
 import os, sys
 
 import init
