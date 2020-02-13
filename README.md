@@ -39,19 +39,19 @@ A collection of reactions is stoichiometrically inconsistent if the set of react
 ## Examples
 The following is an example of using the ``moiety_analysis`` and ``games` algorithms to check for mass balance in a Jupyter Notebook.
 
-<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/moiety_analysis_example.png" width="800"/>
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/moiety_analysis_example.png" width="800"/>
 
-<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/games_example.png" width="700"/>
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/games_example.png" width="700"/>
 
 ``SBMLLint`` can also be run from the command line, taking as input a model file expressed in SBML or Antimony (if you
 install Tellurium).
 Below are examples (although the outputs have been truncated).
 
 For moiety analysis:
-<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/moiety_analysis_from_command_line.png" width="800"/>
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/moiety_analysis_from_command_line.png" width="800"/>
 
 For GAMES:
-<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/games_from_command_line.png" width="800"/>
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/games_from_command_line.png" width="800"/>
 
 ## Installation and Usage
 

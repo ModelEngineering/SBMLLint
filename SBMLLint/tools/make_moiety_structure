@@ -58,12 +58,12 @@ def findMoietyStoichiometries(molecule_name, moiety_names,
 
 # TODO: Look for moieties from largest string to smallest,
 # eliminating those found.
-def main(xml_fid, moiety_fid, config_file):
+def main(xml_fid, moiety_fid, config_fid):
   """
   Creates the YAML configuration file.
-  :param IOWrappter xml_fid: xml file:
-  :param IOWrappter moiety_fid: 
-  :param str config_file: file created
+  :param IOWrapper xml_fid: xml file:
+  :param IOWrapper moiety_fid: 
+  :param IOWrapper config_fid: file to write
   """
   # Acquire and validate moieties
   moiety_names = getMoieties(moiety_fid)
@@ -77,11 +77,15 @@ def main(xml_fid, moiety_fid, config_file):
     config_dct[molecule.name] =  \
         [str(ms) for ms in moiety_stoichiometries]
   dct = {"moiety_structure": config_dct}
-  with open(config_file, "w") as fd:
-    yaml.dump(dct, fd)
+  yaml.dump(dct, config_fid)
+  for fid in [xml_fid, moiety_fid, config_fid]:
+    fid.close()
 
     
 if __name__ == '__main__':
+  def open_write(path):
+    return open(path, "w")
+  #
   parser = argparse.ArgumentParser(
       description='Creates configuration file for BioModels 147.')
   parser.add_argument('xml_file', 
@@ -90,11 +94,11 @@ if __name__ == '__main__':
   parser.add_argument('moiety_file', 
       type=open, 
       help='YAML file the specifies moieties for the XML model.')
-  parser.add_argument('--output', type=str,
+  parser.add_argument('--output', type=open_write,
       help="Generated configuration file. Defaults to config.yml.")
   args = parser.parse_args()
   if args.output is None:
-    config_file = DEFAULT_CONFIG_FILE
+    config_fid = open(DEFAULT_CONFIG_FILE, "w")
   else:
-    config_file = args.output
-  main(args.xml_file, args.moiety_file, config_file)
+    config_fid = args.output
+  main(args.xml_file, args.moiety_file, config_fid)
