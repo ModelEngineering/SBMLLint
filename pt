@@ -1,3 +1,0 @@
-#!/bin/bash
-# Prints reactions for a file in data
-python SBMLLint/tools/print_reactions.py --kinetics False data/$1
