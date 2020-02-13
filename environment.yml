@@ -11,4 +11,4 @@ dependencies:
   - xlrd
   - nose
   - pyyaml
-prefix: /home//anaconda3/envs/sbmllint
+  - scipy
