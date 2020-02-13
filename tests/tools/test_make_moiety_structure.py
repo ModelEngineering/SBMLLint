@@ -70,15 +70,15 @@ class TestFunctions(unittest.TestCase):
         molecule_name, moiety_names)
     self.assertEqual(len(result), 3)
 
-  # TODO: Test with BIOMD11
   def testMain(self):
     if IGNORE_TEST:
       return
     def isSubstr(stg, stgs):
       return any([stg in s for s in stgs])
     #
+    config_fid = open(TEST_CONFIG_FILE, "w")
     make_moiety_structure.main(self.xml_fid,
-        self.moiety_fid, TEST_CONFIG_FILE)
+        self.moiety_fid, config_fid)
     self.assertTrue(os.path.isfile(TEST_CONFIG_FILE))
     with open(TEST_CONFIG_FILE, "r") as fd:
       dct = yaml.safe_load(fd)

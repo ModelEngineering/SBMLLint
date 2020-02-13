@@ -32,7 +32,7 @@ def prettyPrint(model_reference, file_out=sys.stdout, **kwargs):
 
 def main():
   parser = argparse.ArgumentParser(description='SBML XML file.')
-  parser.add_argument('filename', type=str, help='SBML file')
+  parser.add_argument('filename', type=open, help='SBML file')
   parser.add_argument('--kinetics', nargs=1,
       help="Print kinetics formula True or False",
       default = ['True'])
