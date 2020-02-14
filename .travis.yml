@@ -1,8 +1,6 @@
 language: python
 
 install:
-  - python3 -m venv test-sbmllint
-  - source test-sbmllint/bin/activate
   - python setup.py install
 
 script:
