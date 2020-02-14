@@ -8,7 +8,7 @@ INSTALL_FULL = [
     "pandas",
     "python-libsbml",
     "pyyaml",
-    "scipy",
+    "scipy==0.9",
     "tellurium",
     "urllib3",
     "xlrd",
