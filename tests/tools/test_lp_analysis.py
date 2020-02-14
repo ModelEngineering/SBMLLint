@@ -11,8 +11,10 @@ import yaml
 
 
 IGNORE_TEST = False
-TEST_SBML_PTH = os.path.join(cn.TEST_DIR,
+TEST_SBML_INCONSISTENT_PTH = os.path.join(cn.TEST_DIR,
     "test_BIOMD0000000147_url.xml")
+TEST_SBML_CONSISTENT_PTH = os.path.join(cn.TEST_DIR,
+    "test_BIOMD0000000145_url.xml")
 
 #############################
 # Tests
@@ -22,11 +24,14 @@ class TestFunctions(unittest.TestCase):
   def testLPAnalysis(self):
     if IGNORE_TEST:
       return
-    simple = simple_sbml.SimpleSBML()
-    with open(TEST_SBML_PTH, "r") as fd:
-      simple.initialize(fd)
-    result = lp_analysis.LPAnalysis(simple)
-    import pdb; pdb.set_trace()
+    def test(path, expected):
+      simple = simple_sbml.SimpleSBML()
+      with open(path, "r") as fd:
+        simple.initialize(fd)
+      self.assertEqual(lp_analysis.LPAnalysis(simple), expected)
+    #
+    test(TEST_SBML_INCONSISTENT_PTH, False)
+    test(TEST_SBML_CONSISTENT_PTH, True)
     
 
 if __name__ == '__main__':

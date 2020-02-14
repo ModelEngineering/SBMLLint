@@ -27,6 +27,10 @@ def main():
   simple.initialize(args.xml_fid)
   is_consistent = LPAnalysis(simple)
   if is_consistent:
-    print "Model is consistent."
+    print("Model is consistent.")
   else:
-    print "Model is NOT consistent."
+    print("Model is NOT consistent!")
+
+
+if __name__ == '__main__':
+  main()

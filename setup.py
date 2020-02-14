@@ -27,6 +27,7 @@ def sbmllint_setup(install_requires):
       scripts=[
           'SBMLLint/tools/games',
           'SBMLLint/tools/moiety_analysis',
+          'SBMLLint/tools/lp_analysis',
           'SBMLLint/tools/make_moiety_structure',
           'SBMLLint/tools/print_reactions',
           ],
