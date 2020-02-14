@@ -7,10 +7,9 @@ install:
   - python3 -m venv test-sbmllint
   - source test-sbmllint/bin/activate
   - python setup.py install
-  - sudo apt-get install python3-nose
 
 script:
-  - cd ..; nosetests3 SBMLLint/tests
+  - cd ..; nosetests SBMLLint/tests
   - cp SBMLLint/data/biomodels/biomodels.zip .
   - unzip biomodels.zip BIOMD0000000232_url.xml
   - games BIOMD0000000232_url.xml
