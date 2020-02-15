@@ -31,14 +31,20 @@ def prettyPrint(model_reference, file_out=sys.stdout, **kwargs):
   return stgs
 
 def main():
+  def str2Bool(stg):
+    if "T" in stg.upper():
+      return True
+    if "F" in stg.upper():
+      return False
+    return False
+  #
   parser = argparse.ArgumentParser(description='SBML XML file.')
   parser.add_argument('filename', type=open, help='SBML file')
-  parser.add_argument('--kinetics', nargs=1,
+  parser.add_argument('--kinetics', nargs=1, type=str2Bool,
       help="Print kinetics formula True or False",
       default = ['True'])
   args = parser.parse_args()
-  is_include_kinetics = True if args.kinetics[0][0] == 'T' else False
-  prettyPrint(args.filename, is_include_kinetics=is_include_kinetics)
+  prettyPrint(args.filename, is_include_kinetics=args.kinetics[0])
 
 
 if __name__ == '__main__':
