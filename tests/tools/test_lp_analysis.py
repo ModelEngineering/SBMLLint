@@ -15,6 +15,8 @@ TEST_SBML_INCONSISTENT_PTH = os.path.join(cn.TEST_DIR,
     "test_BIOMD0000000147_url.xml")
 TEST_SBML_CONSISTENT_PTH = os.path.join(cn.TEST_DIR,
     "test_BIOMD0000000145_url.xml")
+TEST_SBML_CONSISTENT_PTH = os.path.join(cn.TEST_DIR,
+    "test_BIOMD0000000010_url.xml")
 
 #############################
 # Tests

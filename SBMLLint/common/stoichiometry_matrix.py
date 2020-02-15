@@ -9,6 +9,7 @@ from SBMLLint.common.simple_sbml import SimpleSBML
 import numpy as np
 import pandas as pd
 from scipy.optimize import linprog
+import warnings
 
 
 class StoichiometryMatrix(object):
@@ -67,12 +68,13 @@ class StoichiometryMatrix(object):
         stoichiometry_matrix[reaction.label][molecule_name] = net_stoichiometry
     return stoichiometry_matrix
 
-  def isConsistent(self):
+  def isConsistent(self, is_report_warning=True):
     """
     Runs linear programmming (LP) to determine 
     stoichiometric inconsistency. 
     If consistent return True,
     else return False. 
+    :param bool is_report_warning: report optimization warnings
     :return bool:
     """
     s_matrix_t = self.stoichiometry_matrix.T
@@ -85,6 +87,8 @@ class StoichiometryMatrix(object):
     c = np.ones(nreac)
     # Linear programming. c is constraint (here, zero), 
     # b is vector of possible values for molecule vector. 
+    if not is_report_warning:
+      warnings.simplefilter("ignore")
     res = linprog(c, A_eq=s_matrix_t, b_eq=b, bounds=(1, None))
     if res.status == 0:
       self.consistent = True

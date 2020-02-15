@@ -9,9 +9,8 @@ script:
   - cp SBMLLint/data/biomodels/biomodels.zip .
   - unzip biomodels.zip BIOMD0000000232_url.xml
   - games BIOMD0000000232_url.xml
-  - lp_analysis BIOMD0000000232_url.xml
+  - lp_analysis --report_warnings True BIOMD0000000232_url.xml
   - moiety_analysis BIOMD0000000232_url.xml
   - cd SBMLLint/examples/moiety_analysis/147
-  - print_reactions BIOMD0000000147_url.xml
+  - print_reactions --kinetics True BIOMD0000000147_url.xml
   - make_moiety_structure BIOMD0000000147_url.xml moieties_147.yml
-

@@ -1,6 +1,13 @@
 #!/bin/bash
-python3 -m venv test-sbmllint
-source test-sbmllint/bin/activate
+# Script that installs SBMLLint in a virtual environment.
+DIR="test-sbmllint"
+echo "Will delete $DIR. Press any key to continue."
+read -p "$*"
+if [ -d "$DIR" ]; then
+    rm -rf $DIR
+fi
+python3 -m venv $DIR
+source $DIR/bin/activate
 python3 setup.py install
 echo "Success."
-echo "Do: test-sbmllint/bin/activate before using installed codes."
+echo "Do: 'source $DIR/bin/activate' before running installed codes."
