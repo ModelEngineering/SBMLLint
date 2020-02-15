@@ -97,3 +97,9 @@ The next section indicates whether boundary reactions are considered. By default
 The last section provides for explicit declarations of moiety structures.
 
 The configuration file can be specified in the ```moiety_analysis``` and ```games``` tools by specifying the ```--config`` option.
+
+## Development Notes
+The repository contains several shell scripts that add in
+code development.
+- ```install.sh``` installs the code in the test-sbmllint virual environment.
+- ```setup\_env.sh``` sets up the environment variables (use source ```setup_env.sh```). 

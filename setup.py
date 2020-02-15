@@ -1,5 +1,7 @@
 from setuptools import setup, find_packages
+import sys
 
+TELLURIUM = "tellurium"
 INSTALL_FULL = [
     "matplotlib",
     "networkx",
@@ -9,23 +11,27 @@ INSTALL_FULL = [
     "python-libsbml",
     "pyyaml",
     "scipy",
-    "tellurium",
+    TELLURIUM,
     "urllib3",
     "xlrd",
     ]
+if sys.platform == "win32":
+  INSTALL_FULL.remove(TELLURIUM)
 INSTALL_PARTIAL = list(INSTALL_FULL)
-INSTALL_PARTIAL.remove("tellurium")
+if TELLURIUM in INSTALL_PARTIAL:
+  INSTALL_PARTIAL.remove(TELLURIUM)
 
 def sbmllint_setup(install_requires):
   setup(
       name='SBMLLint',
-      version='1.0.5',
+      version='1.0.6',
       author='Woosub Shin, Joseph L. Hellerstein',
       author_email='jlheller@uw.edu',
       packages=find_packages(exclude=['tests', 'analysis',
           'notebook', 'docs']),
       scripts=[
           'SBMLLint/tools/games',
+          'SBMLLint/tools/games.bat',
           'SBMLLint/tools/moiety_analysis',
           'SBMLLint/tools/lp_analysis',
           'SBMLLint/tools/make_moiety_structure',

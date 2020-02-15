@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Performs Linear Programming Analysis to detection stoichiometric
 inconsistencies.
@@ -34,7 +35,8 @@ def main():
   parser.add_argument('xml_fid', type=open, help='SBML file')
   parser.add_argument('--report_warnings', nargs=1,
       type=str2Bool,
-      help="Print warnings if ill-formed matrix True or False")
+      help="Print warnings if ill-formed matrix True or False",
+      default = ['True'])
   args = parser.parse_args()
   simple = simple_sbml.SimpleSBML()
   simple.initialize(args.xml_fid)
