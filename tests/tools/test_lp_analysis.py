@@ -27,10 +27,9 @@ class TestFunctions(unittest.TestCase):
     if IGNORE_TEST:
       return
     def test(path, expected):
-      simple = simple_sbml.SimpleSBML()
       with open(path, "r") as fd:
-        simple.initialize(fd)
-      self.assertEqual(lp_analysis.LPAnalysis(simple), expected)
+        self.assertEqual(
+            lp_analysis.LPAnalysis(fd, is_report=True), expected)
     #
     test(TEST_SBML_INCONSISTENT_PTH, False)
     test(TEST_SBML_CONSISTENT_PTH, True)

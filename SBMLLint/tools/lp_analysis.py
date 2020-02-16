@@ -14,14 +14,22 @@ import argparse
 import sys
 
 
-def LPAnalysis(simple, is_report=False):
+def LPAnalysis(fid, is_report=False):
   """
   Does LP analysis for a simple model.
+  :param IOStream fid: XML file
   :param bool: True if model is stoichiometric consistent.
   """
+  simple = simple_sbml.SimpleSBML()
+  simple.initialize(fid)
   sm_matrix = stoichiometry_matrix.StoichiometryMatrix(
       simple=simple)
-  return sm_matrix.isConsistent(is_report_warning=is_report)
+  is_consistent = sm_matrix.isConsistent(is_report_warning=is_report)
+  if is_consistent:
+    print("Model is consistent.")
+  else:
+    print("Model is NOT consistent!")
+  return is_consistent
 
 def main():
   def str2Bool(stg):
@@ -32,24 +40,17 @@ def main():
     return False
   #
   parser = argparse.ArgumentParser(
-      description='LP Analysis of SBML XML file.')
-  parser.add_argument('xml_fid', type=open, help='SBML file')
+      description='LP Analysis of SBML file(s).')
+  parser.add_argument('xml_fid', type=open,
+      help='SBML file or zipfile')
   parser.add_argument('--report_warnings', nargs=1,
       type=str2Bool,
       help="Print warnings if ill-formed matrix True or False",
       default = ['True'])
   args = parser.parse_args()
-  # Handle the files
   for fid in util.getNextFid(args.xml_fid):
     try:
-      simple = simple_sbml.SimpleSBML()
-      simple.initialize(fid)
-      is_consistent = LPAnalysis(simple, 
-          is_report=args.report_warnings[0])
-      if is_consistent:
-        print("Model is consistent.")
-      else:
-        print("Model is NOT consistent!")
+      LPAnalysis(fid, is_report=args.report_warnings[0])
     except ValueError:
       print ("  *** Bad SBML file.")
 
