@@ -44,7 +44,11 @@ def main():
       help="Print kinetics formula True or False",
       default = ['True'])
   args = parser.parse_args()
-  prettyPrint(args.filename, is_include_kinetics=args.kinetics[0])
+  for fid in util.getNextFid(args.filename):
+    try:
+      prettyPrint(fid, is_include_kinetics=args.kinetics[0])
+    except ValueError:
+      print ("  *** Bad SBML file.")
 
 
 if __name__ == '__main__':

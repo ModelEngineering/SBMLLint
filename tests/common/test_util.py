@@ -16,6 +16,7 @@ ANTIMONY_STG = '''
 S1 = 0
 S2 = 0
 ''' % (NUM_S1, NUM_S2)
+ZIP_PATH = os.path.join(cn.BIOMODELS_DIR, cn.BIOMODELS_ZIP_FILENAME)
 
 
 #############################
@@ -87,6 +88,15 @@ class TestFunctions(unittest.TestCase):
     collection = [Tester(s) for s in REPEATED_STRING]
     result = util.uniqueify(collection)
     self.assertEqual(len(result), len(STRING))
+
+  def testGetNextFid(self):
+    fid = open(ZIP_PATH, "r")
+    count = 0
+    for zip_fid in util.getNextFid(fid, is_print=False):
+      lines = zip_fid.read()
+      count += 1
+      self.assertGreater(len(lines), 0)
+    self.assertGreater(count, 0)
     
 
 if __name__ == '__main__':

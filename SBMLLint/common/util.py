@@ -4,6 +4,7 @@ from SBMLLint.common import constants as cn
 from SBMLLint.common.tellurium_sandbox import TelluriumSandbox
 
 import os
+import zipfile
 
 TYPE_ANTIMONY = "type_antimony"
 TYPE_XML = "type_xml"
@@ -30,6 +31,8 @@ def getXML(model_reference):
   if len(model_str) == 0:
     if "readlines" in dir(model_reference):
       lines = model_reference.readlines()
+      if isinstance(lines[0], bytes):
+        lines = [l.decode("utf-8") for l in lines]
       model_str = ''.join(lines)
       model_reference.close()
     else:
@@ -109,3 +112,26 @@ def getKey(dct, key):
     return dct[key]
   else:
     return None
+
+def getNextFid(fid, is_print=True):
+  """
+  Iterator for files in a zip archive.
+  If fid is not a zipfile, then just returns that fid.
+  :param IOTextWrapper fid:
+  :param bool is_print: prints the file name
+  :return fid:
+  Usage: for zip_fid in getNextFid(fid):
+  """
+  path = fid.name
+  splits = os.path.splitext(path)
+  if splits[1] != ".zip":
+    yield fid
+  else:
+    # Zip file
+    fid.close()  # Need to open as a zipfile
+    with zipfile.ZipFile(path, "r") as zipper:
+      for ffile in zipper.filelist:
+        zip_fid = zipper.open(ffile, "r")
+        if is_print:
+          print("\n** %s" % zip_fid.name)
+        yield zip_fid
