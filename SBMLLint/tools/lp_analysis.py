@@ -7,6 +7,7 @@ inconsistencies.
 from SBMLLint.common import constants as cn
 from SBMLLint.common import simple_sbml
 from SBMLLint.common import stoichiometry_matrix
+from SBMLLint.common import util
 
 import argparse
 
@@ -38,14 +39,19 @@ def main():
       help="Print warnings if ill-formed matrix True or False",
       default = ['True'])
   args = parser.parse_args()
-  simple = simple_sbml.SimpleSBML()
-  simple.initialize(args.xml_fid)
-  is_consistent = LPAnalysis(simple, 
-      is_report=args.report_warnings[0])
-  if is_consistent:
-    print("Model is consistent.")
-  else:
-    print("Model is NOT consistent!")
+  # Handle the files
+  for fid in util.getNextFid(args.xml_fid):
+    try:
+      simple = simple_sbml.SimpleSBML()
+      simple.initialize(fid)
+      is_consistent = LPAnalysis(simple, 
+          is_report=args.report_warnings[0])
+      if is_consistent:
+        print("Model is consistent.")
+      else:
+        print("Model is NOT consistent!")
+    except ValueError:
+      print ("  *** Bad SBML file.")
 
 
 if __name__ == '__main__':
