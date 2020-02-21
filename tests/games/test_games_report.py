@@ -282,8 +282,6 @@ class TestGAMESReport(unittest.TestCase):
     som = m.getNode(m.simple.getMolecule(PSTATDIMER_NUC))
     report, error_num = gr.reportReactionsInSOM(som, 0)
     common_part = "1. PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc\n"
-    # case1 = "\n{PstatDimer_sol=PstatDimer_nuc}"
-    # case2 = "\n{PstatDimer_nuc=PstatDimer_sol}"
     self.assertEqual(error_num, 1)
     self.assertTrue(report == common_part)
 
