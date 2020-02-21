@@ -317,7 +317,7 @@ class GAMES_PP(nx.DiGraph):
       reaction_species = list(set(reactants.keys()).union(products.keys()))
       for species_name in reaction_species:
         net_stoichiometry = products.get(species_name, 0.0) - reactants.get(species_name, 0.0)
-        stoichiometry_matrix[reaction.label][species_name] = net_stoichiometry
+        stoichiometry_matrix.loc[species_name, reaction.label] = net_stoichiometry
     return stoichiometry_matrix
   
   def decomposeMatrix(self, mat_df):
