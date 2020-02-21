@@ -317,7 +317,9 @@ class GAMES_PP(nx.DiGraph):
       reaction_species = list(set(reactants.keys()).union(products.keys()))
       for species_name in reaction_species:
         net_stoichiometry = products.get(species_name, 0.0) - reactants.get(species_name, 0.0)
-        stoichiometry_matrix[reaction.label][species_name] = net_stoichiometry
+        # below is the currently recommended method
+        stoichiometry_matrix.loc[species_name, reaction.label] = net_stoichiometry
+        #stoichiometry_matrix[reaction.label][species_name] = net_stoichiometry
     return stoichiometry_matrix
   
   def decomposeMatrix(self, mat_df):
@@ -786,8 +788,7 @@ class GAMES_PP(nx.DiGraph):
     multimulti_error_found = False
     if reactions is None:
       reactions = self.simple.reactions
-    # Associate the reaction category with the function
-    # that processes that category
+    # Associate the reaction category with each function
     report = cn.NULL_STR
     reaction_dic = {
         cn.REACTION_1_1: self.processUniUniReaction,
@@ -809,7 +810,7 @@ class GAMES_PP(nx.DiGraph):
     ########################
     # if simple_games, we only run elementary operations
     if not simple_games:
-      # reaction_lu are reactions for LU decomposition, i.e. multi-multi reactions
+      # reaction_lu are reactions for LU decomposition, i.e. non uni-uni reactions
       if self.reactions_lu:
         for reaction in self.reactions_lu:
           self.som_reactions_lu.append(
