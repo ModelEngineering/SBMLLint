@@ -217,7 +217,7 @@ class GAMESReport(object):
   	:param int reaction_count:
   	:param bool explain_details
   	:return str: path_report
-  	:return int reaction_count:
+  	:return int: reaction_count
   	"""
   	path_report = NULL_STR
   	if explain_details:
@@ -245,7 +245,6 @@ class GAMESReport(object):
     if len(type_one_errors) == 0:
       return report, error_num
     for pc in type_one_errors:
-      # report = report + "We detected a mass imbalance from the following reactions:\n\n"
       mole1 = pc.node1
       mole2 = pc.node2
       reactions = pc.reactions
@@ -301,7 +300,7 @@ class GAMESReport(object):
   	    report = report + "\n%s\n" % (PARAGRAPH_DIVIDER)
   	  if explain_details:
   	  	reaction_count = reaction_count - len(inequality_reactions) 	
-  	  	# now explain the mass equivalent pseudo reactions and the resulting sets
+  	  	# explain the mass equivalent pseudo reactions and the resulting sets
   	  	report = report + "Based on the reactions above, we have mass-equivalent pseudo reactions.\n"
   	  	for r in inequality_reactions:
   	  	  reaction = self.mesgraph.simple.getReaction(r)
@@ -323,14 +322,13 @@ class GAMESReport(object):
     Convert an operation series to 
     a list of reaction operations.
     An 'operation' is either a row or column 
-    in an operation matrix, 
+    of an operation matrix, 
     where both column and row indices are reactions. 
     :param pandas.Series operation:
     :return list-ReactionOperation: operations
     """
     operations = []
     # 
-    ## nonzero_idx = operation.to_numpy().nonzero()[0]
     nonzero_idx = np.array([idx for idx, val in enumerate(operation) if val != 0.0])
     nonzero_op = operation[nonzero_idx]
     for idx in range(len(nonzero_op)):
@@ -575,8 +573,7 @@ class GAMESReport(object):
       #
       report = report + "\nWe detected a mass imbalance\n%s\n" % inferred_reaction.identifier
       report = report + "\nfrom the following isolation set.\n"
-      # Remove to_numpy() method
-      ## nonzero_result_series = result_series[result_series.to_numpy().nonzero()[0]]
+      #
       nonzero_idx = np.array([idx for idx, val in enumerate(result_series) if val != 0.0])
       nonzero_result_series = result_series[nonzero_idx]
       #
@@ -589,6 +586,14 @@ class GAMESReport(object):
       	reaction_count += 1
       	report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
       error_num.append(reaction_count)
+      one_side = "--undetermined--"
+      if inferred_som_reaction.reactants==[]:
+        one_side = "reactant"
+      elif inferred_som_reaction.products==[]:
+        one_side = "product"
+      if one_side == "--undetermined--":
+        report = False
+        break
       #
       # part 2: SOMs that were canceled by the operation
       canceled_soms = set()
@@ -610,8 +615,6 @@ class GAMESReport(object):
         if explain_details and som.reactions:
           report = report + "\n%s is inferred by:\n" % som.makeId()
         sub_report, reaction_count = self.reportReactionsInSOM(som, reaction_count)
-        # if explain_details:
-        #   report = report + "\n"
         report = report + sub_report
       if explain_details:
         report = report + "%s\n" % (PARAGRAPH_DIVIDER)
@@ -630,19 +633,19 @@ class GAMESReport(object):
             report = report + " + "
           report = report + "%.2f * %s" % (abs(ro.operation), ro.reaction)
         #
-        one_side = "--undetermined--"
-        ##
-        if inferred_som_reaction.reactants==[]:
-          one_side = "reactant"
-        elif inferred_som_reaction.products==[]:
-          one_side = "product"
+        # one_side = "--undetermined--"
+        # if inferred_som_reaction.reactants==[]:
+        #   one_side = "reactant"
+        # elif inferred_som_reaction.products==[]:
+        #   one_side = "product"
+        #
+        # one_side is determined in lines 589-593
         report = report + "\n\nwill result in empty %s with zero mass:\n" % (one_side)
         report = report + "\n%s\n" % (inferred_som_reaction.identifier)
-        #report = report + "\nThis indicates a mass conflict between reactions."
         report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-        if one_side == "--undetermined--":
-          report = False
-          break
+        # if one_side == "--undetermined--":
+        #   report = False
+        #   break
       report = report + "\n%s\n" % (REPORT_DIVIDER)
     return report, error_num
 
@@ -661,7 +664,6 @@ class GAMESReport(object):
       return report, error_num
     for error in canceling_errors:
       reaction_count = 0
-      # report = report + "We detected a mass imbalance from the following reactions:\n"
       label = error.label
       reaction = self.mesgraph.simple.getReaction(label)
       simplified_reaction = SimplifiedReaction(reaction.reactants, reaction.products, label, self.mesgraph)
@@ -687,8 +689,7 @@ class GAMESReport(object):
         one_side = "reactant"
       elif error.products==[]:
         one_side = "product"
-      report = "We detected a mass imbalance\n: %s\n\nfrom the following isolation set:\n" % (simplified_reaction.identifier) + report
-      # report = report + "\n%s\n" % (simplified_reaction.identifier) 
+      report = "We detected a mass imbalance\n: %s\n\nfrom the following isolation set:\n" % (simplified_reaction.identifier) + report 
       error_num.append(reaction_count)      
       report = report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
     report = report + "\n%s\n" % (REPORT_DIVIDER)
