@@ -467,9 +467,11 @@ class GAMESReport(object):
         reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
         inferred_reaction = self.getInferredReaction(reaction_operations)
         inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
+        # if error is unexplainable, don't explain details
         if inferred_som_reaction.getCategory() != cn.REACTION_1_1:
-          report = False
-          break
+          explain_details = False
+          # report = False
+          # break
         reactant_som = inferred_som_reaction.reactants[0].som
         product_som = inferred_som_reaction.products[0].som
         inequality_reactions = []
@@ -586,14 +588,17 @@ class GAMESReport(object):
       	reaction_count += 1
       	report = report + "\n%d. %s" % (reaction_count, reaction.makeIdentifier(is_include_kinetics=False))
       error_num.append(reaction_count)
+      #
       one_side = "--undetermined--"
       if inferred_som_reaction.reactants==[]:
         one_side = "reactant"
       elif inferred_som_reaction.products==[]:
         one_side = "product"
+      # if error is unexplainable, enumerate reactions
       if one_side == "--undetermined--":
-        report = False
-        break
+        explain_details = False
+        # report = False
+        # break
       #
       # part 2: SOMs that were canceled by the operation
       canceled_soms = set()
