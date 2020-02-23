@@ -468,8 +468,7 @@ class GAMESReport(object):
         inferred_reaction = self.getInferredReaction(reaction_operations)
         inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
         if inferred_som_reaction.getCategory() != cn.REACTION_1_1:
-          report = False
-          break
+          explain_details = False
         reactant_som = inferred_som_reaction.reactants[0].som
         product_som = inferred_som_reaction.products[0].som
         inequality_reactions = []
@@ -592,8 +591,9 @@ class GAMESReport(object):
       elif inferred_som_reaction.products==[]:
         one_side = "product"
       if one_side == "--undetermined--":
-        report = False
-        break
+        explain_details = False
+        # report = False
+        # break
       #
       # part 2: SOMs that were canceled by the operation
       canceled_soms = set()
