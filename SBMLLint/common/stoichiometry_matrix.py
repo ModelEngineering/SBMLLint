@@ -23,6 +23,7 @@ class StoichiometryMatrix(object):
     self.molecules = self._getNonBoundaryMolecules(simple)
     self.stoichiometry_matrix = self.makeStoichiometryMatrix()
     self.consistent = None
+    self.result = None
 
   def _getNonBoundaryReactions(self, simple):
     """
@@ -89,7 +90,14 @@ class StoichiometryMatrix(object):
     # b is vector of possible values for molecule vector. 
     if not is_report_warning:
       warnings.simplefilter("ignore")
-    res = linprog(c, A_eq=s_matrix_t, b_eq=b, bounds=(1, None))
+    try:
+      res = linprog(c, A_eq=s_matrix_t, b_eq=b, bounds=(1, None))
+      is_success = True
+    except:
+      is_success = False
+    if not is_success:
+      msg = "*** Failed to solve the stoichiometry matrix."
+      raise RuntimeError(msg)
     if res.status == 0:
       self.consistent = True
     else:

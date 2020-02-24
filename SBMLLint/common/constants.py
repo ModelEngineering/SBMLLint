@@ -164,11 +164,13 @@ CFG_IGNORED_MOIETIES = "ignored_moieties"
 CFG_IGNORED_MOLECULES = "ignored_molecules"
 CFG_MOIETY_STRUCTURE = "moiety_structure"
 CFG_PROCESS_BOUNDARY_REACTIONS = "process_boundary_reactions"
+CFG_GAMES_THRESHOLD = "games_threshold_num_reactions"
 CFG_SECTIONS = [
     CFG_IGNORED_MOLECULES,
     CFG_IGNORED_MOIETIES,
     CFG_PROCESS_BOUNDARY_REACTIONS,
     CFG_MOIETY_STRUCTURE,
+    CFG_GAMES_THRESHOLD,
     ]
 
 # Default values for configuration file
@@ -176,5 +178,6 @@ CFG_DEFAULTS = {}
 CFG_DEFAULTS[CFG_IGNORED_MOIETIES] = ['DUMMYMOIETY']
 CFG_DEFAULTS[CFG_IGNORED_MOLECULES] = ['DUMMYMOLECULE']
 CFG_DEFAULTS[CFG_PROCESS_BOUNDARY_REACTIONS] = False
+CFG_DEFAULTS[CFG_GAMES_THRESHOLD] = 20
 CFG_DEFAULT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CFG_DEFAULT_PATH = os.path.join(CFG_DEFAULT_PATH, ".sbmllint_cfg.yml")
