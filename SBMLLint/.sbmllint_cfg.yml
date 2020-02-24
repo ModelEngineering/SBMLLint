@@ -12,8 +12,7 @@ ignored_moieties:
 process_boundary_reactions: False
 
 # Number of reactions for giving explanation
-games_threshold_num_reactions:
-- 20
+games_threshold_num_reactions: 20
 
 ####
 # Explicit declaration of moiety structures

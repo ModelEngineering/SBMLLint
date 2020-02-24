@@ -65,7 +65,7 @@ def lint(model_reference=None,
     m = GAMES_PP(simple)
     games_result = m.analyze(simple.reactions)
     if games_result and is_report:
-      gr = GAMESReport(m)
+      gr = GAMESReport(m, explain_threshold=config_dct[cn.CFG_GAMES_THRESHOLD])
       errortype_dic = {TYPE_I: gr.reportTypeOneError,
                        TYPE_II: gr.reportTypeTwoError,
                        TYPE_III: gr.reportTypeThreeError,
