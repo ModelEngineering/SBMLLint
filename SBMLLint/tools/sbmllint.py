@@ -62,9 +62,6 @@ def lint(model_reference=None,
     if implicit_games:
       for ignored in config_dct[cn.CFG_IGNORED_MOLECULES]:
         simple = removeIgnored(simple, ignored)
-      # print("implicit - results")
-      # for r in simple.reactions:
-      #   print(r.makeIdentifier(is_include_kinetics=False))
     m = GAMES_PP(simple)
     games_result = m.analyze(simple.reactions)
     if games_result and is_report:
