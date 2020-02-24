@@ -16,7 +16,7 @@ from scipy.linalg import lu, inv
 
 GAMESErrors = collections.namedtuple("GAMESErrors", 
     "type_one")
-ErrorSummary = collections.namedtuple("ErrorSummnary",
+ErrorSummary = collections.namedtuple("ErrorSummary",
     "type errors")
 TOLERANCE = 0.0001
 TYPE_I = "type1"

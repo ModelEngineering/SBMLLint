@@ -127,10 +127,11 @@ class SimplifiedReaction(object):
 
 class GAMESReport(object):
 
-  def __init__(self, mesgraph, errors=None):
-  	self.mesgraph = mesgraph
-  	self.errors = errors
-  	self.report_type_one_errors = NULL_STR
+  def __init__(self, mesgraph, explain_threshold=20, errors=None):
+    self.mesgraph = mesgraph
+    self.errors = errors
+    self.report_type_one_errors = NULL_STR
+    self.explain_threshold = explain_threshold
 
   def getMoleculeEqualityPath(self, som, molecule1, molecule2):
     """
@@ -465,6 +466,9 @@ class GAMESReport(object):
         operation_df = self.getOperationMatrix()
         operation_series = operation_df.T[reaction_label]
         reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
+        # if the number of elements exceeds the threshold, do not explain details
+        if len(reaction_operations) > self.explain_threshold:
+          explain_details = False
         inferred_reaction = self.getInferredReaction(reaction_operations)
         inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
         if inferred_som_reaction.getCategory() != cn.REACTION_1_1:
@@ -567,6 +571,9 @@ class GAMESReport(object):
       operation_series = operation_df.T[reaction_label]
       result_series = self.getResultingSeries(reaction_label)
       reaction_operations = self.convertOperationSeriesToReactionOperations(operation_series)
+      # if the number of elements exceeds the threshold, do not explain details
+      if len(reaction_operations) > self.explain_threshold:
+        explain_details = False
       inferred_reaction = self.getInferredReaction(reaction_operations)
       inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
       #
@@ -592,8 +599,6 @@ class GAMESReport(object):
         one_side = "product"
       if one_side == "--undetermined--":
         explain_details = False
-        # report = False
-        # break
       #
       # part 2: SOMs that were canceled by the operation
       canceled_soms = set()
@@ -632,20 +637,10 @@ class GAMESReport(object):
           else:
             report = report + " + "
           report = report + "%.2f * %s" % (abs(ro.operation), ro.reaction)
-        #
-        # one_side = "--undetermined--"
-        # if inferred_som_reaction.reactants==[]:
-        #   one_side = "reactant"
-        # elif inferred_som_reaction.products==[]:
-        #   one_side = "product"
-        #
         # one_side is determined in lines 589-593
         report = report + "\n\nwill result in empty %s with zero mass:\n" % (one_side)
         report = report + "\n%s\n" % (inferred_som_reaction.identifier)
         report = report +  "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
-        # if one_side == "--undetermined--":
-        #   report = False
-        #   break
       report = report + "\n%s\n" % (REPORT_DIVIDER)
     return report, error_num
 

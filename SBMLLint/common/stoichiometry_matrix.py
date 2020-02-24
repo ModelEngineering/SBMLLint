@@ -23,6 +23,7 @@ class StoichiometryMatrix(object):
     self.molecules = self._getNonBoundaryMolecules(simple)
     self.stoichiometry_matrix = self.makeStoichiometryMatrix()
     self.consistent = None
+    self.result = None
 
   def _getNonBoundaryReactions(self, simple):
     """
