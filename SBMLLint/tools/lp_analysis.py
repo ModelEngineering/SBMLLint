@@ -53,6 +53,8 @@ def main():
       LPAnalysis(fid, is_report=args.report_warnings[0])
     except ValueError:
       print ("  *** Bad SBML file.")
+    except Exception as e:
+      print(e)
 
 
 if __name__ == '__main__':
