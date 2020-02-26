@@ -11,15 +11,10 @@ INSTALL_FULL = [
     "python-libsbml",
     "pyyaml",
     "scipy",
-    TELLURIUM,
     "urllib3",
     "xlrd",
+    "tellurium",
     ]
-if sys.platform == "win32":
-  INSTALL_FULL.remove(TELLURIUM)
-INSTALL_PARTIAL = list(INSTALL_FULL)
-if TELLURIUM in INSTALL_PARTIAL:
-  INSTALL_PARTIAL.remove(TELLURIUM)
 
 def sbmllint_setup(install_requires):
   setup(
@@ -46,6 +41,7 @@ def sbmllint_setup(install_requires):
       include_package_data=True,
       data_files=[('data/biomodels',
           ['data/biomodels/biomodels.zip'])],
+      #extras_require={ "Antimony":  [TELLURIUM]},
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Intended Audience :: Developers',      # Define that your audience are developers
@@ -59,14 +55,4 @@ def sbmllint_setup(install_requires):
         ],
       )
 
-try:
-  sbmllint_setup(INSTALL_FULL)
-  print("***Full install succeeded. You can use antimony files.")
-except Exception as exp:
-  print("***Full install failed. Trying partial install without Tellurium.")
-  try:
-    sbmllint_setup(INSTALL_PARTIAL)
-    print("***Partial install succeeded: could not install tellurium.") 
-    print("   You cannot use antimony files.")
-  except:
-    pass
+sbmllint_setup(INSTALL_FULL)
