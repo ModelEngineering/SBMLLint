@@ -16,7 +16,7 @@ script:
   - make_moiety_structure BIOMD0000000147_url.xml moieties_147.yml
   - cd ../../..
 # Check that works okay without tellurium
-  - pip uninstall --yes tellurium
-  - games BIOMD0000000232_url.xml
-  - lp_analysis --report_warnings True BIOMD0000000232_url.xml
-  - moiety_analysis BIOMD0000000232_url.xml
+  #- pip uninstall --yes tellurium
+  #- games BIOMD0000000232_url.xml
+  #- lp_analysis --report_warnings True BIOMD0000000232_url.xml
+  #- moiety_analysis BIOMD0000000232_url.xml
