@@ -8,6 +8,6 @@ if [ -d "$DIR" ]; then
 fi
 python3 -m venv $DIR
 source $DIR/bin/activate
-python3 setup.py install
+python3 setup_tellurium.py install
 echo "Success."
 echo "Do: 'source $DIR/bin/activate' before running installed codes."
