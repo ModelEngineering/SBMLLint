@@ -88,6 +88,9 @@ To verify the installation:
 
 Depending on your environment, you may see some warning messages, but there should be no errors.
 
+The pip install does not include tellurium. You can either install it separately, or ``python setup_tellurium.py install``
+in the repository.
+
 ## SBMLLint configuration file
 SBMLLint can optionally be used with a configuration file. An example of the file can be found in the SBMLLint ```github``` folder ```SBMLLint/.sbmllint_cfg.yml```. This is shown below:
 <img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/sbmllint_cfg.png" width="800"/>

@@ -8,13 +8,13 @@ install:
 
 script:
   # Test with Tellurium
-  - source test-no-tellurium/bin/active
+  - source test-no-tellurium/bin/activate
   - cd ..; 
   - nosetests SBMLLint/tests
   - deactivate
   - cd SBMLLint
   # Test without tellurium
-  - source test-no-tellurium/bin/active
+  - source test-no-tellurium/bin/activate
   - cd ..; 
   - nosetests SBMLLint/tests
   - cd SBMLLint
