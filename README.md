@@ -88,7 +88,11 @@ To verify the installation:
 
 Depending on your environment, you may see some warning messages, but there should be no errors.
 
-The pip install does not include tellurium. You can either install it separately, or ``python setup_tellurium.py install``
+The pip install does not include tellurium,
+and so by default you cannot analyze Antimony files.
+If you want to analyze Antimony files,
+you can either install tellurium separately,
+or ``python setup_tellurium.py install``
 in the repository.
 
 ## SBMLLint configuration file
