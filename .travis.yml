@@ -1,13 +1,12 @@
 language: python
 
 install:
-  - python setup.py install
+  # Set up either with or without tellurium
+  - bash setup_random.sh
 
 script:
-  # Test with Tellurium
-  - pip list
-  - cd ..; 
-  - nosetests SBMLLint/tests
+  # Run the tests
+  - cd ..; nosetests SBMLLint/tests
   # Run the tools
   - cp SBMLLint/data/biomodels/biomodels.zip .
   - unzip biomodels.zip BIOMD0000000232_url.xml
