@@ -13,6 +13,7 @@ install:
 script:
   # Test with Tellurium
   - source test-no-tellurium/bin/activate
+  - pip list
   - cd ..; 
   - nosetests SBMLLint/tests
   - deactivate
