@@ -1,28 +1,13 @@
 language: python
 
 install:
-  - python3 -m venv test-no-tellurium
-  - source test-no-tellurium/bin/activate
   - python setup.py install
-  - deactivate
-  - python3 -m venv test-with-tellurium
-  - source test-with-telluriym/bin/activate
-  - python setup_tellurium.py install
-  - deactivate
 
 script:
   # Test with Tellurium
-  - source test-no-tellurium/bin/activate
   - pip list
   - cd ..; 
   - nosetests SBMLLint/tests
-  - deactivate
-  - cd SBMLLint
-  # Test without tellurium
-  - source test-no-tellurium/bin/activate
-  - cd ..; 
-  - nosetests SBMLLint/tests
-  - cd SBMLLint
   # Run the tools
   - cp SBMLLint/data/biomodels/biomodels.zip .
   - unzip biomodels.zip BIOMD0000000232_url.xml
