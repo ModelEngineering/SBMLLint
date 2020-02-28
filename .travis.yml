@@ -2,9 +2,13 @@ language: python
 
 install:
   - python3 -m venv test-no-tellurium
+  - source test-no-tellurium/bin/activate
   - python setup.py install
+  - deactivate
   - python3 -m venv test-with-tellurium
+  - source test-with-telluriym/bin/activate
   - python setup_tellurium.py install
+  - deactivate
 
 script:
   # Test with Tellurium
