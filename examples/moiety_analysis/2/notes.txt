@@ -1,2 +1,0 @@
-A ->B equiv
-D -> I equiv
