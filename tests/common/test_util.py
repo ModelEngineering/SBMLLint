@@ -1,4 +1,5 @@
 from SBMLLint.common import constants as cn
+from SBMLLint.common import exceptions
 from SBMLLint.common import util
 import libsbml
 
@@ -37,11 +38,17 @@ class TestFunctions(unittest.TestCase):
       return lines
     #
     for path in [cn.TEST_FILE2, cn.TEST_FILE3]:
-      test(util.getXML(path))
-      test(util.getXML(getString(path)))
+      try:
+        test(util.getXML(path))
+        test(util.getXML(getString(path)))
+      except exceptions.MissingTelluriumError:
+        pass
 
   def testGetXMLFromAntimony(self):
-    xml = util.getXMLFromAntimony(ANTIMONY_STG)
+    try:
+      xml = util.getXMLFromAntimony(ANTIMONY_STG)
+    except exceptions.MissingTelluriumError:
+      return
     self.assertTrue(isinstance(xml, str))
     reader = libsbml.SBMLReader()
     libsbml_document = reader.readSBMLFromString(xml)

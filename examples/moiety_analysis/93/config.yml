@@ -1,3 +1,19 @@
+# Configuration for SBMLLint
+# Implicit molecules are molecules that may be implicit
+# in either the reactants or products.
+ignored_molecules:
+
+ignored_moieties:
+- c
+- AK
+- n
+- star
+- SOCS1
+
+# Indicates if boundary reactions are checked
+process_boundary_reactions: False
+
+# Explicit declaration of moiety structures
 moiety_structure:
   IFN:
   - IFN, 1

@@ -1,4 +1,5 @@
 from SBMLLint.common import constants as cn
+from SBMLLint.common import exceptions
 from SBMLLint.common.runner import Runner
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.tools import sbmllint
@@ -110,9 +111,12 @@ class TestFunctions(unittest.TestCase):
     A_P_P = 0
     """
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(model_reference=model, file_out=fd,
-          is_report=IS_REPORT,
-          mass_balance_check=cn.MOIETY_ANALYSIS)
+      try:
+        result = sbmllint.lint(model_reference=model, file_out=fd,
+            is_report=IS_REPORT,
+            mass_balance_check=cn.MOIETY_ANALYSIS)
+      except exceptions.MissingTelluriumError:
+        return
     self.assertEqual(result.num_reactions, 1)
     self.assertEqual(result.num_imbalances, 0)
 
@@ -128,9 +132,12 @@ class TestFunctions(unittest.TestCase):
     A = 0
     """
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(model_reference=model, file_out=fd,
-          is_report=IS_REPORT,
-          mass_balance_check=cn.MOIETY_ANALYSIS)
+      try:
+        result = sbmllint.lint(model_reference=model, file_out=fd,
+            is_report=IS_REPORT,
+            mass_balance_check=cn.MOIETY_ANALYSIS)
+      except exceptions.MissingTelluriumError:
+        return
     self.assertEqual(result.num_reactions, 1)
     self.assertEqual(result.num_imbalances, 0)
 
@@ -145,12 +152,15 @@ class TestFunctions(unittest.TestCase):
     DUMMYMOLECULE = 0
     """
     with open(TEST_OUT_PATH, 'w') as fd:
-      result = sbmllint.lint(model_reference=model,
-                             file_out=fd,
-                             mass_balance_check="games",
-                             implicit_games=False,
-                             is_report=IS_REPORT
-                             )
+      try:
+        result = sbmllint.lint(model_reference=model,
+                               file_out=fd,
+                               mass_balance_check="games",
+                               implicit_games=False,
+                               is_report=IS_REPORT
+                               )
+      except exceptions.MissingTelluriumError:
+        return
     self.assertTrue(result)
     with open(TEST_OUT_PATH, 'w') as fd:
       result = sbmllint.lint(model_reference=model,

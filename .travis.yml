@@ -1,11 +1,13 @@
 language: python
 
 install:
-  - python setup.py install
+  # Set up either with or without tellurium
+  - bash setup_random.sh
 
 script:
-  - echo $PATH
+  # Run the tests
   - cd ..; nosetests SBMLLint/tests
+  # Run the tools
   - cp SBMLLint/data/biomodels/biomodels.zip .
   - unzip biomodels.zip BIOMD0000000232_url.xml
   - games BIOMD0000000232_url.xml
@@ -13,4 +15,4 @@ script:
   - moiety_analysis BIOMD0000000232_url.xml
   - cd SBMLLint/examples/moiety_analysis/147
   - print_reactions --kinetics True BIOMD0000000147_url.xml
-  - make_moiety_structure BIOMD0000000147_url.xml moieties_147.yml
+  - make_moiety_structure BIOMD0000000147_url.xml moieties.yml

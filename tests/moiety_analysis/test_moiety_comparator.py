@@ -2,6 +2,7 @@
 Tests for MoietyComparator
 """
 from SBMLLint.common import constants as cn
+from SBMLLint.common import exceptions
 from SBMLLint.common import config
 from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
 from SBMLLint.common.simple_sbml import SimpleSBML
@@ -45,7 +46,6 @@ with open(PATH, 'r') as fd:
   lines = fd.readlines()
 NUM1 = 2
 NUM2 = 3
-SBML= util.getXMLFromAntimony(''.join(lines))
 
 
 ######################################
@@ -148,6 +148,10 @@ class TestMoietyComparator(unittest.TestCase):
     if IGNORE_TEST:
       return
     simple = SimpleSBML()
+    try:
+      SBML= util.getXMLFromAntimony(''.join(lines))
+    except exceptions.MissingTelluriumError:
+      return
     simple.initialize(SBML)
     result = analyze(simple)
     self.assertGreaterEqual(result.num_reactions, 0)
