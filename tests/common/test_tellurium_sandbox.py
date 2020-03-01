@@ -1,6 +1,7 @@
 from SBMLLint.common import constants as cn
 from SBMLLint.common.tellurium_sandbox import TelluriumSandbox
 from SBMLLint.common import tellurium_sandbox as ts
+from SBMLLint.common import exceptions
 
 
 import numpy as np
@@ -29,19 +30,29 @@ S2 = 0
 class TestTelluriumSandbox(unittest.TestCase):
 
   def testRun(self):
-    sandbox = TelluriumSandbox()
-    sandbox.run("echo", INPUT)
-    self.assertEqual(sandbox.return_code, 0)
-    self.assertEqual(sandbox.output, INPUT)
+    try:
+      sandbox = TelluriumSandbox()
+      sandbox.run("echo", INPUT)
+      self.assertEqual(sandbox.return_code, 0)
+      self.assertEqual(sandbox.output, INPUT)
+    except exceptions.MissingTelluriumError:
+      pass
 
   def testInstalledPackages(self):
     pkgs = ts.getInstalledPackages()
     self.assertTrue("matplotlib" in pkgs)
   
   def testGetSBMLFromAntimony(self):
-    sandbox = TelluriumSandbox()
-    sandbox.run("getSBMLFromAntimony", ANTIMONY_STG)
-    self.assertEqual(sandbox.return_code, 0)
+    try:
+      sandbox = TelluriumSandbox()
+      sandbox.run("getSBMLFromAntimony", ANTIMONY_STG)
+      self.assertEqual(sandbox.return_code, 0)
+    except exceptions.MissingTelluriumError:
+      pass
+  
+  def testConstructorMissingPakcage(self):
+    with self.assertRaises(exceptions.MissingTelluriumError):
+      sandbox = TelluriumSandbox(dependencies=["dummy"])
 
 
 if __name__ == '__main__':

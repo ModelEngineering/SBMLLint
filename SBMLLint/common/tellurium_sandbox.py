@@ -1,17 +1,10 @@
 """Wraps methods that use Tellurium runs them in another process."""
 
+from SBMLLint.common import exceptions
+
 import argparse
 import subprocess
 import sys
-
-NUM_S1 = 2
-NUM_S2 = 3
-IGNORE_TEST = False
-ANTIMONY_STG = '''
-%dS1 -> %dS2; 1
-S1 = 0
-S2 = 0
-''' % (NUM_S1, NUM_S2)
 
 
 def getInstalledPackages():
@@ -39,10 +32,16 @@ class TelluriumSandbox(object):
     sandbox.output - string result
   """
 
-  def __init__(self):
+  def __init__(self, dependencies=["tellurium"]):
+    """
+    :param list-str dependencies: dependent packages
+    """
     pkgs = getInstalledPackages()
-    if not "tellurium" in pkgs:
-      raise ValueError("***Operation aborted. Tellurium is not installed.")
+    missing_pkgs = set(dependencies).difference(pkgs)
+    if len(missing_pkgs) > 0:
+      pkgs_stg = ", ".join(missing_pkgs)
+      msg = "***Operation aborted. %s not installed." % pkgs_stg
+      raise exceptions.MissingTelluriumError(msg)
     self.return_code = None
     self.output = None
 
