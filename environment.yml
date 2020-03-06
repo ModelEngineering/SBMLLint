@@ -2,6 +2,7 @@ name: sbmllint
 channels:
   - conda-forge
   - defaults
+  - bioconda
 dependencies:
   - numpy=1.16.3
   - pandas=0.22
@@ -12,3 +13,4 @@ dependencies:
   - nose
   - pyyaml
   - scipy
+  - python-libsbml
