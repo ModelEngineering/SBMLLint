@@ -9,9 +9,9 @@ script:
   - cd ..; nosetests SBMLLint/tests
   # Run the tools
   - cp SBMLLint/data/biomodels/biomodels.zip .
-  - unzip biomodels.zip BIOMD0000000232_url.xml
-  - games BIOMD0000000232_url.xml
-  - lp_analysis --report_warnings True BIOMD0000000232_url.xml
+  - unzip biomodels.zip BIOMD0000000232.xml
+  - games BIOMD0000000232.xml
+  - lp_analysis --report_warnings True BIOMD0000000232.xml
   - moiety_analysis BIOMD0000000232_url.xml
   - cd SBMLLint/examples/moiety_analysis/147
   - print_reactions --kinetics True BIOMD0000000147_url.xml
