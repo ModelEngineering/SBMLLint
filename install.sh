@@ -9,7 +9,7 @@ if [ -d "$DIR" ]; then
 fi
 python3 -m venv $DIR
 source $DIR/bin/activate
-pip install Cython numpy
+pip install setuptools --upgrade
 python3 setup.py install
 echo "Success."
 echo "Do: 'source $DIR/bin/activate' before running installed codes."
