@@ -16,7 +16,7 @@ INSTALL_REQUIRES = [
 def doSetup(install_requires):
   setup(
       name='SBMLLint',
-      version='1.0.8',
+      version='1.0.10',
       author='Woosub Shin, Joseph L. Hellerstein',
       author_email='jlheller@uw.edu',
       packages=find_packages(exclude=['tests', 'analysis',
@@ -25,9 +25,13 @@ def doSetup(install_requires):
           'SBMLLint/tools/games',
           'SBMLLint/tools/games.bat',
           'SBMLLint/tools/moiety_analysis',
+          'SBMLLint/tools/moiety_analysis.bat',
           'SBMLLint/tools/lp_analysis',
+          'SBMLLint/tools/lp_analysis.bat',
           'SBMLLint/tools/make_moiety_structure',
+          'SBMLLint/tools/make_moiety_structure.bat',
           'SBMLLint/tools/print_reactions',
+          'SBMLLint/tools/print_reactions.bat',
           ],
       url='https://github.com/ModelEngineering/SBMLLint',
       description='Linter for SBML models.',
