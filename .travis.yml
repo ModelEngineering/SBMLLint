@@ -12,7 +12,7 @@ script:
   - unzip biomodels.zip BIOMD0000000232.xml
   - games BIOMD0000000232.xml
   - lp_analysis --report_warnings True BIOMD0000000232.xml
-  - moiety_analysis BIOMD0000000232_url.xml
+  - moiety_analysis BIOMD0000000232.xml
   - cd SBMLLint/examples/moiety_analysis/147
-  - print_reactions --kinetics True BIOMD0000000147_url.xml
-  - make_moiety_structure BIOMD0000000147_url.xml moieties.yml
+  - print_reactions --kinetics True BIOMD0000000147.xml
+  - make_moiety_structure BIOMD0000000147.xml moieties.yml
