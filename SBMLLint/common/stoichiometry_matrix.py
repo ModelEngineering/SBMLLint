@@ -92,6 +92,7 @@ class StoichiometryMatrix(object):
       warnings.simplefilter("ignore")
     try:
       res = linprog(c, A_eq=s_matrix_t, b_eq=b, bounds=(1, None))
+      self.result = res
       is_success = True
     except:
       is_success = False
