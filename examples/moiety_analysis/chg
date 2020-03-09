@@ -1,4 +1,0 @@
-mv moieties_$1.yml moieties.yml
-mv config_$1.yml config.yml
-mv result_$1.txt result.txt
-mv config_hdr*.yml /tmp
