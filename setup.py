@@ -16,7 +16,7 @@ INSTALL_REQUIRES = [
 def doSetup(install_requires):
   setup(
       name='SBMLLint',
-      version='1.0.12',
+      version='1.0.13',
       author='Woosub Shin, Joseph L. Hellerstein',
       author_email='jlheller@uw.edu',
       packages=find_packages(exclude=['tests', 'analysis',
