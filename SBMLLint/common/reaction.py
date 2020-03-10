@@ -40,7 +40,7 @@ class Reaction(object):
         libsbml_reaction.getProduct,
         libsbml_reaction.getNumProducts)
     if libsbml_reaction.getKineticLaw() is not None:
-      self.kinetics_law = libsbml_reaction.getKineticLaw().formula
+      self.kinetics_law = libsbml_reaction.getKineticLaw().getFormula()
     else:
       self.kinetics_law = None
     self.label = libsbml_reaction.getId()
