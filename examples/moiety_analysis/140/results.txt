@@ -1,0 +1,40 @@
+
+9 of 45 reactions have imbalances.
+
+***v5: IKK_IkBalpha_NFkB -> NFkB + IKK
+Excess moieties in reactants
+  IkBalpha: 1.00
+
+***v7: IKK_IkBbeta_NFkB -> NFkB + IKK
+Excess moieties in reactants
+  IkBbeta: 1.00
+
+***v9: IKK_IkBeps_NFkB -> NFkB + IKK
+Excess moieties in reactants
+  IkBeps: 1.00
+
+***v10: IkBalpha_NFkB -> NFkB
+Excess moieties in reactants
+  IkBalpha: 1.00
+
+***v11: IkBbeta_NFkB -> NFkB
+Excess moieties in reactants
+  IkBbeta: 1.00
+
+***v12: IkBeps_NFkB -> NFkB
+Excess moieties in reactants
+  IkBeps: 1.00
+
+***v42: IKK_IkBalpha -> IKK
+Excess moieties in reactants
+  IkBalpha: 1.00
+
+***v43: IKK_IkBbeta -> IKK
+Excess moieties in reactants
+  IkBbeta: 1.00
+
+***v44: IKK_IkBeps -> IKK
+Excess moieties in reactants
+  IkBeps: 1.00
+
+
