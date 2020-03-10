@@ -19,9 +19,9 @@ def getMolecules(libsbml_reaction, func):
   species = func(libsbml_reaction)
   molecule_stoichiometrys = []
   for spc in species:
-    molecule = Molecule.getMolecule(spc.species)
+    molecule = Molecule.getMolecule(spc.getSpecies())
     if molecule is None:
-        molecule = Molecule(spc.species)
+        molecule = Molecule(spc.getSpecies())
     molecule_stoichiometrys.append(MoleculeStoichiometry(
         molecule,
         spc.getStoichiometry())
@@ -40,7 +40,7 @@ class Reaction(object):
         libsbml_reaction.getProduct,
         libsbml_reaction.getNumProducts)
     if libsbml_reaction.getKineticLaw() is not None:
-      self.kinetics_law = libsbml_reaction.getKineticLaw().formula
+      self.kinetics_law = libsbml_reaction.getKineticLaw().getFormula()
     else:
       self.kinetics_law = None
     self.label = libsbml_reaction.getId()
@@ -58,7 +58,7 @@ class Reaction(object):
     result = []
     collection = [func_get_one(n) for n in range(func_get_num())]
     for s_r in collection:
-      molecule = Molecule(s_r.species)
+      molecule = Molecule(s_r.getSpecies())
       stoich = s_r.getStoichiometry()
       result.append(MoleculeStoichiometry(molecule, stoich))
     return result
