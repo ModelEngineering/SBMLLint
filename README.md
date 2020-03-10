@@ -84,16 +84,22 @@ SBMLLint is distributed through PyPI. You can install using ``pip install SBMLLi
 To verify the installation:
 
 1. Clone the repository using ``git clone https://github.com/ModelEngineering/SBMLLint.git``
+1. Set the environment variable PYTHONPATH to the full path to the respository.
 1. ``nosetests SBMLLint/tests`` on Mac and Linux; ``nosetests SBMLLint\tests`` on Windows.
 
-Depending on your environment, you may see some warning messages, but there should be no errors.
+Some notes:
 
-The pip install does not include tellurium,
+1.  Depending on your environment, you may see some warning messages, but there should be no errors.
+
+1. The pip install does not include tellurium,
 and so by default you cannot analyze Antimony files.
 If you want to analyze Antimony files,
 you can either install tellurium separately,
 or ``python setup_tellurium.py install``
 in the repository.
+
+1. On Windows, you'll need to find where Windows put the installed tools. An easy way to do this is to look
+at the messages after ``pip install SBMLLint``.
 
 ## SBMLLint configuration file
 SBMLLint can optionally be used with a configuration file. An example of the file can be found in the SBMLLint ```github``` folder ```SBMLLint/.sbmllint_cfg.yml```. This is shown below:
