@@ -1,10 +1,10 @@
 """Setup with Tellurim."""
 
-import setup_base
+import setup
 
 TELLURIUM = "tellurium"
 
-install_requires = list(setup_base.INSTALL_REQUIRES)
+install_requires = list(setup.INSTALL_REQUIRES)
 install_requires.append(TELLURIUM)
 
-setup_base.doSetup(install_requires)
+setup.doSetup(install_requires)

@@ -1,0 +1,87 @@
+# Configuration for SBMLLint
+# Implicit molecules are molecules that may be implicit
+# in either the reactants or products.
+ignored_molecules:
+
+ignored_moieties:
+- nuc
+- transcript
+
+# Indicates if boundary reactions are checked
+process_boundary_reactions: False
+
+# Explicit declaration of moiety structures
+moiety_structure:
+  IKK:
+  - IKK, 1
+  IKK_IkBalpha:
+  - IkBalpha, 1
+  - IKK, 1
+  IKK_IkBalpha_NFkB:
+  - IkBalpha, 1
+  - NFkB, 1
+  - IKK, 1
+  IKK_IkBbeta:
+  - IkBbeta, 1
+  - IKK, 1
+  IKK_IkBbeta_NFkB:
+  - IkBbeta, 1
+  - NFkB, 1
+  - IKK, 1
+  IKK_IkBeps:
+  - IkBeps, 1
+  - IKK, 1
+  IKK_IkBeps_NFkB:
+  - IkBeps, 1
+  - NFkB, 1
+  - IKK, 1
+  IkBalpha:
+  - IkBalpha, 1
+  IkBalpha_NFkB:
+  - IkBalpha, 1
+  - NFkB, 1
+  IkBalpha_nuc:
+  - IkBalpha, 1
+  - nuc, 1
+  IkBalpha_nuc_NFkB_nuc:
+  - IkBalpha, 1
+  - NFkB, 1
+  - nuc, 2
+  IkBalpha_transcript:
+  - transcript, 1
+  - IkBalpha, 1
+  IkBbeta:
+  - IkBbeta, 1
+  IkBbeta_NFkB:
+  - IkBbeta, 1
+  - NFkB, 1
+  IkBbeta_nuc:
+  - IkBbeta, 1
+  - nuc, 1
+  IkBbeta_nuc_NFkB_nuc:
+  - IkBbeta, 1
+  - NFkB, 1
+  - nuc, 2
+  IkBbeta_transcript:
+  - transcript, 1
+  - IkBbeta, 1
+  IkBeps:
+  - IkBeps, 1
+  IkBeps_NFkB:
+  - IkBeps, 1
+  - NFkB, 1
+  IkBeps_nuc:
+  - IkBeps, 1
+  - nuc, 1
+  IkBeps_nuc_NFkB_nuc:
+  - IkBeps, 1
+  - NFkB, 1
+  - nuc, 2
+  IkBeps_transcript:
+  - transcript, 1
+  - IkBeps, 1
+  NFkB:
+  - NFkB, 1
+  NFkB_nuc:
+  - NFkB, 1
+  - nuc, 1

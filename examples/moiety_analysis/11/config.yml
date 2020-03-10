@@ -5,7 +5,6 @@
 ignored_molecules:
 
 ignored_moieties:
-- p
 
 # Indicates if boundary reactions are checked
 process_boundary_reactions: False

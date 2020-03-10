@@ -40,7 +40,7 @@ class TestTelluriumSandbox(unittest.TestCase):
 
   def testInstalledPackages(self):
     pkgs = ts.getInstalledPackages()
-    self.assertTrue("matplotlib" in pkgs)
+    self.assertTrue("scipy" in pkgs)
   
   def testGetSBMLFromAntimony(self):
     try:
