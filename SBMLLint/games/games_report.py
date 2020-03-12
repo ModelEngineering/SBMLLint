@@ -578,7 +578,7 @@ class GAMESReport(object):
       inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
       #
       report = report + "\nWe detected a mass imbalance\n%s\n" % inferred_reaction.identifier
-      report = report + "\nfrom the following isolation set.\n"
+      report = report + "\nfrom the following reaction isolation set.\n"
       #
       nonzero_idx = np.array([idx for idx, val in enumerate(result_series) if val != 0.0])
       nonzero_result_series = result_series[nonzero_idx]
@@ -684,7 +684,7 @@ class GAMESReport(object):
         one_side = "reactant"
       elif error.products==[]:
         one_side = "product"
-      report = "We detected a mass imbalance\n: %s\n\nfrom the following isolation set:\n" % (simplified_reaction.identifier) + report 
+      report = "We detected a mass imbalance\n: %s\n\nfrom the following reaction isolation set:\n" % (simplified_reaction.identifier) + report 
       error_num.append(reaction_count)      
       report = report + "\n%s%s\n" % (PARAGRAPH_DIVIDER, PARAGRAPH_DIVIDER)
     report = report + "\n%s\n" % (REPORT_DIVIDER)

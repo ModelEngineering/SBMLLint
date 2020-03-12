@@ -110,7 +110,7 @@ class TestGAMESReport(unittest.TestCase):
     extended_report = NULL_STR
     extended_report = extended_report + "We detected a mass imbalance\n"
     extended_report = extended_report + ": OxidativePhosphorylation: CTtis -> \n\n"
-    extended_report = extended_report + "from the following isolation set:\n\n"
+    extended_report = extended_report + "from the following reaction isolation set:\n\n"
     extended_report = extended_report + "1. OxidativePhosphorylation: 6.00 ADP + CTtis -> 6.00 ATP\n"
     extended_report = extended_report + "2. ATPase: ATP -> ADP\n"
     extended_report = extended_report + "*ATP and ADP have the same mass according to the above reaction\n"
