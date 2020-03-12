@@ -188,7 +188,6 @@ class GAMES_PP(nx.DiGraph):
     # Can't merge nodes
     self.type_three_errors = []
     # Cant't add arcs using SOMs (after LU decomposition)
-    #self.type_one_som_errors = set()
     # for error return:
     self.error_summary = []
   
@@ -338,10 +337,10 @@ class GAMES_PP(nx.DiGraph):
       for i in range(diff):
         mat_t["_" + str(i)] = np.zeros(mat_t.shape[0])
     # LU decomposition
-    perm, lower, upper = lu(mat_t)
+    perm, lower_raw, upper_raw = lu(mat_t)
     # #### Trying to round up lower and upper, to avoid precision issue related to 0.0
-    # lower = np.round(lower_raw, 3)
-    # upper = np.round(upper_raw, 3)
+    lower = np.round(lower_raw, 3)
+    upper = np.round(upper_raw, 3)
     perm_inverse = perm.T
     permuted_m = (perm_inverse).dot(mat_t)
     pivot_index = [list(k).index(1) for k in perm_inverse]
@@ -391,7 +390,6 @@ class GAMES_PP(nx.DiGraph):
       # Find the first nonzero values
       # Deprecation: instead of np.nonzero(Series), use Series.to_numpy().nonzero()
       # to fix error on GitHub - not use to_numpy here
-      ##nonzero_idx = echelon_df[colname].to_numpy().nonzero()[0]
       nonzero_idx = np.array([idx for idx, val in enumerate(echelon_df[colname]) if val != 0])
       # Skip if there is no nonzero value or if it is first reaction
       if not nonzero_idx.any() or idx == 0:
@@ -667,7 +665,6 @@ class GAMES_PP(nx.DiGraph):
     else:
       return False
   
-  # We may remove this method
   def addTypeTwoError(self, cycle):
     """
     Add Type II Error components to self.type_two_errors
@@ -751,11 +748,7 @@ class GAMES_PP(nx.DiGraph):
       return False
     else:
       for cycle in cycles:
-        # We are not using addTypeTwoError yet. 
-        # self.addTypeTwoError(cycle)
         self.type_two_errors.append(cycle)
-        # if not self.type_two_error:
-        #   self.type_two_error = True
       return True
   
   def processErrorReaction(self, reaction):
