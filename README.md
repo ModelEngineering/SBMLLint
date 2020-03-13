@@ -77,6 +77,10 @@ Below we illustrate the use of ```make_moiety_structure``` and the format of the
 Here is a an example of using ```print_reactions```.
 <img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/print_reactions.png" width="800"/>
 
+Finally, we provide an example of using ```lp_analysis```.
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/lp_analysis.png" width="800"/>
+
+
 ## Installation
 
 SBMLLint is distributed through PyPI. You can install using ``pip install SBMLLint``.
