@@ -79,6 +79,7 @@ Here is a an example of using ```print_reactions```.
 <img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/print_reactions.png" width="800"/>
 
 Finally, we provide an example of using ```lp_analysis```.
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/lp_analysis_1.png" width="600"/>
 <img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/lp_analysis.png" width="600"/>
 
 
