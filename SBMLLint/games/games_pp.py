@@ -337,9 +337,8 @@ class GAMES_PP(nx.DiGraph):
       for i in range(diff):
         mat_t["_" + str(i)] = np.zeros(mat_t.shape[0])
     # LU decomposition
-    perm, lower_raw, upper_raw = lu(mat_t)
-    # #### Trying to round up lower and upper, to avoid precision issue related to 0.0
-    lower = np.round(lower_raw, 3)
+    perm, lower, upper_raw = lu(mat_t)
+    # round up U matrix
     upper = np.round(upper_raw, 3)
     perm_inverse = perm.T
     permuted_m = (perm_inverse).dot(mat_t)
@@ -361,9 +360,11 @@ class GAMES_PP(nx.DiGraph):
       echelon_df = pd.DataFrame(upper,
           index=new_idx_mat_t,
           columns=mat_t.columns).T
-    lower_inverse = pd.DataFrame(inv(lower),
+    lower_inverse_raw = pd.DataFrame(inv(lower),
           index=new_idx_mat_t,
           columns=new_idx_mat_t)
+    # round up lower_inverse
+    lower_inverse = np.round(lower_inverse_raw, 3)
     self.perm_inverse = perm_inverse
     self.permuted_matrix = perm_df
     self.lower = lower
