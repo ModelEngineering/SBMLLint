@@ -52,6 +52,7 @@ SBMLLint provides the following command line tools that are available when SBMLL
 - ```games``` uses games on an SBML source file to report on mass balance errors.
 -  ```make_moiety_structure``` takes as input an SBML XML file and a [YAML](https://rollout.io/blog/yaml-tutorial-everything-you-need-get-started/) file that lists moiety names to construct the YAML for explicit declarations of moieties.
 -   ```print_reactions``` takes as input an SBML XML file and prints the reactions in the model (including their kinetics)
+- ``lp_analysis`` does linear programming analysis of the model.
 
 
 The following is an example of using the ``moiety_analysis`` and ``GAMES` algorithms to check for mass balance in a Jupyter Notebook.
@@ -76,6 +77,11 @@ Below we illustrate the use of ```make_moiety_structure``` and the format of the
 
 Here is a an example of using ```print_reactions```.
 <img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/print_reactions.png" width="800"/>
+
+Finally, we provide an example of using ```lp_analysis```.
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/lp_analysis_1.png" width="600"/>
+<img src="https://github.com/ModelEngineering/SBMLLint/raw/master/png/lp_analysis.png" width="600"/>
+
 
 ## Installation
 
