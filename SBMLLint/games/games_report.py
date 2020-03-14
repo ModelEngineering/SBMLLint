@@ -577,7 +577,10 @@ class GAMESReport(object):
       inferred_reaction = self.getInferredReaction(reaction_operations)
       inferred_som_reaction = self.mesgraph.convertReactionToSOMReaction(inferred_reaction)
       #
-      report = report + "\nWe detected a mass imbalance\n%s\n" % inferred_reaction.identifier
+      if explain_details:
+        report = report + "\nWe detected a mass imbalance\n%s\n" % inferred_reaction.identifier
+      else:
+        report = report + "\nWe detected a mass imbalance"
       report = report + "\nfrom the following reaction isolation set.\n"
       #
       nonzero_idx = np.array([idx for idx, val in enumerate(result_series) if val != 0.0])
