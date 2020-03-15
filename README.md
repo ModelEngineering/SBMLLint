@@ -104,8 +104,10 @@ you can either install tellurium separately,
 or ``python setup_tellurium.py install``
 in the repository.
 
-1. On Windows, you'll need to find where Windows put the installed tools. An easy way to do this is to look
+1. On Windows:
+  1. You'll need to find where Windows put the installed tools. An easy way to do this is to look
 at the messages after ``pip install SBMLLint``.
+  1. Running the SBMLLint tools requires invoking python from the command line using the ``python`` command. You may need to create a file ``python.bat`` that points to your python installation.
 
 ## SBMLLint configuration file
 SBMLLint can optionally be used with a configuration file. An example of the file can be found in the SBMLLint ```github``` folder ```SBMLLint/.sbmllint_cfg.yml```. This is shown below:
