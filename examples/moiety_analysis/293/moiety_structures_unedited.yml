@@ -1,0 +1,551 @@
+moiety_structure:
+  ADP:
+  - ADP, 1
+  AMP:
+  - AMP, 1
+  ATP:
+  - ATP, 1
+  AggA1:
+  - Agg, 1
+  - A1, 1
+  AggA2:
+  - Agg, 1
+  - A2, 1
+  AggA3:
+  - Agg, 1
+  - A3, 1
+  AggA4:
+  - Agg, 1
+  - A4, 1
+  AggA5:
+  - Agg, 1
+  - A5, 1
+  AggD1:
+  - Agg, 1
+  - D1, 1
+  AggD2:
+  - Agg, 1
+  - D2, 1
+  AggD3:
+  - Agg, 1
+  - D3, 1
+  AggD4:
+  - Agg, 1
+  - D4, 1
+  AggD5:
+  - Agg, 1
+  - D5, 1
+  AggP1:
+  - Agg, 1
+  - P1, 1
+  AggP2:
+  - Agg, 1
+  - P2, 1
+  AggP3:
+  - Agg, 1
+  - P3, 1
+  AggP4:
+  - Agg, 1
+  - P4, 1
+  AggP5:
+  - Agg, 1
+  - P5, 1
+  AggP_Proteasome:
+  - Proteasome, 1
+  - Agg, 1
+  - P, 1
+  AggS1:
+  - Agg, 1
+  - S1, 1
+  AggS2:
+  - Agg, 1
+  - S2, 1
+  AggS3:
+  - Agg, 1
+  - S3, 1
+  AggS4:
+  - Agg, 1
+  - S4, 1
+  AggS5:
+  - Agg, 1
+  - S5, 1
+  AggU1:
+  - Agg, 1
+  - U1, 1
+  AggU2:
+  - Agg, 1
+  - U2, 1
+  AggU3:
+  - Agg, 1
+  - U3, 1
+  AggU4:
+  - Agg, 1
+  - U4, 1
+  AggU5:
+  - Agg, 1
+  - U5, 1
+  DUB:
+  - DUB, 1
+  E1:
+  - E1, 1
+  E1_Ub:
+  - Ub, 1
+  - E1, 1
+  E2:
+  - E2, 1
+  E2_Ub:
+  - Ub, 1
+  - E2, 1
+  E3:
+  - E3, 1
+  E3SUB:
+  - SUB, 1
+  - E3, 1
+  E3SUB_SUB_misfolded:
+  - misfolded, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub:
+  - misfolded, 1
+  - SUB, 2
+  - Ub, 1
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub2:
+  - misfolded, 1
+  - Ub2, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub2_UCHL1:
+  - misfolded, 1
+  - UCHL1, 1
+  - Ub2, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub3:
+  - misfolded, 1
+  - Ub3, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub3_UCHL1:
+  - misfolded, 1
+  - UCHL1, 1
+  - Ub3, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub4:
+  - misfolded, 1
+  - Ub4, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub4_UCHL1:
+  - misfolded, 1
+  - UCHL1, 1
+  - Ub4, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub5:
+  - misfolded, 1
+  - Ub5, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub5_UCHL1:
+  - misfolded, 1
+  - UCHL1, 1
+  - Ub5, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub6:
+  - misfolded, 1
+  - Ub6, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub6_UCHL1:
+  - misfolded, 1
+  - UCHL1, 1
+  - Ub6, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub7:
+  - misfolded, 1
+  - Ub7, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub7_UCHL1:
+  - misfolded, 1
+  - UCHL1, 1
+  - Ub7, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub8:
+  - misfolded, 1
+  - Ub8, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub8_UCHL1:
+  - misfolded, 1
+  - UCHL1, 1
+  - Ub8, 1
+  - SUB, 2
+  - E3, 1
+  E3SUB_SUB_misfolded_Ub_UCHL1:
+  - misfolded, 1
+  - UCHL1, 1
+  - SUB, 2
+  - Ub, 1
+  - E3, 1
+  E3_MisP:
+  - Mis, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub:
+  - Mis, 1
+  - Ub, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub2:
+  - Mis, 1
+  - Ub2, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub2_DUB:
+  - Mis, 1
+  - DUB, 1
+  - Ub2, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub3:
+  - Mis, 1
+  - Ub3, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub3_DUB:
+  - Mis, 1
+  - DUB, 1
+  - Ub3, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub4:
+  - Mis, 1
+  - Ub4, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub4_DUB:
+  - Mis, 1
+  - DUB, 1
+  - Ub4, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub5:
+  - Mis, 1
+  - Ub5, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub5_DUB:
+  - Mis, 1
+  - DUB, 1
+  - Ub5, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub6:
+  - Mis, 1
+  - Ub6, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub6_DUB:
+  - Mis, 1
+  - DUB, 1
+  - Ub6, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub7:
+  - Mis, 1
+  - Ub7, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub7_DUB:
+  - Mis, 1
+  - DUB, 1
+  - Ub7, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub8:
+  - Mis, 1
+  - Ub8, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub8_DUB:
+  - Mis, 1
+  - DUB, 1
+  - Ub8, 1
+  - E3, 1
+  - P, 1
+  E3_MisP_Ub_DUB:
+  - Mis, 1
+  - DUB, 1
+  - Ub, 1
+  - E3, 1
+  - P, 1
+  Lamp2a:
+  - Lamp2a, 1
+  Lamp2a_UCHL1_damaged:
+  - damaged, 1
+  - Lamp2a, 1
+  - UCHL1, 1
+  Lysosome:
+  - Lysosome, 1
+  MisP:
+  - Mis, 1
+  - P, 1
+  MisP_Ub4_Proteasome:
+  - Proteasome, 1
+  - Mis, 1
+  - Ub4, 1
+  - P, 1
+  MisP_Ub5_Proteasome:
+  - Proteasome, 1
+  - Mis, 1
+  - Ub5, 1
+  - P, 1
+  MisP_Ub6_Proteasome:
+  - Proteasome, 1
+  - Mis, 1
+  - Ub6, 1
+  - P, 1
+  MisP_Ub7_Proteasome:
+  - Proteasome, 1
+  - Mis, 1
+  - Ub7, 1
+  - P, 1
+  MisP_Ub8_Proteasome:
+  - Proteasome, 1
+  - Mis, 1
+  - Ub8, 1
+  - P, 1
+  NatP:
+  - Nat, 1
+  - P, 1
+  Parkin:
+  - Parkin, 1
+  Parkin_asyn_dam:
+  - Parkin, 1
+  - asyn, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub:
+  - Parkin, 1
+  - asyn, 1
+  - dam, 1
+  - Ub, 1
+  Parkin_asyn_dam_Ub2:
+  - Parkin, 1
+  - asyn, 1
+  - Ub2, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub2_DUB:
+  - Parkin, 1
+  - asyn, 1
+  - DUB, 1
+  - Ub2, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub3:
+  - Parkin, 1
+  - asyn, 1
+  - Ub3, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub3_DUB:
+  - Parkin, 1
+  - asyn, 1
+  - DUB, 1
+  - Ub3, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub4:
+  - Parkin, 1
+  - asyn, 1
+  - Ub4, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub4_DUB:
+  - Parkin, 1
+  - asyn, 1
+  - DUB, 1
+  - Ub4, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub5:
+  - Parkin, 1
+  - asyn, 1
+  - Ub5, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub5_DUB:
+  - Parkin, 1
+  - asyn, 1
+  - DUB, 1
+  - Ub5, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub6:
+  - Parkin, 1
+  - asyn, 1
+  - Ub6, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub6_DUB:
+  - Parkin, 1
+  - asyn, 1
+  - DUB, 1
+  - Ub6, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub7:
+  - Parkin, 1
+  - asyn, 1
+  - Ub7, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub7_DUB:
+  - Parkin, 1
+  - asyn, 1
+  - DUB, 1
+  - Ub7, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub8:
+  - Parkin, 1
+  - asyn, 1
+  - Ub8, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub8_DUB:
+  - Parkin, 1
+  - asyn, 1
+  - DUB, 1
+  - Ub8, 1
+  - dam, 1
+  Parkin_asyn_dam_Ub_DUB:
+  - Parkin, 1
+  - asyn, 1
+  - DUB, 1
+  - dam, 1
+  - Ub, 1
+  Proteasome:
+  - Proteasome, 1
+  ROS:
+  - ROS, 1
+  SUB:
+  - SUB, 1
+  SUB_misfolded:
+  - misfolded, 1
+  - SUB, 1
+  SUB_misfolded_Ub4_Proteasome:
+  - Proteasome, 1
+  - misfolded, 1
+  - Ub4, 1
+  - SUB, 1
+  SUB_misfolded_Ub5_Proteasome:
+  - Proteasome, 1
+  - misfolded, 1
+  - Ub5, 1
+  - SUB, 1
+  SUB_misfolded_Ub6_Proteasome:
+  - Proteasome, 1
+  - misfolded, 1
+  - Ub6, 1
+  - SUB, 1
+  SUB_misfolded_Ub7_Proteasome:
+  - Proteasome, 1
+  - misfolded, 1
+  - Ub7, 1
+  - SUB, 1
+  SUB_misfolded_Ub8_Proteasome:
+  - Proteasome, 1
+  - misfolded, 1
+  - Ub8, 1
+  - SUB, 1
+  SeqAggP:
+  - Agg, 1
+  - Seq, 1
+  - P, 1
+  Sink:
+  - Sink, 1
+  Source:
+  - Source, 1
+  UCHL1:
+  - UCHL1, 1
+  UCHL1_Proteasome:
+  - Proteasome, 1
+  - UCHL1, 1
+  UCHL1_damaged:
+  - damaged, 1
+  - UCHL1, 1
+  UCHL1_damaged_Proteasome:
+  - Proteasome, 1
+  - damaged, 1
+  - UCHL1, 1
+  Ub:
+  - Ub, 1
+  Ub_UCHL1:
+  - UCHL1, 1
+  - Ub, 1
+  aggDUB:
+  - DUB, 1
+  - agg, 1
+  aggE3:
+  - agg, 1
+  - E3, 1
+  aggMisP:
+  - Mis, 1
+  - agg, 1
+  - P, 1
+  aggParkin:
+  - Parkin, 1
+  - agg, 1
+  aggSUB:
+  - agg, 1
+  - SUB, 1
+  aggUb:
+  - agg, 1
+  - Ub, 1
+  aggUchl1:
+  - Uchl1, 1
+  - agg, 1
+  aggUchl1dam:
+  - Uchl1, 1
+  - agg, 1
+  - dam, 1
+  aggasyn:
+  - asyn, 1
+  - agg, 1
+  aggasyndam:
+  - asyn, 1
+  - agg, 1
+  - dam, 1
+  asyn:
+  - asyn, 1
+  asyn_Lamp2a:
+  - Lamp2a, 1
+  - asyn, 1
+  asyn_Proteasome:
+  - Proteasome, 1
+  - asyn, 1
+  asyn_dam:
+  - asyn, 1
+  - dam, 1
+  asyn_dam_Ub4_Proteasome:
+  - Proteasome, 1
+  - asyn, 1
+  - Ub4, 1
+  - dam, 1
+  asyn_dam_Ub5_Proteasome:
+  - Proteasome, 1
+  - asyn, 1
+  - Ub5, 1
+  - dam, 1
+  asyn_dam_Ub6_Proteasome:
+  - Proteasome, 1
+  - asyn, 1
+  - Ub6, 1
+  - dam, 1
+  asyn_dam_Ub7_Proteasome:
+  - Proteasome, 1
+  - asyn, 1
+  - Ub7, 1
+  - dam, 1
+  asyn_dam_Ub8_Proteasome:
+  - Proteasome, 1
+  - asyn, 1
+  - Ub8, 1
+  - dam, 1
+  upregUb:
+  - upreg, 1
+  - Ub, 1

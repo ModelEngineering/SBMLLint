@@ -123,8 +123,14 @@ class MoietyStoichiometry(object):
     """
     result = []
     names = []
+    if ms_strs is None:
+      ms_strs = []
     for ms_str in ms_strs:
       terms = [v.strip() for v in ms_str.split(SEP)]
+      if len(terms) < 2:
+        msg = "Expected a name and a number."
+        msg = msg + " Instead got %s." % " ".join(ms_strs)
+        raise ValueError(msg)
       result.append(MoietyStoichiometry(terms[0], int(terms[1])))
       names.append(terms[0])
     indicies = sorted(range(len(names)), key=lambda k: names[k])

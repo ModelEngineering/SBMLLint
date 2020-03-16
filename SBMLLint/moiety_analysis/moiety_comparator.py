@@ -125,7 +125,6 @@ class MoietyComparator(object):
     if not self._process_boundary_reactions:
       if isZeroColumn(df0) or isZeroColumn(df1):
         df[df.columns[0]] = 0
-    #
     return df
 
   def reportDifference(self):

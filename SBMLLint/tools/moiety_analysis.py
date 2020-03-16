@@ -21,8 +21,9 @@ def main():
       sbmllint.lint(model_reference=fid,
           mass_balance_check=cn.MOIETY_ANALYSIS,
           config_fid=args.config)
-    except ValueError:
-      print ("  *** Bad SBML file.")
+    except ValueError as e:
+      print ("  *** Problem with an input file.")
+      print ("  %s" % e)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,5 @@
+Comments on result.txt. 18 reaction imbalances
+1. 2 occurrences of UCLH1 excess in moieties because
+   of transport to lysosome
+2. 16 occurrences of E3 excess in reactants, likely
+   because of degradation of dimer.

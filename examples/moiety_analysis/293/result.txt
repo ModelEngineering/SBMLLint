@@ -1,0 +1,360 @@
+
+68 of 316 reactions have imbalances.
+
+***UCHL1LysosomalDegradation: UCHL1 + Lysosome -> Lysosome
+Excess moieties in reactants
+  UCHL1: 1.00
+
+
+***UCHL1DamagedLysosomalDegradation: UCHL1_damaged + Lysosome -> Lysosome
+Excess moieties in reactants
+  UCHL1: 1.00
+
+
+***SUBDegradationUb4: SUB_misfolded_Ub4_Proteasome + ATP -> 4.00 Ub + Proteasome + ADP
+Excess moieties in reactants
+  SUB: 1.00
+
+
+***SUBDegradationUb5: SUB_misfolded_Ub5_Proteasome + ATP -> 5.00 Ub + Proteasome + ADP
+Excess moieties in reactants
+  SUB: 1.00
+
+
+***SUBDegradationUb6: SUB_misfolded_Ub6_Proteasome + ATP -> 6.00 Ub + Proteasome + ADP
+Excess moieties in reactants
+  SUB: 1.00
+
+
+***SUBDegradationUb7: SUB_misfolded_Ub7_Proteasome + ATP -> 7.00 Ub + Proteasome + ADP
+Excess moieties in reactants
+  SUB: 1.00
+
+
+***SUBDegradationUb8: SUB_misfolded_Ub8_Proteasome + ATP -> 8.00 Ub + Proteasome + ADP
+Excess moieties in reactants
+  SUB: 1.00
+
+
+***asynCMAdegradation: asyn_Lamp2a -> Lamp2a
+Excess moieties in reactants
+  asyn: 1.00
+
+
+***AsynProteasomeActivityUb4: asyn_dam_Ub4_Proteasome + ATP -> 4.00 Ub + Proteasome + ADP
+Excess moieties in reactants
+  asyn: 1.00
+
+
+***AsynDegradationUb5: asyn_dam_Ub5_Proteasome + ATP -> 5.00 Ub + Proteasome + ADP
+Excess moieties in reactants
+  asyn: 1.00
+
+
+***AsynDegradationUb6: asyn_dam_Ub6_Proteasome + ATP -> 6.00 Ub + Proteasome + ADP
+Excess moieties in reactants
+  asyn: 1.00
+
+
+***AsynDegradationUb7: asyn_dam_Ub7_Proteasome + ATP -> 7.00 Ub + Proteasome + ADP
+Excess moieties in reactants
+  asyn: 1.00
+
+
+***AsynDegradationUb8: asyn_dam_Ub8_Proteasome + ATP -> 8.00 Ub + Proteasome + ADP
+Excess moieties in reactants
+  asyn: 1.00
+
+
+***Aggregationasyn1: 2.00 asyn -> AggA1
+Excess moieties in reactants
+  asyn: 1.00
+
+
+***DisAggregationasyn5: AggA1 -> 2.00 asyn
+Excess moieties in products
+  asyn: 1.00
+
+
+***AsynInclusionFormation: asyn + AggA5 -> SeqAggP + 7.00 aggasyn
+Excess moieties in products
+  asyn: 1.00
+
+
+***ROSgenerationSmallAggA1: AggA1 -> AggA1 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggA2: AggA2 -> AggA2 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggA3: AggA3 -> AggA3 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggA4: AggA4 -> AggA4 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggA5: AggA5 -> AggA5 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***AggregationAsynDam1: 2.00 asyn_dam -> AggD1
+Excess moieties in reactants
+  asyn: 1.00
+
+
+***DisaggregationAsynDam5: AggD1 -> 2.00 asyn_dam
+Excess moieties in products
+  asyn: 1.00
+
+
+***AsynDamInclusionFormation: asyn_dam + AggD5 -> SeqAggP + 7.00 aggasyndam
+Excess moieties in products
+  asyn: 1.00
+
+
+***AsynDamInclusionGrowth11: SeqAggP + Parkin_asyn_dam_Ub_DUB -> 2.00 SeqAggP + aggasyndam + aggUb + aggParkin
+Excess moieties in reactants
+  DUB: 1.00
+
+
+***AsynDamInclusionGrowth12: SeqAggP + Parkin_asyn_dam_Ub2_DUB -> 2.00 SeqAggP + aggasyndam + 2.00 aggUb + aggParkin
+Excess moieties in reactants
+  DUB: 1.00
+
+
+***AsynDamInclusionGrowth13: SeqAggP + Parkin_asyn_dam_Ub3_DUB -> 2.00 SeqAggP + aggasyndam + 3.00 aggUb + aggParkin
+Excess moieties in reactants
+  DUB: 1.00
+
+
+***AsynDamInclusionGrowth14: SeqAggP + Parkin_asyn_dam_Ub4_DUB -> 2.00 SeqAggP + aggasyndam + 4.00 aggUb + aggParkin
+Excess moieties in reactants
+  DUB: 1.00
+
+
+***AsynDamInclusionGrowth15: SeqAggP + Parkin_asyn_dam_Ub5_DUB -> 2.00 SeqAggP + aggasyndam + 5.00 aggUb + aggParkin
+Excess moieties in reactants
+  DUB: 1.00
+
+
+***AsynDamInclusionGrowth16: SeqAggP + Parkin_asyn_dam_Ub6_DUB -> 2.00 SeqAggP + aggasyndam + 6.00 aggUb + aggParkin
+Excess moieties in reactants
+  DUB: 1.00
+
+
+***AsynDamInclusionGrowth17: SeqAggP + Parkin_asyn_dam_Ub7_DUB -> 2.00 SeqAggP + aggasyndam + 7.00 aggUb + aggParkin
+Excess moieties in reactants
+  DUB: 1.00
+
+
+***AsynDamInclusionGrowth18: SeqAggP + Parkin_asyn_dam_Ub8_DUB -> 2.00 SeqAggP + aggasyndam + 8.00 aggUb + aggParkin
+Excess moieties in reactants
+  DUB: 1.00
+
+
+***ROSgenerationSmallAggD1: AggD1 -> AggD1 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggD2: AggD2 -> AggD2 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggD3: AggD3 -> AggD3 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggD4: AggD4 -> AggD4 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggD5: AggD5 -> AggD5 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***UCHL1DamagedLamp2aSequestering: SeqAggP + Lamp2a_UCHL1_damaged -> 2.00 SeqAggP + aggUchl1dam
+Excess moieties in reactants
+  Lamp2a: 1.00
+
+
+***ROSgenerationSmallAggU1: AggU1 -> AggU1 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggU2: AggU2 -> AggU2 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggU3: AggU3 -> AggU3 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggU4: AggU4 -> AggU4 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggU5: AggU5 -> AggU5 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***SUBAggregation1: 2.00 SUB_misfolded -> AggS1
+Excess moieties in reactants
+  SUB: 1.00
+
+
+***SUBDisaggregation5: AggS1 -> 2.00 SUB_misfolded
+Excess moieties in products
+  SUB: 1.00
+
+
+***SUBInclusionFormation: AggS5 + SUB_misfolded -> SeqAggP + 7.00 aggSUB
+Excess moieties in products
+  SUB: 1.00
+
+
+***SUBInclusionGrowth1: E3SUB_SUB_misfolded + SeqAggP -> 2.00 SeqAggP + aggSUB
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth2: E3SUB_SUB_misfolded_Ub + SeqAggP -> 2.00 SeqAggP + aggSUB + aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth3: E3SUB_SUB_misfolded_Ub2 + SeqAggP -> 2.00 SeqAggP + aggSUB + 2.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth4: E3SUB_SUB_misfolded_Ub3 + SeqAggP -> 2.00 SeqAggP + aggSUB + 3.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth5: E3SUB_SUB_misfolded_Ub4 + SeqAggP -> 2.00 SeqAggP + aggSUB + 4.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth6: E3SUB_SUB_misfolded_Ub5 + SeqAggP -> 2.00 SeqAggP + aggSUB + 5.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth7: E3SUB_SUB_misfolded_Ub6 + SeqAggP -> 2.00 SeqAggP + aggSUB + 6.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth8: E3SUB_SUB_misfolded_Ub7 + SeqAggP -> 2.00 SeqAggP + aggSUB + 7.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth9: E3SUB_SUB_misfolded_Ub8 + SeqAggP -> 2.00 SeqAggP + aggSUB + 8.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth10: E3SUB_SUB_misfolded_Ub_UCHL1 + SeqAggP -> 2.00 SeqAggP + aggSUB + aggUchl1 + aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth11: E3SUB_SUB_misfolded_Ub2_UCHL1 + SeqAggP -> 2.00 SeqAggP + aggSUB + aggUchl1 + 2.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth12: E3SUB_SUB_misfolded_Ub3_UCHL1 + SeqAggP -> 2.00 SeqAggP + aggSUB + aggUchl1 + 3.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth13: E3SUB_SUB_misfolded_Ub4_UCHL1 + SeqAggP -> 2.00 SeqAggP + aggSUB + aggUchl1 + 4.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth14: E3SUB_SUB_misfolded_Ub5_UCHL1 + SeqAggP -> 2.00 SeqAggP + aggSUB + aggUchl1 + 5.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth15: E3SUB_SUB_misfolded_Ub6_UCHL1 + SeqAggP -> 2.00 SeqAggP + aggSUB + aggUchl1 + 6.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth16: E3SUB_SUB_misfolded_Ub7_UCHL1 + SeqAggP -> 2.00 SeqAggP + aggSUB + aggUchl1 + 7.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***SUBInclusionGrowth17: E3SUB_SUB_misfolded_Ub8_UCHL1 + SeqAggP -> 2.00 SeqAggP + aggSUB + aggUchl1 + 8.00 aggUb
+Excess moieties in reactants
+  E3: 1.00
+  SUB: 1.00
+
+
+***ROSgenerationSmallAggS1: AggS1 -> AggS1 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggS2: AggS2 -> AggS2 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggS3: AggS3 -> AggS3 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggS4: AggS4 -> AggS4 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
+***ROSgenerationSmallAggS5: AggS5 -> AggS5 + ROS
+Excess moieties in products
+  ROS: 1.00
+
+
