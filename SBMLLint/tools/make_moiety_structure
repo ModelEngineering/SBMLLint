@@ -8,14 +8,15 @@ Substrings are handled by looking first for the longest
 moiety names.
 """
 
-import argparse
-import yaml
 from SBMLLint.common.simple_sbml import SimpleSBML
 from SBMLLint.common.moiety import MoietyStoichiometry
 from SBMLLint.common import msgs
 
+import argparse
+import sys
+import yaml
 
-DEFAULT_CONFIG_FILE = "config.yml"
+
 MOIETY_COUNT_SEPARATOR = ", "
 
 
@@ -58,12 +59,12 @@ def findMoietyStoichiometries(molecule_name, moiety_names,
 
 # TODO: Look for moieties from largest string to smallest,
 # eliminating those found.
-def main(xml_fid, moiety_fid, config_fid):
+def main(xml_fid, moiety_fid, otfile_fid):
   """
   Creates the YAML configuration file.
   :param IOWrapper xml_fid: xml file:
   :param IOWrapper moiety_fid: 
-  :param IOWrapper config_fid: file to write
+  :param IOWrapper otfile_fid: file to write
   """
   # Acquire and validate moieties
   moiety_names = getMoieties(moiety_fid)
@@ -77,8 +78,8 @@ def main(xml_fid, moiety_fid, config_fid):
     config_dct[molecule.name] =  \
         [str(ms) for ms in moiety_stoichiometries]
   dct = {"moiety_structure": config_dct}
-  yaml.dump(dct, config_fid)
-  for fid in [xml_fid, moiety_fid, config_fid]:
+  yaml.dump(dct, otfile_fid)
+  for fid in [xml_fid, moiety_fid, otfile_fid]:
     fid.close()
 
     
@@ -98,7 +99,7 @@ if __name__ == '__main__':
       help="Generated configuration file. Defaults to config.yml.")
   args = parser.parse_args()
   if args.output is None:
-    config_fid = open(DEFAULT_CONFIG_FILE, "w")
+    otfile_fid = sys.stdout
   else:
-    config_fid = args.output
-  main(args.xml_file, args.moiety_file, config_fid)
+    otfile_fid = args.output
+  main(args.xml_file, args.moiety_file, otfile_fid)
