@@ -10,7 +10,6 @@ from SBMLLint.common import stoichiometry_matrix
 from SBMLLint.common import util
 
 import argparse
-
 import sys
 
 
@@ -49,12 +48,10 @@ def main():
       default = ['True'])
   args = parser.parse_args()
   for fid in util.getNextFid(args.xml_fid):
-    try:
-      LPAnalysis(fid, is_report=args.report_warnings[0])
-    except ValueError:
-      print ("  *** Bad SBML file.")
-    except Exception as e:
-      print(e)
+    util.runFunction(LPAnalysis,
+        pargs=[fid], 
+        kwargs={"is_report": args.report_warnings[0]},
+        )
 
 
 if __name__ == '__main__':

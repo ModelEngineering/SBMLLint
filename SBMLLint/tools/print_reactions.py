@@ -45,10 +45,9 @@ def main():
       default = ['True'])
   args = parser.parse_args()
   for fid in util.getNextFid(args.filename):
-    try:
-      prettyPrint(fid, is_include_kinetics=args.kinetics[0])
-    except ValueError:
-      print ("  *** Bad SBML file.")
+    util.runFunction(prettyPrint, pargs=[fid], 
+        kwargs={"is_include_kinetics": args.kinetics[0]},
+        )
 
 
 if __name__ == '__main__':

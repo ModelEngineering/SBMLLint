@@ -104,6 +104,19 @@ class TestFunctions(unittest.TestCase):
       count += 1
       self.assertGreater(len(lines), 0)
     self.assertGreater(count, 0)
+
+  def testRunFunction(self):
+    def testFunc(a, b=2):
+      if b == 0:
+        raise(ValueError)
+      return a/b
+    #
+    self.assertEqual(
+        util.runFunction(testFunc, [6], {'b': 3}), 2)
+    result = util.runFunction(testFunc, [6], {'b': 0})
+    self.assertIsNone(result)
+    
+    
     
 
 if __name__ == '__main__':

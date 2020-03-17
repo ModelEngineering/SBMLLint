@@ -10,6 +10,7 @@ TYPE_ANTIMONY = "type_antimony"
 TYPE_XML = "type_xml"
 TYPE_FILENAME = "type_filename"
 XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>'
+DEFAULT_MSG = "An error occurred in an input file."
 
 def getXML(model_reference):
   """
@@ -135,3 +136,26 @@ def getNextFid(fid, is_print=True):
         if is_print:
           print("\n** %s" % zip_fid.name)
         yield zip_fid
+
+def runFunction(func, pargs=None, kwargs=None,
+    msg=DEFAULT_MSG):
+  """
+  Runs the function, catching errors, and writing
+  a message.
+  :param Function func:
+  :param list pargs: postional arguments
+  :param dict kwargs: keyword arguments
+  """
+  if pargs is None:
+    pargs = []
+  if kwargs is None:
+    kwargs = {}
+  try:
+    return func(*pargs, **kwargs)
+  except RuntimeError as e:
+    print(msg)
+    print(e)
+  except ValueError as e:
+    print(msg)
+    print(e)
+  

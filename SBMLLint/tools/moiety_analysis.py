@@ -17,13 +17,11 @@ def main():
       help="SBMLLint configuration file")
   args = parser.parse_args()
   for fid in util.getNextFid(args.xml_file):
-    try:
-      sbmllint.lint(model_reference=fid,
-          mass_balance_check=cn.MOIETY_ANALYSIS,
-          config_fid=args.config)
-    except ValueError as e:
-      print ("  *** Problem with an input file.")
-      print ("  %s" % e)
+    util.runFunction(sbmllint.lint, kwargs={
+        "model_reference": fid,
+        "mass_balance_check": cn.MOIETY_ANALYSIS,
+        "config_fid": args.config,
+        })
 
 
 if __name__ == '__main__':
