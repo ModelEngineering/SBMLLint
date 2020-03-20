@@ -337,9 +337,9 @@ class GAMES_PP(nx.DiGraph):
       for i in range(diff):
         mat_t["_" + str(i)] = np.zeros(mat_t.shape[0])
     # LU decomposition
-    perm, lower, upper_raw = lu(mat_t)
+    perm, lower, upper = lu(mat_t)
     # round up U matrix
-    upper = np.round(upper_raw, 3)
+    # upper = np.round(upper_raw, 6)
     perm_inverse = perm.T
     permuted_m = (perm_inverse).dot(mat_t)
     pivot_index = [list(k).index(1) for k in perm_inverse]
