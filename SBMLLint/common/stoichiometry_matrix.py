@@ -79,13 +79,13 @@ class StoichiometryMatrix(object):
     :return bool:
     """
     s_matrix_t = self.stoichiometry_matrix.T
-    # number of molecules
-    nmet = s_matrix_t.shape[0]
     # number of reactions
-    nreac = s_matrix_t.shape[1]
+    nreac = s_matrix_t.shape[0]
+    # number of chemical species
+    nmet = s_matrix_t.shape[1]
     #
-    b = np.zeros(nmet)
-    c = np.ones(nreac)
+    b = np.zeros(nreac)
+    c = np.ones(nmet)
     # Linear programming. c is constraint (here, zero), 
     # b is vector of possible values for molecule vector. 
     if not is_report_warning:
