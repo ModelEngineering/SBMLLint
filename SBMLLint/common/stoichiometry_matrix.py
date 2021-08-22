@@ -61,8 +61,13 @@ class StoichiometryMatrix(object):
     reaction_labels = [r.label for r in self.reactions]
     stoichiometry_matrix = pd.DataFrame(0.0, index=self.molecules, columns=reaction_labels)
     for reaction in self.reactions:
-      reactants = {r.molecule.name:r.stoichiometry for r in reaction.reactants}
-      products = {p.molecule.name:p.stoichiometry for p in reaction.products}
+      reactants_raw = [(r.molecule.name, r.stoichiometry) for r in reaction.reactants]
+      products_raw = [(p.molecule.name, p.stoichiometry) for p in reaction.products]
+      reactants_key = list(set([r[0] for r in reactants_raw]))
+      products_key = list(set([p[0] for p in products_raw]))
+      # Below is to deal with reactions with repeated species; e.g., S0 -> S1 + S1
+      reactants = {r_k:sum([r[1] for r in reactants_raw if r[0]==r_k]) for r_k in reactants_key}
+      products = {p_k:sum([p[1] for p in products_raw if p[0]==p_k]) for p_k in products_key}
       reaction_molecules = list(set(reactants.keys()).union(products.keys()))
       for molecule_name in reaction_molecules:
         net_stoichiometry = products.get(molecule_name, 0.0) - reactants.get(molecule_name, 0.0)
