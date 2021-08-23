@@ -65,6 +65,8 @@ TEST_FILE_GAMESREPORT1 = os.path.join(TEST_DIR, "test_file_games_report1.xml")
 TEST_FILE_GAMESREPORT2 = os.path.join(TEST_DIR, "test_file_games_report2.xml")
 # test_file_games_report3: originally "BIOMD0000000167_url.xml"
 TEST_FILE_GAMESREPORT3 = os.path.join(TEST_DIR, "test_file_games_report3.xml")
+# test file for stoichiometry matrix: dealing with repeated species
+TEST_FILE_REPEATED_SPECES = os.path.join(TEST_DIR, "test_repeated_species.xml")
 NUM_REACTIONS = 111
 NUM_PARAMETERS = 27
 MAX_REACTANTS = 10
