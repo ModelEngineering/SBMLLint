@@ -38,6 +38,10 @@ class TestStoichiometryMatrix(unittest.TestCase):
     self.simple_inconsistent = SimpleSBML()
     self.simple_inconsistent.initialize(cn.TEST_FILE9)
     self.inconsistent_matrix = StoichiometryMatrix(self.simple_inconsistent)   
+    #
+    self.simple_repeated_species = SimpleSBML()
+    self.simple_repeated_species.initialize(cn.TEST_FILE_REPEATED_SPECES)
+    self.repeated_species_matrix = StoichiometryMatrix(self.simple_repeated_species)   
 
   def testConstructor(self):
     remaining_reactions = [r.label for r in self.consistent_matrix.reactions]
@@ -56,6 +60,18 @@ class TestStoichiometryMatrix(unittest.TestCase):
     self.assertEqual(type(self.inconsistent_matrix), StoichiometryMatrix)
     self.assertEqual(self.inconsistent_matrix.stoichiometry_matrix.shape, 
     	(REMAINING_MOLECULES, REMAINIG_REACTIONS))
+    # tests repeated species matrix
+    self.assertEqual(type(self.repeated_species_matrix), StoichiometryMatrix)
+    rs_matrix = self.repeated_species_matrix.stoichiometry_matrix
+    self.assertEqual(rs_matrix.shape, (6, 4))
+    self.assertEqual(rs_matrix.loc['S0', 'J0'], -1.0)
+    self.assertEqual(rs_matrix.loc['S1', 'J0'], 1.0)
+    self.assertEqual(rs_matrix.loc['S1', 'J1'],-2.0)
+    self.assertEqual(rs_matrix.loc['S2', 'J1'], 1.0)
+    self.assertEqual(rs_matrix.loc['S2', 'J2'], -1.0)
+    self.assertEqual(rs_matrix.loc['S3', 'J2'], 2.0)
+    self.assertEqual(rs_matrix.loc['S4', 'J3'], -2.0)
+    self.assertEqual(rs_matrix.loc['S5', 'J3'], 2.0)
 
   def testIsConsistent(self):
     self.assertTrue(self.consistent_matrix.consistent is None)
