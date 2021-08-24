@@ -66,10 +66,10 @@ class TestStoichiometryMatrix(unittest.TestCase):
     self.assertEqual(rs_matrix.shape, (6, 4))
     self.assertEqual(rs_matrix.loc['S0', 'J0'], -1.0)
     self.assertEqual(rs_matrix.loc['S1', 'J0'], 1.0)
-    self.assertEqual(rs_matrix.loc['S1', 'J1'],-2.0)
+    self.assertEqual(rs_matrix.loc['S1', 'J1'], -3.0)
     self.assertEqual(rs_matrix.loc['S2', 'J1'], 1.0)
     self.assertEqual(rs_matrix.loc['S2', 'J2'], -1.0)
-    self.assertEqual(rs_matrix.loc['S3', 'J2'], 2.0)
+    self.assertEqual(rs_matrix.loc['S3', 'J2'], 4.0)
     self.assertEqual(rs_matrix.loc['S4', 'J3'], -2.0)
     self.assertEqual(rs_matrix.loc['S5', 'J3'], 2.0)
 

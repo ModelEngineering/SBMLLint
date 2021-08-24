@@ -24,7 +24,7 @@
       <reaction id="J1" reversible="true" fast="false">
         <listOfReactants>
           <speciesReference species="S1" stoichiometry="1" constant="true"/>
-          <speciesReference species="S1" stoichiometry="1" constant="true"/>
+          <speciesReference species="S1" stoichiometry="2" constant="true"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="S2" stoichiometry="1" constant="true"/>
@@ -35,7 +35,7 @@
           <speciesReference species="S2" stoichiometry="1" constant="true"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="S3" stoichiometry="1" constant="true"/>
+          <speciesReference species="S3" stoichiometry="3" constant="true"/>
           <speciesReference species="S3" stoichiometry="1" constant="true"/>
         </listOfProducts>
       </reaction>
