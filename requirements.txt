@@ -1,0 +1,9 @@
+numpy
+pandas
+urllib3
+networkx
+xlrd
+nose
+pyyaml
+scipy
+python-libsbml
