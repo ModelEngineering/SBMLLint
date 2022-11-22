@@ -7,3 +7,4 @@ nose
 pyyaml
 scipy
 python-libsbml
+tellurium

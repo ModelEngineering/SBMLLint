@@ -403,7 +403,7 @@ class GAMESReport(object):
   	# Create a simplified reaction based on the resulting_reaction
   	reactants = []
   	products = []
-  	for ms in resulting_reaction.iteritems():
+  	for ms in resulting_reaction.items():
   	  if abs(ms[1]) < TOLERANCE:
   	  	continue
   	  elif ms[1] > 0:
